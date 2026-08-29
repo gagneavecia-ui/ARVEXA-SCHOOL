@@ -668,7 +668,7 @@ form.addEventListener('submit', async (e) => {
     } else {
       showToast('✅ Bon retour, ' + (userData.firstName || '') + ' !', 'success');
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'index.html';
       }, 1000);
     }
 
@@ -714,7 +714,7 @@ form.addEventListener('submit', async (e) => {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     // Si déjà connecté, rediriger vers le dashboard
-    window.location.href = 'dashboard.html';
+    window.location.href = 'index.html';
   }
 });
 
