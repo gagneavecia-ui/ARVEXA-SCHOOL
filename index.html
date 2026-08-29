@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="description" content="ARVEXA School - Tableau de bord">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       ROOT — Design system ARVEXA
+       ============================================================ */
+    :root {
+      --primary: #1A3A2A;
+      --primary-dark: #0A1A12;
+      --primary-light: #2A5A3A;
+      --accent: #B8860B;
+      --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
+      --success: #2D7D5A;
+      --danger: #B85C3A;
+      --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-card: rgba(20, 20, 20, 0.7);
+      --text-light: #F5F0E8;
+      --text-dim: #8A8A7A;
+      --text-muted: #5A5A4A;
+      --card-border: rgba(184, 134, 11, 0.08);
+      --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      --sidebar-width: 240px;
+      --header-height: 64px;
+      --mastery-threshold: 70;
+      --dial-circumference: 327;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+    }
+
+    /* ===== BACKGROUND ===== */
+    .gradient-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
+                  radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
+                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+    }
+    .glow {
+      position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
+      opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
+    }
+    .glow-1 { width: 350px; height: 350px; background: rgba(26,58,42,0.18); top: -80px; right: -80px; }
+    .glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.05); bottom: 0; left: 0; animation-delay: -4s; }
+    .glow-3 { width: 250px; height: 250px; background: rgba(26,58,42,0.1); top: 30%; left: 60%; transform: translate(-50%,-50%); animation-delay: -8s; }
+    @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
+
+    .sidebar-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+      background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
+
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .sidebar {
+      position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
+      background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(184, 134, 11, 0.06);
+      padding: 24px 16px; display: flex; flex-direction: column; z-index: 100;
+      overflow-y: auto; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .sidebar.open { left: 0; }
+    .sidebar .logo {
+      display: flex; align-items: center; text-decoration: none; color: var(--text-light);
+      font-size: 20px; font-weight: 700; font-family: 'Playfair Display', 'Georgia', serif;
+      letter-spacing: 2px; padding-bottom: 20px; margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .sidebar .logo span {
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; font-style: italic; animation: shimmerText 4s linear infinite;
+    }
+    @keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+    .sidebar .nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .sidebar .nav a {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+      color: var(--text-dim); text-decoration: none; transition: var(--transition);
+      font-size: 13px; font-weight: 500;
+    }
+    .sidebar .nav a i { width: 20px; text-align: center; font-size: 15px; }
+    .sidebar .nav a:hover { color: var(--text-light); background: rgba(255,255,255,0.03); }
+    .sidebar .nav a.active { color: var(--text-light); background: rgba(184, 134, 11, 0.08); border: 1px solid rgba(184, 134, 11, 0.08); }
+    .sidebar .nav a.active i { color: var(--accent); }
+    .sidebar .nav-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
+    .sidebar .nav-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
+    .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
+    .sidebar .nav-bottom a:hover { color: var(--text-dim); }
+
+    /* ============================================================
+       MAIN CONTENT / HEADER
+       ============================================================ */
+    .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
+
+    .header {
+      position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
+      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
+      gap: 12px; min-height: var(--header-height);
+    }
+    .header .header-left { display: flex; align-items: center; gap: 12px; }
+    .header .menu-toggle {
+      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
+    }
+    .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
+    .header .greeting { font-size: 14px; font-weight: 600; color: var(--text-light); }
+    .header .greeting span { color: var(--accent); }
+    .header .header-actions { display: flex; align-items: center; gap: 6px; }
+    .header .header-actions button {
+      width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
+    .header .header-actions .badge {
+      position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-bright); border: 2px solid var(--bg-dark);
+    }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
+
+    /* ===== SKELETON ===== */
+    .skeleton { background: rgba(255,255,255,0.04); border-radius: 8px; animation: skeletonPulse 1.5s ease-in-out infinite; }
+    @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
+    .skeleton-card { height: 100px; border-radius: var(--radius); }
+
+    /* ===== CARTES GÉNÉRIQUES ===== */
+    .card {
+      background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 18px; transition: var(--transition);
+    }
+    .card:hover { border-color: rgba(184, 134, 11, 0.14); }
+    .section-title {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin: 26px 0 12px;
+    }
+    .section-title h3 { font-size: 15px; font-weight: 600; color: var(--text-light); }
+    .section-title .see-all { font-size: 12px; color: var(--accent); text-decoration: none; }
+    .section-title:first-of-type { margin-top: 0; }
+
+    .progress-bar { height: 8px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; margin: 6px 0; }
+    .progress-bar .fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transition: width 0.8s ease; width: 0%; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px; padding: 11px 26px; border-radius: 30px;
+      border: none; background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition);
+      font-family: 'Inter', sans-serif; text-decoration: none;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184,134,11,0.25); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--text-dim);
+      font-size: 12px; font-weight: 500; cursor: pointer; transition: var(--transition);
+      font-family: 'Inter', sans-serif; text-decoration: none;
+    }
+    .btn-secondary:hover { border-color: rgba(184,134,11,0.16); color: var(--text-light); background: rgba(255,255,255,0.03); }
+
+    .premium-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; background: rgba(184, 134, 11, 0.1); color: var(--accent-bright);
+      border: 1px solid rgba(184, 134, 11, 0.14); margin-top: 6px;
+    }
+    .premium-badge i { font-size: 9px; }
+
+    /* ============================================================
+       HERO — CARTE OBJECTIF (signature : le cadran d'examen)
+       ============================================================ */
+    .hero-card { position: relative; overflow: hidden; }
+    .hero-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
+    }
+    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .hero-info .class-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-info .exam-label { font-size: 19px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 0; }
+    .hero-info .exam-label span { color: var(--accent-bright); }
+
+    .dial-wrap { position: relative; width: 108px; height: 108px; flex-shrink: 0; }
+    .dial { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .dial-track { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 8; }
+    .dial-fill {
+      fill: none; stroke: url(#dialGradient); stroke-width: 8; stroke-linecap: round;
+      stroke-dasharray: 327; stroke-dashoffset: 327; transition: stroke-dashoffset 1s cubic-bezier(0.25,1,0.5,1);
+    }
+    .dial-center {
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .dial-percent { font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); }
+    .dial-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+
+    .hero-bottom {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 20px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px; color: var(--text-dim); font-weight: 500;
+    }
+    .hero-pill i { color: var(--accent); font-size: 12px; }
+    .hero-pill.streak i { color: #D97A3A; }
+    .hero-pill strong { color: var(--text-light); font-weight: 700; }
+
+    /* ============================================================
+       PROCHAINE ÉTAPE
+       ============================================================ */
+    .next-card {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
+      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius); padding: 18px;
+      position: relative; overflow: hidden;
+    }
+    .next-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--success)); }
+    .next-card .badge { font-size: 10px; font-weight: 600; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 1px; }
+    .next-card .title { font-size: 17px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 4px; }
+    .next-card .subject { font-size: 13px; color: var(--text-dim); }
+    .next-card .message { font-size: 13px; color: var(--text-dim); margin: 6px 0 12px; line-height: 1.5; }
+    .next-card .progress-row { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; }
+    .next-card .progress-row .label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+    .next-card .progress-row .bar { flex: 1; height: 6px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; }
+    .next-card .progress-row .bar .fill { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
+    .next-card .progress-row .bar .fill.danger { background: linear-gradient(90deg, #B85C3A, #D97A3A); }
+    .next-card .progress-row .bar .fill.warning { background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
+    .next-card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+
+    /* ============================================================
+       MES MATIÈRES
+       ============================================================ */
+    .subjects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .subject-chip {
+      background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .subject-chip:hover { border-color: rgba(184,134,11,0.16); transform: translateY(-2px); }
+    .subject-chip .row-top { display: flex; align-items: center; justify-content: space-between; }
+    .subject-chip .icon-badge {
+      width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 14px; flex-shrink: 0;
+    }
+    .subject-chip .subject-percent { font-size: 15px; font-weight: 700; font-family: 'Playfair Display', serif; }
+    .subject-chip .subject-name { font-size: 13px; font-weight: 600; }
+    .subject-chip .mini-bar { height: 5px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; }
+    .subject-chip .mini-bar .fill { height: 100%; border-radius: 10px; }
+    .subject-chip .tag-review {
+      font-size: 10px; color: var(--danger); display: inline-flex; align-items: center; gap: 4px; font-weight: 600;
+    }
+    .subject-chip .tag-ok { font-size: 10px; color: var(--success); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+
+    /* ============================================================
+       ACCÈS RAPIDE
+       ============================================================ */
+    .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .quick-card {
+      background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 16px 8px; text-align: center; transition: var(--transition);
+      text-decoration: none; color: var(--text-light); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px; min-height: 88px;
+    }
+    .quick-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+    .quick-card .icon-badge {
+      width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 15px;
+    }
+    .quick-card .name { font-size: 12px; font-weight: 600; }
+
+    /* ============================================================
+       CETTE SEMAINE (série de révision)
+       ============================================================ */
+    .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .week-card .days-row { display: flex; justify-content: space-between; margin-top: 12px; gap: 4px; }
+    .week-card .day-dot { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
+    .week-card .day-dot .letter { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+    .week-card .day-dot .dot {
+      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 10px; color: var(--text-muted);
+    }
+    .week-card .day-dot.done .dot { background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-color: transparent; color: #0A0A0A; }
+    .week-card .day-dot.today .dot { border-color: var(--accent-bright); color: var(--accent-bright); }
+    .week-card .streak-line { font-size: 12px; color: var(--text-dim); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+    .week-card .streak-line i { color: #D97A3A; }
+
+    .tip-card { display: flex; gap: 12px; align-items: flex-start; }
+    .tip-card .tip-icon {
+      width: 38px; height: 38px; border-radius: 10px; background: rgba(45,125,90,0.1); color: var(--success);
+      display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+    }
+    .tip-card .tip-eyebrow { font-size: 10px; color: var(--success); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+    .tip-card .tip-title { font-size: 13px; font-weight: 700; color: var(--text-light); margin: 3px 0 4px; }
+    .tip-card .tip-text { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+
+    /* ============================================================
+       EN RÉSUMÉ
+       ============================================================ */
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .summary-item { text-align: center; padding: 12px 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; }
+    .summary-item .number { font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); }
+    .summary-item .label { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+    .empty-state { text-align: center; padding: 20px; }
+    .empty-state .icon { font-size: 32px; color: var(--text-muted); margin-bottom: 8px; }
+    .empty-state h4 { font-size: 15px; color: var(--text-light); margin-bottom: 4px; }
+    .empty-state p { font-size: 12px; color: var(--text-dim); }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 12px 20px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border); color: var(--text-light); font-size: 13px; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center; box-shadow: var(--shadow);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(45, 125, 90, 0.25); }
+    .toast.error { border-color: rgba(184, 92, 58, 0.3); }
+    .toast .toast-icon { margin-right: 8px; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (min-width: 768px) {
+      .sidebar { left: 0; display: flex; }
+      .sidebar-overlay { display: none !important; }
+      .main-content { margin-left: var(--sidebar-width); }
+      .header .menu-toggle { display: none; }
+      .two-col { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 767px) {
+      .sidebar { left: -280px; }
+      .sidebar.open { left: 0; }
+      .header .greeting { font-size: 13px; }
+      .container { padding: 12px 12px 20px; }
+      .card { padding: 15px; }
+      .hero-info .exam-label { font-size: 16px; }
+      .dial-wrap { width: 92px; height: 92px; }
+      .dial-percent { font-size: 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .quick-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .quick-card { padding: 12px 6px; min-height: 76px; }
+      .quick-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
+      .quick-card .name { font-size: 11px; }
+      .subjects-grid { gap: 8px; }
+      .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
+      .next-card .actions { flex-direction: column; }
+      .next-card .actions .btn-primary, .next-card .actions .btn-secondary { width: 100%; justify-content: center; }
+      .hero-top { flex-wrap: wrap; }
+      .week-card .day-dot .dot { width: 22px; height: 22px; }
+    }
+
+    @media (max-width: 360px) {
+      .header .greeting { font-size: 11px; }
+      .summary-item .number { font-size: 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
+  </style>
+</head>
+<body>
+
+<!-- ===== BACKGROUND ===== -->
+<div class="gradient-bg"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<!-- SVG defs (gradient partagé par le cadran) -->
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <linearGradient id="dialGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B8860B"/>
+      <stop offset="100%" stop-color="#E0B84A"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ===== OVERLAY (mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <a href="dashboard.html" class="logo">ARVE<span>XA</span></a>
+  <nav class="nav">
+    <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Accueil</a>
+    <a href="cours.html"><i class="fas fa-book-open"></i> Mes cours</a>
+    <a href="exercices.html"><i class="fas fa-pencil-alt"></i> Exercices</a>
+    <a href="corrections.html"><i class="fas fa-check-double"></i> Corrections</a>
+    <a href="fiches.html"><i class="fas fa-file-alt"></i> Fiches</a>
+     <a href="ai.html"><i class="fas fa-robot"></i> ARV-ASSISTANT</a>
+    <div class="nav-divider"></div>
+    <a href="progression.html"><i class="fas fa-chart-line"></i> Ma progression</a>
+    <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+     <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
+    <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+    <div class="nav-divider"></div>
+    <div class="nav-bottom">
+      <a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a>
+      <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<div class="main-content">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="greeting">Bonjour, <span id="userFirstName">Élève</span> 👋</div>
+    </div>
+    <div class="header-actions">
+      <button id="notifBtn" aria-label="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="notifBadge" style="display:none;"></span>
+      </button>
+      <button id="profileBtn" aria-label="Profil">
+        <i class="fas fa-user"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== CONTAINER ===== -->
+  <div class="container" id="dashboardContent">
+
+    <!-- ===== SKELETON LOADING ===== -->
+    <div id="skeletonLoading">
+      <div class="skeleton skeleton-card" style="height:170px;"></div>
+      <div class="skeleton skeleton-card" style="height:120px; margin-top:12px;"></div>
+      <div class="skeleton skeleton-card" style="height:90px; margin-top:12px;"></div>
+    </div>
+
+    <!-- ===== CONTENU DYNAMIQUE ===== -->
+    <div id="dynamicContent" style="display:none;">
+
+      <!-- HERO : OBJECTIF EXAMEN -->
+      <div class="card hero-card">
+        <div class="hero-top">
+          <div class="hero-info">
+            <div class="class-label" id="userClassDisplay">Classe</div>
+            <div class="exam-label" id="userExamDisplay">🎓 Objectif</div>
+            <div id="premiumBadgeContainer"></div>
+          </div>
+          <div class="dial-wrap">
+            <svg viewBox="0 0 120 120" class="dial">
+              <circle class="dial-track" cx="60" cy="60" r="52"></circle>
+              <circle class="dial-fill" id="dialFill" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="dial-center">
+              <div class="dial-percent" id="globalProgressText">0%</div>
+              <div class="dial-label">maîtrisé</div>
+            </div>
+          </div>
+        </div>
+        <div class="progress-bar" style="display:none;">
+          <div class="fill" id="globalProgressFill" style="width:0%;"></div>
+        </div>
+        <div class="hero-bottom">
+          <span class="hero-pill"><i class="fas fa-hourglass-half"></i> <span id="examCountdown">-- jours avant l'examen</span></span>
+          <span class="hero-pill streak"><i class="fas fa-fire"></i> <strong id="streakCount">0</strong> jour(s) de suite</span>
+        </div>
+      </div>
+
+      <!-- PROCHAINE ÉTAPE -->
+      <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
+      <div id="nextStepCard"><!-- Rempli dynamiquement --></div>
+
+      <!-- MES MATIÈRES -->
+      <div class="section-title">
+        <h3>📐 Mes matières</h3>
+        <a href="progression.html" class="see-all">Tout voir →</a>
+      </div>
+      <div class="subjects-grid" id="subjectsGrid"><!-- Rempli dynamiquement --></div>
+
+      <!-- ACCÈS RAPIDE -->
+      <div class="section-title"><h3>Accès rapide</h3></div>
+      <div class="quick-grid">
+        <a href="cours.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-book-open"></i></div>
+          <div class="name">Mes cours</div>
+        </a>
+        <a href="exercices.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-pencil-alt"></i></div>
+          <div class="name">Exercices</div>
+        </a>
+        <a href="corrections.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-check-double"></i></div>
+          <div class="name">Corrections</div>
+        </a>
+        <a href="fiches.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-file-alt"></i></div>
+          <div class="name">Fiches</div>
+        </a>
+        <a href="progression.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-chart-line"></i></div>
+          <div class="name">Progression</div>
+        </a>
+        <a href="ai.html" class="quick-card">
+          <div class="icon-badge"><i class="fas fa-robot"></i></div>
+          <div class="name">ARV-ASSISTANT</div>
+        </a>
+      </div>
+
+      <!-- CETTE SEMAINE + CONSEIL DU JOUR -->
+      <div class="section-title"><h3>Cette semaine</h3></div>
+      <div class="two-col">
+        <div class="card week-card">
+          <div style="font-size:13px; font-weight:600;">Ta série de révision</div>
+          <div class="days-row" id="weekStreakRow"><!-- Rempli dynamiquement --></div>
+          <div class="streak-line"><i class="fas fa-fire"></i> <span id="streakLine">Reviens demain pour continuer ta série !</span></div>
+        </div>
+        <div class="card tip-card">
+          <div class="tip-icon"><i class="fas fa-lightbulb"></i></div>
+          <div>
+            <div class="tip-eyebrow">Conseil du jour</div>
+            <div class="tip-title" id="tipTitle">Méthode de travail</div>
+            <div class="tip-text" id="tipText">Chargement du conseil...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EN RÉSUMÉ -->
+      <div class="section-title"><h3>📊 En résumé</h3></div>
+      <div class="summary-grid" id="statsGrid">
+        <div class="summary-item">
+          <div class="number" id="statCourses">0</div>
+          <div class="label">Cours terminés</div>
+        </div>
+        <div class="summary-item">
+          <div class="number" id="statExercises">0</div>
+          <div class="label">Exercices faits</div>
+        </div>
+        <div class="summary-item">
+          <div class="number" id="statSkills">0</div>
+          <div class="label">Compétences</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+  <span class="toast-message"></span>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================================ -->
+<script type="importmap">
+{
+  "imports": {
+    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  }
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+// ================================================================
+// FIREBASE CONFIG
+// ================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ================================================================
+// CONSTANTES
+// ================================================================
+const MASTERY_THRESHOLD = 70;
+const DIAL_CIRCUMFERENCE = 2 * Math.PI * 52; // ≈ 326.7
+
+// Dates approximatives des sessions d'examen (mois/jour). Si la date de
+// l'année en cours est déjà passée, on calcule automatiquement l'échéance
+// de l'année suivante.
+const EXAM_DATES = {
+  bepc: { month: 5, day: 5 },   // début juin
+  bac:  { month: 5, day: 17 }   // mi-juin
+};
+
+const SUBJECT_ICONS = {
+  'Mathématiques': 'fa-square-root-variable',
+  'Physique': 'fa-bolt',
+  'Chimie': 'fa-flask',
+  'SVT': 'fa-dna',
+};
+
+const STUDY_TIPS = [
+  { title: 'La technique Pomodoro', text: "Travaille par sessions de 25 minutes suivies de 5 minutes de pause. Après 4 sessions, prends une pause plus longue de 20 minutes." },
+  { title: 'Le rappel actif', text: "Ferme ton cours et essaie de réécrire ce que tu as retenu de mémoire. C'est plus efficace que de relire plusieurs fois." },
+  { title: 'La répétition espacée', text: "Revois une notion 1 jour, puis 3 jours, puis 7 jours après l'avoir apprise. Ta mémoire à long terme te remerciera." },
+  { title: "S'entraîner sur les annales", text: "Rien ne remplace un sujet d'examen des années précédentes fait dans les conditions du jour J, chronomètre en main." },
+  { title: 'Explique à voix haute', text: "Si tu arrives à expliquer une notion simplement à quelqu'un d'autre (ou à toi-même), c'est que tu l'as vraiment comprise." },
+  { title: 'Dors suffisamment', text: "Le cerveau consolide les apprentissages pendant le sommeil. Une bonne nuit vaut souvent mieux qu'une heure de révision en plus." },
+  { title: 'Un objectif par session', text: "Avant chaque session, fixe-toi un seul objectif clair : « comprendre cette notion » plutôt que « réviser les maths »." }
+];
+
+// ================================================================
+// ÉLÉMENTS DOM
+// ================================================================
+const skeletonLoading = document.getElementById('skeletonLoading');
+const dynamicContent = document.getElementById('dynamicContent');
+const userFirstName = document.getElementById('userFirstName');
+const userClassDisplay = document.getElementById('userClassDisplay');
+const userExamDisplay = document.getElementById('userExamDisplay');
+const globalProgressFill = document.getElementById('globalProgressFill');
+const globalProgressText = document.getElementById('globalProgressText');
+const dialFill = document.getElementById('dialFill');
+const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
+const nextStepCard = document.getElementById('nextStepCard');
+const subjectsGrid = document.getElementById('subjectsGrid');
+const examCountdown = document.getElementById('examCountdown');
+const streakCount = document.getElementById('streakCount');
+const weekStreakRow = document.getElementById('weekStreakRow');
+const streakLine = document.getElementById('streakLine');
+const tipTitle = document.getElementById('tipTitle');
+const tipText = document.getElementById('tipText');
+const toast = document.getElementById('toast');
+const toastMessage = document.querySelector('.toast-message');
+const toastIcon = document.querySelector('.toast-icon i');
+
+// ================================================================
+// ÉTAT
+// ================================================================
+let userData = null;
+let userProgress = {
+  global: 0,
+  stats: { courses: 0, exercises: 0, skills: 0 },
+  skills: {},
+  activities: [],
+  streakDays: 0
+};
+let isPremium = false;
+
+// ================================================================
+// FONCTIONS UTILITAIRES
+// ================================================================
+
+function showToast(message, type = 'success') {
+  toastMessage.textContent = message;
+  toast.className = `toast ${type}`;
+  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+function randomProgress(min = 10, max = 95) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function calculateGlobalProgress(skills) {
+  if (!skills || Object.keys(skills).length === 0) return 0;
+  const values = Object.values(skills);
+  const sum = values.reduce((a, b) => a + b, 0);
+  return Math.round(sum / values.length);
+}
+
+function getWeakSkills(skills) {
+  if (!skills) return [];
+  return Object.entries(skills)
+    .filter(([_, value]) => value < MASTERY_THRESHOLD)
+    .sort((a, b) => a[1] - b[1]);
+}
+
+function getSubjectForSkill(skillName) {
+  const mapping = {
+    'Fonctions': 'Mathématiques',
+    'Dérivation': 'Mathématiques',
+    'Équations': 'Mathématiques',
+    'Géométrie': 'Mathématiques',
+    'Mécanique': 'Physique',
+    'Électricité': 'Physique',
+    'Chimie organique': 'Chimie',
+    'Génétique': 'SVT',
+  };
+  return mapping[skillName] || 'Mathématiques';
+}
+
+// Regroupe les compétences par matière et calcule la moyenne de chacune
+function computeSubjectBreakdown(skills) {
+  const bySubject = {};
+  Object.entries(skills || {}).forEach(([skillName, value]) => {
+    const subject = getSubjectForSkill(skillName);
+    if (!bySubject[subject]) bySubject[subject] = [];
+    bySubject[subject].push(value);
+  });
+  return Object.entries(bySubject).map(([name, values]) => ({
+    name,
+    value: Math.round(values.reduce((a, b) => a + b, 0) / values.length)
+  })).sort((a, b) => a.value - b.value);
+}
+
+function determineNextStep(progress) {
+  const skills = progress.skills || {};
+  const activities = progress.activities || [];
+  const weakSkills = getWeakSkills(skills);
+
+  if (activities.length === 0) {
+    return {
+      icon: '🚀',
+      title: 'Commence ton parcours',
+      subject: 'Premier cours',
+      message: 'Commence ton premier cours pour découvrir ARVEXA.',
+      progress: 0,
+      action: 'Commencer',
+      actionType: 'start'
+    };
+  }
+
+  if (weakSkills.length > 0) {
+    const [skillName, skillValue] = weakSkills[0];
+    const subject = getSubjectForSkill(skillName);
+    return {
+      icon: '🔄',
+      title: 'À revoir',
+      subject: subject,
+      skill: skillName,
+      message: `Revois "${skillName}" avant de continuer.`,
+      progress: skillValue,
+      action: 'Revoir',
+      actionType: 'review'
+    };
+  }
+
+  return {
+    icon: '📝',
+    title: "Continue à t'entraîner",
+    subject: 'Exercice recommandé',
+    message: 'Entraîne-toi pour renforcer tes compétences.',
+    progress: 50,
+    action: 'Commencer',
+    actionType: 'exercise'
+  };
+}
+
+// Calcule le nombre de jours restants avant la prochaine session d'examen
+function computeExamCountdown(examType) {
+  const conf = EXAM_DATES[examType] || EXAM_DATES.bac;
+  const now = new Date();
+  let target = new Date(now.getFullYear(), conf.month, conf.day);
+  if (target < now) {
+    target = new Date(now.getFullYear() + 1, conf.month, conf.day);
+  }
+  const diffMs = target - now;
+  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+}
+
+// Sélectionne un conseil du jour stable (change une fois par jour)
+function pickDailyTip() {
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  return STUDY_TIPS[dayOfYear % STUDY_TIPS.length];
+}
+
+// ================================================================
+// RENDU DU DASHBOARD
+// ================================================================
+
+function renderDashboard() {
+  if (!userData) return;
+
+  const firstName = userData.firstName || 'Élève';
+  userFirstName.textContent = firstName;
+
+  const classMap = {
+    '3eme': '3ème — BEPC',
+    'terminale_d': 'Terminale D — BAC'
+  };
+  const examMap = {
+    'bepc': '🎓 Préparation BEPC',
+    'bac': '🎓 Préparation BAC'
+  };
+  userClassDisplay.textContent = classMap[userData.classId] || 'Classe';
+  userExamDisplay.textContent = examMap[userData.exam] || '🎓 Objectif';
+
+  isPremium = userData.premium === true;
+  premiumBadgeContainer.innerHTML = isPremium
+    ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
+    : '';
+
+  const globalProgress = calculateGlobalProgress(userProgress.skills);
+  globalProgressFill.style.width = globalProgress + '%';
+  globalProgressText.textContent = globalProgress + '%';
+  const offset = DIAL_CIRCUMFERENCE - (DIAL_CIRCUMFERENCE * globalProgress / 100);
+  dialFill.style.strokeDasharray = DIAL_CIRCUMFERENCE;
+  dialFill.style.strokeDashoffset = offset;
+
+  const days = computeExamCountdown(userData.exam);
+  examCountdown.textContent = days > 0 ? `${days} jour${days > 1 ? 's' : ''} avant l'examen` : "C'est le jour J !";
+
+  renderNextStep();
+  renderSubjects();
+  renderWeekStreak();
+  renderDailyTip();
+  renderStats();
+
+  skeletonLoading.style.display = 'none';
+  dynamicContent.style.display = 'block';
+}
+
+function renderNextStep() {
+  const step = determineNextStep(userProgress);
+
+  let progressBar = '';
+  if (step.progress !== undefined && step.progress >= 0) {
+    const color = step.progress < 50 ? 'danger' : 'warning';
+    progressBar = `
+      <div class="progress-row">
+        <span class="label">${step.progress}%</span>
+        <div class="bar">
+          <div class="fill ${color}" style="width:${step.progress}%;"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  nextStepCard.innerHTML = `
+    <div class="next-card">
+      <div class="badge">🎯 Prochaine étape</div>
+      <div class="title">${step.icon} ${step.title}</div>
+      ${step.subject ? `<div class="subject">📐 ${step.subject}</div>` : ''}
+      ${step.skill ? `<div class="subject" style="font-size:12px; color:var(--text-muted);">Compétence : ${step.skill}</div>` : ''}
+      <div class="message">${step.message}</div>
+      ${progressBar}
+      <div class="actions">
+        <button class="btn-primary" data-action="${step.actionType}">${step.action}</button>
+      </div>
+    </div>
+  `;
+
+  const btn = nextStepCard.querySelector('.btn-primary');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      handleNextStepAction(this.dataset.action);
+    });
+  }
+}
+
+function handleNextStepAction(action) {
+  const routes = {
+    'start': 'cours.html',
+    'continue': 'cours.html',
+    'review': 'cours.html',
+    'exercise': 'exercices.html'
+  };
+  const route = routes[action] || 'cours.html';
+  showToast('🔄 Redirection...', 'success');
+  setTimeout(() => window.location.href = route, 800);
+}
+
+function renderSubjects() {
+  const breakdown = computeSubjectBreakdown(userProgress.skills);
+
+  if (breakdown.length === 0) {
+    subjectsGrid.innerHTML = `
+      <div class="empty-state" style="grid-column: 1 / -1;">
+        <div class="icon">📐</div>
+        <h4>Pas encore de matière suivie</h4>
+        <p>Commence un cours pour voir apparaître tes matières ici.</p>
+      </div>
+    `;
+    return;
+  }
+
+  subjectsGrid.innerHTML = breakdown.map(subject => {
+    const icon = SUBJECT_ICONS[subject.name] || 'fa-book';
+    const isWeak = subject.value < MASTERY_THRESHOLD;
+    const barColor = isWeak
+      ? 'linear-gradient(90deg, #B85C3A, #D97A3A)'
+      : 'linear-gradient(90deg, var(--accent), var(--accent-bright))';
+    return `
+      <a href="cours.html" class="subject-chip">
+        <div class="row-top">
+          <div class="icon-badge"><i class="fas ${icon}"></i></div>
+          <div class="subject-percent">${subject.value}%</div>
+        </div>
+        <div class="subject-name">${subject.name}</div>
+        <div class="mini-bar"><div class="fill" style="width:${subject.value}%; background:${barColor};"></div></div>
+        ${isWeak
+          ? '<span class="tag-review"><i class="fas fa-circle-exclamation"></i> À renforcer</span>'
+          : '<span class="tag-ok"><i class="fas fa-circle-check"></i> Acquis</span>'}
+      </a>
+    `;
+  }).join('');
+}
+
+function renderWeekStreak() {
+  const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+  const todayIndex = (new Date().getDay() + 6) % 7; // lundi = 0
+  const activeDays = userProgress.weekActivity || [];
+
+  weekStreakRow.innerHTML = days.map((letter, i) => {
+    const done = activeDays.includes(i);
+    const isToday = i === todayIndex;
+    const dotContent = done ? '<i class="fas fa-check"></i>' : (i + 1);
+    return `
+      <div class="day-dot ${done ? 'done' : ''} ${isToday ? 'today' : ''}">
+        <span class="letter">${letter}</span>
+        <span class="dot">${done ? '<i class="fas fa-check" style="font-size:9px;"></i>' : ''}</span>
+      </div>
+    `;
+  }).join('');
+
+  const streak = userProgress.streakDays || 0;
+  streakCount.textContent = streak;
+  streakLine.textContent = streak > 0
+    ? `Tu as révisé ${streak} jour${streak > 1 ? 's' : ''} d'affilée, continue ainsi !`
+    : "Reviens demain pour démarrer ta série !";
+}
+
+function renderDailyTip() {
+  const tip = pickDailyTip();
+  tipTitle.textContent = tip.title;
+  tipText.textContent = tip.text;
+}
+
+function renderStats() {
+  const stats = {
+    courses: userProgress.stats.courses || randomProgress(2, 15),
+    exercises: userProgress.stats.exercises || randomProgress(10, 40),
+    skills: Object.keys(userProgress.skills).length || randomProgress(5, 25)
+  };
+
+  document.getElementById('statCourses').textContent = stats.courses;
+  document.getElementById('statExercises').textContent = stats.exercises;
+  document.getElementById('statSkills').textContent = stats.skills;
+}
+
+// ================================================================
+// GÉNÉRATION DE DONNÉES DE DÉMONSTRATION
+// (à remplacer par les données réelles issues de Firestore)
+// ================================================================
+
+function generateDemoData() {
+  const skills = {};
+  const skillNames = ['Fonctions', 'Dérivation', 'Équations', 'Géométrie', 'Mécanique', 'Électricité', 'Chimie organique', 'Génétique', 'Grammaire'];
+  skillNames.forEach(name => { skills[name] = randomProgress(20, 95); });
+
+  const activities = [];
+  const subjectsList = ['Mathématiques', 'Physique', 'Chimie', 'SVT'];
+  const actions = ['Cours terminé', 'Exercice réalisé', 'Quiz terminé'];
+  for (let i = 0; i < 2; i++) {
+    activities.push({
+      subject: subjectsList[Math.floor(Math.random() * subjectsList.length)],
+      action: actions[Math.floor(Math.random() * actions.length)],
+      time: i === 0 ? "Aujourd'hui" : 'Hier',
+      completed: true
+    });
+  }
+
+  const todayIndex = (new Date().getDay() + 6) % 7;
+  const weekActivity = [];
+  for (let i = 0; i <= todayIndex; i++) {
+    if (Math.random() > 0.35) weekActivity.push(i);
+  }
+
+  userProgress = {
+    global: calculateGlobalProgress(skills),
+    stats: {
+      courses: randomProgress(2, 15),
+      exercises: randomProgress(10, 40),
+      skills: Object.keys(skills).length
+    },
+    skills: skills,
+    activities: activities,
+    weekActivity: weekActivity,
+    streakDays: weekActivity.length
+  };
+}
+
+// ================================================================
+// AUTH + FIRESTORE
+// ================================================================
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (!userDoc.exists()) {
+      showToast('Profil introuvable.', 'error');
+      setTimeout(() => window.location.href = 'register.html', 2000);
+      return;
+    }
+
+    userData = userDoc.data();
+    isPremium = userData.premium === true;
+
+    generateDemoData();
+    renderDashboard();
+
+    console.log('✅ Dashboard chargé pour:', userData.firstName);
+
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    showToast('Erreur de chargement.', 'error');
+  }
+});
+
+// ================================================================
+// ÉVÉNEMENTS
+// ================================================================
+
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    await signOut(auth);
+    window.location.href = 'bienvenue.html';
+  } catch (error) {
+    showToast('Erreur de déconnexion.', 'error');
+  }
+});
+
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+});
+
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+});
+
+document.getElementById('notifBtn').addEventListener('click', () => {
+  window.location.href = 'notifications.html';
+});
+
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'profil.html';
+});
+
+console.log('🚀 ARVEXA School — Dashboard V4');
+</script>
+
+</body>
+</html>
