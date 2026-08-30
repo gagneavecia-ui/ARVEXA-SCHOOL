@@ -2,7 +2,7 @@
   "name": "ARVEXA - Apprends. Crée. Évolue.",
   "short_name": "ARVEXA",
   "description": "Plateforme d'affiliation et de finance pour la croissance durable",
-  "start_url": "register.html",
+  "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0A0A0A",
