@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXA School - Tableau de bord">
+  <meta name="description" content="ARVEXa School - Tableau de bord">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
@@ -16,7 +16,7 @@
 
   <style>
     /* ============================================================
-       ROOT — Design system ARVEXA
+       ROOT — Design system ARVEXa
        ============================================================ */
     :root {
       --primary: #1A3A2A;
@@ -284,21 +284,21 @@
     .subject-chip .tag-ok { font-size: 10px; color: var(--success); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
 
     /* ============================================================
-       ACCÈS RAPIDE
+       OUTILS & RESSOURCES
        ============================================================ */
-    .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .quick-card {
+    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .tool-card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
       border-radius: 14px; padding: 16px 8px; text-align: center; transition: var(--transition);
       text-decoration: none; color: var(--text-light); display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 6px; min-height: 88px;
     }
-    .quick-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
-    .quick-card .icon-badge {
+    .tool-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+    .tool-card .icon-badge {
       width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
       background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 15px;
     }
-    .quick-card .name { font-size: 12px; font-weight: 600; }
+    .tool-card .name { font-size: 12px; font-weight: 600; }
 
     /* ============================================================
        CETTE SEMAINE (série de révision)
@@ -373,10 +373,10 @@
     }
 
     @media (max-width: 480px) {
-      .quick-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .quick-card { padding: 12px 6px; min-height: 76px; }
-      .quick-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
-      .quick-card .name { font-size: 11px; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .tool-card { padding: 12px 6px; min-height: 76px; }
+      .tool-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
+      .tool-card .name { font-size: 11px; }
       .subjects-grid { gap: 8px; }
       .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
       .next-card .actions { flex-direction: column; }
@@ -425,9 +425,9 @@
 
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar" id="sidebar">
-  <a href="dashboard.html" class="logo">ARVE<span>XA</span></a>
+  <a href="index.html" class="logo">ARVEX<span>a</span></a>
   <nav class="nav">
-    <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Accueil</a>
+    <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
     <a href="cours.html"><i class="fas fa-book-open"></i> Mes cours</a>
     <a href="exercices.html"><i class="fas fa-pencil-alt"></i> Exercices</a>
     <a href="corrections.html"><i class="fas fa-check-double"></i> Corrections</a>
@@ -520,30 +520,30 @@
       </div>
       <div class="subjects-grid" id="subjectsGrid"><!-- Rempli dynamiquement --></div>
 
-      <!-- ACCÈS RAPIDE -->
-      <div class="section-title"><h3>Accès rapide</h3></div>
-      <div class="quick-grid">
-        <a href="cours.html" class="quick-card">
-          <div class="icon-badge"><i class="fas fa-book-open"></i></div>
-          <div class="name">Mes cours</div>
+      <!-- OUTILS & RESSOURCES -->
+      <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
+      <div class="tools-grid">
+        <a href="calculatrice.html" class="tool-card">
+          <div class="icon-badge"><i class="fas fa-calculator"></i></div>
+          <div class="name">Calculatrice</div>
         </a>
-        <a href="exercices.html" class="quick-card">
-          <div class="icon-badge"><i class="fas fa-pencil-alt"></i></div>
-          <div class="name">Exercices</div>
+        <a href="formulaires.html" class="tool-card">
+          <div class="icon-badge"><i class="fas fa-flask"></i></div>
+          <div class="name">Formulaires</div>
         </a>
-        <a href="corrections.html" class="quick-card">
-          <div class="icon-badge"><i class="fas fa-check-double"></i></div>
-          <div class="name">Corrections</div>
+        <a href="sujets-bac.html" class="tool-card">
+          <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
+          <div class="name">Sujets BAC</div>
         </a>
-        <a href="fiches.html" class="quick-card">
-          <div class="icon-badge"><i class="fas fa-file-alt"></i></div>
-          <div class="name">Fiches</div>
+        <a href="mode-examen.html" class="tool-card">
+          <div class="icon-badge"><i class="fas fa-clock"></i></div>
+          <div class="name">Mode Examen</div>
         </a>
-        <a href="progression.html" class="quick-card">
-          <div class="icon-badge"><i class="fas fa-chart-line"></i></div>
-          <div class="name">Progression</div>
+        <a href="tableau-periodique.html" class="tool-card">
+          <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
+          <div class="name">Tableau périodique</div>
         </a>
-        <a href="ai.html" class="quick-card">
+        <a href="ai.html" class="tool-card">
           <div class="icon-badge"><i class="fas fa-robot"></i></div>
           <div class="name">ARV-ASSISTANT</div>
         </a>
@@ -646,16 +646,10 @@ const DIAL_CIRCUMFERENCE = 2 * Math.PI * 52; // ≈ 326.7
 // l'année en cours est déjà passée, on calcule automatiquement l'échéance
 // de l'année suivante.
 const EXAM_DATES = {
-  bepc: { month: 5, day: 5 },   // début juin
-  bac:  { month: 5, day: 17 }   // mi-juin
+  bac: { month: 5, day: 17 }   // mi-juin
 };
 
-const SUBJECT_ICONS = {
-  'Mathématiques': 'fa-square-root-variable',
-  'Physique': 'fa-bolt',
-  'Chimie': 'fa-flask',
-  'SVT': 'fa-dna',
-};
+// Les icônes sont maintenant dans FIXED_SUBJECTS
 
 const STUDY_TIPS = [
   { title: 'La technique Pomodoro', text: "Travaille par sessions de 25 minutes suivies de 5 minutes de pause. Après 4 sessions, prends une pause plus longue de 20 minutes." },
@@ -696,10 +690,10 @@ const toastIcon = document.querySelector('.toast-icon i');
 // ================================================================
 let userData = null;
 let userProgress = {
-  global: 0,
+  subjects: {},
   stats: { courses: 0, exercises: 0, skills: 0 },
-  skills: {},
   activities: [],
+  weekActivity: [],
   streakDays: 0
 };
 let isPremium = false;
@@ -717,79 +711,57 @@ function showToast(message, type = 'success') {
   toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
-function randomProgress(min = 10, max = 95) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// randomProgress supprimé — les données viennent maintenant de Firestore
 
-function calculateGlobalProgress(skills) {
-  if (!skills || Object.keys(skills).length === 0) return 0;
-  const values = Object.values(skills);
+function calculateGlobalProgress(subjects) {
+  if (!subjects || Object.keys(subjects).length === 0) return 0;
+  const values = Object.values(subjects);
   const sum = values.reduce((a, b) => a + b, 0);
   return Math.round(sum / values.length);
 }
 
-function getWeakSkills(skills) {
-  if (!skills) return [];
-  return Object.entries(skills)
-    .filter(([_, value]) => value < MASTERY_THRESHOLD)
-    .sort((a, b) => a[1] - b[1]);
-}
-
-function getSubjectForSkill(skillName) {
-  const mapping = {
-    'Fonctions': 'Mathématiques',
-    'Dérivation': 'Mathématiques',
-    'Équations': 'Mathématiques',
-    'Géométrie': 'Mathématiques',
-    'Mécanique': 'Physique',
-    'Électricité': 'Physique',
-    'Chimie organique': 'Chimie',
-    'Génétique': 'SVT',
-  };
-  return mapping[skillName] || 'Mathématiques';
-}
-
-// Regroupe les compétences par matière et calcule la moyenne de chacune
-function computeSubjectBreakdown(skills) {
-  const bySubject = {};
-  Object.entries(skills || {}).forEach(([skillName, value]) => {
-    const subject = getSubjectForSkill(skillName);
-    if (!bySubject[subject]) bySubject[subject] = [];
-    bySubject[subject].push(value);
-  });
-  return Object.entries(bySubject).map(([name, values]) => ({
-    name,
-    value: Math.round(values.reduce((a, b) => a + b, 0) / values.length)
-  })).sort((a, b) => a.value - b.value);
-}
+// Les 4 matières fixes de Terminale D
+const FIXED_SUBJECTS = [
+  { name: 'Mathématiques', icon: 'fa-square-root-variable' },
+  { name: 'Physique', icon: 'fa-bolt' },
+  { name: 'Chimie', icon: 'fa-flask' },
+  { name: 'SVT', icon: 'fa-dna' }
+];
 
 function determineNextStep(progress) {
-  const skills = progress.skills || {};
+  const subjects = progress.subjects || {};
   const activities = progress.activities || [];
-  const weakSkills = getWeakSkills(skills);
 
-  if (activities.length === 0) {
+  // Trouver la matière la plus faible
+  let weakestSubject = null;
+  let weakestValue = Infinity;
+  FIXED_SUBJECTS.forEach(s => {
+    const val = subjects[s.name] || 0;
+    if (val < weakestValue) {
+      weakestValue = val;
+      weakestSubject = s.name;
+    }
+  });
+
+  if (activities.length === 0 && weakestValue === 0) {
     return {
       icon: '🚀',
       title: 'Commence ton parcours',
       subject: 'Premier cours',
-      message: 'Commence ton premier cours pour découvrir ARVEXA.',
+      message: 'Commence ton premier cours pour découvrir ARVEXa School.',
       progress: 0,
       action: 'Commencer',
       actionType: 'start'
     };
   }
 
-  if (weakSkills.length > 0) {
-    const [skillName, skillValue] = weakSkills[0];
-    const subject = getSubjectForSkill(skillName);
+  if (weakestSubject && weakestValue < MASTERY_THRESHOLD) {
     return {
       icon: '🔄',
       title: 'À revoir',
-      subject: subject,
-      skill: skillName,
-      message: `Revois "${skillName}" avant de continuer.`,
-      progress: skillValue,
+      subject: weakestSubject,
+      message: `Renforce tes compétences en ${weakestSubject} avant de continuer.`,
+      progress: weakestValue,
       action: 'Revoir',
       actionType: 'review'
     };
@@ -834,30 +806,23 @@ function renderDashboard() {
   const firstName = userData.firstName || 'Élève';
   userFirstName.textContent = firstName;
 
-  const classMap = {
-    '3eme': '3ème — BEPC',
-    'terminale_d': 'Terminale D — BAC'
-  };
-  const examMap = {
-    'bepc': '🎓 Préparation BEPC',
-    'bac': '🎓 Préparation BAC'
-  };
-  userClassDisplay.textContent = classMap[userData.classId] || 'Classe';
-  userExamDisplay.textContent = examMap[userData.exam] || '🎓 Objectif';
+  // Fixe : Terminale D — Préparation BAC
+  userClassDisplay.textContent = 'Terminale D';
+  userExamDisplay.textContent = '🎓 Préparation BAC';
 
   isPremium = userData.premium === true;
   premiumBadgeContainer.innerHTML = isPremium
     ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
     : '';
 
-  const globalProgress = calculateGlobalProgress(userProgress.skills);
+  const globalProgress = calculateGlobalProgress(userProgress.subjects);
   globalProgressFill.style.width = globalProgress + '%';
   globalProgressText.textContent = globalProgress + '%';
   const offset = DIAL_CIRCUMFERENCE - (DIAL_CIRCUMFERENCE * globalProgress / 100);
   dialFill.style.strokeDasharray = DIAL_CIRCUMFERENCE;
   dialFill.style.strokeDashoffset = offset;
 
-  const days = computeExamCountdown(userData.exam);
+  const days = computeExamCountdown('bac');
   examCountdown.textContent = days > 0 ? `${days} jour${days > 1 ? 's' : ''} avant l'examen` : "C'est le jour J !";
 
   renderNextStep();
@@ -921,36 +886,27 @@ function handleNextStepAction(action) {
 }
 
 function renderSubjects() {
-  const breakdown = computeSubjectBreakdown(userProgress.skills);
+  const subjects = userProgress.subjects || {};
 
-  if (breakdown.length === 0) {
-    subjectsGrid.innerHTML = `
-      <div class="empty-state" style="grid-column: 1 / -1;">
-        <div class="icon">📐</div>
-        <h4>Pas encore de matière suivie</h4>
-        <p>Commence un cours pour voir apparaître tes matières ici.</p>
-      </div>
-    `;
-    return;
-  }
-
-  subjectsGrid.innerHTML = breakdown.map(subject => {
-    const icon = SUBJECT_ICONS[subject.name] || 'fa-book';
-    const isWeak = subject.value < MASTERY_THRESHOLD;
+  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => {
+    const value = subjects[subject.name] || 0;
+    const isWeak = value < MASTERY_THRESHOLD;
     const barColor = isWeak
       ? 'linear-gradient(90deg, #B85C3A, #D97A3A)'
       : 'linear-gradient(90deg, var(--accent), var(--accent-bright))';
     return `
       <a href="cours.html" class="subject-chip">
         <div class="row-top">
-          <div class="icon-badge"><i class="fas ${icon}"></i></div>
-          <div class="subject-percent">${subject.value}%</div>
+          <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+          <div class="subject-percent">${value}%</div>
         </div>
         <div class="subject-name">${subject.name}</div>
-        <div class="mini-bar"><div class="fill" style="width:${subject.value}%; background:${barColor};"></div></div>
-        ${isWeak
-          ? '<span class="tag-review"><i class="fas fa-circle-exclamation"></i> À renforcer</span>'
-          : '<span class="tag-ok"><i class="fas fa-circle-check"></i> Acquis</span>'}
+        <div class="mini-bar"><div class="fill" style="width:${value}%; background:${barColor};"></div></div>
+        ${value === 0
+          ? '<span class="tag-review" style="color:var(--text-muted);"><i class="fas fa-circle-minus"></i> Pas commencé</span>'
+          : isWeak
+            ? '<span class="tag-review"><i class="fas fa-circle-exclamation"></i> À renforcer</span>'
+            : '<span class="tag-ok"><i class="fas fa-circle-check"></i> Acquis</span>'}
       </a>
     `;
   }).join('');
@@ -987,58 +943,16 @@ function renderDailyTip() {
 }
 
 function renderStats() {
-  const stats = {
-    courses: userProgress.stats.courses || randomProgress(2, 15),
-    exercises: userProgress.stats.exercises || randomProgress(10, 40),
-    skills: Object.keys(userProgress.skills).length || randomProgress(5, 25)
-  };
+  const stats = userProgress.stats || {};
 
-  document.getElementById('statCourses').textContent = stats.courses;
-  document.getElementById('statExercises').textContent = stats.exercises;
-  document.getElementById('statSkills').textContent = stats.skills;
+  document.getElementById('statCourses').textContent = stats.courses || 0;
+  document.getElementById('statExercises').textContent = stats.exercises || 0;
+  document.getElementById('statSkills').textContent = stats.skills || 0;
 }
 
 // ================================================================
-// GÉNÉRATION DE DONNÉES DE DÉMONSTRATION
-// (à remplacer par les données réelles issues de Firestore)
+// LECTURE DES DONNÉES RÉELLES DEPUIS FIRESTORE
 // ================================================================
-
-function generateDemoData() {
-  const skills = {};
-  const skillNames = ['Fonctions', 'Dérivation', 'Équations', 'Géométrie', 'Mécanique', 'Électricité', 'Chimie organique', 'Génétique', 'Grammaire'];
-  skillNames.forEach(name => { skills[name] = randomProgress(20, 95); });
-
-  const activities = [];
-  const subjectsList = ['Mathématiques', 'Physique', 'Chimie', 'SVT'];
-  const actions = ['Cours terminé', 'Exercice réalisé', 'Quiz terminé'];
-  for (let i = 0; i < 2; i++) {
-    activities.push({
-      subject: subjectsList[Math.floor(Math.random() * subjectsList.length)],
-      action: actions[Math.floor(Math.random() * actions.length)],
-      time: i === 0 ? "Aujourd'hui" : 'Hier',
-      completed: true
-    });
-  }
-
-  const todayIndex = (new Date().getDay() + 6) % 7;
-  const weekActivity = [];
-  for (let i = 0; i <= todayIndex; i++) {
-    if (Math.random() > 0.35) weekActivity.push(i);
-  }
-
-  userProgress = {
-    global: calculateGlobalProgress(skills),
-    stats: {
-      courses: randomProgress(2, 15),
-      exercises: randomProgress(10, 40),
-      skills: Object.keys(skills).length
-    },
-    skills: skills,
-    activities: activities,
-    weekActivity: weekActivity,
-    streakDays: weekActivity.length
-  };
-}
 
 // ================================================================
 // AUTH + FIRESTORE
@@ -1051,6 +965,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
+    // Récupérer le profil utilisateur
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (!userDoc.exists()) {
       showToast('Profil introuvable.', 'error');
@@ -1061,10 +976,27 @@ onAuthStateChanged(auth, async (user) => {
     userData = userDoc.data();
     isPremium = userData.premium === true;
 
-    generateDemoData();
+    // Récupérer les données de progression réelles
+    try {
+      const progressDoc = await getDoc(doc(db, 'users', user.uid, 'progress', 'overall'));
+      if (progressDoc.exists()) {
+        const data = progressDoc.data();
+        userProgress = {
+          subjects: data.subjects || {},
+          stats: data.stats || { courses: 0, exercises: 0, skills: 0 },
+          activities: data.activities || [],
+          weekActivity: data.weekActivity || [],
+          streakDays: data.streakDays || 0
+        };
+      }
+      // Si pas de document de progression, userProgress reste à ses valeurs par défaut (tout à 0)
+    } catch (progressError) {
+      console.warn('Pas encore de données de progression:', progressError.message);
+    }
+
     renderDashboard();
 
-    console.log('✅ Dashboard chargé pour:', userData.firstName);
+    console.log('✅ Dashboard ARVEXa School chargé pour:', userData.firstName);
 
   } catch (error) {
     console.error('❌ Erreur:', error);
@@ -1080,7 +1012,7 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   e.preventDefault();
   try {
     await signOut(auth);
-    window.location.href = 'bienvenue.html';
+    window.location.href = 'login.html';
   } catch (error) {
     showToast('Erreur de déconnexion.', 'error');
   }
@@ -1104,7 +1036,7 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   window.location.href = 'profil.html';
 });
 
-console.log('🚀 ARVEXA School — Dashboard V4');
+console.log('🚀 ARVEXa School — Dashboard V4');
 </script>
 
 </body>

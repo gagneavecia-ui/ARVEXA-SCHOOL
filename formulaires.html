@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="description" content="ARVEXa School - Formulaires BAC Terminale D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#1A3A2A;--primary-dark:#0A1A12;--primary-light:#2A5A3A;
+      --accent:#B8860B;--accent-bright:#E0B84A;--accent-dim:rgba(184,134,11,.08);
+      --success:#2D7D5A;--danger:#B85C3A;
+      --bg-dark:#0A0A0A;--bg-surface:#141414;--bg-card:rgba(20,20,20,.7);
+      --text-light:#F5F0E8;--text-dim:#8A8A7A;--text-muted:#5A5A4A;
+      --card-border:rgba(184,134,11,.08);
+      --transition:all .3s cubic-bezier(.25,1,.5,1);--shadow:0 8px 32px rgba(0,0,0,.4);--radius:16px;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+    body{font-family:'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;background:var(--bg-dark);
+      color:var(--text-light);font-size:14px;line-height:1.6;min-height:100vh;width:100%;
+      overflow-x:hidden;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
+    .gradient-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+      background:radial-gradient(ellipse 40% 30% at 30% 15%,rgba(26,58,42,.16) 0%,transparent 70%),
+                  radial-gradient(ellipse 35% 25% at 75% 85%,rgba(184,134,11,.05) 0%,transparent 60%),
+                  linear-gradient(180deg,#0A0A0A 0%,#060606 100%)}
+    .glow{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:-1;
+      opacity:.15;animation:glowMove 10s ease-in-out infinite alternate}
+    .glow-1{width:300px;height:300px;background:rgba(26,58,42,.18);top:-80px;right:-80px}
+    .glow-2{width:180px;height:180px;background:rgba(184,134,11,.05);bottom:0;left:0;animation-delay:-4s}
+    @keyframes glowMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-20px) scale(1.1)}}
+
+    /* HEADER */
+    .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+      padding:10px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(184,134,11,.06);gap:12px;min-height:56px}
+    .header-left{display:flex;align-items:center;gap:12px}
+    .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;
+      border:1px solid rgba(255,255,255,.05);background:transparent;color:var(--text-dim);cursor:pointer;
+      transition:var(--transition);font-size:16px;text-decoration:none}
+    .back-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
+    .page-title{font-size:15px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
+    .page-title i{color:var(--accent-bright);margin-right:6px;font-size:14px}
+    .fav-count{font-size:11px;color:var(--accent-bright);background:rgba(184,134,11,.1);
+      padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;display:none}
+    .fav-count.visible{display:inline-block}
+
+    /* CONTAINER */
+    .container{max-width:720px;margin:0 auto;padding:12px 12px 32px;width:100%;display:flex;flex-direction:column;gap:10px;flex:1}
+
+    /* SEARCH */
+    .search-wrap{position:relative}
+    .search-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px}
+    .search-input{width:100%;padding:11px 14px 11px 38px;border-radius:12px;border:1px solid var(--card-border);
+      background:var(--bg-card);backdrop-filter:blur(10px);color:var(--text-light);font-size:13px;
+      font-family:'Inter',sans-serif;outline:none;transition:var(--transition)}
+    .search-input:focus{border-color:rgba(184,134,11,.2)}
+    .search-input::placeholder{color:var(--text-muted)}
+
+    /* TABS */
+    .tabs{display:flex;gap:4px;background:rgba(255,255,255,.02);border-radius:12px;padding:4px;border:1px solid rgba(255,255,255,.04)}
+    .tab-btn{flex:1;padding:9px 6px;border:none;border-radius:10px;background:transparent;color:var(--text-muted);
+      font-size:11px;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;
+      display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap}
+    .tab-btn i{font-size:11px}
+    .tab-btn.active{background:rgba(184,134,11,.1);color:var(--accent-bright);border:1px solid rgba(184,134,11,.12)}
+    .tab-btn:not(.active){border:1px solid transparent}
+    .tab-btn:hover:not(.active){color:var(--text-dim)}
+
+    /* THEME FILTERS */
+    .filters{display:flex;gap:6px;flex-wrap:wrap}
+    .filter-btn{padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.05);background:transparent;
+      color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;transition:var(--transition);
+      font-family:'Inter',sans-serif}
+    .filter-btn.active{background:rgba(184,134,11,.1);color:var(--accent-bright);border-color:rgba(184,134,11,.12)}
+    .filter-btn:hover:not(.active){color:var(--text-dim);border-color:rgba(255,255,255,.08)}
+
+    /* CONTENT */
+    .content{display:flex;flex-direction:column;gap:16px}
+
+    /* CATEGORY */
+    .category-label{font-size:11px;font-weight:700;color:var(--accent-bright);text-transform:uppercase;
+      letter-spacing:1px;padding:4px 0 8px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(184,134,11,.06)}
+    .category-label .cat-count{font-size:10px;color:var(--text-muted);font-weight:500;text-transform:none;letter-spacing:0}
+
+    /* FORMULA CARD */
+    .f-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
+      border-radius:14px;padding:14px 16px;position:relative;overflow:hidden;transition:var(--transition)}
+    .f-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,var(--accent),var(--success))}
+    .f-card:hover{border-color:rgba(184,134,11,.12)}
+    .f-card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+    .f-card-title{font-size:14px;font-weight:700;color:var(--text-light);line-height:1.4}
+    .f-card-formula{font-size:17px;font-weight:600;color:var(--accent-bright);font-family:'Playfair Display',serif;
+      padding:10px 0;line-height:1.6;word-break:break-word;border-top:1px solid rgba(255,255,255,.03);
+      border-bottom:1px solid rgba(255,255,255,.03);margin:4px 0}
+    .f-card-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .f-tag{font-size:10px;padding:3px 8px;border-radius:8px;font-weight:600}
+    .f-tag.units{background:rgba(26,58,42,.12);color:var(--success)}
+    .f-tag.condition{background:rgba(184,134,11,.06);color:var(--accent-bright)}
+    .f-card-note{font-size:11px;color:var(--text-muted);margin-top:8px;line-height:1.5;font-style:italic}
+
+    /* FAVORITE BTN */
+    .fav-btn{background:none;border:none;color:var(--text-muted);font-size:16px;cursor:pointer;
+      transition:var(--transition);padding:2px;flex-shrink:0}
+    .fav-btn:hover{color:var(--accent-bright)}
+    .fav-btn.active{color:var(--accent-bright)}
+    .fav-btn.active i{font-weight:900}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:40px 20px}
+    .empty-state i{font-size:32px;color:var(--text-muted);margin-bottom:10px}
+    .empty-state h4{font-size:15px;color:var(--text-light);margin-bottom:4px}
+    .empty-state p{font-size:12px;color:var(--text-dim)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+      padding:12px 20px;border-radius:12px;background:var(--bg-card);backdrop-filter:blur(16px);
+      border:1px solid var(--card-border);color:var(--text-light);font-size:13px;z-index:300;
+      opacity:0;transition:all .5s cubic-bezier(.25,1,.5,1);max-width:90%;text-align:center;box-shadow:var(--shadow)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast .toast-icon{margin-right:8px}
+
+    /* RESPONSIVE */
+    @media(max-width:480px){
+      .f-card-formula{font-size:15px}
+      .container{padding:10px 10px 24px}
+      .tab-btn{font-size:10px;padding:8px 4px}
+    }
+    @media(min-width:768px){.container{padding:16px 16px 32px}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(184,134,11,.25);border-radius:10px}
+  </style>
+</head>
+<body>
+
+<div class="gradient-bg"></div>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<header class="header">
+  <div class="header-left">
+    <a href="index.html" class="back-btn" aria-label="Retour"><i class="fas fa-arrow-left"></i></a>
+    <div class="page-title"><i class="fas fa-flask"></i> Formulaires <span class="fav-count" id="favCount">0</span></div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="search-wrap">
+    <i class="fas fa-search"></i>
+    <input type="text" class="search-input" id="searchInput" placeholder="Rechercher une formule...">
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="filters" id="filters"></div>
+  <div class="content" id="content"></div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+  <span class="toast-message"></span>
+</div>
+
+<script type="importmap">
+{"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js"}}
+</script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+const firebaseConfig={apiKey:"AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",authDomain:"arvexa-fbf10.firebaseapp.com",
+  projectId:"arvexa-fbf10",storageBucket:"arvexa-fbf10.firebasestorage.app",messagingSenderId:"920108330053",
+  appId:"1:920108330053:web:f532d71cbc2c824bc7472c"};
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);
+onAuthStateChanged(auth,u=>{if(!u)window.location.href='login.html';});
+
+// ================================================================
+// DATA : Toutes les formules BAC Terminale D
+// ================================================================
+const FORMULAS = [
+  // ======================== MATHÉMATIQUES ========================
+  {id:'m1',subj:'maths',theme:'Limites',name:'Limite en l\'infini de eˣ / xⁿ',formula:'lim (eˣ / xⁿ) = +∞',units:'n ∈ ℕ*',note:'L\'exponentielle l\'emporte sur toute puissance de x.'},
+  {id:'m2',subj:'maths',theme:'Limites',name:'Limite en l\'infini de ln(x) / xⁿ',formula:'lim (ln(x) / xⁿ) = 0',units:'n ∈ ℕ*',note:'Le logarithme est négligeable devant toute puissance de x.'},
+  {id:'m3',subj:'maths',theme:'Limites',name:'Limite de ln(1+x)/x en 0',formula:'lim ln(1+x)/x = 1',units:'x → 0',note:''},
+  {id:'m4',subj:'maths',theme:'Limites',name:'Limite de (eˣ - 1)/x en 0',formula:'lim (eˣ − 1)/x = 1',units:'x → 0',note:''},
+  {id:'m5',subj:'maths',theme:'Limites',name:'Croissances comparées',formula:'lim xⁿ × e⁻ˣ = 0  et  lim ln(x) × x⁻ⁿ = 0',units:'x → +∞, n ∈ ℕ*',note:'À retenir pour les comparaisons de fonctions.'},
+  {id:'m6',subj:'maths',theme:'Limites',name:'Nombre de Neper',formula:'lim (1 + 1/n)ⁿ = e',units:'n → +∞',note:'e ≈ 2,71828...'},
+  {id:'m7',subj:'maths',theme:'Dérivées',name:'Dérivées usuelles',formula:'(xⁿ)\' = nxⁿ⁻¹\n(1/x)\' = −1/x²\n(√x)\' = 1/(2√x)\n(eˣ)\' = eˣ\n(ln x)\' = 1/x\n(cos x)\' = −sin x\n(sin x)\' = cos x\n(tan x)\' = 1 + tan²x',note:'Les fonctions usuelles à connaître par cœur.'},
+  {id:'m8',subj:'maths',theme:'Dérivées',name:'Opérations sur les dérivées',formula:'(u + v)\' = u\' + v\'\n(uv)\' = u\'v + uv\'\n(u/v)\' = (u\'v − uv\') / v²\n(f ∘ g)\' = g\' × (f\' ∘ g)\n(1/u)\' = −u\'/u²\n(√u)\' = u\'/(2√u)',note:'Formules fondamentales de dérivation.'},
+  {id:'m9',subj:'maths',theme:'Dérivées',name:'Dérivée de ln(u) et exp(u)',formula:'(ln u)\' = u\'/u\n(eᵘ)\' = u\' × eᵘ',condition:'u > 0 pour ln(u)',note:''},
+
+  {id:'m10',subj:'maths',theme:'Logarithme népérien',name:'Propriétés du logarithme',formula:'ln(ab) = ln(a) + ln(b)\nln(a/b) = ln(a) − ln(b)\nln(aⁿ) = n × ln(a)\nln(1) = 0  et  ln(e) = 1',condition:'a > 0, b > 0',note:'Le logarithme transforme les produits en sommes.'},
+  {id:'m11',subj:'maths',theme:'Logarithme népérien',name:'Propriétés de l\'exponentielle',formula:'eᵃ⁺ᵇ = eᵃ × eᵇ\neᵃ⁻ᵇ = eᵃ / eᵇ\n(eᵃ)ⁿ = eⁿᵃ\ne⁰ = 1  et  e¹ = e',note:''},
+  {id:'m12',subj:'maths',theme:'Logarithme népérien',name:'Relation ln / exp',formula:'ln(eˣ) = x\ne^(ln x) = x',condition:'x ∈ ℝ et x > 0',note:'Ce sont des fonctions réciproques.'},
+  {id:'m13',subj:'maths',theme:'Logarithme népérien',name:'Logarithme décimal',formula:'log(x) = ln(x) / ln(10)',note:'log(10) = 1, utilisé en chimie pour le pH.'},
+
+  {id:'m14',subj:'maths',theme:'Suites',name:'Suite arithmétique',formula:'uₙ₊₁ = uₙ + r\nuₙ = u₀ + n × r\nSₙ = (n+1)(u₀ + uₙ) / 2',units:'r = raison, Sₙ = somme des n+1 premiers termes',note:'Chaque terme diffère du précédent d\'une constante r.'},
+  {id:'m15',subj:'maths',theme:'Suites',name:'Suite géométrique',formula:'uₙ₊₁ = uₙ × q\nuₙ = u₀ × qⁿ\nSₙ = u₀ × (1 − qⁿ⁺¹) / (1 − q)',units:'q = raison, q ≠ 1',note:'Chaque terme est multiplié par une constante q.'},
+  {id:'m16',subj:'maths',theme:'Suites',name:'Limite d\'une suite géométrique',formula:'Si |q| < 1 :  lim qⁿ = 0\nSi q > 1 :  lim qⁿ = +∞',units:'n → +∞',note:''},
+  {id:'m17',subj:'maths',theme:'Suites',name:'Raisonnement par récurrence',formula:'1) Initialisation : P(0) vraie\n2) Hérédité : P(n) ⇒ P(n+1)\n3) Conclusion : P(n) vraie pour tout n',note:'Méthode de démonstration fondamentale.'},
+
+  {id:'m18',subj:'maths',theme:'Intégrales',name:'Définition de l\'intégrale',formula:'∫ₐᵇ f(x) dx = F(b) − F(a)',units:'F = primitive de f',note:'F est une primitive de f si F\'(x) = f(x).'},
+  {id:'m19',subj:'maths',theme:'Intégrales',name:'Linéarité de l\'intégrale',formula:'∫ (af + bg) = a∫f + b∫g',condition:'a, b constantes',note:''},
+  {id:'m20',subj:'maths',theme:'Intégrales',name:'Relation de Chasles',formula:'∫ₐᶜ f(x)dx = ∫ₐᵇ f(x)dx + ∫ᵦᶜ f(x)dx',note:''},
+  {id:'m21',subj:'maths',theme:'Intégrales',name:'Intégration par parties',formula:'∫ₐᵇ u\'(x)v(x)dx = [u(x)v(x)]ₐᵇ − ∫ₐᵇ u(x)v\'(x)dx',note:'Très utile pour intégrer un produit.'},
+  {id:'m22',subj:'maths',theme:'Intégrales',name:'Primitives usuelles',formula:'∫ xⁿ dx = xⁿ⁺¹/(n+1)  (n ≠ −1)\n∫ 1/x dx = ln|x|\n∫ eˣ dx = eˣ\n∫ cos x dx = sin x\n∫ sin x dx = −cos x',note:''},
+  {id:'m23',subj:'maths',theme:'Intégrales',name:'Valeur moyenne',formula:'f̄ = 1/(b−a) × ∫ₐᵇ f(x) dx',units:'sur [a, b]',note:''},
+  {id:'m24',subj:'maths',theme:'Intégrales',name:'Aire sous la courbe',formula:'A = ∫ₐᵇ |f(x) − g(x)| dx',units:'en unités d\'aire (u.a.)',note:'L\'aire entre deux courbes.'},
+
+  {id:'m25',subj:'maths',theme:'Probabilités',name:'Probabilités de base',formula:'P(A̅) = 1 − P(A)\nP(A ∪ B) = P(A) + P(B) − P(A ∩ B)',note:'A̅ = événement contraire.'},
+  {id:'m26',subj:'maths',theme:'Probabilités',name:'Probabilité conditionnelle',formula:'P_A(B) = P(A ∩ B) / P(A)',condition:'P(A) ≠ 0',note:'Probabilité de B sachant A réalisé.'},
+  {id:'m27',subj:'maths',theme:'Probabilités',name:'Formule des probabilités totales',formula:'P(B) = Σᵢ P(Aᵢ) × P_{Aᵢ}(B)',condition:'(Aᵢ) système complet',note:''},
+  {id:'m28',subj:'maths',theme:'Probabilités',name:'Loi binomiale',formula:'P(X = k) = C(n,k) × pᵏ × (1−p)ⁿ⁻ᵏ\nE(X) = np\nV(X) = np(1−p)',units:'C(n,k) = n! / (k!(n−k)!)',note:'Schéma de Bernoulli répété n fois.'},
+  {id:'m29',subj:'maths',theme:'Probabilités',name:'Loi normale N(μ, σ²)',formula:'f(x) = 1/(σ√(2π)) × e^(−(x−μ)²/(2σ²))\nE(X) = μ\nV(X) = σ²',units:'μ = espérance, σ = écart-type',note:'Courbe en cloche, symétrique autour de μ.'},
+  {id:'m30',subj:'maths',theme:'Probabilités',name:'Loi normale centrée réduite',formula:'Z = (X − μ) / σ  →  N(0, 1)\nP(μ − σ < X < μ + σ) ≈ 0,68\nP(μ − 2σ < X < μ + 2σ) ≈ 0,95',note:''},
+  {id:'m31',subj:'maths',theme:'Probabilités',name:'Intervalle de confiance',formula:'IC = [f − 1/√n ; f + 1/√n]',condition:'n ≥ 30, confiance 95%',units:'f = fréquence observée',note:''},
+
+  {id:'m32',subj:'maths',theme:'Nombres complexes',name:'Forme algébrique',formula:'z = a + ib\n|z| = √(a² + b²)\nz̅ = a − ib\nz × z̅ = |z|² = a² + b²',units:'i² = −1',note:''},
+  {id:'m33',subj:'maths',theme:'Nombres complexes',name:'Forme trigonométrique et exponentielle',formula:'z = r(cos θ + i sin θ) = r × e^(iθ)\nr = |z|,  θ = arg(z)',note:''},
+  {id:'m34',subj:'maths',theme:'Nombres complexes',name:'Formule de Moivre',formula:'(cos θ + i sin θ)ⁿ = cos(nθ) + i sin(nθ)',units:'n ∈ ℤ',note:'Permet de calculer les puissances de complexes.'},
+  {id:'m35',subj:'maths',theme:'Nombres complexes',name:'Formules d\'Euler',formula:'e^(iθ) = cos θ + i sin θ\ncos θ = (e^(iθ) + e^(−iθ)) / 2\nsin θ = (e^(iθ) − e^(−iθ)) / (2i)',note:''},
+  {id:'m36',subj:'maths',theme:'Nombres complexes',name:'Affixe et géométrie',formula:'AB = |zB − zA|\narg(zB − zA) = angle (u⃗, AB⃗)',note:'Lien entre complexes et géométrie plane.'},
+
+  {id:'m37',subj:'maths',theme:'Fonctions trigonométriques',name:'Formules fondamentales',formula:'cos²x + sin²x = 1\ncos(2x) = cos²x − sin²x = 2cos²x − 1 = 1 − 2sin²x\nsin(2x) = 2sinx cosx',note:''},
+  {id:'m38',subj:'maths',theme:'Fonctions trigonométriques',name:'Formules d\'addition',formula:'cos(a+b) = cos a cos b − sin a sin b\nsin(a+b) = sin a cos b + cos a sin b\ntan(a+b) = (tan a + tan b)/(1 − tan a tan b)',note:''},
+  {id:'m39',subj:'maths',theme:'Fonctions trigonométriques',name:'Valeurs remarquables',formula:'cos(0)=1, sin(0)=0\ncos(π/6)=√3/2, sin(π/6)=1/2\ncos(π/4)=√2/2, sin(π/4)=√2/2\ncos(π/3)=1/2, sin(π/3)=√3/2\ncos(π/2)=0, sin(π/2)=1',note:'À connaître par cœur pour le BAC.'},
+
+  {id:'m40',subj:'maths',theme:'Équations différentielles',name:'Équation y\' = ay',formula:'y(x) = C × e^(ax)',units:'C constante, a réel',note:'Solution générale de l\'équation homogène.'},
+  {id:'m41',subj:'maths',theme:'Équations différentielles',name:'Équation y\' = ay + b',formula:'y(x) = C × e^(ax) − b/a',condition:'a ≠ 0',note:'Solution particulière : y₀ = −b/a.'},
+  {id:'m42',subj:'maths',theme:'Équations différentielles',name:'Équation y\' = ay + f(x)',formula:'y = yₕ + yₚ\nyₕ : solution de y\'=ay\nyₚ : solution particulière',note:'Principe de superposition.'},
+
+  {id:'m43',subj:'maths',theme:'Géométrie dans l\'espace',name:'Produit scalaire',formula:'u⃗ · v⃗ = xx\' + yy\' + zz\'\nu⃗ · v⃗ = |u⃗| × |v⃗| × cos θ',note:'θ = angle entre les deux vecteurs.'},
+  {id:'m44',subj:'maths',theme:'Géométrie dans l\'espace',name:'Équation cartésienne d\'un plan',formula:'ax + by + cz + d = 0\nn⃗(a, b, c) : vecteur normal',note:''},
+  {id:'m45',subj:'maths',theme:'Géométrie dans l\'espace',name:'Distance d\'un point à un plan',formula:'d(A, P) = |ax₀ + by₀ + cz₀ + d| / √(a² + b² + c²)',units:'P : ax + by + cz + d = 0, A(x₀,y₀,z₀)',note:''},
+  {id:'m46',subj:'maths',theme:'Géométrie dans l\'espace',name:'Représentation paramétrique d\'une droite',formula:'x = x₀ + at\ny = y₀ + bt\nz = z₀ + ct',units:'u⃗(a, b, c) : vecteur directeur',note:''},
+
+  // ======================== PHYSIQUE ========================
+  {id:'p1',subj:'physique',theme:'Mécanique',name:'Deuxième loi de Newton',formula:'Σ F⃗ = m × a⃗',units:'F en N, m en kg, a en m/s²',note:'Principe fondamental de la dynamique.'},
+  {id:'p2',subj:'physique',theme:'Mécanique',name:'Poids',formula:'P⃗ = m × g⃗',units:'P en N, m en kg, g ≈ 9,81 m/s²',note:''},
+  {id:'p3',subj:'physique',theme:'Mécanique',name:'Énergie cinétique',formula:'Ec = ½ × m × v²',units:'Ec en J, m en kg, v en m/s',note:''},
+  {id:'p4',subj:'physique',theme:'Mécanique',name:'Énergie potentielle de pesanteur',formula:'Epp = m × g × h',units:'Epp en J, h en m',note:'Epp = 0 à l\'altitude de référence.'},
+  {id:'p5',subj:'physique',theme:'Mécanique',name:'Énergie potentielle élastique',formula:'Epe = ½ × k × x²',units:'k en N/m (raideur), x en m (allongement)',note:''},
+  {id:'p6',subj:'physique',theme:'Mécanique',name:'Travail d\'une force',formula:'W = F⃗ · AB⃗ = F × AB × cos α',units:'W en J, F en N, AB en m',note:'W > 0 : moteur, W < 0 : résistant.'},
+  {id:'p7',subj:'physique',theme:'Mécanique',name:'Théorème de l\'énergie cinétique',formula:'ΔEc = Ec(B) − Ec(A) = Σ W(F⃗)',units:'somme des travaux de toutes les forces',note:''},
+  {id:'p8',subj:'physique',theme:'Mécanique',name:'Énergie mécanique',formula:'Em = Ec + Epp + Epe',units:'Em en J',note:'Em se conserve si forces conservatives uniquement.'},
+  {id:'p9',subj:'physique',theme:'Mécanique',name:'Première loi de Newton (inertie)',formula:'Si Σ F⃗ = 0⃗  alors  v⃗ = C⃗te',note:'Le centre d\'inertie est rectiligne uniforme.'},
+  {id:'p10',subj:'physique',theme:'Mécanique',name:'Troisième loi de Newton',formula:'F⃗(A→B) = − F⃗(B→A)',note:'Action-réaction : forces opposées, même droite d\'action.'},
+  {id:'p11',subj:'physique',theme:'Mécanique',name:'Chute libre',formula:'v = g × t\nh = ½ × g × t²\nv² = 2 × g × h',units:'sans frottement, g ≈ 9,81 m/s²',note:''},
+
+  {id:'p12',subj:'physique',theme:'Électricité',name:'Loi d\'Ohm',formula:'U = R × I',units:'U en V, R en Ω, I en A',note:''},
+  {id:'p13',subj:'physique',theme:'Électricité',name:'Puissance électrique',formula:'P = U × I = R × I² = U²/R',units:'P en W',note:''},
+  {id:'p14',subj:'physique',theme:'Électricité',name:'Énergie électrique',formula:'E = P × t = U × I × t',units:'E en J (ou Wh : 1 Wh = 3600 J)',note:''},
+  {id:'p15',subj:'physique',theme:'Électricité',name:'Loi des nœuds',formula:'Σ I entrant = Σ I sortant',note:'Conservation de la charge électrique.'},
+  {id:'p16',subj:'physique',theme:'Électricité',name:'Loi des mailles',formula:'Σ U = 0  (dans une maille)',note:'Conservation de l\'énergie.'},
+  {id:'p17',subj:'physique',theme:'Électricité',name:'Circuit RC : charge du condensateur',formula:'u(t) = E(1 − e^(−t/τ))\ni(t) = (E/R) × e^(−t/τ)\nτ = R × C',units:'τ en s, R en Ω, C en F, u en V',note:'τ = constante de temps (63% de la charge).'},
+  {id:'p18',subj:'physique',theme:'Électricité',name:'Circuit RC : décharge du condensateur',formula:'u(t) = E × e^(−t/τ)\ni(t) = −(E/R) × e^(−t/τ)',note:''},
+  {id:'p19',subj:'physique',theme:'Électricité',name:'Énergie stockée dans un condensateur',formula:'E = ½ × C × u²',units:'E en J, C en F, u en V',note:''},
+  {id:'p20',subj:'physique',theme:'Électricité',name:'Circuit RL',formula:'i(t) = (E/R)(1 − e^(−t/τ))\nτ = L / R',units:'L en H (Henry), τ en s',note:''},
+  {id:'p21',subj:'physique',theme:'Électricité',name:'Circuit RLC : période propre',formula:'T₀ = 2π√(LC)',units:'T₀ en s, L en H, C en F',note:'Oscillations libres non amorties.'},
+  {id:'p22',subj:'physique',theme:'Électricité',name:'Association de résistances',formula:'Série : R_eq = R₁ + R₂ + ...\nParallèle : 1/R_eq = 1/R₁ + 1/R₂ + ...',units:'R en Ω',note:''},
+
+  {id:'p23',subj:'physique',theme:'Ondes',name:'Relation fondamentale des ondes',formula:'c = λ × f = λ / T\nf = 1 / T',units:'c en m/s, λ en m, f en Hz, T en s',note:''},
+  {id:'p24',subj:'physique',theme:'Ondes',name:'Niveau d\'intensité sonore',formula:'L = 10 × log(I / I₀)',units:'L en dB, I en W/m², I₀ = 10⁻¹² W/m²',note:'Seuil d\'audition : 0 dB, seuil de douleur : ~120 dB.'},
+  {id:'p25',subj:'physique',theme:'Ondes',name:'Intensité sonore',formula:'I = P / S',units:'I en W/m², P en W, S en m²',note:''},
+  {id:'p26',subj:'physique',theme:'Ondes',name:'Ondes progressives',formula:'y(x,t) = A × sin(ωt − kx + φ)',units:'ω = 2πf, k = 2π/λ',note:''},
+  {id:'p27',subj:'physique',theme:'Ondes',name:'Diffraction',formula:'θ = λ / a',units:'θ en rad, a = largeur de la fente',note:'Plus la fente est petite, plus la diffraction est grande.'},
+  {id:'p28',subj:'physique',theme:'Ondes',name:'Interférences : différence de marche',formula:'δ = d₂ − d₁\nConstructives : δ = kλ\nDestructives : δ = (k + ½)λ',units:'k ∈ ℤ',note:''},
+
+  {id:'p29',subj:'physique',theme:'Thermodynamique',name:'Gaz parfait',formula:'PV = nRT',units:'P en Pa, V en m³, n en mol, T en K, R = 8,314 J·mol⁻¹·K⁻¹',note:''},
+  {id:'p30',subj:'physique',theme:'Thermodynamique',name:'Premier principe',formula:'ΔU = W + Q',units:'ΔU en J, W travail, Q chaleur',note:'Conservation de l\'énergie.'},
+  {id:'p31',subj:'physique',theme:'Thermodynamique',name:'Travail des forces de pression',formula:'W = −P × ΔV',units:'W en J, P en Pa, ΔV en m³',note:'W > 0 si compression (ΔV < 0).'},
+  {id:'p32',subj:'physique',theme:'Thermodynamique',name:'Conversion de température',formula:'T(K) = T(°C) + 273,15\nT(°F) = T(°C) × 9/5 + 32',note:''},
+
+  {id:'p33',subj:'physique',theme:'Optique',name:'Lois de Snell-Descartes (réfraction)',formula:'n₁ × sin i₁ = n₂ × sin i₂',units:'n = indice de réfraction, i = angle d\'incidence',note:''},
+  {id:'p34',subj:'physique',theme:'Optique',name:'Réflexion totale',formula:'sin i_l = n₂ / n₁',condition:'n₁ > n₂',note:'Si i > i_l, il y a réflexion totale.'},
+  {id:'p35',subj:'physique',theme:'Optique',name:'Relation de conjugaison (lentille)',formula:'1/d₀ − 1/dᵢ = 1/f',units:'d₀ distance objet, dᵢ distance image, f focale',note:'Convention algébrique : d₀ < 0.'},
+  {id:'p36',subj:'physique',theme:'Optique',name:'Grandissement',formula:'γ = dᵢ / d₀ = A\'B\' / AB',units:'γ > 1 : agrandissement',note:''},
+  {id:'p37',subj:'physique',theme:'Optique',name:'Relation de Descartes (miroir)',formula:'1/SA + 1/SA\' = 2/SC',note:'Convention : orienté dans le sens de la lumière.'},
+
+  // ======================== CHIMIE ========================
+  {id:'c1',subj:'chimie',theme:'Cinétique chimique',name:'Vitesse volumique de réaction',formula:'v = (1/V) × dx/dt',units:'v en mol·L⁻¹·s⁻¹, x avancement en mol',note:'x = avancement de la réaction.'},
+  {id:'c2',subj:'chimie',theme:'Cinétique chimique',name:'Temps de demi-réaction',formula:'x(t₁/₂) = x_max / 2',units:'t₁/₂ en s',note:'Temps pour atteindre la moitié de l\'avancement final.'},
+  {id:'c3',subj:'chimie',theme:'Cinétique chimique',name:'Loi de vitesse (ordre 1)',formula:'v = k × [A]\n[A](t) = [A]₀ × e^(−kt)\nt₁/₂ = ln(2) / k',units:'k en s⁻¹, [A] en mol/L',note:''},
+  {id:'c4',subj:'chimie',theme:'Cinétique chimique',name:'Facteurs cinétiques',formula:'v augmente quand :\n− Température ↑\n− Concentration des réactifs ↑\n− Catalyseur présent',note:'Le catalyseur ne modifie pas l\'état final.'},
+
+  {id:'c5',subj:'chimie',theme:'Équilibre chimique',name:'Constante d\'équilibre K',formula:'K = Π [Xᵢ]^(νᵢ)',note:'Produit des concentrations élevées aux coefficients stœchiométriques.'},
+  {id:'c6',subj:'chimie',theme:'Équilibre chimique',name:'Quotient de réaction Q',formula:'Q = Π [Xᵢ]^(νᵢ) (aux concentrations quelconques)',note:'Q < K → sens direct\nQ > K → sens inverse\nQ = K → équilibre'},
+  {id:'c7',subj:'chimie',theme:'Équilibre chimique',name:'Taux d\'avancement final',formula:'τ = x_f / x_max',note:'τ = 1 si réaction totale.'},
+
+  {id:'c8',subj:'chimie',theme:'Acides et Bases',name:'pH d\'une solution',formula:'pH = −log[H₃O⁺]\n[H₃O⁺] = 10^(−pH)',units:'pH sans unité, [H₃O⁺] en mol/L',note:''},
+  {id:'c9',subj:'chimie',theme:'Acides et Bases',name:'Constante d\'acidité Ka',formula:'Ka = [H₃O⁺][A⁻] / [HA]\npKa = −log(Ka)',condition:' Couple HA / A⁻',note:''},
+  {id:'c10',subj:'chimie',theme:'Acides et Bases',name:'Relation pH / pKa',formula:'pH = pKa + log([A⁻]/[HA])',note:'Équation de Henderson-Hasselbalch.'},
+  {id:'c11',subj:'chimie',theme:'Acides et Bases',name:'pH d\'un acide fort',formula:'pH = −log(C)',condition:'C > 10⁻⁶ mol/L',note:''},
+  {id:'c12',subj:'chimie',theme:'Acides et Bases',name:'pH d\'une base forte',formula:'pH = 14 + log(C)',condition:'C > 10⁻⁶ mol/L',note:''},
+  {id:'c13',subj:'chimie',theme:'Acides et Bases',name:'pH d\'un acide faible',formula:'pH = ½(pKa − log C)',condition:'Approximation valable si C >> [H₃O⁺]',note:''},
+  {id:'c14',subj:'chimie',theme:'Acides et Bases',name:'Produit ionique de l\'eau',formula:'Ke = [H₃O⁺] × [OH⁻] = 10⁻¹⁴\npH + pOH = 14',units:'à 25 °C',note:''},
+  {id:'c15',subj:'chimie',theme:'Acides et Bases',name:'Domaine de prédominance',formula:'Si pH < pKa : HA prédomine\nSi pH > pKa : A⁻ prédomine\nSi pH = pKa : [HA] = [A⁻]',note:'Très utile pour les diagrammes.'},
+
+  {id:'c16',subj:'chimie',theme:'Oxydoréduction',name:'Équation de Nernst',formula:'E = E° + (0,059/n) × log([ox]/[red])',units:'E en V, n nombre d\'électrons, T = 25 °C',note:''},
+  {id:'c17',subj:'chimie',theme:'Oxydoréduction',name:'Force électromotrice d\'une pile',formula:'E = E°(cathode) − E°(anode)',units:'E en V',note:'E > 0 : la pile fonctionne.'},
+  {id:'c18',subj:'chimie',theme:'Oxydoréduction',name:'Relation de Nernst (générale)',formula:'E = E° + (RT/nF) × ln([ox]/[red])',units:'R = 8,314, F = 96 485 C/mol, T en K',note:''},
+  {id:'c19',subj:'chimie',theme:'Oxydoréduction',name:'Équilibrer une demi-équation',formula:'Ox + ne⁻ = Red\nConserver : éléments, O (avec H₂O), H (avec H⁺)',note:'En milieu acide. En milieu basique : ajouter OH⁻.'},
+
+  {id:'c20',subj:'chimie',theme:'Radioactivité',name:'Loi de décroissance radioactive',formula:'N(t) = N₀ × e^(−λt)',units:'N en noyaux, λ en s⁻¹, t en s',note:''},
+  {id:'c21',subj:'chimie',theme:'Radioactivité',name:'Temps de demi-vie',formula:'t₁/₂ = ln(2) / λ',units:'t₁/² en s',note:'Temps pour que la moitié des noyaux se désintègrent.'},
+  {id:'c22',subj:'chimie',theme:'Radioactivité',name:'Activité radioactive',formula:'A = λ × N = −dN/dt',units:'A en Bq (Becquerel), 1 Bq = 1 dés/s',note:''},
+  {id:'c23',subj:'chimie',theme:'Radioactivité',name:'Loi de conservation (radioactivité)',formula:'α : A → A − 4, Z → Z − 2\nβ⁻ : A → A, Z → Z + 1',note:'α = noyau d\'hélium ⁴₂He'},
+
+  {id:'c24',subj:'chimie',theme:'Solutions aqueuses',name:'Concentration molaire',formula:'C = n / V',units:'C en mol/L, n en mol, V en L',note:''},
+  {id:'c25',subj:'chimie',theme:'Solutions aqueuses',name:'Quantité de matière',formula:'n = m / M',units:'n en mol, m en g, M en g/mol',note:''},
+  {id:'c26',subj:'chimie',theme:'Solutions aqueuses',name:'Dilution',formula:'C₁ × V₁ = C₂ × V₂',note:'La quantité de matière se conserve lors d\'une dilution.'},
+  {id:'c27',subj:'chimie',theme:'Solutions aqueuses',name:'Concentration massique',formula:'Cm = m / V = C × M',units:'Cm en g/L, C en mol/L, M en g/mol',note:''},
+  {id:'c28',subj:'chimie',theme:'Solutions aqueuses',name:'Titrage (équivalence)',formula:'À l\'équivalence :\nn₁ × V₁,eq = n₂ × V₂',note:'Quantités de matière stœchiométriques.'},
+  {id:'c29',subj:'chimie',theme:'Solutions aqueuses',name:'Volume molaire des gaz',formula:'V_m = V / n',units:'V_m = 22,4 L/mol (CNTP : 0°C, 1 atm)',note:''},
+
+  {id:'c30',subj:'chimie',theme:'Piles électrochimiques',name:'Quantité d\'électricité',formula:'Q = n(e⁻) × F',units:'Q en C, F = 96 485 C/mol',note:'n(e⁻) = quantité de matière d\'électrons transférés.'},
+  {id:'c31',subj:'chimie',theme:'Piles électrochimiques',name:'Capacité d\'une pile',formula:'Q_max = n_max × F',units:'En Coulombs ou Ah (1 Ah = 3600 C)',note:''},
+  {id:'c32',subj:'chimie',theme:'Piles électrochimiques',name:'Énergie d\'une pile',formula:'E_élec = Q × U_moyenne',units:'E en J ou Wh',note:''},
+];
+
+// ================================================================
+// STATE
+// ================================================================
+const TABS = [
+  {id:'maths',label:'Mathématiques',icon:'fa-square-root-variable'},
+  {id:'physique',label:'Physique',icon:'fa-bolt'},
+  {id:'chimie',label:'Chimie',icon:'fa-flask'},
+  {id:'favs',label:'Favoris',icon:'fa-heart'}
+];
+let activeTab = 'maths';
+let activeTheme = 'all';
+let searchQuery = '';
+let favorites = JSON.parse(localStorage.getItem('arvexa_fav_formulas') || '[]');
+
+const tabsEl = document.getElementById('tabs');
+const filtersEl = document.getElementById('filters');
+const contentEl = document.getElementById('content');
+const searchInput = document.getElementById('searchInput');
+const favCountEl = document.getElementById('favCount');
+
+// ================================================================
+// RENDER TABS
+// ================================================================
+function renderTabs() {
+  tabsEl.innerHTML = TABS.map(t =>
+    `<button class="tab-btn ${t.id===activeTab?'active':''}" data-tab="${t.id}"><i class="fas ${t.icon}"></i> ${t.label}</button>`
+  ).join('');
+  tabsEl.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTab = btn.dataset.tab;
+      activeTheme = 'all';
+      renderTabs(); renderFilters(); renderContent();
+    });
+  });
+}
+
+// ================================================================
+// RENDER FILTERS
+// ================================================================
+function getThemes(subj) {
+  const themes = [...new Set(FORMULAS.filter(f => f.subj === subj).map(f => f.theme))];
+  return ['all', ...themes];
+}
+
+function renderFilters() {
+  if (activeTab === 'favs' || searchQuery) { filtersEl.innerHTML = ''; return; }
+  const themes = getThemes(activeTab);
+  const labels = { all: 'Tout' };
+  filtersEl.innerHTML = themes.map(t =>
+    `<button class="filter-btn ${t===activeTheme?'active':''}" data-theme="${t}">${labels[t] || t}</button>`
+  ).join('');
+  filtersEl.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTheme = btn.dataset.theme;
+      renderFilters(); renderContent();
+    });
+  });
+}
+
+// ================================================================
+// RENDER CONTENT
+// ================================================================
+function getFiltered() {
+  let list = FORMULAS;
+  // Tab
+  if (activeTab === 'favs') list = list.filter(f => favorites.includes(f.id));
+  else list = list.filter(f => f.subj === activeTab);
+  // Theme
+  if (activeTheme !== 'all' && activeTab !== 'favs') list = list.filter(f => f.theme === activeTheme);
+  // Search
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = FORMULAS.filter(f =>
+      f.name.toLowerCase().includes(q) || f.formula.toLowerCase().includes(q) ||
+      f.theme.toLowerCase().includes(q) || f.note.toLowerCase().includes(q) ||
+      (f.units && f.units.toLowerCase().includes(q))
+    );
+  }
+  return list;
+}
+
+function renderContent() {
+  const list = getFiltered();
+  if (!list.length) {
+    contentEl.innerHTML = `<div class="empty-state"><i class="fas fa-${activeTab==='favs'?'heart':'search'}"></i>
+      <h4>${activeTab==='favs'?'Aucun favori':'Aucun résultat'}</h4>
+      <p>${activeTab==='favs'?'Appuie sur le cœur pour sauvegarder une formule.':'Essaye un autre terme de recherche.'}</p></div>`;
+    return;
+  }
+  // Group by theme
+  const groups = {};
+  list.forEach(f => { (groups[f.theme] = groups[f.theme] || []).push(f); });
+  let html = '';
+  Object.entries(groups).forEach(([theme, items]) => {
+    html += `<div class="category-label">${theme} <span class="cat-count">${items.length} formule${items.length>1?'s':''}</span></div>`;
+    items.forEach(f => {
+      const isFav = favorites.includes(f.id);
+      html += `<div class="f-card" id="card-${f.id}">
+        <div class="f-card-header">
+          <div class="f-card-title">${f.name}</div>
+          <button class="fav-btn ${isFav?'active':''}" data-id="${f.id}" aria-label="Favori">
+            <i class="fa${isFav?'s':'r'} fa-heart"></i>
+          </button>
+        </div>
+        <div class="f-card-formula">${formatFormula(f.formula)}</div>
+        <div class="f-card-meta">
+          ${f.units?`<span class="f-tag units"><i class="fas fa-ruler" style="margin-right:4px;font-size:9px"></i>${f.units}</span>`:''}
+          ${f.condition?`<span class="f-tag condition"><i class="fas fa-info-circle" style="margin-right:4px;font-size:9px"></i>${f.condition}</span>`:''}
+        </div>
+        ${f.note?`<div class="f-card-note"><i class="fas fa-lightbulb" style="margin-right:4px;color:var(--accent);font-size:10px"></i>${f.note}</div>`:''}
+      </div>`;
+    });
+  });
+  contentEl.innerHTML = html;
+
+  // Favorite buttons
+  contentEl.querySelectorAll('.fav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+ const id = btn.dataset.id;
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(f => f !== id);
+        btn.classList.remove('active');
+        btn.querySelector('i').className = 'far fa-heart';
+      } else {
+        favorites.push(id);
+        btn.classList.add('active');
+        btn.querySelector('i').className = 'fas fa-heart';
+      }
+      localStorage.setItem('arvexa_fav_formulas', JSON.stringify(favorites));
+      updateFavCount();
+    });
+  });
+}
+
+function formatFormula(text) {
+  return text.replace(/\n/g, '<br>').replace(/×/g, '×').replace(/−/g, '−');
+}
+
+function updateFavCount() {
+ favCountEl.textContent = favorites.length;
+  favCountEl.classList.toggle('visible', favorites.length > 0);
+}
+
+// ================================================================
+// SEARCH
+// ================================================================
+searchInput.addEventListener('input', () => {
+  searchQuery = searchInput.value.trim();
+  renderFilters(); renderContent();
+});
+
+// ================================================================
+// TOAST
+// ================================================================
+const toast=document.getElementById('toast');const toastMsg=document.querySelector('.toast-message');
+function showToast(m){toastMsg.textContent=m;toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),2000);}
+
+// ================================================================
+// INIT
+// ================================================================
+renderTabs();
+renderFilters();
+renderContent();
+updateFavCount();
+
+console.log('🚀 ARVEXa School — Formulaires BAC');
+</script>
+</body>
+</html>
