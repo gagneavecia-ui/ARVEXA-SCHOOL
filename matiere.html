@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="description" content="ARVEXa School - Chapitres">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #1A3A2A; --primary-dark: #0A1A12; --primary-light: #2A5A3A;
+    --accent: #B8860B; --accent-bright: #E0B84A; --accent-dim: rgba(184,134,11,0.08);
+    --success: #2D7D5A; --danger: #B85C3A; --warning: #D4A017;
+    --bg-dark: #0A0A0A; --bg-surface: #141414; --bg-card: rgba(20,20,20,0.7);
+    --text-light: #F5F0E8; --text-dim: #8A8A7A; --text-muted: #5A5A4A;
+    --card-border: rgba(184,134,11,0.08);
+    --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+    --shadow: 0 8px 32px rgba(0,0,0,0.4); --radius: 16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+  body{
+    font-family:'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:var(--bg-dark);color:var(--text-light);font-size:14px;line-height:1.6;
+    min-height:100vh;width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+    display:flex;flex-direction:column;
+  }
+  .gradient-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+    background:radial-gradient(ellipse 40% 30% at 30% 15%,rgba(26,58,42,.16) 0%,transparent 70%),
+                radial-gradient(ellipse 35% 25% at 75% 85%,rgba(184,134,11,.05) 0%,transparent 60%),
+                linear-gradient(180deg,#0A0A0A 0%,#060606 100%)}
+  .glow{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:-1;
+    opacity:.15;animation:glowMove 10s ease-in-out infinite alternate}
+  .glow-1{width:300px;height:300px;background:rgba(26,58,42,.18);top:-80px;right:-80px}
+  .glow-2{width:180px;height:180px;background:rgba(184,134,11,.05);bottom:0;left:0;animation-delay:-4s}
+  @keyframes glowMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-20px) scale(1.1)}}
+
+  /* HEADER */
+  .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:10px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(184,134,11,.06);gap:12px;min-height:56px}
+  .header-left{display:flex;align-items:center;gap:12px}
+  .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;
+    border:1px solid rgba(255,255,255,.05);background:transparent;color:var(--text-dim);cursor:pointer;
+    transition:var(--transition);font-size:16px;text-decoration:none}
+  .back-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
+  .page-title{font-size:15px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
+  .page-title i{color:var(--accent-bright);margin-right:6px;font-size:14px}
+  .header-right{display:flex;align-items:center;gap:8px}
+
+  /* CONTAINER */
+  .container{max-width:600px;margin:0 auto;padding:12px 12px 32px;width:100%;display:flex;flex-direction:column;gap:12px;flex:1}
+
+  /* SUBJECT HERO */
+  .subject-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 16px 20px;gap:12px}
+  .subject-icon-wrap{width:72px;height:72px;border-radius:20px;display:flex;align-items:center;justify-content:center;
+    font-size:28px;position:relative}
+  .subject-icon-wrap::before{content:'';position:absolute;inset:-3px;border-radius:23px;
+    background:linear-gradient(135deg,var(--accent),var(--success));opacity:.25;z-index:-1}
+  .subject-hero h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text-light)}
+  .subject-hero .subject-subtitle{font-size:13px;color:var(--text-dim)}
+
+  /* PROGRESS BAR (global) */
+  .global-progress{padding:0 4px}
+  .gp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .gp-label{font-size:12px;font-weight:600;color:var(--text-dim)}
+  .gp-value{font-size:12px;font-weight:700;color:var(--accent-bright)}
+  .gp-bar{width:100%;height:8px;border-radius:4px;background:rgba(255,255,255,.05);overflow:hidden}
+  .gp-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);
+    background:linear-gradient(90deg,var(--accent),var(--accent-bright))}
+
+  /* STATS ROW */
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat-mini{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;
+    border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04)}
+  .stat-mini .sm-value{font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text-light)}
+  .stat-mini .sm-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+  .stat-mini.highlight .sm-value{color:var(--accent-bright)}
+  .stat-mini.success .sm-value{color:var(--success)}
+
+  /* SECTION LABEL */
+  .section-label{font-size:11px;font-weight:700;color:var(--accent-bright);text-transform:uppercase;
+    letter-spacing:1px;padding:6px 4px 0;display:flex;align-items:center;gap:8px}
+  .section-label::after{content:'';flex:1;height:1px;background:rgba(184,134,11,.1)}
+
+  /* CHAPTER LIST */
+  .chapter-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
+
+  /* CHAPTER CARD */
+  .chapter-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
+    border-radius:var(--radius);padding:16px;cursor:pointer;transition:var(--transition);
+    display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;text-decoration:none;color:inherit}
+  .chapter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity .3s ease}
+  .chapter-card:hover{border-color:rgba(184,134,11,.15);transform:translateY(-1px)}
+  .chapter-card:hover::before{opacity:1}
+  .chapter-card:active{transform:scale(.98)}
+
+  .cc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .cc-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+  .cc-num{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;flex-shrink:0;font-family:'Playfair Display',serif;
+    background:rgba(184,134,11,.08);color:var(--accent-bright);border:1px solid rgba(184,134,11,.1)}
+  .cc-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .cc-title{font-size:14px;font-weight:600;color:var(--text-light);line-height:1.4;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .cc-chapter-label{font-size:11px;color:var(--text-muted)}
+  .cc-arrow{display:flex;align-items:center;justify-content:center;width:28px;height:28px;
+    border-radius:8px;background:rgba(255,255,255,.03);color:var(--text-muted);flex-shrink:0;
+    transition:var(--transition);font-size:12px}
+  .chapter-card:hover .cc-arrow{color:var(--accent-bright);background:rgba(184,134,11,.08)}
+
+  .cc-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .cc-progress{flex:1;display:flex;flex-direction:column;gap:4px}
+  .cc-bar{width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.05);overflow:hidden}
+  .cc-bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+  .cc-bar-fill.not-started{background:rgba(255,255,255,.08)}
+  .cc-bar-fill.in-progress{background:linear-gradient(90deg,var(--warning),var(--accent-bright))}
+  .cc-bar-fill.completed{background:linear-gradient(90deg,var(--success),#3AAF7A)}
+  .cc-percent{font-size:11px;color:var(--text-muted);font-weight:500}
+
+  .cc-status{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:8px;
+    font-size:11px;font-weight:600;white-space:nowrap}
+  .cc-status.not-started{background:rgba(255,255,255,.03);color:var(--text-muted)}
+  .cc-status.in-progress{background:rgba(184,134,11,.08);color:var(--accent-bright);border:1px solid rgba(184,134,11,.1)}
+  .cc-status.completed{background:rgba(45,125,90,.08);color:var(--success);border:1px solid rgba(45,125,90,.12)}
+  .cc-status i{font-size:10px}
+
+  /* EXERCISE COUNT BADGE */
+  .cc-exercises{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+  .cc-exercises i{font-size:9px;color:var(--text-muted)}
+
+  /* SKELETON LOADING */
+  .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.03) 75%);
+    background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  .skeleton-card{height:100px;border-radius:var(--radius)}
+
+  /* EMPTY STATE */
+  .empty-state{text-align:center;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .empty-state i{font-size:40px;color:var(--text-muted);opacity:.3}
+  .empty-state h4{font-size:15px;color:var(--text-dim);font-weight:600}
+  .empty-state p{font-size:12px;color:var(--text-muted);max-width:280px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    padding:12px 20px;border-radius:12px;background:rgba(20,20,20,.95);backdrop-filter:blur(16px);
+    border:1px solid rgba(184,134,11,.15);color:var(--text-light);font-size:13px;font-weight:500;
+    z-index:300;opacity:0;transition:all .4s cubic-bezier(.25,1,.5,1);display:flex;align-items:center;gap:8px}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast i{color:var(--accent-bright)}
+
+  /* RESPONSIVE */
+  @media(max-width:480px){
+    .container{padding:10px 10px 24px}
+    .subject-hero h2{font-size:19px}
+    .subject-icon-wrap{width:60px;height:60px;font-size:24px}
+    .stats-row{gap:6px}
+    .stat-mini{padding:10px 6px}
+    .stat-mini .sm-value{font-size:16px}
+  }
+  @media(max-width:360px){
+    .stats-row{grid-template-columns:repeat(3,1fr);gap:4px}
+    .cc-title{font-size:13px}
+  }
+</style>
+</head>
+<body>
+  <div class="gradient-bg"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+      <h1 class="page-title" id="pageTitle"><i class="fas fa-book"></i> <span></span></h1>
+    </div>
+    <div class="header-right"></div>
+  </header>
+
+  <main class="container">
+    <!-- SUBJECT HERO -->
+    <div class="subject-hero" id="subjectHero">
+      <div class="subject-icon-wrap" id="subjectIconWrap"><i class="fas fa-book"></i></div>
+      <h2 id="subjectTitle">Chargement...</h2>
+      <p class="subject-subtitle" id="subjectSubtitle"></p>
+    </div>
+
+    <!-- GLOBAL PROGRESS -->
+    <div class="glass-card global-progress" id="globalProgressCard" style="display:none">
+      <div class="gp-header">
+        <span class="gp-label">Progression globale</span>
+        <span class="gp-value" id="gpValue">0%</span>
+      </div>
+      <div class="gp-bar"><div class="gp-fill" id="gpFill" style="width:0%"></div></div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row" id="statsRow" style="display:none">
+      <div class="stat-mini highlight">
+        <span class="sm-value" id="statTotal">0</span>
+        <span class="sm-label">Chapitres</span>
+      </div>
+      <div class="stat-mini success">
+        <span class="sm-value" id="statCompleted">0</span>
+        <span class="sm-label">Terminés</span>
+      </div>
+      <div class="stat-mini">
+        <span class="sm-value" id="statInProgress">0</span>
+        <span class="sm-label">En cours</span>
+      </div>
+    </div>
+
+    <!-- CHAPTER LIST -->
+    <div class="section-label">Chapitres</div>
+    <div class="chapter-list" id="chapterList">
+      <!-- Skeleton loading -->
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
+
+  <!-- ========== FIREBASE + APP ========== -->
+  <script type="importmap">
+  { "imports": { "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js", "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js", "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js" } }
+  </script>
+
+  <script type="module">
+    // ==================== FIREBASE CONFIG UNIFIÉE ====================
+import { initializeApp } from "firebase/app";
+import { 
+  getAuth, 
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence 
+} from "firebase/auth";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  setDoc, 
+  updateDoc, 
+  arrayUnion, 
+  serverTimestamp 
+} from "firebase/firestore";
+
+// ✅ UTILISER LA MÊME CONFIG QUE INDEX.HTML
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ AJOUTER LA PERSISTANCE
+await setPersistence(auth, browserLocalPersistence);
+
+// ✅ GESTION DE L'AUTH AVEC REDIRECTION SÉCURISÉE
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    // Sauvegarder la page actuelle pour y revenir après login
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  console.log('[Matière] Connecté:', user.uid);
+  // ✅ Initialiser la page
+  initPage(subjectKey, subjectConfig);
+});
+
+// ✅ FONCTION DE REDIRECTION SÉCURISÉE
+function navigateToChapter(chapterIndex) {
+  // Vérifier que l'utilisateur est toujours connecté
+  if (!auth.currentUser) {
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+    window.location.href = 'login.html';
+    return;
+  }
+  window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
+}
+    // ==================== CONFIG ====================
+    const SUBJECTS_CONFIG = {
+      mathematiques: {
+        name: 'Mathématiques', icon: 'fa-square-root-variable',
+        color: '#E0B84A',
+        chapters: [
+          'Nombres complexes',
+          'Calcul de probabilités - Variable aléatoire',
+          'Fonction logarithme',
+          'Fonction exponentielle',
+          'Étude des fonctions numériques',
+          'Calcul intégral',
+          'Suites numériques',
+          'Équations différentielles'
+        ]
+      },
+      physique: {
+        name: 'Physique', icon: 'fa-bolt',
+        color: '#4AAFE0',
+        chapters: [
+          'Cinématique',
+          'Mouvement du centre d\'inertie',
+          'Mouvement dans le champ de pesanteur',
+          'Mouvement de particules chargées',
+          'Oscillateurs mécaniques de translation',
+          'Généralités sur les vibrations',
+          'Propagation d\'un phénomène vibratoire',
+          'Superposition de phénomènes vibratoires',
+          'Interférences d\'ondes lumineuses',
+          'Champ magnétique',
+          'Force de Lorentz',
+          'Force de Laplace',
+          'Induction électromagnétique',
+          'Auto-Induction',
+          'Circuit oscillant LC',
+          'Circuit en régime sinusoïdal forcé',
+          'Radioactivité'
+        ]
+      },
+      chimie: {
+        name: 'Chimie', icon: 'fa-flask',
+        color: '#E07A4A',
+        chapters: [
+          'Solutions aqueuses',
+          'Solutions aqueuses d\'acide chlorhydrique et d\'hydroxyde de sodium',
+          'Couples acide / base',
+          'Réaction acide - base',
+          'Solution tampon',
+          'Alcools',
+          'Acides carboxyliques',
+          'Amines',
+          'Acides α-aminés'
+        ]
+      },
+      svt: {
+        name: 'SVT', icon: 'fa-dna',
+        color: '#7AE04A',
+        chapters: [
+          'Génétique',
+          'Immunologie',
+          'Écologie',
+          'Évolution'
+        ]
+      }
+    };
+
+    // ==================== URL PARAMS ====================
+    const params = new URLSearchParams(window.location.search);
+    const subjectKey = params.get('subject');
+    const subjectConfig = SUBJECTS_CONFIG[subjectKey] || null;
+
+    if (!subjectKey || !subjectConfig) {
+      window.location.replace('index.html');
+    } else {
+      initPage(subjectKey, subjectConfig);
+    }
+
+    // ==================== EXPOSE UTILS TO GLOBAL SCOPE ====================
+    window.navigateToChapter = function(chapterIndex) {
+      window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
+    };
+
+    // ==================== AUTH + INIT ====================
+    function initPage(sKey, sConfig) {
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) { window.location.href = 'login.html'; return; }
+        console.log('[Matière] Connecté:', user.uid, 'Matière:', sConfig.name);
+
+      // Setup page title
+      document.querySelector('#pageTitle span').textContent = sConfig.name;
+      document.getElementById('pageTitle').querySelector('i').className = 'fas ' + sConfig.icon;
+      document.title = 'ARVEXa School - ' + sConfig.name;
+
+      // Setup hero
+      const iconWrap = document.getElementById('subjectIconWrap');
+      iconWrap.innerHTML = '<i class="fas ' + sConfig.icon + '"></i>';
+      iconWrap.style.background = sConfig.color + '12';
+      iconWrap.style.color = sConfig.color;
+      document.getElementById('subjectTitle').textContent = sConfig.name;
+      document.getElementById('subjectSubtitle').textContent =
+        sConfig.chapters.length + ' chapitres — Terminale D BAC';
+
+      // Try to load chapter list from Firestore
+      let firestoreChapters = null;
+      try {
+        const chaptersRef = doc(db, 'users', user.uid, 'subjectChapters', sKey);
+        const chaptersDoc = await getDoc(chaptersRef);
+        if (chaptersDoc.exists()) {
+          const data = chaptersDoc.data();
+          if (data.chapters && data.chapters.length > 0) {
+            firestoreChapters = data.chapters;
+            console.log('[Matière] ' + firestoreChapters.length + ' chapitres depuis Firestore');
+          }
+        }
+      } catch(e) {
+        console.log('[Matière] Firestore chapters non disponible, fallback sur config local');
+      }
+
+      // Try to load progress from Firestore
+      let chapterProgress = {};
+      try {
+        const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+        const progressDoc = await getDoc(progressRef);
+        if (progressDoc.exists()) {
+          const data = progressDoc.data();
+          const subjectProgress = data.chapterProgress ? data.chapterProgress[sKey] : null;
+          if (subjectProgress) {
+            chapterProgress = subjectProgress;
+          }
+        }
+      } catch(e) {
+        console.log('[Matière] Progress non disponible');
+      }
+
+      // Determine chapters to display
+      let chapters;
+      if (firestoreChapters) {
+        chapters = firestoreChapters.map((ch, i) => ({
+          index: i,
+          title: typeof ch === 'string' ? ch : (ch.title || 'Chapitre ' + (i + 1)),
+          progress: chapterProgress[i] !== undefined ? chapterProgress[i] : 0
+        }));
+      } else {
+        chapters = sConfig.chapters.map((title, i) => ({
+          index: i,
+          title: title,
+          progress: chapterProgress[i] !== undefined ? chapterProgress[i] : 0
+        }));
+      }
+
+      // Load exercise counts from localStorage (from mode-examen questions)
+      let exerciseCounts = {};
+      try {
+        const questions = JSON.parse(localStorage.getItem('arvexa_exam_questions') || '[]');
+        questions.filter(q => q.subject === sKey).forEach(q => {
+          exerciseCounts[q.chapter] = (exerciseCounts[q.chapter] || 0) + 1;
+        });
+      } catch(e) {}
+
+      renderChapters(chapters, exerciseCounts, sConfig);
+      });
+    }
+
+    // ==================== RENDER ====================
+    function renderChapters(chapters, exerciseCounts, sConfig) {
+      const list = document.getElementById('chapterList');
+
+      // Calculate stats
+      let totalChapters = chapters.length;
+      let completed = chapters.filter(c => c.progress >= 100).length;
+      let inProgress = chapters.filter(c => c.progress > 0 && c.progress < 100).length;
+      let globalPct = totalChapters > 0 ? Math.round(chapters.reduce((s, c) => s + c.progress, 0) / totalChapters) : 0;
+
+      // Show progress & stats
+      document.getElementById('globalProgressCard').style.display = 'block';
+      document.getElementById('statsRow').style.display = 'grid';
+      document.getElementById('statTotal').textContent = totalChapters;
+      document.getElementById('statCompleted').textContent = completed;
+      document.getElementById('statInProgress').textContent = inProgress;
+      document.getElementById('gpValue').textContent = globalPct + '%';
+
+      // Animate progress bar
+      requestAnimationFrame(() => {
+        document.getElementById('gpFill').style.width = globalPct + '%';
+      });
+
+      // Sort: in-progress first, then not started, then completed
+      const sorted = [...chapters].sort((a, b) => {
+        const statusA = a.progress >= 100 ? 2 : (a.progress > 0 ? 0 : 1);
+        const statusB = b.progress >= 100 ? 2 : (b.progress > 0 ? 0 : 1);
+        if (statusA !== statusB) return statusA - statusB;
+        return a.index - b.index;
+      });
+
+      // Render chapter cards
+      list.innerHTML = sorted.map(ch => {
+        const pct = ch.progress || 0;
+        let statusClass, statusLabel, statusIcon;
+        if (pct >= 100) {
+          statusClass = 'completed'; statusLabel = 'Terminé'; statusIcon = 'fa-circle-check';
+        } else if (pct > 0) {
+          statusClass = 'in-progress'; statusLabel = 'En cours'; statusIcon = 'fa-spinner';
+        } else {
+          statusClass = 'not-started'; statusLabel = 'Non commencé'; statusIcon = 'fa-circle-minus';
+        }
+
+        const barClass = pct >= 100 ? 'completed' : (pct > 0 ? 'in-progress' : 'not-started');
+        const exCount = exerciseCounts[ch.index] || 0;
+
+        return `
+          <a class="chapter-card" onclick="navigateToChapter(${ch.index})">
+            <div class="cc-top">
+              <div class="cc-left">
+                <div class="cc-num">${ch.index + 1}</div>
+                <div class="cc-info">
+                  <div class="cc-title">${escapeHtml(ch.title)}</div>
+                  <div class="cc-chapter-label">${sConfig.name} — Chapitre ${ch.index + 1}</div>
+                </div>
+              </div>
+              <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+            <div class="cc-bottom">
+              <div class="cc-progress">
+                <div class="cc-bar"><div class="cc-bar-fill ${barClass}" style="width:${pct}%"></div></div>
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span class="cc-percent">${pct}%</span>
+                  ${exCount > 0 ? '<span class="cc-exercises"><i class="fas fa-pen-to-square"></i> ' + exCount + ' exercice' + (exCount > 1 ? 's' : '') + '</span>' : ''}
+                </div>
+              </div>
+              <div class="cc-status ${statusClass}"><i class="fas ${statusIcon}"></i> ${statusLabel}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

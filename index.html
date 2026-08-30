@@ -425,22 +425,15 @@
 
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar" id="sidebar">
-  <a href="index.html" class="logo">ARVEX<span>a</span></a>
+  <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
   <nav class="nav">
     <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
-    <a href="cours.html"><i class="fas fa-book-open"></i> Mes cours</a>
-    <a href="exercices.html"><i class="fas fa-pencil-alt"></i> Exercices</a>
-    <a href="corrections.html"><i class="fas fa-check-double"></i> Corrections</a>
-    <a href="fiches.html"><i class="fas fa-file-alt"></i> Fiches</a>
-     <a href="ai.html"><i class="fas fa-robot"></i> ARV-ASSISTANT</a>
-    <div class="nav-divider"></div>
+<a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
     <a href="progression.html"><i class="fas fa-chart-line"></i> Ma progression</a>
-    <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
      <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
-    <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+    <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
     <div class="nav-divider"></div>
     <div class="nav-bottom">
-      <a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a>
       <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
     </div>
   </nav>
@@ -721,11 +714,12 @@ function calculateGlobalProgress(subjects) {
 }
 
 // Les 4 matières fixes de Terminale D
+
 const FIXED_SUBJECTS = [
-  { name: 'Mathématiques', icon: 'fa-square-root-variable' },
-  { name: 'Physique', icon: 'fa-bolt' },
-  { name: 'Chimie', icon: 'fa-flask' },
-  { name: 'SVT', icon: 'fa-dna' }
+  { name: 'Mathématiques', icon: 'fa-square-root-variable', key: 'mathematiques' },
+  { name: 'Physique', icon: 'fa-bolt', key: 'physique' },
+  { name: 'Chimie', icon: 'fa-flask', key: 'chimie' },
+  { name: 'SVT', icon: 'fa-dna', key: 'svt' }
 ];
 
 function determineNextStep(progress) {
@@ -875,9 +869,9 @@ function renderNextStep() {
 
 function handleNextStepAction(action) {
   const routes = {
-    'start': 'cours.html',
-    'continue': 'cours.html',
-    'review': 'cours.html',
+    'start': 'matiere.html',
+    'continue': 'matiere.html',
+    'review': 'matiere.html',
     'exercise': 'exercices.html'
   };
   const route = routes[action] || 'cours.html';
@@ -895,7 +889,7 @@ function renderSubjects() {
       ? 'linear-gradient(90deg, #B85C3A, #D97A3A)'
       : 'linear-gradient(90deg, var(--accent), var(--accent-bright))';
     return `
-      <a href="cours.html" class="subject-chip">
+     <a href="matiere.html?subject=${subject.key}" class="subject-chip">
         <div class="row-top">
           <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
           <div class="subject-percent">${value}%</div>

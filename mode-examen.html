@@ -1,0 +1,1761 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="description" content="ARVEXa School - Mode Examen BAC Terminale D">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #1A3A2A; --primary-dark: #0A1A12; --primary-light: #2A5A3A;
+    --accent: #B8860B; --accent-bright: #E0B84A; --accent-dim: rgba(184,134,11,0.08);
+    --success: #2D7D5A; --danger: #B85C3A; --warning: #D4A017;
+    --bg-dark: #0A0A0A; --bg-surface: #141414; --bg-card: rgba(20,20,20,0.7);
+    --text-light: #F5F0E8; --text-dim: #8A8A7A; --text-muted: #5A5A4A;
+    --card-border: rgba(184,134,11,0.08);
+    --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+    --shadow: 0 8px 32px rgba(0,0,0,0.4); --radius: 16px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+  body{
+    font-family:'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
+    background:var(--bg-dark);color:var(--text-light);font-size:14px;line-height:1.6;
+    min-height:100vh;width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+    display:flex;flex-direction:column;
+  }
+  .gradient-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
+    background:radial-gradient(ellipse 40% 30% at 30% 15%,rgba(26,58,42,.16) 0%,transparent 70%),
+                radial-gradient(ellipse 35% 25% at 75% 85%,rgba(184,134,11,.05) 0%,transparent 60%),
+                linear-gradient(180deg,#0A0A0A 0%,#060606 100%)}
+  .glow{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:-1;
+    opacity:.15;animation:glowMove 10s ease-in-out infinite alternate}
+  .glow-1{width:300px;height:300px;background:rgba(26,58,42,.18);top:-80px;right:-80px}
+  .glow-2{width:180px;height:180px;background:rgba(184,134,11,.05);bottom:0;left:0;animation-delay:-4s}
+  @keyframes glowMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-20px) scale(1.1)}}
+
+  /* HEADER */
+  .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:10px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(184,134,11,.06);gap:12px;min-height:56px}
+  .header-left{display:flex;align-items:center;gap:12px}
+  .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;
+    border:1px solid rgba(255,255,255,.05);background:transparent;color:var(--text-dim);cursor:pointer;
+    transition:var(--transition);font-size:16px;text-decoration:none}
+  .back-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
+  .page-title{font-size:15px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
+  .page-title i{color:var(--accent-bright);margin-right:6px;font-size:14px}
+  .header-right{display:flex;align-items:center;gap:8px}
+
+  /* CONTAINER */
+  .container{max-width:600px;margin:0 auto;padding:12px 12px 32px;width:100%;display:flex;flex-direction:column;gap:12px;flex:1}
+
+  /* SCREENS */
+  .screen{display:none;flex-direction:column;gap:12px;flex:1}
+  .screen.active{display:flex}
+
+  /* SETUP SCREEN */
+  .setup-intro{text-align:center;padding:20px 0 8px}
+  .setup-intro h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text-light);margin-bottom:6px}
+  .setup-intro h2 i{color:var(--accent-bright);margin-right:8px}
+  .setup-intro p{font-size:13px;color:var(--text-dim);max-width:360px;margin:0 auto}
+
+  /* GLASS CARD */
+  .glass-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
+    border-radius:var(--radius);padding:18px 16px;position:relative;overflow:hidden}
+  .glass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent),var(--success),var(--accent))}
+
+  /* FORM ELEMENTS */
+  .field-label{font-size:12px;font-weight:700;color:var(--accent-bright);text-transform:uppercase;
+    letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .field-label i{font-size:11px}
+
+  .subject-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .subject-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;
+    border-radius:12px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02);
+    color:var(--text-dim);cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif}
+  .subject-btn i{font-size:20px;transition:var(--transition)}
+  .subject-btn span{font-size:11px;font-weight:600;text-align:center}
+  .subject-btn:hover{border-color:rgba(184,134,11,.15);background:rgba(184,134,11,.04)}
+  .subject-btn.selected{border-color:var(--accent);background:rgba(184,134,11,.1);color:var(--accent-bright)}
+  .subject-btn.selected i{color:var(--accent-bright)}
+
+  .chapter-select{width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--card-border);
+    background:var(--bg-surface);color:var(--text-light);font-size:13px;font-family:'Inter',sans-serif;
+    outline:none;transition:var(--transition);appearance:none;cursor:pointer}
+  .chapter-select:focus{border-color:rgba(184,134,11,.25)}
+  .select-wrap{position:relative}
+  .select-wrap::after{content:'\f107';font-family:'Font Awesome 6 Free';font-weight:900;
+    position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);pointer-events:none;font-size:12px}
+
+  .option-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .option-btn{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.05);
+    background:rgba(255,255,255,.02);color:var(--text-dim);cursor:pointer;transition:var(--transition);
+    font-family:'Inter',sans-serif;font-size:13px;font-weight:500;text-align:center}
+  .option-btn:hover{border-color:rgba(184,134,11,.15);background:rgba(184,134,11,.04)}
+  .option-btn.selected{border-color:var(--accent);background:rgba(184,134,11,.1);color:var(--accent-bright);font-weight:600}
+  .option-btn .opt-sub{display:block;font-size:10px;color:var(--text-muted);margin-top:2px;font-weight:400}
+  .option-btn.selected .opt-sub{color:var(--text-dim)}
+
+  .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .type-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;
+    border-radius:12px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.02);
+    color:var(--text-dim);cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif}
+  .type-btn i{font-size:18px;margin-bottom:2px}
+  .type-btn span{font-size:11px;font-weight:600;text-align:center}
+  .type-btn:hover{border-color:rgba(184,134,11,.15);background:rgba(184,134,11,.04)}
+  .type-btn.selected{border-color:var(--accent);background:rgba(184,134,11,.1);color:var(--accent-bright)}
+
+  /* TOGGLE SWITCH */
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:4px 0}
+  .toggle-info{display:flex;align-items:center;gap:10px}
+  .toggle-info i{font-size:16px;color:var(--text-muted)}
+  .toggle-info .ti-text h4{font-size:13px;font-weight:600;color:var(--text-light)}
+  .toggle-info .ti-text p{font-size:11px;color:var(--text-muted)}
+  .toggle-switch{position:relative;width:46px;height:26px;cursor:pointer}
+  .toggle-switch input{display:none}
+  .toggle-track{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:13px;
+    background:rgba(255,255,255,.08);transition:var(--transition)}
+  .toggle-switch input:checked + .toggle-track{background:rgba(184,134,11,.3)}
+  .toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+    background:var(--text-dim);transition:var(--transition)}
+  .toggle-switch input:checked ~ .toggle-knob{left:23px;background:var(--accent-bright)}
+
+  /* PRIMARY BUTTON */
+  .btn-primary{width:100%;padding:14px;border-radius:14px;border:none;
+    background:linear-gradient(135deg,var(--accent-bright),var(--accent));color:#0A0A0A;
+    font-size:15px;font-weight:700;cursor:pointer;transition:var(--transition);
+    font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn-primary:hover{box-shadow:0 6px 24px rgba(184,134,11,.3);transform:translateY(-1px)}
+  .btn-primary:active{transform:scale(.97)}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+  /* COUNT SUMMARY */
+  .count-summary{text-align:center;padding:8px;font-size:12px;color:var(--text-muted)}
+  .count-summary strong{color:var(--accent-bright)}
+
+  /* ========== EXAM SCREEN ========== */
+  .exam-header{display:flex;flex-direction:column;gap:8px}
+  
+  .timer-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04)}
+  .timer-icon{font-size:18px;color:var(--accent-bright)}
+  .timer-info{flex:1;display:flex;flex-direction:column;gap:3px}
+  .timer-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+  .timer-display{font-size:24px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text-light);
+    letter-spacing:2px}
+  .timer-display.warning{color:var(--warning)}
+  .timer-display.danger{color:var(--danger);animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .timer-progress{width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:2px}
+  .timer-progress-fill{height:100%;border-radius:2px;transition:width 1s linear, background .5s ease}
+  .progress-green{background:var(--success)}
+  .progress-yellow{background:var(--warning)}
+  .progress-red{background:var(--danger)}
+
+  .exam-meta{display:flex;align-items:center;justify-content:space-between;padding:0 2px}
+  .exam-meta-left{display:flex;align-items:center;gap:8px}
+  .exam-meta-left .meta-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;
+    background:rgba(184,134,11,.08);color:var(--accent-bright);border:1px solid rgba(184,134,11,.1)}
+  .exam-meta-right{display:flex;gap:6px}
+  .meta-action{width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.05);
+    background:transparent;color:var(--text-dim);cursor:pointer;transition:var(--transition);
+    display:flex;align-items:center;justify-content:center;font-size:13px}
+  .meta-action:hover{border-color:rgba(184,134,11,.15);color:var(--text-light)}
+  .meta-action.flagged{color:var(--warning);border-color:rgba(212,160,23,.2);background:rgba(212,160,23,.06)}
+
+  /* QUESTION NAV */
+  .q-nav{display:flex;gap:6px;overflow-x:auto;padding:6px 2px;scrollbar-width:none}
+  .q-nav::-webkit-scrollbar{display:none}
+  .q-nav-dot{min-width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.02);color:var(--text-muted);cursor:pointer;transition:var(--transition);
+    font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;
+    font-family:'Inter',sans-serif;flex-shrink:0}
+  .q-nav-dot:hover{border-color:rgba(184,134,11,.15);color:var(--text-dim)}
+  .q-nav-dot.active{border-color:var(--accent);background:rgba(184,134,11,.12);color:var(--accent-bright)}
+  .q-nav-dot.answered{background:rgba(45,125,90,.1);border-color:rgba(45,125,90,.2);color:var(--success)}
+  .q-nav-dot.answered.active{background:rgba(45,125,90,.15);color:var(--success)}
+  .q-nav-dot.flagged::after{content:'';position:absolute;top:2px;right:2px;width:6px;height:6px;
+    border-radius:50%;background:var(--warning)}
+  .q-nav-dot{position:relative}
+
+  /* QUESTION CARD */
+  .question-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
+    border-radius:var(--radius);padding:20px 16px;flex:1;display:flex;flex-direction:column;gap:14px}
+  .q-header{display:flex;align-items:center;justify-content:space-between}
+  .q-number{font-size:12px;font-weight:700;color:var(--accent-bright);text-transform:uppercase;letter-spacing:.8px}
+  .q-chapter{font-size:11px;color:var(--text-muted);padding:4px 10px;border-radius:8px;
+    background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04)}
+  .q-difficulty{display:flex;gap:3px}
+  .q-difficulty .dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.1)}
+  .q-difficulty .dot.filled{background:var(--accent-bright)}
+  .q-text{font-size:14px;color:var(--text-light);line-height:1.8;white-space:pre-wrap}
+  .q-score-badge{font-size:11px;color:var(--text-muted);padding:6px 10px;border-radius:8px;
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:6px}
+  .q-score-badge i{color:var(--accent-bright)}
+
+  .answer-area{flex:1;display:flex;flex-direction:column;gap:8px}
+  .answer-label{font-size:12px;font-weight:600;color:var(--text-dim);display:flex;align-items:center;gap:6px}
+  .answer-label i{color:var(--accent);font-size:11px}
+  .answer-textarea{width:100%;min-height:180px;padding:14px;border-radius:12px;border:1px solid var(--card-border);
+    background:rgba(10,10,10,.6);color:var(--text-light);font-size:14px;font-family:'Inter',sans-serif;
+    line-height:1.8;resize:vertical;outline:none;transition:var(--transition)}
+  .answer-textarea:focus{border-color:rgba(184,134,11,.25);box-shadow:0 0 0 3px rgba(184,134,11,.05)}
+  .answer-textarea::placeholder{color:var(--text-muted)}
+  .answer-count{font-size:11px;color:var(--text-muted);text-align:right}
+
+  /* EXAM ACTIONS */
+  .exam-actions{display:flex;gap:8px}
+  .exam-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.03);color:var(--text-light);font-size:13px;font-weight:600;
+    cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;
+    display:flex;align-items:center;justify-content:center;gap:6px}
+  .exam-btn:hover{border-color:rgba(184,134,11,.15);background:rgba(255,255,255,.05)}
+  .exam-btn.primary{background:linear-gradient(135deg,var(--accent-bright),var(--accent));
+    color:#0A0A0A;border-color:transparent;font-weight:700}
+  .exam-btn.primary:hover{box-shadow:0 4px 16px rgba(184,134,11,.25)}
+  .exam-btn.danger{color:var(--danger);border-color:rgba(184,92,58,.15)}
+  .exam-btn:disabled{opacity:.3;cursor:not-allowed}
+
+  /* ========== RESULTS SCREEN ========== */
+  .result-hero{text-align:center;padding:20px 0}
+  .result-hero .score-circle{width:140px;height:140px;border-radius:50%;margin:0 auto 16px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border:4px solid var(--accent);position:relative}
+  .result-hero .score-circle .score-value{font-size:40px;font-weight:800;font-family:'Playfair Display',serif;
+    color:var(--accent-bright);line-height:1}
+  .result-hero .score-circle .score-max{font-size:13px;color:var(--text-muted);font-weight:500}
+  .result-hero .score-circle .score-label{position:absolute;bottom:-28px;font-size:11px;
+    color:var(--text-dim);font-weight:600;text-transform:uppercase;letter-spacing:1px}
+  .result-hero h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text-light);margin-bottom:4px}
+  .result-hero p{font-size:13px;color:var(--text-dim)}
+
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-card{padding:14px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);
+    display:flex;flex-direction:column;gap:4px}
+  .stat-card .stat-value{font-size:20px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text-light)}
+  .stat-card .stat-label{font-size:11px;color:var(--text-muted);font-weight:500}
+  .stat-card.highlight{border-color:rgba(184,134,11,.12);background:rgba(184,134,11,.04)}
+  .stat-card.highlight .stat-value{color:var(--accent-bright)}
+
+  /* EVALUATION SECTION */
+  .eval-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
+    border-radius:var(--radius);overflow:hidden}
+  .eval-item{padding:16px;border-bottom:1px solid rgba(255,255,255,.03);display:flex;flex-direction:column;gap:10px}
+  .eval-item:last-child{border-bottom:none}
+  .eval-q-header{display:flex;align-items:center;justify-content:space-between}
+  .eval-q-num{font-size:13px;font-weight:600;color:var(--text-light)}
+  .eval-q-chapter{font-size:11px;color:var(--text-muted)}
+  .eval-q-text{font-size:13px;color:var(--text-dim);line-height:1.6;max-height:60px;overflow:hidden;
+    position:relative;cursor:pointer}
+  .eval-q-text.expanded{max-height:none}
+  .eval-q-text:not(.expanded)::after{content:'... Voir plus';position:absolute;bottom:0;left:0;right:0;
+    padding:16px 0 4px;background:linear-gradient(transparent,rgba(20,20,20,.9));color:var(--accent-bright);
+    font-size:11px;font-weight:600}
+  .eval-answer{padding:10px 12px;border-radius:8px;background:rgba(10,10,10,.5);border:1px solid rgba(255,255,255,.03);
+    font-size:12px;color:var(--text-dim);line-height:1.6;max-height:80px;overflow-y:auto}
+  .eval-answer::-webkit-scrollbar{width:2px}
+  .eval-answer::-webkit-scrollbar-thumb{background:rgba(184,134,11,.15);border-radius:10px}
+  .eval-answer.empty{font-style:italic;color:var(--text-muted)}
+  .eval-scoring{display:flex;align-items:center;gap:10px}
+  .eval-scoring label{font-size:12px;color:var(--text-dim);font-weight:500;white-space:nowrap}
+  .eval-input{width:60px;padding:6px 8px;border-radius:8px;border:1px solid var(--card-border);
+    background:var(--bg-surface);color:var(--text-light);font-size:14px;font-weight:600;
+    text-align:center;outline:none;font-family:'Inter',sans-serif}
+  .eval-input:focus{border-color:rgba(184,134,11,.25)}
+  .eval-max{font-size:12px;color:var(--text-muted)}
+  .eval-total-row{display:flex;align-items:center;justify-content:space-between;padding:16px;
+    background:rgba(184,134,11,.04);border-top:1px solid rgba(184,134,11,.1)}
+  .eval-total-label{font-size:14px;font-weight:600;color:var(--text-light)}
+  .eval-total-value{font-size:22px;font-weight:800;font-family:'Playfair Display',serif;color:var(--accent-bright)}
+
+  .result-actions{display:flex;gap:8px;margin-top:4px}
+  .result-btn{flex:1;padding:13px;border-radius:12px;border:none;font-size:13px;font-weight:600;
+    cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;
+    display:flex;align-items:center;justify-content:center;gap:6px}
+  .result-btn.primary{background:linear-gradient(135deg,var(--accent-bright),var(--accent));color:#0A0A0A}
+  .result-btn.primary:hover{box-shadow:0 4px 16px rgba(184,134,11,.25)}
+  .result-btn.secondary{background:rgba(255,255,255,.04);color:var(--text-light);border:1px solid rgba(255,255,255,.06)}
+  .result-btn.secondary:hover{border-color:rgba(184,134,11,.15)}
+
+  /* ========== HISTORY SCREEN ========== */
+  .history-header{display:flex;align-items:center;justify-content:space-between}
+  .history-header h3{font-size:16px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
+  .history-clear{font-size:12px;color:var(--danger);cursor:pointer;padding:6px 12px;border-radius:8px;
+    border:1px solid rgba(184,92,58,.1);background:transparent;font-family:'Inter',sans-serif;
+    font-weight:500;transition:var(--transition)}
+  .history-clear:hover{background:rgba(184,92,58,.08)}
+
+  .history-item{padding:16px;border-radius:var(--radius);background:var(--bg-card);backdrop-filter:blur(10px);
+    border:1px solid var(--card-border);display:flex;flex-direction:column;gap:10px;cursor:pointer;
+    transition:var(--transition)}
+  .history-item:hover{border-color:rgba(184,134,11,.15)}
+  .hi-top{display:flex;align-items:center;justify-content:space-between}
+  .hi-subject{font-size:13px;font-weight:600;color:var(--text-light);display:flex;align-items:center;gap:6px}
+  .hi-subject i{color:var(--accent-bright);font-size:12px}
+  .hi-score{font-size:16px;font-weight:700;font-family:'Playfair Display',serif;color:var(--accent-bright)}
+  .hi-details{display:flex;gap:12px;flex-wrap:wrap}
+  .hi-detail{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px}
+  .hi-detail i{font-size:10px}
+  .hi-bar{width:100%;height:4px;border-radius:2px;background:rgba(255,255,255,.04);overflow:hidden}
+  .hi-bar-fill{height:100%;border-radius:2px;background:var(--accent);transition:width .5s ease}
+
+  .empty-state{text-align:center;padding:40px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
+  .empty-state i{font-size:40px;color:var(--text-muted);opacity:.3}
+  .empty-state h4{font-size:15px;color:var(--text-dim);font-weight:600}
+  .empty-state p{font-size:12px;color:var(--text-muted);max-width:280px}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);
+    backdrop-filter:blur(6px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.active{display:flex}
+  .modal-box{background:var(--bg-surface);border:1px solid var(--card-border);border-radius:20px;
+    padding:28px 24px;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;gap:16px}
+  .modal-box i.modal-icon{font-size:36px;color:var(--warning)}
+  .modal-box h3{font-size:17px;font-weight:700;color:var(--text-light);font-family:'Playfair Display',serif}
+  .modal-box p{font-size:13px;color:var(--text-dim);line-height:1.6}
+  .modal-actions{display:flex;gap:8px;margin-top:4px}
+  .modal-btn{flex:1;padding:12px;border-radius:12px;border:none;font-size:13px;font-weight:600;
+    cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif}
+  .modal-btn.cancel{background:rgba(255,255,255,.05);color:var(--text-light)}
+  .modal-btn.confirm{background:linear-gradient(135deg,var(--danger),#8B3A2A);color:white}
+  .modal-btn.confirm:hover{box-shadow:0 4px 16px rgba(184,92,58,.3)}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+    padding:12px 20px;border-radius:12px;background:rgba(20,20,20,.95);backdrop-filter:blur(16px);
+    border:1px solid rgba(184,134,11,.15);color:var(--text-light);font-size:13px;font-weight:500;
+    z-index:300;opacity:0;transition:all .4s cubic-bezier(.25,1,.5,1);display:flex;align-items:center;gap:8px}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast i{color:var(--accent-bright)}
+
+  /* RESPONSIVE */
+  @media(max-width:480px){
+    .container{padding:10px 10px 24px}
+    .setup-intro h2{font-size:19px}
+    .subject-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+    .subject-btn{padding:12px 6px}
+    .type-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+    .timer-display{font-size:20px}
+    .answer-textarea{min-height:150px}
+    .q-text{font-size:13px}
+    .result-hero .score-circle{width:120px;height:120px}
+    .result-hero .score-circle .score-value{font-size:32px}
+  }
+  @media(max-width:360px){
+    .option-grid{grid-template-columns:1fr}
+    .stats-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="gradient-bg"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></a>
+      <h1 class="page-title"><i class="fas fa-file-pen"></i> Mode Examen</h1>
+    </div>
+    <div class="header-right" id="headerRight"></div>
+  </header>
+
+  <main class="container">
+    <!-- SCREEN 1: SETUP -->
+    <div class="screen active" id="setupScreen">
+      <div class="setup-intro">
+        <h2><i class="fas fa-graduation-cap"></i>Simulateur BAC</h2>
+        <p>Entraîne-toi dans les conditions réelles de l'examen du BAC Terminale D</p>
+      </div>
+
+      <!-- Subject -->
+      <div class="glass-card">
+        <div class="field-label"><i class="fas fa-book"></i> Matière</div>
+        <div class="subject-grid" id="subjectGrid">
+          <button class="subject-btn" data-subject="mathematiques" onclick="selectSubject('mathematiques')">
+            <i class="fas fa-square-root-variable"></i><span>Mathématiques</span>
+          </button>
+          <button class="subject-btn" data-subject="physique" onclick="selectSubject('physique')">
+            <i class="fas fa-bolt"></i><span>Physique</span>
+          </button>
+          <button class="subject-btn" data-subject="chimie" onclick="selectSubject('chimie')">
+            <i class="fas fa-flask"></i><span>Chimie</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chapter -->
+      <div class="glass-card">
+        <div class="field-label"><i class="fas fa-list-ol"></i> Chapitre</div>
+        <div class="select-wrap">
+          <select class="chapter-select" id="chapterSelect" onchange="updateQuestionCount()">
+            <option value="all">Tous les chapitres</option>
+          </select>
+        </div>
+        <div class="count-summary" id="countSummary"></div>
+      </div>
+
+      <!-- Duration -->
+      <div class="glass-card">
+        <div class="field-label"><i class="fas fa-clock"></i> Durée</div>
+        <div class="option-grid" id="durationGrid">
+          <button class="option-btn" data-dur="60" onclick="selectDuration(60)">1 heure</button>
+          <button class="option-btn" data-dur="120" onclick="selectDuration(120)">2 heures</button>
+          <button class="option-btn selected" data-dur="180" onclick="selectDuration(180)">3 heures</button>
+          <button class="option-btn" data-dur="240" onclick="selectDuration(240)">4 heures</button>
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="glass-card">
+        <div class="field-label"><i class="fas fa-shapes"></i> Type d'épreuve</div>
+        <div class="type-grid" id="typeGrid">
+          <button class="type-btn" data-type="exercises" onclick="selectType('exercises')">
+            <i class="fas fa-list-check"></i><span>Exercices</span>
+          </button>
+          <button class="type-btn selected" data-type="mixed" onclick="selectType('mixed')">
+            <i class="fas fa-layer-group"></i><span>Exercices + Problème</span>
+          </button>
+          <button class="type-btn" data-type="full" onclick="selectType('full')">
+            <i class="fas fa-scroll"></i><span>Sujet complet</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Strict Mode -->
+      <div class="glass-card">
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <i class="fas fa-shield-halved"></i>
+            <div class="ti-text">
+              <h4>Mode strict</h4>
+              <p>Interdit de quitter sans terminer</p>
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="strictToggle">
+            <div class="toggle-track"></div>
+            <div class="toggle-knob"></div>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="startBtn" onclick="startExam()" disabled>
+        <i class="fas fa-play"></i> Démarrer l'examen
+      </button>
+    </div>
+
+    <!-- SCREEN 2: EXAM -->
+    <div class="screen" id="examScreen">
+      <div class="exam-header">
+        <div class="timer-bar">
+          <i class="fas fa-stopwatch timer-icon"></i>
+          <div class="timer-info">
+            <div class="timer-label">Temps restant</div>
+            <div class="timer-display" id="timerDisplay">03:00:00</div>
+            <div class="timer-progress"><div class="timer-progress-fill progress-green" id="timerProgress" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div class="exam-meta">
+          <div class="exam-meta-left">
+            <span class="meta-badge" id="examSubjectBadge"></span>
+            <span class="meta-badge" id="examQuestionCounter"></span>
+          </div>
+          <div class="exam-meta-right">
+            <button class="meta-action" id="flagBtn" onclick="toggleFlag()" title="Marquer pour révision">
+              <i class="fas fa-flag"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="q-nav" id="questionNav"></div>
+
+      <div class="question-card" id="questionCard">
+        <div class="q-header">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="q-number" id="qNumber"></span>
+            <span class="q-chapter" id="qChapter"></span>
+          </div>
+          <div class="q-difficulty" id="qDifficulty"></div>
+        </div>
+        <div class="q-text" id="qText"></div>
+        <div class="q-score-badge" id="qScoreBadge"><i class="fas fa-star"></i> <span></span></div>
+        <div class="answer-area">
+          <div class="answer-label"><i class="fas fa-pen-nib"></i> Votre réponse</div>
+          <textarea class="answer-textarea" id="answerTextarea" placeholder="Rédigez votre réponse ici..." oninput="onAnswerInput()"></textarea>
+          <div class="answer-count" id="answerCount">0 caractères</div>
+        </div>
+      </div>
+
+      <div class="exam-actions">
+        <button class="exam-btn" id="prevBtn" onclick="prevQuestion()" disabled><i class="fas fa-chevron-left"></i> Précédent</button>
+        <button class="exam-btn danger" onclick="showQuitModal()"><i class="fas fa-xmark"></i> Abandonner</button>
+        <button class="exam-btn primary" id="nextBtn" onclick="nextQuestion()">Suivant <i class="fas fa-chevron-right"></i></button>
+      </div>
+      <button class="btn-primary" id="finishBtn" onclick="showFinishModal()" style="display:none">
+        <i class="fas fa-check-double"></i> Terminer l'examen
+      </button>
+    </div>
+
+    <!-- SCREEN 3: RESULTS -->
+    <div class="screen" id="resultsScreen">
+      <div class="result-hero">
+        <div class="score-circle" id="scoreCircle">
+          <span class="score-value" id="scoreValue">--</span>
+          <span class="score-max" id="scoreMax">/ 20</span>
+          <span class="score-label">Note</span>
+        </div>
+        <h2 id="resultTitle">Examen terminé</h2>
+        <p id="resultSubtitle"></p>
+      </div>
+
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="glass-card" style="padding:0">
+        <div style="padding:14px 16px 8px;border-bottom:1px solid rgba(255,255,255,.03)">
+          <div class="field-label" style="margin-bottom:0"><i class="fas fa-star-half-stroke"></i> Auto-évaluation</div>
+        </div>
+        <div id="evalList"></div>
+        <div class="eval-total-row">
+          <span class="eval-total-label">Total</span>
+          <span class="eval-total-value" id="evalTotal">0 / 0</span>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="result-btn secondary" onclick="showScreen('historyScreen')"><i class="fas fa-clock-rotate-left"></i> Historique</button>
+        <button class="result-btn primary" onclick="newExam()"><i class="fas fa-redo"></i> Nouvel examen</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: HISTORY -->
+    <div class="screen" id="historyScreen">
+      <div class="history-header">
+        <h3><i class="fas fa-clock-rotate-left" style="color:var(--accent-bright);margin-right:8px"></i>Historique</h3>
+        <button class="history-clear" onclick="clearHistory()"><i class="fas fa-trash-can"></i> Tout effacer</button>
+      </div>
+      <div id="historyList" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    </div>
+  </main>
+
+  <!-- QUIT MODAL -->
+  <div class="modal-overlay" id="quitModal">
+    <div class="modal-box">
+      <i class="fas fa-triangle-exclamation modal-icon"></i>
+      <h3>Abandonner l'examen ?</h3>
+      <p> Votre progression sera perdue et vous ne pourrez pas revoir vos réponses.</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="hideModal('quitModal')">Continuer</button>
+        <button class="modal-btn confirm" onclick="quitExam()">Abandonner</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINISH MODAL -->
+  <div class="modal-overlay" id="finishModal">
+    <div class="modal-box">
+      <i class="fas fa-circle-check modal-icon" style="color:var(--success)"></i>
+      <h3>Terminer l'examen ?</h3>
+      <p id="finishModalText">Vous avez répondu à 0 question(s) sur 0.</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="hideModal('finishModal')">Revenir</button>
+        <button class="modal-btn confirm" style="background:linear-gradient(135deg,var(--success),#1A5A3A)" onclick="finishExam()">Terminer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STRICT MODAL -->
+  <div class="modal-overlay" id="strictModal">
+    <div class="modal-box">
+      <i class="fas fa-lock modal-icon" style="color:var(--danger)"></i>
+      <h3>Mode strict activé</h3>
+      <p>Vous ne pouvez pas quitter l'examen en mode strict. Continuez votre travail.</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="hideModal('strictModal')" style="width:100%">D'accord</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIME UP MODAL -->
+  <div class="modal-overlay" id="timeUpModal">
+    <div class="modal-box">
+      <i class="fas fa-hourglass-end modal-icon" style="color:var(--danger)"></i>
+      <h3>Temps écoulé !</h3>
+      <p>Le temps imparti est terminé. Votre examen va être soumis automatiquement.</p>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="finishExam()" style="width:100%">Voir les résultats</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
+
+  <!-- ========== FIREBASE + APP ========== -->
+
+<script type="importmap">
+{ 
+  "imports": { 
+    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js", 
+    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  } 
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+// ✅ CONFIG UNIQUE - Projet ARVEXA (index.html)
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ PERSISTANCE
+await setPersistence(auth, browserLocalPersistence);
+
+// ✅ AUTH
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+    window.location.href = 'login.html';
+    return;
+  }
+  console.log('[Mode Examen] Connecté:', user.uid);
+  // ✅ Lancer l'app directement (pas initPage)
+  initApp();
+});
+
+  // ==================== SUBJECTS & CHAPTERS ====================
+  const SUBJECTS = {
+    mathematiques: {
+      name: 'Mathématiques', icon: 'fa-square-root-variable',
+      chapters: [
+        'Nombres complexes',
+        'Calcul de probabilités - Variable aléatoire',
+        'Fonction logarithme',
+        'Fonction exponentielle',
+        'Étude des fonctions numériques',
+        'Calcul intégral',
+        'Suites numériques',
+        'Équations différentielles'
+      ]
+    },
+    physique: {
+      name: 'Physique', icon: 'fa-bolt',
+      chapters: [
+        'Cinématique',
+        'Mouvement du centre d\'inertie',
+        'Mouvement dans le champ de pesanteur',
+        'Mouvement de particules chargées',
+        'Oscillateurs mécaniques de translation',
+        'Généralités sur les vibrations',
+        'Propagation d\'un phénomène vibratoire',
+        'Superposition de phénomènes vibratoires',
+        'Interférences d\'ondes lumineuses',
+        'Champ magnétique',
+        'Force de Lorentz',
+        'Force de Laplace',
+        'Induction électromagnétique',
+        'Auto-Induction',
+        'Circuit oscillant LC',
+        'Circuit en régime sinusoïdal forcé',
+        'Radioactivité'
+      ]
+    },
+    chimie: {
+      name: 'Chimie', icon: 'fa-flask',
+      chapters: [
+        'Solutions aqueuses',
+        'Solutions aqueuses d\'acide chlorhydrique et d\'hydroxyde de sodium',
+        'Couples acide / base',
+        'Réaction acide - base',
+        'Solution tampon',
+        'Alcools',
+        'Acides carboxyliques',
+        'Amines',
+        'Acides α-aminés'
+      ]
+    }
+  };
+
+  // ==================== SEED QUESTIONS ====================
+  const SEED_QUESTIONS = [
+    // ===== MATHÉMATIQUES - Ch1: Nombres complexes =====
+    {id:'m1_01',subject:'mathematiques',chapter:0,difficulty:1,maxScore:4,
+      text:'1. Soit z₁ = 3 + 4i et z₂ = 1 - 2i.\nCalculer :\na) z₁ + z₂\nb) z₁ × z₂\nc) z₁ / z₂\nd) |z₁| et arg(z₁)'
+    },
+    {id:'m1_02',subject:'mathematiques',chapter:0,difficulty:2,maxScore:5,
+      text:'2. Dans le plan complexe muni d\'un repère orthonormé (O, u⃗, v⃗), on considère les points A et B d\'affixes respectives z_A = 2 + i et z_B = -1 + 3i.\n\na) Déterminer l\'affixe du milieu I de [AB].\nb) Calculer la distance AB.\nc) Écrire sous forme exponentielle le nombre complexe z = z_B - z_A.'
+    },
+    {id:'m1_03',subject:'mathematiques',chapter:0,difficulty:2,maxScore:5,
+      text:'3. Résoudre dans ℂ les équations suivantes :\na) z² - 6z + 13 = 0\nb) z² + 4z + 29 = 0\nc) z⁴ - 16 = 0\n\nPour chaque solution, donner la forme algébrique et la forme exponentielle.'
+    },
+    {id:'m1_04',subject:'mathematiques',chapter:0,difficulty:3,maxScore:6,
+      text:'4. Soit f la transformation du plan qui à tout point M d\'affixe z associe le point M\' d\'affixe z\' telle que :\nz\' = (1 + i)z + 2 - i\n\na) Déterminer la nature et les éléments caractéristiques de f.\nb) Soit A le point d\'affixe 3 - i. Déterminer l\'affixe de A\' = f(A).\nc) Montrer que f est une similitude directe et préciser son rapport et son angle.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch2: Probabilités =====
+    {id:'m2_01',subject:'mathematiques',chapter:1,difficulty:1,maxScore:4,
+      text:'1. Une urne contient 5 boules rouges et 3 boules noires indiscernables au toucher.\nOn tire successivement et sans remise 2 boules.\n\na) Calculer la probabilité de tirer 2 boules rouges.\nb) Calculer la probabilité de tirer une boule de chaque couleur.\nc) Calculer la probabilité de tirer au moins une boule rouge.'
+    },
+    {id:'m2_02',subject:'mathematiques',chapter:1,difficulty:2,maxScore:5,
+      text:'2. Dans une classe de 40 élèves, 25 étudient l\'anglais, 18 l\'espagnol et 8 n\'étudient aucune de ces langues.\n\na) Représenter la situation par un diagramme de Venn.\nb) Calculer la probabilité qu\'un élève choisi au hasard étudie les deux langues.\nc) On choisit un élève qui étudie l\'anglais. Quelle est la probabilité qu\'il étudie aussi l\'espagnol ?'
+    },
+    {id:'m2_03',subject:'mathematiques',chapter:1,difficulty:2,maxScore:5,
+      text:'3. Soit X une variable aléatoire suivant la loi binomiale B(20 ; 0,3).\n\na) Calculer E(X) et V(X).\nb) Calculer P(X = 5) et P(X ≤ 3).\nc) Déterminer le plus grand entier k tel que P(X ≥ k) ≥ 0,05.'
+    },
+    {id:'m2_04',subject:'mathematiques',chapter:1,difficulty:3,maxScore:6,
+      text:'4. Une maladie touche 2% de la population. Un test de dépistage a les caractéristiques suivantes :\n- Sensibilité (probabilité que le test soit positif sachant que la personne est malade) : 0,95\n- Spécificité (probabilité que le test soit négatif sachant que la personne est saine) : 0,98\n\na) Construire un arbre de probabilités.\nb) Calculer la probabilité qu\'une personne soit malade sachant que le test est positif.\nc) Le test est-il fiable ? Justifier.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch3: Fonction logarithme =====
+    {id:'m3_01',subject:'mathematiques',chapter:2,difficulty:1,maxScore:4,
+      text:'1. Simplifier les expressions suivantes :\na) ln(e³) + 2ln(e)\nb) ln(8) - ln(2) + ln(4)\nc) ln(√e) × ln(e²)\nd) 3ln(2) + ln(5) - ln(10)'
+    },
+    {id:'m3_02',subject:'mathematiques',chapter:2,difficulty:2,maxScore:5,
+      text:'2. Soit f la fonction définie sur ]0 ; +∞[ par : f(x) = ln(x) / x.\n\na) Déterminer les limites de f aux bornes de son domaine de définition.\nb) Calculer la dérivée f\'(x) et dresser le tableau de variations de f.\nc) En déduire le maximum de f et pour quelle valeur de x il est atteint.'
+    },
+    {id:'m3_03',subject:'mathematiques',chapter:2,difficulty:3,maxScore:6,
+      text:'3. Soit f la fonction définie sur ]0 ; +∞[ par f(x) = x² - 2x + 1 - 4ln(x).\n\na) Calculer f\'(x) et vérifier que f\'(x) = 2(x - 1)(x - 2) / x.\nb) Dresser le tableau de variations complet de f.\nc) Déterminer le nombre de solutions de l\'équation f(x) = 0.\nd) Calculer l\'aire sous la courbe de f entre x = 1 et x = e.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch4: Fonction exponentielle =====
+    {id:'m4_01',subject:'mathematiques',chapter:3,difficulty:1,maxScore:4,
+      text:'1. Simplifier les expressions suivantes :\na) e² × e³ / e⁴\nb) (e⁻¹)³ × e⁵\nc) e^(ln(3)) + ln(e⁴)\nd) e^(2x) × e^(-x) / e^x pour x ∈ ℝ'
+    },
+    {id:'m4_02',subject:'mathematiques',chapter:3,difficulty:2,maxScore:5,
+      text:'2. Soit f la fonction définie sur ℝ par f(x) = (2x + 1)e^(-x).\n\na) Calculer les limites de f en +∞ et en -∞.\nb) Calculer f\'(x) et dresser le tableau de variations de f.\nc) Déterminer les coordonnées du point d\'inflexion de la courbe de f.'
+    },
+    {id:'m4_03',subject:'mathematiques',chapter:3,difficulty:3,maxScore:6,
+      text:'3. Soit f la fonction définie sur ℝ par f(x) = e^(2x) - 3e^x + 2.\n\na) Résoudre l\'équation f(x) = 0.\nb) Étudier les variations de f.\nc) Déterminer le signe de f(x) selon les valeurs de x.\nd) Calculer la primitive F de f telle que F(0) = 0.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch5: Étude des fonctions numériques =====
+    {id:'m5_01',subject:'mathematiques',chapter:4,difficulty:2,maxScore:5,
+      text:'1. Soit f la fonction définie sur ℝ par f(x) = x³ - 3x + 2.\n\na) Calculer f\'(x) et résoudre f\'(x) = 0.\nb) Dresser le tableau de variations de f.\nc) Déterminer les extremums locaux de f.\nd) Tracer l\'allure de la courbe représentative de f.'
+    },
+    {id:'m5_02',subject:'mathematiques',chapter:4,difficulty:3,maxScore:6,
+      text:'2. Soit f la fonction définie sur ]-1 ; +∞[ par f(x) = (x² + x + 1) / (x + 1).\n\na) Déterminer les limites de f aux bornes de son domaine.\nb) Montrer qu\'il existe une asymptote oblique d\'équation y = x en +∞.\nc) Calculer f\'(x) et étudier les variations de f.\nd) Déterminer les coordonnées du point d\'inflexion.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch6: Calcul intégral =====
+    {id:'m6_01',subject:'mathematiques',chapter:5,difficulty:1,maxScore:4,
+      text:'1. Calculer les intégrales suivantes :\na) I₁ = ∫₀¹ 3x² dx\nb) I₂ = ∫₀¹ e^x dx\nc) I₃ = ∫₁^e (1/x) dx\nd) I₄ = ∫₀^(π/2) cos(x) dx'
+    },
+    {id:'m6_02',subject:'mathematiques',chapter:5,difficulty:2,maxScore:5,
+      text:'2. Soit I = ∫₀¹ x²e^x dx.\n\na) En utilisant une intégration par parties, calculer I.\n(On posera u = x² et v\' = e^x)\nb) En déduire la valeur de J = ∫₀¹ x(x+1)e^x dx.'
+    },
+    {id:'m6_03',subject:'mathematiques',chapter:5,difficulty:3,maxScore:6,
+      text:'3. Pour tout entier naturel n, on pose :\nIₙ = ∫₀¹ xⁿe^(-x) dx\n\na) Calculer I₀ et I₁.\nb) À l\'aide d\'une intégration par parties, montrer que pour tout n ≥ 1 :\nIₙ = n × Iₙ₋₁ - e^(-1)\nc) En déduire I₃.\nd) Montrer que pour tout n, Iₙ ≥ 0 et que la suite (Iₙ) est décroissante.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch7: Suites numériques =====
+    {id:'m7_01',subject:'mathematiques',chapter:6,difficulty:1,maxScore:4,
+      text:'1. Soit (uₙ) la suite arithmétique de premier terme u₀ = 3 et de raison r = 5.\n\na) Calculer u₁₀ et u₂₅.\nb) Calculer S₁₀ = u₀ + u₁ + ... + u₁₀.\nc) À partir de quel rang n a-t-on uₙ > 200 ?'
+    },
+    {id:'m7_02',subject:'mathematiques',chapter:6,difficulty:2,maxScore:5,
+      text:'2. Soit (uₙ) la suite définie par u₀ = 2 et uₙ₊₁ = (2uₙ + 3) / (uₙ + 4) pour tout n ∈ ℕ.\n\na) Calculer u₁, u₂ et u₃.\nb) Soit vₙ = (uₙ - 1) / (uₙ + 3). Montrer que (vₙ) est une suite géométrique dont on déterminera la raison.\nc) En déduire l\'expression de uₙ en fonction de n.\nd) Déterminer la limite de (uₙ).'
+    },
+    {id:'m7_03',subject:'mathematiques',chapter:6,difficulty:3,maxScore:6,
+      text:'3. Soit (uₙ) la suite définie par u₀ = 1 et uₙ₊₁ = uₙ - uₙ².\n\na) Montrer par récurrence que pour tout n ∈ ℕ, 0 ≤ uₙ ≤ 1.\nb) Étudier la monotonie de la suite (uₙ).\nc) Montrer que la suite (uₙ) est convergente et déterminer sa limite.\nd) On pose vₙ = n × uₙ. Montrer que (vₙ) converge et déterminer sa limite.'
+    },
+
+    // ===== MATHÉMATIQUES - Ch8: Équations différentielles =====
+    {id:'m8_01',subject:'mathematiques',chapter:7,difficulty:1,maxScore:4,
+      text:'1. Résoudre les équations différentielles suivantes :\na) y\' = 3y\nb) y\' + 2y = 0\nc) y\' = -y + 4\nd) y\' - 5y = 0, avec y(0) = 2'
+    },
+    {id:'m8_02',subject:'mathematiques',chapter:7,difficulty:2,maxScore:5,
+      text:'2. Résoudre l\'équation différentielle : y\'\' + 4y = 0.\n\na) Déterminer la solution générale.\nb) Trouver la solution particulière vérifiant y(0) = 1 et y\'(0) = 0.\nc) Trouver la solution particulière vérifiant y(0) = 0 et y\'(0) = 2.'
+    },
+    {id:'m8_03',subject:'mathematiques',chapter:7,difficulty:3,maxScore:6,
+      text:'3. La température θ(t) (en °C) d\'un corps à l\'instant t (en minutes) vérifie l\'équation différentielle :\nθ\' + 0,05θ = 1\n\na) Résoudre cette équation différentielle.\nb) Sachant que θ(0) = 20°C, déterminer l\'expression de θ(t).\nc) Déterminer la limite de θ(t) quand t → +∞ et interpréter physiquement.\nd) Au bout de combien de temps la température atteint-elle 19°C ?'
+    },
+
+    // ===== PHYSIQUE - Ch1: Cinématique =====
+    {id:'p1_01',subject:'physique',chapter:0,difficulty:1,maxScore:4,
+      text:'1. Un mobile se déplace sur un axe rectiligne. Sa position en fonction du temps est donnée par :\nx(t) = 4t² - 3t + 2 (en m, t en s)\n\na) Calculer la vitesse v(t) et l\'accélération a(t).\nb) Quelle est la position du mobile à t = 3 s ?\nc) À quel instant le mobile est-il immobile ?'
+    },
+    {id:'p1_02',subject:'physique',chapter:0,difficulty:2,maxScore:5,
+      text:'2. Un automobiliste roule à 90 km/h lorsqu\'il voit un obstacle. Il freine avec une décélération de 5 m/s².\n\na) Convertir la vitesse initiale en m/s.\nb) Calculer la distance de freinage.\nc) Calculer le temps d\'arrêt.\nd) Quel serait le temps de réaction à 110 km/h pour la même distance d\'arrêt ?'
+    },
+
+    // ===== PHYSIQUE - Ch2: Mouvement du centre d'inertie =====
+    {id:'p2_01',subject:'physique',chapter:1,difficulty:2,maxScore:5,
+      text:'1. Un solide de masse m = 2 kg est lancé sur un plan incliné de 30° par rapport à l\'horizontale avec une vitesse initiale v₀ = 5 m/s. Les frottements sont négligeables.\n\na) Faire le bilan des forces et appliquer le théorème du centre d\'inertie.\nb) Déterminer l\'accélération du solide.\nc) Calculer la distance parcourue avant l\'arrêt.\nd) Le solide redescend-il ? Si oui, avec quelle vitesse revient-il au point de départ ?'
+    },
+    {id:'p2_02',subject:'physique',chapter:1,difficulty:3,maxScore:6,
+      text:'2. Un objet de masse m = 500 g est suspendu à un fil inextensible. On l\'écarte d\'un angle θ₀ = 20° et on le lâche sans vitesse initiale. (g = 9,8 m/s²)\n\na) Exprimer la tension du fil en fonction de l\'angle θ et de la vitesse v.\nb) En utilisant le théorème de l\'énergie cinétique, déterminer la vitesse de l\'objet au passage par la position d\'équilibre.\nc) Calculer la vitesse maximale.'
+    },
+
+    // ===== PHYSIQUE - Ch3: Champ de pesanteur =====
+    {id:'p3_01',subject:'physique',chapter:2,difficulty:2,maxScore:5,
+      text:'1. Une balle est lancée depuis le sol avec une vitesse v₀ = 20 m/s faisant un angle α = 45° avec l\'horizontale. (g = 10 m/s²)\n\na) Établir les équations horaires du mouvement.\nb) Déterminer l\'équation de la trajectoire.\nc) Calculer la portée et la flèche (hauteur maximale).\nd) Quelle doit être la valeur de α pour obtenir une portée maximale ?'
+    },
+    {id:'p3_02',subject:'physique',chapter:2,difficulty:3,maxScore:6,
+      text:'2. Un projectile est lancé depuis un point A situé à une hauteur h = 20 m au-dessus du sol, avec une vitesse v₀ = 15 m/s faisant un angle α = 30° avec l\'horizontale. (g = 9,8 m/s²)\n\na) Établir les équations paramétriques de la trajectoire.\nb) Déterminer l\'équation cartésienne de la trajectoire dans le repère (O, x, z) où O est le point au sol à la verticale de A.\nc) Calculer la portée horizontale.\nd) Déterminer la vitesse du projectile au moment de l\'impact au sol.'
+    },
+
+    // ===== PHYSIQUE - Ch4: Particules chargées =====
+    {id:'p4_01',subject:'physique',chapter:3,difficulty:2,maxScore:5,
+      text:'1. Un électron de masse m_e = 9,1 × 10⁻³¹ kg et de charge q = -1,6 × 10⁻¹⁹ C pénètre avec une vitesse v₀ = 10⁷ m/s dans un champ électrique uniforme E⃗ créé entre deux plaques parallèles distantes de d = 5 cm et de tension U = 1000 V.\n\na) Calculer l\'accélération de l\'électron entre les plaques.\nb) Déterminer la nature du mouvement.\nc) Calculer la déviation verticale lorsque l\'électron sort des plaques de longueur L = 10 cm.'
+    },
+
+    // ===== PHYSIQUE - Ch5: Oscillateurs mécaniques =====
+    {id:'p5_01',subject:'physique',chapter:4,difficulty:2,maxScore:5,
+      text:'1. Un ressort de raideur k = 50 N/m est fixé horizontalement. Un solide de masse m = 200 g est accroché à son extrémité libre. On écarte le solide de x₀ = 4 cm et on le lâche sans vitesse initiale. Les frottements sont négligés.\n\na) Exprimer l\'équation différentielle du mouvement.\nb) Déterminer la période propre T₀ des oscillations.\nc) Écrire l\'expression de x(t).\nd) Calculer l\'énergie mécanique totale du système.'
+    },
+    {id:'p5_02',subject:'physique',chapter:4,difficulty:3,maxScore:6,
+      text:'2. Un pendule élastique vertical est constitué d\'un ressort de raideur k et d\'une masse m = 100 g. À l\'équilibre, l\'allongement du ressort est Δl = 2 cm. (g = 10 m/s²)\n\na) Calculer la raideur k du ressort.\nb) On écarte la masse de 3 cm de sa position d\'équilibre et on la lâche. Écrire l\'équation différentielle du mouvement.\nc) Calculer la période des oscillations.\nd) Exprimer l\'énergie cinétique maximale et l\'énergie potentielle élastique maximale.'
+    },
+
+    // ===== PHYSIQUE - Ch6: Vibrations =====
+    {id:'p6_01',subject:'physique',chapter:5,difficulty:1,maxScore:4,
+      text:'1. a) Définir : vibration, amplitude, fréquence, période, longueur d\'onde.\nb) Un vibreur effectue 120 oscillations en 2 minutes. Calculer la fréquence et la période du mouvement.\nc) La célérité de l\'onde est v = 340 m/s. Calculer la longueur d\'onde.'
+    },
+
+    // ===== PHYSIQUE - Ch7: Propagation =====
+    {id:'p7_01',subject:'physique',chapter:6,difficulty:2,maxScore:5,
+      text:'1. Une onde progressive sinusoïdale de fréquence f = 50 Hz se propage avec une célérité v = 8 m/s.\n\na) Calculer la longueur d\'onde λ.\nb) Deux points M et N sont distants de d = 12 cm. Calculer la différence de phase entre M et N.\nc) À quelle distance de la source se trouve un point en opposition de phase avec la source ?'
+    },
+
+    // ===== PHYSIQUE - Ch8: Superposition =====
+    {id:'p8_01',subject:'physique',chapter:7,difficulty:2,maxScore:5,
+      text:'1. Deux ondes progressives de même fréquence f = 100 Hz se propagent en sens opposés sur une corde. La célérité est v = 20 m/s.\n\na) Quelle est la longueur d\'onde ?\nb) Qu\'appelle-t-on ondes stationnaires ?\nc) Déterminer les fréquences des 3 premiers modes propres si la corde mesure L = 1 m.'
+    },
+
+    // ===== PHYSIQUE - Ch9: Interférences =====
+    {id:'p9_01',subject:'physique',chapter:8,difficulty:2,maxScore:5,
+      text:'1. Dans une expérience d\'interférences lumineuses, deux fentes fines S₁ et S₂ sont distantes de a = 0,5 mm. L\'écran est à D = 2 m des fentes. On utilise une lumière de longueur d\'onde λ = 600 nm.\n\na) Calculer l\'interfrange i.\nb) Déterminer la position des 3 premières franges brillantes à partir du centre.\nc) On éloigne l\'écran à D = 3 m. Quelle est la nouvelle interfrange ?'
+    },
+    {id:'p9_02',subject:'physique',chapter:8,difficulty:3,maxScore:6,
+      text:'2. On réalise des interférences avec deux sources cohérentes S₁ et S₂ distantes de a = 1 mm. L\'écran est placé à D = 1,5 m.\n\na) La distance entre le 2ème frange brillante et le 5ème frange sombre est de 3,6 mm. Calculer la longueur d\'onde de la lumière utilisée.\nb) On remplace la source par une lumière blanche. Décrire ce qu\'on observe sur l\'écran au centre O et loin de O.'
+    },
+
+    // ===== PHYSIQUE - Ch10: Champ magnétique =====
+    {id:'p10_01',subject:'physique',chapter:9,difficulty:2,maxScore:5,
+      text:'1. Un fil rectiligne infini est parcouru par un courant d\'intensité I = 10 A.\n\na) Rappeler l\'expression du champ magnétique créé par ce fil à une distance r.\nb) Calculer le champ magnétique à 5 cm du fil. (μ₀ = 4π × 10⁻⁷ T·m/A)\nc) Représenter les lignes de champ et préciser leur orientation.'
+    },
+
+    // ===== PHYSIQUE - Ch11: Force de Lorentz =====
+    {id:'p11_01',subject:'physique',chapter:10,difficulty:2,maxScore:5,
+      text:'1. Un proton de masse m_p = 1,67 × 10⁻²⁷ kg et de charge q = 1,6 × 10⁻¹⁹ C pénètre avec une vitesse v₀ = 10⁶ m/s dans un champ magnétique uniforme B⃗ = 0,1 T perpendiculaire à v₀.\n\na) Rappeler l\'expression de la force de Lorentz.\nb) Montrer que le mouvement du proton est circulaire uniforme.\nc) Calculer le rayon de la trajectoire.\nd) Calculer la période de rotation.'
+    },
+
+    // ===== PHYSIQUE - Ch12: Force de Laplace =====
+    {id:'p12_01',subject:'physique',chapter:11,difficulty:2,maxScore:5,
+      text:'1. Un conducteur rectiligne de longueur L = 20 cm, parcouru par un courant I = 5 A, est placé dans un champ magnétique uniforme B = 0,3 T. Le conducteur fait un angle de 90° avec le champ.\n\na) Calculer la force de Laplace qui s\'exerce sur le conducteur.\nb) Quelle est la direction et le sens de cette force ? (règle des trois doigts)\nc) Le conducteur fait maintenant un angle de 30° avec B⃗. Calculer la nouvelle force.'
+    },
+
+    // ===== PHYSIQUE - Ch13: Induction =====
+    {id:'p13_01',subject:'physique',chapter:12,difficulty:2,maxScore:5,
+      text:'1. Une bobine de N = 500 spires est traversée par un flux magnétique qui varie de Φ₁ = 0,02 Wb à Φ₂ = 0,05 Wb en Δt = 0,01 s.\n\na) Énoncer la loi de Faraday.\nb) Calculer la force électromotrice (f.é.m.) induite moyenne.\nc) Si la résistance de la bobine est R = 10 Ω, calculer l\'intensité du courant induit.'
+    },
+
+    // ===== PHYSIQUE - Ch14: Auto-induction =====
+    {id:'p14_01',subject:'physique',chapter:13,difficulty:2,maxScore:5,
+      text:'1. Une bobine d\'inductance L = 0,5 H et de résistance négligeable est parcourue par un courant i(t) = 2t (en A, t en s).\n\na) Calculer la f.é.m. d\'auto-induction e.\nb) Calculer l\'énergie emmagasinée dans la bobine à t = 2 s.\nc) Le courant passe de 2 A à 5 A en 0,01 s. Calculer la f.é.m. moyenne induite.'
+    },
+
+    // ===== PHYSIQUE - Ch15: Circuit LC =====
+    {id:'p15_01',subject:'physique',chapter:14,difficulty:2,maxScore:5,
+      text:'1. Un circuit LC est constitué d\'un condensateur de capacité C = 10 µF initialement chargé sous une tension U₀ = 12 V et d\'une bobine d\'inductance L = 0,1 H de résistance négligeable.\n\na) Établir l\'équation différentielle régissant la charge q(t) du condensateur.\nb) Déterminer la période propre T₀ des oscillations.\nc) Écrire les expressions de q(t) et u_C(t).\nd) Calculer l\'énergie totale du circuit et vérifier sa conservation.'
+    },
+    {id:'p15_02',subject:'physique',chapter:14,difficulty:3,maxScore:6,
+      text:'2. Dans un circuit LC idéal (L = 0,2 H, C = 5 µF), le condensateur est initialement chargé sous U₀ = 10 V.\n\na) Calculer la charge initiale Q₀ du condensateur.\nb) Déterminer la période et la fréquence propre du circuit.\nc) À quel instant la tension aux bornes du condensateur est-elle nulle pour la première fois ?\nd) Calculer l\'intensité maximale du courant dans le circuit.'
+    },
+
+    // ===== PHYSIQUE - Ch16: Régime sinusoïdal forcé =====
+    {id:'p16_01',subject:'physique',chapter:15,difficulty:3,maxScore:6,
+      text:'1. Un circuit RLC série (R = 100 Ω, L = 0,1 H, C = 10 µF) est alimenté par une tension sinusoïdale u(t) = U₀√2 cos(ωt) avec U₀ = 220 V.\n\na) Calculer l\'impédance Z du circuit pour ω = 1000 rad/s.\nb) Déterminer la fréquence de résonance f₀.\nc) À la résonance, calculer l\'intensité efficace du courant et la tension aux bornes du condensateur.'
+    },
+
+    // ===== PHYSIQUE - Ch17: Radioactivité =====
+    {id:'p17_01',subject:'physique',chapter:16,difficulty:1,maxScore:4,
+      text:'1. a) Écrire les équations de désintégration suivantes :\n   ²²⁶₈₈Ra → ... + ⁴₂He\n   ¹⁴₆C → ¹⁴₇N + ...\n   ... → ²³⁴₉₀Th + ⁴₂He  (Uranium 238)\n\nb) Le carbone 14 a une demi-vie T = 5730 ans. Un échantillon contient 1/8 de la quantité initiale de ¹⁴C. Quel est l\'âge de l\'échantillon ?'
+    },
+    {id:'p17_02',subject:'physique',chapter:16,difficulty:2,maxScore:5,
+      text:'2. L\'activité initiale d\'un échantillon radioactif est A₀ = 800 Bq. Après t = 6 heures, l\'activité est A = 100 Bq.\n\na) Calculer la constante radioactive λ.\nb) En déduire la demi-vie T du radioélément.\nc) Calculer le nombre de noyaux présents à t = 0 et à t = 6 h.\nd) Au bout de combien de temps l\'activité sera-t-elle de 50 Bq ?'
+    },
+    {id:'p17_03',subject:'physique',chapter:16,difficulty:3,maxScore:6,
+      text:'3. On étudie la désintégration du Cobalt 60 (⁶⁰₂₇Co) en Nickel 60 (⁶⁰₂₈Ni).\nLa demi-vie du Cobalt 60 est T = 5,27 ans.\n\na) Écrire l\'équation de désintégration et identifier la particule émise.\nb) Un échantillon de masse m = 2 g de Cobalt 60 pur est placé dans un laboratoire. Calculer l\'activité initiale de l\'échantillon. (N_A = 6,02 × 10²³ mol⁻¹)\nc) Quelle masse de Cobalt 60 reste-t-il après 15,81 ans ?\nd) Calculer l\'énergie libérée par la désintégration d\'un noyau de Cobalt 60, sachant que :\n   m(⁶⁰₂₇Co) = 59,93381 u ; m(⁶⁰₂₈Ni) = 59,93078 u ; m(électron) = 0,00055 u\n   (1 u = 931,5 MeV/c²)'
+    },
+
+    // ===== CHIMIE - Ch1: Solutions aqueuses =====
+    {id:'c1_01',subject:'chimie',chapter:0,difficulty:1,maxScore:4,
+      text:'1. a) Définir : soluté, solvant, solution aqueuse, concentration molaire, concentration massique.\nb) On dissout 5,85 g de chlorure de sodium (NaCl) dans 250 mL d\'eau.\n   Calculer la concentration molaire de la solution. (M(NaCl) = 58,5 g/mol)\nc) En déduire la concentration massique.'
+    },
+    {id:'c1_02',subject:'chimie',chapter:0,difficulty:2,maxScore:5,
+      text:'2. On prépare une solution S de sulfate de cuivre (CuSO₄) en dissolvant 16 g de CuSO₄ dans 500 mL d\'eau.\n(M(Cu) = 64 g/mol ; M(S) = 32 g/mol ; M(O) = 16 g/mol)\n\na) Calculer la concentration molaire de la solution S.\nb) On prélève 25 mL de S et on dilue jusqu\'à 250 mL pour obtenir S\'. Calculer la concentration de S\'.\nc) Quelle est la concentration en ions Cu²⁺ dans S\' ?'
+    },
+
+    // ===== CHIMIE - Ch2: HCl et NaOH =====
+    {id:'c2_01',subject:'chimie',chapter:1,difficulty:2,maxScore:5,
+      text:'1. On dispose d\'une solution commerciale d\'acide chlorhydrique de densité d = 1,18 et de pourcentage massique P = 36%.\n(M(HCl) = 36,5 g/mol)\n\na) Calculer la concentration molaire de la solution commerciale.\nb) On veut préparer 500 mL d\'une solution S de concentration C = 0,1 mol/L. Quel volume de solution commerciale faut-il prélever ?\nc) On dose 20 mL de S par une solution de NaOH de concentration C_B = 0,1 mol/L. Le volume équivalent est V_E = 20 mL. Que peut-on en déduire ?'
+    },
+
+    // ===== CHIMIE - Ch3: Couples acide/base =====
+    {id:'c3_01',subject:'chimie',chapter:2,difficulty:1,maxScore:4,
+      text:'1. a) Rappeler la définition d\'un acide et d\'une base selon Brønsted.\nb) Pour chacun des couples suivants, identifier l\'acide et la base :\n   CH₃COOH/CH₃COO⁻ ; NH₄⁺/NH₃ ; H₃O⁺/H₂O ; H₂O/OH⁻\nc) Écrire la réaction de l\'acide acétique CH₃COOH avec l\'eau.'
+    },
+    {id:'c3_02',subject:'chimie',chapter:2,difficulty:2,maxScore:5,
+      text:'2. a) Classer les acides suivants par force croissante et justifier :\n   HCl (pKa = -7) ; CH₃COOH (pKa = 4,8) ; HCN (pKa = 9,2)\nb) On a la réaction : CH₃COOH + NH₃ → CH₃COO⁻ + NH₄⁺\n   En utilisant les pKa, montrer que cette réaction est favorisée dans le sens direct.\nc) Calculer la constante d\'équilibre K de cette réaction.'
+    },
+
+    // ===== CHIMIE - Ch4: Réaction acide-base =====
+    {id:'c4_01',subject:'chimie',chapter:3,difficulty:2,maxScore:5,
+      text:'1. On dose 20 mL d\'une solution d\'acide chlorhydrique par une solution d\'hydroxyde de sodium de concentration C_B = 0,1 mol/L, en utilisant un pH-mètre.\n\na) Écrire l\'équation de la réaction de dosage.\nb) Le volume équivalent est V_E = 15 mL. Calculer la concentration de l\'acide.\nc) Calculer le pH à l\'équivalence et préciser la nature de la solution à ce point.\nd) Quel indicateur coloré peut-on utiliser ? Justifier.'
+    },
+    {id:'c4_02',subject:'chimie',chapter:3,difficulty:3,maxScore:6,
+      text:'2. On veut déterminer le pKa de l\'acide éthanoïque (CH₃COOH) par dosage pH-métrique.\nOn dose 20 mL d\'une solution de CH₃COOH de concentration C_A = 0,1 mol/L par NaOH de concentration C_B = 0,1 mol/L.\n\na) Écrire l\'équation bilan du dosage.\nb) À la demi-équivalence, le pH mesuré est pH = 4,8. En déduire le pKa du couple CH₃COOH/CH₃COO⁻.\nc) Calculer le pH initial de la solution d\'acide éthanoïque.\nd) Faire l\'inventaire de toutes les espèces présentes à l\'équivalence et calculer le pH à l\'équivalence.'
+    },
+
+    // ===== CHIMIE - Ch5: Solution tampon =====
+    {id:'c5_01',subject:'chimie',chapter:4,difficulty:2,maxScore:5,
+      text:'1. a) Définir une solution tampon et donner ses propriétés.\nb) On prépare une solution tampon en mélangeant 100 mL d\'acide éthanoïque CH₃COOH à 0,1 mol/L et 100 mL d\'éthanoate de sodium CH₃COONa à 0,1 mol/L. (pKa = 4,8)\n   Calculer le pH de cette solution.\nc) On ajoute 1 mL d\'acide chlorhydrique concentré (12 mol/L) à 200 mL de cette solution tampon.\n   Calculer le nouveau pH et comparer avec l\'ajout à 200 mL d\'eau pure. (On négligera la variation de volume)'
+    },
+
+    // ===== CHIMIE - Ch6: Alcools =====
+    {id:'c6_01',subject:'chimie',chapter:5,difficulty:1,maxScore:4,
+      text:'1. a) Définir un alcool. Quels sont les trois types d\'alcools (primaire, secondaire, tertiaire) ? Donner un exemple de chaque.\nb) Écrire l\'équation de combustion complète du méthanol CH₃OH.\nc) Écrire l\'équation de l\'oxydation ménagée de l\'éthanol CH₃CH₂OH par le permanganate de potassium en milieu acide. Identifier les produits possibles selon l\'oxydant utilisé.'
+    },
+    {id:'c6_02',subject:'chimie',chapter:5,difficulty:2,maxScore:5,
+      text:'2. On réalise l\'oxydation ménagée d\'un alcool A de formule C₃H₈O par le dichromate de potassium en milieu acide. On obtient un composé B qui donne un précipité jaune avec la DNPH et ne réagit pas avec la liqueur de Fehling.\n\na) Identifier l\'alcool A et le composé B. Justifier.\nb) Écrire les équations des réactions successives possibles de l\'oxydation de A.\nc) Comment distinguer expérimentalement A de B ?'
+    },
+
+    // ===== CHIMIE - Ch7: Acides carboxyliques =====
+    {id:'c7_01',subject:'chimie',chapter:6,difficulty:2,maxScore:5,
+      text:'1. a) Écrire la formule générale d\'un acide carboxylique. Donner deux exemples.\nb) On mélange de l\'acide éthanoïque CH₃COOH et de l\'éthanol CH₃CH₂OH en présence d\'acide sulfurique concentré.\n   Écrire l\'équation de la réaction (estérification).\nc) On utilise 0,2 mol d\'acide et 0,2 mol d\'alcool. À l\'équilibre, il reste 0,06 mol d\'acide.\n   Calculer le rendement de la réaction et la constante d\'équilibre K.'
+    },
+
+    // ===== CHIMIE - Ch8: Amines =====
+    {id:'c8_01',subject:'chimie',chapter:7,difficulty:2,maxScore:5,
+      text:'1. a) Définir une amine. Distinguer amine primaire, secondaire et tertiaire par des exemples.\nb) Écrire la réaction d\'une amine primaire R-NH₂ avec l\'acide chlorhydrique.\nc) L\'éthanamine CH₃CH₂NH₂ a un pKb = 3,3. Calculer son pKa. Cette amine est-elle plus forte ou plus faible que l\'ammoniac NH₃ (pKa = 9,2) ?'
+    },
+
+    // ===== CHIMIE - Ch9: Acides α-aminés =====
+    {id:'c9_01',subject:'chimie',chapter:8,difficulty:2,maxScore:5,
+      text:'1. a) Qu\'est-ce qu\'un acide α-aminé ? Donner la formule générale.\nb) Écrire la forme zwitterion de l\'alanine (CH₃-CH(NH₂)-COOH).\nc) Le point isoélectrique de l\'alanine est pI = 6,0. Représenter la forme prédominante de l\'alanine à pH = 3, à pH = 6 et à pH = 9.'
+    },
+    {id:'c9_02',subject:'chimie',chapter:8,difficulty:3,maxScore:6,
+      text:'2. a) Qu\'est-ce qu\'une liaison peptidique ? Écrire l\'équation de formation d\'un dipeptide à partir de la glycine (Gly) et de l\'alanine (Ala).\nb) On obtient deux dipeptides différents. Les identifier.\nc) L\'hydrolyse d\'un tripeptide donne : glycine, alanine, valine. Combien de tripeptides différents peut-on obtenir ? Justifier.'
+    }
+  ];
+
+  // ==================== APP STATE ====================
+  let state = {
+    selectedSubject: null,
+    selectedChapter: 'all',
+    selectedDuration: 180,
+    selectedType: 'mixed',
+    strictMode: false,
+    // exam state
+    exam: null,
+    currentQIndex: 0,
+    timer: null,
+    remainingSeconds: 0,
+    autoSaveTimer: null
+  };
+
+  // ==================== INIT ====================
+  function initApp() {
+    console.log('[Mode Examen] Initialisation...');
+    loadQuestions();
+    checkForResumableExam();
+  }
+
+  function loadQuestions() {
+    let stored = localStorage.getItem('arvexa_exam_questions');
+    if (!stored) {
+      localStorage.setItem('arvexa_exam_questions', JSON.stringify(SEED_QUESTIONS));
+      console.log('[Mode Examen] ' + SEED_QUESTIONS.length + ' questions initiales chargées');
+    } else {
+      let existing = JSON.parse(stored);
+      // Add seed questions that don't exist yet (for admin additions later)
+      let existingIds = new Set(existing.map(q => q.id));
+      let newQuestions = SEED_QUESTIONS.filter(q => !existingIds.has(q.id));
+      if (newQuestions.length > 0) {
+        existing = existing.concat(newQuestions);
+        localStorage.setItem('arvexa_exam_questions', JSON.stringify(existing));
+      }
+      console.log('[Mode Examen] ' + existing.length + ' questions disponibles');
+    }
+  }
+
+  function getQuestions() {
+    return JSON.parse(localStorage.getItem('arvexa_exam_questions') || '[]');
+  }
+
+  function checkForResumableExam() {
+    let saved = sessionStorage.getItem('arvexa_exam_current');
+    if (saved) {
+      try {
+        let exam = JSON.parse(saved);
+        let elapsed = Math.floor((Date.now() - exam.startedAt) / 1000);
+        let totalSec = exam.duration * 60;
+        if (elapsed < totalSec) {
+          // Exam can be resumed
+          showResumeModal(exam, totalSec - elapsed);
+        } else {
+          sessionStorage.removeItem('arvexa_exam_current');
+        }
+      } catch(e) {
+        sessionStorage.removeItem('arvexa_exam_current');
+      }
+    }
+  }
+
+  function showResumeModal(exam, remaining) {
+    // For simplicity, auto-clear if too old, otherwise let user know
+    // We don't auto-resume, but could add a modal
+    sessionStorage.removeItem('arvexa_exam_current');
+  }
+
+  // ==================== SETUP SCREEN ====================
+  function selectSubject(subject) {
+    state.selectedSubject = subject;
+    document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`[data-subject="${subject}"]`).classList.add('selected');
+    populateChapters();
+    updateStartButton();
+  }
+
+  function populateChapters() {
+    let sel = document.getElementById('chapterSelect');
+    sel.innerHTML = '<option value="all">Tous les chapitres</option>';
+    if (!state.selectedSubject) return;
+    let chapters = SUBJECTS[state.selectedSubject].chapters;
+    chapters.forEach((ch, i) => {
+      let opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = 'Ch. ' + (i + 1) + ' — ' + ch;
+      sel.appendChild(opt);
+    });
+    state.selectedChapter = 'all';
+    updateQuestionCount();
+  }
+
+  function selectDuration(dur) {
+    state.selectedDuration = dur;
+    document.querySelectorAll('#durationGrid .option-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`[data-dur="${dur}"]`).classList.add('selected');
+  }
+
+  function selectType(type) {
+    state.selectedType = type;
+    document.querySelectorAll('#typeGrid .type-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+  }
+
+  function updateQuestionCount() {
+    let questions = getQuestions().filter(q => q.subject === state.selectedSubject);
+    if (state.selectedChapter !== 'all') {
+      questions = questions.filter(q => q.chapter === parseInt(state.selectedChapter));
+    }
+    let el = document.getElementById('countSummary');
+    el.innerHTML = '<strong>' + questions.length + '</strong> exercice(s) disponible(s)';
+  }
+
+  function updateStartButton() {
+    let questions = getQuestions().filter(q => q.subject === state.selectedSubject);
+    if (state.selectedChapter !== 'all') {
+      questions = questions.filter(q => q.chapter === parseInt(state.selectedChapter));
+    }
+    document.getElementById('startBtn').disabled = questions.length === 0;
+  }
+
+  // ==================== START EXAM ====================
+  function startExam() {
+    if (!state.selectedSubject) return;
+
+    state.strictMode = document.getElementById('strictToggle').checked;
+
+    // Get available questions
+    let allQuestions = getQuestions().filter(q => q.subject === state.selectedSubject);
+    if (state.selectedChapter !== 'all') {
+      allQuestions = allQuestions.filter(q => q.chapter === parseInt(state.selectedChapter));
+    }
+
+    if (allQuestions.length === 0) {
+      showToast('Aucun exercice disponible pour cette sélection');
+      return;
+    }
+
+    // Determine number of questions based on type and duration
+    let numQuestions = getNumQuestions(allQuestions.length, state.selectedDuration, state.selectedType);
+
+    // Random selection with anti-repetition
+    let selectedQuestions = getRandomQuestions(allQuestions, numQuestions);
+
+    // Create exam object
+    state.exam = {
+      id: 'exam_' + Date.now(),
+      subject: state.selectedSubject,
+      subjectName: SUBJECTS[state.selectedSubject].name,
+      chapter: state.selectedChapter,
+      duration: state.selectedDuration,
+      type: state.selectedType,
+      strict: state.strictMode,
+      questions: selectedQuestions,
+      answers: new Array(selectedQuestions.length).fill(''),
+      flagged: new Array(selectedQuestions.length).fill(false),
+      scores: new Array(selectedQuestions.length).fill(null),
+      startedAt: Date.now(),
+      finishedAt: null
+    };
+
+    state.currentQIndex = 0;
+    state.remainingSeconds = state.selectedDuration * 60;
+
+    // Show exam screen
+    showScreen('examScreen');
+    document.getElementById('backBtn').href = '#';
+    document.getElementById('backBtn').onclick = handleBackDuringExam;
+
+    // Setup exam UI
+    setupExamUI();
+    startTimer();
+    showQuestion(0);
+    startAutoSave();
+
+    showToast('Examen démarré — Bon courage !');
+  }
+
+  function getNumQuestions(available, duration, type) {
+    let max;
+    switch(type) {
+      case 'exercises': max = Math.min(available, Math.max(3, Math.floor(duration / 30))); break;
+      case 'mixed': max = Math.min(available, Math.max(4, Math.floor(duration / 25))); break;
+      case 'full': max = Math.min(available, Math.max(5, Math.floor(duration / 20))); break;
+      default: max = Math.min(available, 5);
+    }
+    return Math.max(1, max);
+  }
+
+  function getRandomQuestions(pool, count) {
+    count = Math.min(count, pool.length);
+    let recentIds = getRecentQuestionIds();
+
+    // Separate into recent and non-recent
+    let nonRecent = pool.filter(q => !recentIds.has(q.id));
+    let recent = pool.filter(q => recentIds.has(q.id));
+
+    // Shuffle both arrays
+    shuffleArray(nonRecent);
+    shuffleArray(recent);
+
+    // Prioritize non-recent questions
+    let selected = [];
+    let fromNonRecent = Math.min(count, nonRecent.length);
+    selected = nonRecent.slice(0, fromNonRecent);
+
+    if (selected.length < count) {
+      let remaining = count - selected.length;
+      selected = selected.concat(recent.slice(0, remaining));
+    }
+
+    // Shuffle final selection for random order
+    shuffleArray(selected);
+    return selected;
+  }
+
+  function getRecentQuestionIds() {
+    let history = JSON.parse(localStorage.getItem('arvexa_exam_history') || '[]');
+    let recentIds = new Set();
+    let limit = 3; // remember last 3 exams
+    let exams = history.slice(-limit);
+    exams.forEach(exam => {
+      if (exam.questionIds) {
+        exam.questionIds.forEach(id => recentIds.add(id));
+      }
+    });
+    return recentIds;
+  }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // ==================== EXAM UI ====================
+  function setupExamUI() {
+    let exam = state.exam;
+    document.getElementById('examSubjectBadge').innerHTML =
+      '<i class="fas ' + SUBJECTS[exam.subject].icon + '"></i> ' + exam.subjectName;
+
+    // Build question navigation dots
+    let nav = document.getElementById('questionNav');
+    nav.innerHTML = '';
+    exam.questions.forEach((q, i) => {
+      let dot = document.createElement('button');
+      dot.className = 'q-nav-dot' + (i === 0 ? ' active' : '');
+      dot.textContent = i + 1;
+      dot.onclick = () => showQuestion(i);
+      nav.appendChild(dot);
+    });
+
+    updateQuestionCounter();
+  }
+
+  function updateQuestionCounter() {
+    let exam = state.exam;
+    let answered = exam.answers.filter(a => a.trim().length > 0).length;
+    document.getElementById('examQuestionCounter').textContent = answered + '/' + exam.questions.length + ' répondues';
+  }
+
+  function showQuestion(index) {
+    // Save current answer before switching
+    if (state.exam && state.exam.answers[state.currentQIndex] !== undefined) {
+      state.exam.answers[state.currentQIndex] = document.getElementById('answerTextarea').value;
+    }
+
+    state.currentQIndex = index;
+    let q = state.exam.questions[index];
+    let chapterName = SUBJECTS[state.exam.subject].chapters[q.chapter];
+
+    // Update question content
+    document.getElementById('qNumber').textContent = 'Question ' + (index + 1);
+    document.getElementById('qChapter').textContent = chapterName;
+    document.getElementById('qText').textContent = q.text;
+    document.getElementById('qScoreBadge').querySelector('span').textContent = q.maxScore + ' point(s)';
+
+    // Difficulty dots
+    let diffHtml = '';
+    for (let i = 0; i < 3; i++) {
+      diffHtml += '<div class="dot' + (i < q.difficulty ? ' filled' : '') + '"></div>';
+    }
+    document.getElementById('qDifficulty').innerHTML = diffHtml;
+
+    // Load answer
+    document.getElementById('answerTextarea').value = state.exam.answers[index] || '';
+    updateAnswerCount();
+
+    // Update nav dots
+    document.querySelectorAll('.q-nav-dot').forEach((dot, i) => {
+      dot.classList.remove('active');
+      if (i === index) dot.classList.add('active');
+    });
+
+    // Update flag button
+    updateFlagBtn();
+
+    // Update nav/finish buttons
+    document.getElementById('prevBtn').disabled = index === 0;
+    if (index === state.exam.questions.length - 1) {
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('finishBtn').style.display = 'flex';
+    } else {
+      document.getElementById('nextBtn').style.display = 'flex';
+      document.getElementById('finishBtn').style.display = 'none';
+    }
+  }
+
+  function prevQuestion() {
+    if (state.currentQIndex > 0) showQuestion(state.currentQIndex - 1);
+  }
+
+  function nextQuestion() {
+    if (state.currentQIndex < state.exam.questions.length - 1) {
+      showQuestion(state.currentQIndex + 1);
+    }
+  }
+
+  function onAnswerInput() {
+    state.exam.answers[state.currentQIndex] = document.getElementById('answerTextarea').value;
+    updateAnswerCount();
+    updateNavDot(state.currentQIndex);
+    updateQuestionCounter();
+  }
+
+  function updateAnswerCount() {
+    let len = document.getElementById('answerTextarea').value.length;
+    document.getElementById('answerCount').textContent = len + ' caractère' + (len > 1 ? 's' : '');
+  }
+
+  function updateNavDot(index) {
+    let dot = document.querySelectorAll('.q-nav-dot')[index];
+    if (!dot) return;
+    if (state.exam.answers[index] && state.exam.answers[index].trim().length > 0) {
+      dot.classList.add('answered');
+    } else {
+      dot.classList.remove('answered');
+    }
+  }
+
+  function toggleFlag() {
+    state.exam.flagged[state.currentQIndex] = !state.exam.flagged[state.currentQIndex];
+    updateFlagBtn();
+    let dot = document.querySelectorAll('.q-nav-dot')[state.currentQIndex];
+    if (state.exam.flagged[state.currentQIndex]) {
+      dot.classList.add('flagged');
+    } else {
+      dot.classList.remove('flagged');
+    }
+  }
+
+  function updateFlagBtn() {
+    let btn = document.getElementById('flagBtn');
+    if (state.exam.flagged[state.currentQIndex]) {
+      btn.classList.add('flagged');
+    } else {
+      btn.classList.remove('flagged');
+    }
+  }
+
+  // ==================== TIMER ====================
+  function startTimer() {
+    updateTimerDisplay();
+    state.timer = setInterval(() => {
+      state.remainingSeconds--;
+      updateTimerDisplay();
+
+      if (state.remainingSeconds <= 0) {
+        clearInterval(state.timer);
+        document.getElementById('timeUpModal').classList.add('active');
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    let totalSec = state.selectedDuration * 60;
+    let remaining = Math.max(0, state.remainingSeconds);
+    let h = Math.floor(remaining / 3600);
+    let m = Math.floor((remaining % 3600) / 60);
+    let s = remaining % 60;
+    let display = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+
+    let el = document.getElementById('timerDisplay');
+    el.textContent = display;
+    el.classList.remove('warning', 'danger');
+
+    let pct = (remaining / totalSec) * 100;
+    let fill = document.getElementById('timerProgress');
+    fill.style.width = pct + '%';
+    fill.classList.remove('progress-green', 'progress-yellow', 'progress-red');
+
+    if (pct <= 10) {
+      el.classList.add('danger');
+      fill.classList.add('progress-red');
+    } else if (pct <= 25) {
+      el.classList.add('warning');
+      fill.classList.add('progress-yellow');
+    } else {
+      fill.classList.add('progress-green');
+    }
+  }
+
+  // ==================== AUTO-SAVE ====================
+  function startAutoSave() {
+    state.autoSaveTimer = setInterval(() => {
+      if (state.exam) {
+        state.exam.answers[state.currentQIndex] = document.getElementById('answerTextarea').value;
+        sessionStorage.setItem('arvexa_exam_current', JSON.stringify(state.exam));
+      }
+    }, 30000);
+  }
+
+  // ==================== MODALS ====================
+  function showQuitModal() {
+    if (state.strictMode) {
+      document.getElementById('strictModal').classList.add('active');
+      return;
+    }
+    document.getElementById('quitModal').classList.add('active');
+  }
+
+  function showFinishModal() {
+    // Save current answer
+    state.exam.answers[state.currentQIndex] = document.getElementById('answerTextarea').value;
+
+    let answered = state.exam.answers.filter(a => a.trim().length > 0).length;
+    let total = state.exam.questions.length;
+    document.getElementById('finishModalText').textContent =
+      'Vous avez répondu à ' + answered + ' question(s) sur ' + total + '.';
+    document.getElementById('finishModal').classList.add('active');
+  }
+
+  function hideModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  function quitExam() {
+    hideModal('quitModal');
+    cleanupExam();
+    showScreen('setupScreen');
+    resetSetupUI();
+  }
+
+  function finishExam() {
+    hideModal('finishModal');
+    hideModal('timeUpModal');
+
+    // Save final answer
+    if (document.getElementById('answerTextarea')) {
+      state.exam.answers[state.currentQIndex] = document.getElementById('answerTextarea').value;
+    }
+
+    state.exam.finishedAt = Date.now();
+    cleanupExam();
+
+    // Show results
+    showResults();
+  }
+
+  function cleanupExam() {
+    if (state.timer) clearInterval(state.timer);
+    if (state.autoSaveTimer) clearInterval(state.autoSaveTimer);
+    sessionStorage.removeItem('arvexa_exam_current');
+
+    // Restore back button
+    document.getElementById('backBtn').href = 'index.html';
+    document.getElementById('backBtn').onclick = null;
+  }
+
+  function handleBackDuringExam(e) {
+    e.preventDefault();
+    showQuitModal();
+  }
+
+  // ==================== RESULTS ====================
+  function showResults() {
+    showScreen('resultsScreen');
+    let exam = state.exam;
+
+    // Calculate time used
+    let timeUsed = Math.floor((exam.finishedAt - exam.startedAt) / 1000);
+    let timeUsedMin = Math.floor(timeUsed / 60);
+    let answered = exam.answers.filter(a => a.trim().length > 0).length;
+    let flagged = exam.flagged.filter(f => f).length;
+    let totalMaxScore = exam.questions.reduce((s, q) => s + q.maxScore, 0);
+
+    // Stats
+    document.getElementById('statsGrid').innerHTML =
+      '<div class="stat-card"><span class="stat-value">' + timeUsedMin + ' min</span><span class="stat-label">Temps utilisé</span></div>' +
+      '<div class="stat-card"><span class="stat-value">' + answered + '/' + exam.questions.length + '</span><span class="stat-label">Questions répondues</span></div>' +
+      '<div class="stat-card highlight"><span class="stat-value">' + totalMaxScore + ' pts</span><span class="stat-label">Total possible</span></div>' +
+      '<div class="stat-card"><span class="stat-value">' + flagged + '</span><span class="stat-label">Marquées pour révision</span></div>';
+
+    // Subtitle
+    document.getElementById('resultSubtitle').textContent =
+        exam.subjectName + ' — ' + (exam.chapter === 'all' ? 'Tous les chapitres' : SUBJECTS[exam.subject].chapters[parseInt(exam.chapter)]);
+
+    // Build evaluation list
+    let evalHtml = '';
+    exam.questions.forEach((q, i) => {
+      let chapterName = SUBJECTS[exam.subject].chapters[q.chapter];
+      let answer = exam.answers[i] || '';
+      evalHtml +=
+        '<div class="eval-item">' +
+        '  <div class="eval-q-header">' +
+        '    <span class="eval-q-num">Question ' + (i + 1) + '</span>' +
+        '    <span class="eval-q-chapter">' + chapterName + '</span>' +
+        '  </div>' +
+        '  <div class="eval-q-text" onclick="this.classList.toggle(\'expanded\')">' + escapeHtml(q.text) + '</div>' +
+        '  <div class="eval-answer' + (answer.trim() === '' ? ' empty' : '') + '">' +
+        (answer.trim() === '' ? 'Aucune réponse rédigée' : escapeHtml(answer)) +
+        '  </div>' +
+        '  <div class="eval-scoring">' +
+        '    <label>Note :</label>' +
+        '    <input type="number" class="eval-input" id="score_' + i + '" min="0" max="' + q.maxScore + '" step="0.5" value="' + (exam.scores[i] !== null ? exam.scores[i] : '') + '" oninput="updateEvalTotal()" placeholder="0">' +
+        '    <span class="eval-max">/ ' + q.maxScore + '</span>' +
+        '  </div>' +
+        '</div>';
+    });
+    document.getElementById('evalList').innerHTML = evalHtml;
+
+    // Load saved scores if any
+    updateEvalTotal();
+
+    // Check if this exam was already saved (re-evaluation)
+    let savedScore = loadExamScore(exam.id);
+    if (savedScore !== null) {
+      savedScore.forEach((s, i) => {
+        let input = document.getElementById('score_' + i);
+        if (input) input.value = s;
+      });
+      updateEvalTotal();
+    }
+  }
+
+  function updateEvalTotal() {
+    let exam = state.exam;
+    let totalScore = 0;
+    let totalMax = 0;
+    exam.questions.forEach((q, i) => {
+      totalMax += q.maxScore;
+      let input = document.getElementById('score_' + i);
+      if (input && input.value !== '') {
+        totalScore += parseFloat(input.value) || 0;
+      }
+    });
+
+    // Convert to /20
+    let note20 = totalMax > 0 ? (totalScore / totalMax) * 20 : 0;
+    document.getElementById('scoreValue').textContent = note20.toFixed(1);
+    document.getElementById('scoreMax').textContent = '/ 20';
+    document.getElementById('evalTotal').textContent = totalScore.toFixed(1) + ' / ' + totalMax;
+
+    // Update score circle color
+    let circle = document.getElementById('scoreCircle');
+    if (note20 >= 10) {
+      circle.style.borderColor = 'var(--success)';
+    } else if (note20 >= 5) {
+      circle.style.borderColor = 'var(--warning)';
+    } else {
+      circle.style.borderColor = 'var(--danger)';
+    }
+
+    // Update title
+    let title = document.getElementById('resultTitle');
+    if (note20 >= 16) title.textContent = 'Excellent !';
+    else if (note20 >= 14) title.textContent = 'Très bien !';
+    else if (note20 >= 12) title.textContent = 'Bien !';
+    else if (note20 >= 10) title.textContent = 'Assez bien';
+    else if (note20 >= 8) title.textContent = 'Peut mieux faire';
+    else title.textContent = 'À retravailler';
+
+    // Save scores
+    saveExamScores();
+  }
+
+  function saveExamScores() {
+    let exam = state.exam;
+    let scores = [];
+    exam.questions.forEach((q, i) => {
+      let input = document.getElementById('score_' + i);
+      scores.push(input && input.value !== '' ? parseFloat(input.value) : null);
+    });
+
+    let totalScore = scores.reduce((s, v) => s + (v || 0), 0);
+    let totalMax = exam.questions.reduce((s, q) => s + q.maxScore, 0);
+    let note20 = totalMax > 0 ? (totalScore / totalMax) * 20 : 0;
+
+    // Save to history
+    let history = JSON.parse(localStorage.getItem('arvexa_exam_history') || '[]');
+    let existingIndex = history.findIndex(h => h.id === exam.id);
+    let entry = {
+      id: exam.id,
+      subject: exam.subject,
+      subjectName: exam.subjectName,
+      chapter: exam.chapter,
+      duration: exam.duration,
+      type: exam.type,
+      questionIds: exam.questions.map(q => q.id),
+      numQuestions: exam.questions.length,
+      answered: exam.answers.filter(a => a.trim().length > 0).length,
+      score: totalScore,
+      maxScore: totalMax,
+      note20: note20,
+      scores: scores,
+      date: exam.startedAt,
+      finishedAt: exam.finishedAt
+    };
+
+    if (existingIndex >= 0) {
+      history[existingIndex] = entry;
+    } else {
+      history.push(entry);
+    }
+    localStorage.setItem('arvexa_exam_history', JSON.stringify(history));
+  }
+
+  function loadExamScore(examId) {
+    let history = JSON.parse(localStorage.getItem('arvexa_exam_history') || '[]');
+    let entry = history.find(h => h.id === examId);
+    return entry ? entry.scores : null;
+  }
+
+  // ==================== HISTORY ====================
+  function loadHistory() {
+    let history = JSON.parse(localStorage.getItem('arvexa_exam_history') || '[]');
+    let container = document.getElementById('historyList');
+
+    if (history.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">' +
+        '  <i class="fas fa-clipboard-list"></i>' +
+        '  <h4>Aucun examen passé</h4>' +
+        '  <p>Complète ton premier examen pour voir ton historique ici</p>' +
+        '</div>';
+      return;
+    }
+
+    // Show most recent first
+    history = history.slice().reverse();
+
+    let html = '';
+    history.forEach(entry => {
+      let date = new Date(entry.date);
+      let dateStr = date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+      let timeStr = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+      let pct = entry.maxScore > 0 ? (entry.score / entry.maxScore) * 100 : 0;
+      let chapterLabel = entry.chapter === 'all' ? 'Tous' : SUBJECTS[entry.subject].chapters[parseInt(entry.chapter)];
+
+      html +=
+        '<div class="history-item" onclick="viewHistoryDetail(\'' + entry.id + '\')">' +
+        '  <div class="hi-top">' +
+        '    <span class="hi-subject"><i class="fas ' + SUBJECTS[entry.subject].icon + '"></i> ' + entry.subjectName + '</span>' +
+        '    <span class="hi-score">' + entry.note20.toFixed(1) + '/20</span>' +
+        '  </div>' +
+        '  <div class="hi-details">' +
+        '    <span class="hi-detail"><i class="fas fa-calendar"></i> ' + dateStr + ' à ' + timeStr + '</span>' +
+        '    <span class="hi-detail"><i class="fas fa-clock"></i> ' + entry.duration + ' min</span>' +
+        '    <span class="hi-detail"><i class="fas fa-list-check"></i> ' + entry.numQuestions + ' questions</span>' +
+        '    <span class="hi-detail"><i class="fas fa-bookmark"></i> ' + chapterLabel + '</span>' +
+        '  </div>' +
+        '  <div class="hi-bar"><div class="hi-bar-fill" style="width:' + pct + '%"></div></div>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+  }
+
+  function viewHistoryDetail(examId) {
+    let history = JSON.parse(localStorage.getItem('arvexa_exam_history') || '[]');
+    let entry = history.find(h => h.id === examId);
+    if (!entry) return;
+
+    // Reconstruct exam for evaluation view
+    let questions = getQuestions().filter(q => entry.questionIds.includes(q.id));
+    // Preserve order from the exam
+    questions = entry.questionIds.map(id => questions.find(q => q.id === id)).filter(Boolean);
+
+    if (questions.length === 0) {
+      showToast('Les questions de cet examen ne sont plus disponibles');
+      return;
+    }
+
+    state.exam = {
+      id: entry.id,
+      subject: entry.subject,
+      subjectName: entry.subjectName,
+      chapter: entry.chapter,
+      duration: entry.duration,
+      type: entry.type,
+      questions: questions,
+      answers: new Array(questions.length).fill(''),
+      flagged: new Array(questions.length).fill(false),
+      scores: entry.scores || new Array(questions.length).fill(null),
+      startedAt: entry.date,
+      finishedAt: entry.finishedAt
+    };
+
+    showResults();
+  }
+
+  function clearHistory() {
+    if (confirm('Voulez-vous vraiment effacer tout l\'historique ?')) {
+      localStorage.removeItem('arvexa_exam_history');
+      loadHistory();
+      showToast('Historique effacé');
+    }
+  }
+
+  // ==================== NAVIGATION ====================
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    if (screenId === 'historyScreen') {
+      loadHistory();
+    }
+  }
+
+  function newExam() {
+    state.exam = null;
+    state.currentQIndex = 0;
+    showScreen('setupScreen');
+    resetSetupUI();
+  }
+
+  function resetSetupUI() {
+    document.getElementById('backBtn').href = 'index.html';
+    document.getElementById('backBtn').onclick = null;
+    updateStartButton();
+    if (state.selectedSubject) updateQuestionCount();
+  }
+
+  // ==================== UTILS ====================
+  function escapeHtml(text) {
+    let div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function showToast(msg) {
+    let toast = document.getElementById('toast');
+    document.getElementById('toastText').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  // Prevent accidental page close during exam
+window.addEventListener('beforeunload', function(e) {
+  if (state.exam && state.strictMode) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
+// ✅ DÉMARRER L'APPLICATION
+initApp();
+
+// ================================================================
+// EXPOSER LES FONCTIONS AU SCOPE GLOBAL
+// ================================================================
+window.selectSubject = selectSubject;
+window.selectDuration = selectDuration;
+window.selectType = selectType;
+window.startExam = startExam;
+window.toggleFlag = toggleFlag;
+window.prevQuestion = prevQuestion;
+window.nextQuestion = nextQuestion;
+window.showQuitModal = showQuitModal;
+window.showFinishModal = showFinishModal;
+window.hideModal = hideModal;
+window.quitExam = quitExam;
+window.finishExam = finishExam;
+window.showScreen = showScreen;
+window.newExam = newExam;
+window.clearHistory = clearHistory;
+window.viewHistoryDetail = viewHistoryDetail;
+window.updateEvalTotal = updateEvalTotal;
+window.onAnswerInput = onAnswerInput;
+
+// ✅ AJOUTER CELLE-CI
+window.updateQuestionCount = updateQuestionCount;
+
+// Pour le sélecteur de chapitre
+window.selectChapter = function(value) {
+  state.selectedChapter = value;
+  updateQuestionCount();
+  updateStartButton();
+};
+  </script>
+</body>
+</html>
