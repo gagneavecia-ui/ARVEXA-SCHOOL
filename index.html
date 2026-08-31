@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXa School - Tableau de bord">
+  <meta name="description" content="ARVEXA School - Tableau de bord">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
@@ -39,8 +39,6 @@
       --radius: 16px;
       --sidebar-width: 240px;
       --header-height: 64px;
-      --mastery-threshold: 70;
-      --dial-circumference: 327;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -147,18 +145,38 @@
       display: flex; align-items: center; justify-content: center; position: relative;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
-    .header .header-actions .badge {
-      position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent-bright); border: 2px solid var(--bg-dark);
-    }
 
     .container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
 
-    /* ===== SKELETON ===== */
-    .skeleton { background: rgba(255,255,255,0.04); border-radius: 8px; animation: skeletonPulse 1.5s ease-in-out infinite; }
-    @keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
-    .skeleton-card { height: 100px; border-radius: var(--radius); }
+.greeting {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+}
 
+.greeting #greetingText {
+  color: var(--text-dim);
+}
+
+.greeting #userFirstName {
+  color: var(--accent-bright);
+  font-weight: 700;
+}
+
+.greeting #greetingEmoji {
+  font-size: 16px;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .greeting {
+    font-size: 13px;
+  }
+}
     /* ===== CARTES GÉNÉRIQUES ===== */
     .card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
@@ -170,11 +188,7 @@
       margin: 26px 0 12px;
     }
     .section-title h3 { font-size: 15px; font-weight: 600; color: var(--text-light); }
-    .section-title .see-all { font-size: 12px; color: var(--accent); text-decoration: none; }
     .section-title:first-of-type { margin-top: 0; }
-
-    .progress-bar { height: 8px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; margin: 6px 0; }
-    .progress-bar .fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); transition: width 0.8s ease; width: 0%; }
 
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px; padding: 11px 26px; border-radius: 30px;
@@ -184,13 +198,6 @@
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184,134,11,0.25); }
     .btn-primary:active { transform: scale(0.97); }
-    .btn-secondary {
-      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 30px;
-      border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--text-dim);
-      font-size: 12px; font-weight: 500; cursor: pointer; transition: var(--transition);
-      font-family: 'Inter', sans-serif; text-decoration: none;
-    }
-    .btn-secondary:hover { border-color: rgba(184,134,11,0.16); color: var(--text-light); background: rgba(255,255,255,0.03); }
 
     .premium-badge {
       display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px;
@@ -200,7 +207,7 @@
     .premium-badge i { font-size: 9px; }
 
     /* ============================================================
-       HERO — CARTE OBJECTIF (signature : le cadran d'examen)
+       HERO — SIMPLE
        ============================================================ */
     .hero-card { position: relative; overflow: hidden; }
     .hero-card::before {
@@ -211,19 +218,6 @@
     .hero-info .class-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .hero-info .exam-label { font-size: 19px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 0; }
     .hero-info .exam-label span { color: var(--accent-bright); }
-
-    .dial-wrap { position: relative; width: 108px; height: 108px; flex-shrink: 0; }
-    .dial { width: 100%; height: 100%; transform: rotate(-90deg); }
-    .dial-track { fill: none; stroke: rgba(255,255,255,0.07); stroke-width: 8; }
-    .dial-fill {
-      fill: none; stroke: url(#dialGradient); stroke-width: 8; stroke-linecap: round;
-      stroke-dasharray: 327; stroke-dashoffset: 327; transition: stroke-dashoffset 1s cubic-bezier(0.25,1,0.5,1);
-    }
-    .dial-center {
-      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
-    .dial-percent { font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); }
-    .dial-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
 
     .hero-bottom {
       display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; padding-top: 14px;
@@ -251,37 +245,25 @@
     .next-card .title { font-size: 17px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 4px; }
     .next-card .subject { font-size: 13px; color: var(--text-dim); }
     .next-card .message { font-size: 13px; color: var(--text-dim); margin: 6px 0 12px; line-height: 1.5; }
-    .next-card .progress-row { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; }
-    .next-card .progress-row .label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
-    .next-card .progress-row .bar { flex: 1; height: 6px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; }
-    .next-card .progress-row .bar .fill { height: 100%; border-radius: 10px; transition: width 0.8s ease; }
-    .next-card .progress-row .bar .fill.danger { background: linear-gradient(90deg, #B85C3A, #D97A3A); }
-    .next-card .progress-row .bar .fill.warning { background: linear-gradient(90deg, var(--accent), var(--accent-bright)); }
     .next-card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 
     /* ============================================================
-       MES MATIÈRES
+       MES MATIÈRES — SIMPLE
        ============================================================ */
     .subjects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .subject-chip {
       background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 14px;
-      padding: 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
-      display: flex; flex-direction: column; gap: 8px;
+      padding: 16px 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
+      display: flex; align-items: center; gap: 14px;
     }
     .subject-chip:hover { border-color: rgba(184,134,11,0.16); transform: translateY(-2px); }
-    .subject-chip .row-top { display: flex; align-items: center; justify-content: space-between; }
+    .subject-chip:active { transform: scale(0.97); }
     .subject-chip .icon-badge {
-      width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 14px; flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 16px; flex-shrink: 0;
     }
-    .subject-chip .subject-percent { font-size: 15px; font-weight: 700; font-family: 'Playfair Display', serif; }
-    .subject-chip .subject-name { font-size: 13px; font-weight: 600; }
-    .subject-chip .mini-bar { height: 5px; border-radius: 10px; background: rgba(255,255,255,0.07); overflow: hidden; }
-    .subject-chip .mini-bar .fill { height: 100%; border-radius: 10px; }
-    .subject-chip .tag-review {
-      font-size: 10px; color: var(--danger); display: inline-flex; align-items: center; gap: 4px; font-weight: 600;
-    }
-    .subject-chip .tag-ok { font-size: 10px; color: var(--success); display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+    .subject-chip .subject-name { font-size: 14px; font-weight: 600; }
+    .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
     /* ============================================================
        OUTILS & RESSOURCES
@@ -300,44 +282,6 @@
     }
     .tool-card .name { font-size: 12px; font-weight: 600; }
 
-    /* ============================================================
-       CETTE SEMAINE (série de révision)
-       ============================================================ */
-    .two-col { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .week-card .days-row { display: flex; justify-content: space-between; margin-top: 12px; gap: 4px; }
-    .week-card .day-dot { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-    .week-card .day-dot .letter { font-size: 10px; color: var(--text-muted); font-weight: 600; }
-    .week-card .day-dot .dot {
-      width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 10px; color: var(--text-muted);
-    }
-    .week-card .day-dot.done .dot { background: linear-gradient(135deg, var(--accent), var(--accent-bright)); border-color: transparent; color: #0A0A0A; }
-    .week-card .day-dot.today .dot { border-color: var(--accent-bright); color: var(--accent-bright); }
-    .week-card .streak-line { font-size: 12px; color: var(--text-dim); margin-top: 12px; display: flex; align-items: center; gap: 6px; }
-    .week-card .streak-line i { color: #D97A3A; }
-
-    .tip-card { display: flex; gap: 12px; align-items: flex-start; }
-    .tip-card .tip-icon {
-      width: 38px; height: 38px; border-radius: 10px; background: rgba(45,125,90,0.1); color: var(--success);
-      display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
-    }
-    .tip-card .tip-eyebrow { font-size: 10px; color: var(--success); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
-    .tip-card .tip-title { font-size: 13px; font-weight: 700; color: var(--text-light); margin: 3px 0 4px; }
-    .tip-card .tip-text { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
-
-    /* ============================================================
-       EN RÉSUMÉ
-       ============================================================ */
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-    .summary-item { text-align: center; padding: 12px 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 12px; }
-    .summary-item .number { font-size: 22px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); }
-    .summary-item .label { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
-
-    .empty-state { text-align: center; padding: 20px; }
-    .empty-state .icon { font-size: 32px; color: var(--text-muted); margin-bottom: 8px; }
-    .empty-state h4 { font-size: 15px; color: var(--text-light); margin-bottom: 4px; }
-    .empty-state p { font-size: 12px; color: var(--text-dim); }
-
     /* ===== TOAST ===== */
     .toast {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
@@ -348,7 +292,167 @@
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { margin-right: 8px; }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+  margin-top: 40px;
+  padding: 24px 16px 16px;
+  border-top: 1px solid rgba(184, 134, 11, 0.06);
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(10px);
+}
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.footer-logo {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: var(--text-light);
+  letter-spacing: 1px;
+}
+.footer-logo span {
+  color: var(--accent-bright);
+  font-style: italic;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 12px;
+  transition: var(--transition);
+}
+.footer-links a:hover {
+  color: var(--text-light);
+}
+.footer-copy {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+@media (max-width: 480px) {
+  .footer-links {
+    gap: 10px;
+  }
+  .footer-links a {
+    font-size: 11px;
+  }
+}
+
+/* ============================================================
+   ABONNEMENT
+   ============================================================ */
+.subscription-reminder {
+  margin-top: 14px;
+}
+
+.sub-card {
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
+  border: 1px solid rgba(184, 134, 11, 0.12);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: var(--transition);
+}
+
+.sub-card:hover {
+  border-color: rgba(184, 134, 11, 0.25);
+}
+
+.sub-card .sub-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(184, 134, 11, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--accent-bright);
+  flex-shrink: 0;
+}
+
+.sub-card .sub-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sub-card .sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.sub-card .sub-text {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.sub-card .sub-expiry {
+  font-size: 11px;
+  color: #D97A3A;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.sub-card .sub-btn {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+  color: #0A0A0A;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sub-card .sub-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(184, 134, 11, 0.2);
+}
+
+.sub-card .sub-btn.renew {
+  background: linear-gradient(135deg, #D97A3A, #B85C3A);
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .sub-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 18px 14px;
+    gap: 10px;
+  }
+  .sub-card .sub-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
 
     /* ============================================================
        RESPONSIVE
@@ -358,7 +462,6 @@
       .sidebar-overlay { display: none !important; }
       .main-content { margin-left: var(--sidebar-width); }
       .header .menu-toggle { display: none; }
-      .two-col { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 767px) {
@@ -368,8 +471,6 @@
       .container { padding: 12px 12px 20px; }
       .card { padding: 15px; }
       .hero-info .exam-label { font-size: 16px; }
-      .dial-wrap { width: 92px; height: 92px; }
-      .dial-percent { font-size: 18px; }
     }
 
     @media (max-width: 480px) {
@@ -380,14 +481,15 @@
       .subjects-grid { gap: 8px; }
       .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
       .next-card .actions { flex-direction: column; }
-      .next-card .actions .btn-primary, .next-card .actions .btn-secondary { width: 100%; justify-content: center; }
+      .next-card .actions .btn-primary { width: 100%; justify-content: center; }
       .hero-top { flex-wrap: wrap; }
-      .week-card .day-dot .dot { width: 22px; height: 22px; }
+      .subject-chip { padding: 12px; }
+      .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 14px; }
+      .subject-chip .subject-name { font-size: 13px; }
     }
 
     @media (max-width: 360px) {
       .header .greeting { font-size: 11px; }
-      .summary-item .number { font-size: 18px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -410,16 +512,6 @@
 <div class="glow glow-2"></div>
 <div class="glow glow-3"></div>
 
-<!-- SVG defs (gradient partagé par le cadran) -->
-<svg width="0" height="0" style="position:absolute;">
-  <defs>
-    <linearGradient id="dialGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#B8860B"/>
-      <stop offset="100%" stop-color="#E0B84A"/>
-    </linearGradient>
-  </defs>
-</svg>
-
 <!-- ===== OVERLAY (mobile) ===== -->
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -428,9 +520,8 @@
   <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
   <nav class="nav">
     <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
-<a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
-    <a href="progression.html"><i class="fas fa-chart-line"></i> Ma progression</a>
-     <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
+    <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+    <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
     <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
     <div class="nav-divider"></div>
     <div class="nav-bottom">
@@ -448,12 +539,13 @@
       <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
         <i class="fas fa-bars"></i>
       </button>
-      <div class="greeting">Bonjour, <span id="userFirstName">Élève</span> 👋</div>
-    </div>
+      <div class="greeting">
+  <span id="greetingText">Bonjour</span> <span id="userFirstName">Élève</span> <span id="greetingEmoji">👋</span>
+</div>
+</div>
     <div class="header-actions">
       <button id="notifBtn" aria-label="Notifications">
         <i class="fas fa-bell"></i>
-        <span class="badge" id="notifBadge" style="display:none;"></span>
       </button>
       <button id="profileBtn" aria-label="Profil">
         <i class="fas fa-user"></i>
@@ -466,15 +558,17 @@
 
     <!-- ===== SKELETON LOADING ===== -->
     <div id="skeletonLoading">
-      <div class="skeleton skeleton-card" style="height:170px;"></div>
-      <div class="skeleton skeleton-card" style="height:120px; margin-top:12px;"></div>
-      <div class="skeleton skeleton-card" style="height:90px; margin-top:12px;"></div>
+      <div class="skeleton" style="height:160px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div style="height:12px;"></div>
+      <div class="skeleton" style="height:100px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div style="height:12px;"></div>
+      <div class="skeleton" style="height:80px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
     </div>
 
     <!-- ===== CONTENU DYNAMIQUE ===== -->
     <div id="dynamicContent" style="display:none;">
 
-      <!-- HERO : OBJECTIF EXAMEN -->
+      <!-- ===== HERO ===== -->
       <div class="card hero-card">
         <div class="hero-top">
           <div class="hero-info">
@@ -482,38 +576,27 @@
             <div class="exam-label" id="userExamDisplay">🎓 Objectif</div>
             <div id="premiumBadgeContainer"></div>
           </div>
-          <div class="dial-wrap">
-            <svg viewBox="0 0 120 120" class="dial">
-              <circle class="dial-track" cx="60" cy="60" r="52"></circle>
-              <circle class="dial-fill" id="dialFill" cx="60" cy="60" r="52"></circle>
-            </svg>
-            <div class="dial-center">
-              <div class="dial-percent" id="globalProgressText">0%</div>
-              <div class="dial-label">maîtrisé</div>
-            </div>
-          </div>
-        </div>
-        <div class="progress-bar" style="display:none;">
-          <div class="fill" id="globalProgressFill" style="width:0%;"></div>
         </div>
         <div class="hero-bottom">
           <span class="hero-pill"><i class="fas fa-hourglass-half"></i> <span id="examCountdown">-- jours avant l'examen</span></span>
-          <span class="hero-pill streak"><i class="fas fa-fire"></i> <strong id="streakCount">0</strong> jour(s) de suite</span>
-        </div>
+         <span class="hero-pill streak">
+  <i class="fas fa-fire"></i> 
+  <strong id="streakCount">0 💀</strong> jour(s) de suite
+</span>
+</div>
       </div>
 
-      <!-- PROCHAINE ÉTAPE -->
+            <!-- ===== PROCHAINE ÉTAPE ===== -->
       <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
-      <div id="nextStepCard"><!-- Rempli dynamiquement --></div>
+      <div id="nextStepCard"></div>
 
-      <!-- MES MATIÈRES -->
+      <!-- ===== MES MATIÈRES ===== -->
       <div class="section-title">
         <h3>📐 Mes matières</h3>
-        <a href="progression.html" class="see-all">Tout voir →</a>
       </div>
-      <div class="subjects-grid" id="subjectsGrid"><!-- Rempli dynamiquement --></div>
+      <div class="subjects-grid" id="subjectsGrid"></div>
 
-      <!-- OUTILS & RESSOURCES -->
+      <!-- ===== OUTILS & RESSOURCES ===== -->
       <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
       <div class="tools-grid">
         <a href="calculatrice.html" class="tool-card">
@@ -534,49 +617,58 @@
         </a>
         <a href="tableau-periodique.html" class="tool-card">
           <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
-          <div class="name">Tableau périodique</div>
+          <div class="name">Table périodique</div>
         </a>
-        <a href="ai.html" class="tool-card">
+        <a href="chat.html" class="tool-card">
           <div class="icon-badge"><i class="fas fa-robot"></i></div>
           <div class="name">ARV-ASSISTANT</div>
+          
         </a>
       </div>
-
-      <!-- CETTE SEMAINE + CONSEIL DU JOUR -->
-      <div class="section-title"><h3>Cette semaine</h3></div>
-      <div class="two-col">
-        <div class="card week-card">
-          <div style="font-size:13px; font-weight:600;">Ta série de révision</div>
-          <div class="days-row" id="weekStreakRow"><!-- Rempli dynamiquement --></div>
-          <div class="streak-line"><i class="fas fa-fire"></i> <span id="streakLine">Reviens demain pour continuer ta série !</span></div>
-        </div>
-        <div class="card tip-card">
-          <div class="tip-icon"><i class="fas fa-lightbulb"></i></div>
-          <div>
-            <div class="tip-eyebrow">Conseil du jour</div>
-            <div class="tip-title" id="tipTitle">Méthode de travail</div>
-            <div class="tip-text" id="tipText">Chargement du conseil...</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- EN RÉSUMÉ -->
-      <div class="section-title"><h3>📊 En résumé</h3></div>
-      <div class="summary-grid" id="statsGrid">
-        <div class="summary-item">
-          <div class="number" id="statCourses">0</div>
-          <div class="label">Cours terminés</div>
-        </div>
-        <div class="summary-item">
-          <div class="number" id="statExercises">0</div>
-          <div class="label">Exercices faits</div>
-        </div>
-        <div class="summary-item">
-          <div class="number" id="statSkills">0</div>
-          <div class="label">Compétences</div>
-        </div>
-      </div>
-
+<!-- ===== CONSEIL DU JOUR ===== -->
+<div class="section-title"><h3>💡 Conseil du jour</h3></div>
+<div class="card tip-card">
+  <div style="display:flex; gap:12px; align-items:flex-start;">
+    <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(45,125,90,0.1);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <div>
+      <div class="tip-eyebrow" style="font-size:10px;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;">Conseil du jour</div>
+      <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
+      <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
+    </div>
+    </div>
+    </div>
+    <!-- ===== SECTION ABONNEMENT ===== -->
+<div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
+  <div class="sub-card" id="subCard">
+    <div class="sub-icon">
+      <i class="fas fa-crown"></i>
+    </div>
+    <div class="sub-content">
+      <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
+      <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
+      <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
+    </div>
+    <a href="abonnement.html" class="sub-btn" id="subBtn">Voir les offres</a>
+  </div>
+</div>
+  </div>
+</div>
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-logo">ARVEX<span>A<span> School</span></div>
+    <div class="footer-links">
+      <a href="index.html">Accueil</a>
+      <a href="profil.html">Profil</a>
+      <a href="abonnement.html">Abonnement</a>
+    </div>
+    <div class="footer-copy">
+      &copy; 2026 ARVEXA School — Tous droits réservés
+    </div>
+  </div>
+</footer>
     </div>
   </div>
 </div>
@@ -586,6 +678,7 @@
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
+
 
 <!-- ============================================================ -->
 <!-- SCRIPTS -->
@@ -601,17 +694,12 @@
 </script>
 
 <script type="module">
+// ================================================================
+// IMPORTS
+// ================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { protectPage, logout } from './auth.js';
 
 // ================================================================
 // FIREBASE CONFIG
@@ -626,54 +714,109 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ================================================================
 // CONSTANTES
 // ================================================================
-const MASTERY_THRESHOLD = 70;
-const DIAL_CIRCUMFERENCE = 2 * Math.PI * 52; // ≈ 326.7
-
-// Dates approximatives des sessions d'examen (mois/jour). Si la date de
-// l'année en cours est déjà passée, on calcule automatiquement l'échéance
-// de l'année suivante.
 const EXAM_DATES = {
-  bac: { month: 5, day: 17 }   // mi-juin
+  bac: { month: 5, day: 17 }
 };
 
-// Les icônes sont maintenant dans FIXED_SUBJECTS
-
-const STUDY_TIPS = [
-  { title: 'La technique Pomodoro', text: "Travaille par sessions de 25 minutes suivies de 5 minutes de pause. Après 4 sessions, prends une pause plus longue de 20 minutes." },
-  { title: 'Le rappel actif', text: "Ferme ton cours et essaie de réécrire ce que tu as retenu de mémoire. C'est plus efficace que de relire plusieurs fois." },
-  { title: 'La répétition espacée', text: "Revois une notion 1 jour, puis 3 jours, puis 7 jours après l'avoir apprise. Ta mémoire à long terme te remerciera." },
-  { title: "S'entraîner sur les annales", text: "Rien ne remplace un sujet d'examen des années précédentes fait dans les conditions du jour J, chronomètre en main." },
-  { title: 'Explique à voix haute', text: "Si tu arrives à expliquer une notion simplement à quelqu'un d'autre (ou à toi-même), c'est que tu l'as vraiment comprise." },
-  { title: 'Dors suffisamment', text: "Le cerveau consolide les apprentissages pendant le sommeil. Une bonne nuit vaut souvent mieux qu'une heure de révision en plus." },
-  { title: 'Un objectif par session', text: "Avant chaque session, fixe-toi un seul objectif clair : « comprendre cette notion » plutôt que « réviser les maths »." }
+const FIXED_SUBJECTS = [
+  { name: 'Mathématiques', icon: 'fa-square-root-variable', key: 'mathematiques', chapters: 8 },
+  { name: 'Physique', icon: 'fa-bolt', key: 'physique', chapters: 17 },
+  { name: 'Chimie', icon: 'fa-flask', key: 'chimie', chapters: 9 },
+  { name: 'SVT', icon: 'fa-dna', key: 'svt', chapters: 4 }
 ];
 
 // ================================================================
-// ÉLÉMENTS DOM
+// CONSEIL DU JOUR
+// ================================================================
+
+const STUDY_TIPS = [
+  // Index 0 = Lundi, 1 = Mardi, ... 6 = Dimanche
+  // Chaque jour a 3 conseils : [matin, midi, soir]
+  {
+    morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
+    noon: { title: '☀️ Pleine forme !', text: "Travaille par blocs de 25 minutes. Après 4 blocs, prends une pause de 20 minutes." },
+    evening: { title: '🌙 Bonne soirée !', text: "Fais un bilan rapide : qu'as-tu appris aujourd'hui ? 1 phrase suffit." }
+  },
+  {
+    morning: { title: '🌅 Mardi matin', text: "Révise une notion difficile dès le matin. C'est le moment où ton cerveau est le plus frais." },
+    noon: { title: '☀️ Mardi midi', text: "Relis tes notes à voix haute. L'écoute active aide à mémoriser 2 fois plus vite." },
+    evening: { title: '🌙 Mardi soir', text: "Revois rapidement le cours d'aujourd'hui avant de dormir. Ta mémoire va le consolider." }
+  },
+  {
+    morning: { title: '🌅 Mercredi matin', text: "Commence par une matière que tu aimes pour te mettre en confiance." },
+    noon: { title: '☀️ Mercredi midi', text: "Fais un exercice sans regarder la correction. C'est le meilleur moyen de progresser." },
+    evening: { title: '🌙 Mercredi soir', text: "Prends 10 minutes pour organiser tes notes. Un espace de travail ordonné = un esprit clair." }
+  },
+  {
+    morning: { title: '🌅 Jeudi matin', text: "Réactive tes connaissances : relis le cours d'il y a 3 jours." },
+    noon: { title: '☀️ Jeudi midi', text: "Utilise la technique Feynman : explique une notion à un camarade (ou à toi-même)." },
+    evening: { title: '🌙 Jeudi soir', text: "Fais une petite pause détente. Un esprit reposé est plus efficace demain." }
+  },
+  {
+    morning: { title: '🌅 Vendredi matin', text: "Dernière ligne droite ! Concentre-toi sur les chapitres les plus importants." },
+    noon: { title: '☀️ Vendredi midi', text: "Entraîne-toi sur des sujets d'annales. Les conditions d'examen t'aideront à progresser." },
+    evening: { title: '🌙 Vendredi soir', text: "Bravo pour cette semaine ! Note ce que tu as accompli et félicite-toi." }
+  },
+  {
+    morning: { title: '🌅 Samedi matin', text: "Profite du week-end pour revoir les notions qui t'ont posé problème." },
+    noon: { title: '☀️ Samedi midi', text: "Varie les supports : cours, vidéos, exercices. La variété renforce l'apprentissage." },
+    evening: { title: '🌙 Samedi soir', text: "Prends du temps pour toi. Le repos est essentiel pour consolider les acquis." }
+  },
+  {
+    morning: { title: '🌅 Dimanche matin', text: "Planifie ta semaine : 1 matière par jour, 1 chapitre par séance." },
+    noon: { title: '☀️ Dimanche midi', text: "Fais une révision légère. L'objectif est de garder le rythme sans se fatiguer." },
+    evening: { title: '🌙 Dimanche soir', text: "Bonne nuit ! Un bon sommeil prépare une bonne semaine de révision." }
+  }
+];
+
+function pickDailyTip() {
+  const dayOfWeek = new Date().getDay(); // 0 = Dimanche, 1 = Lundi, ...
+  const hours = new Date().getHours(); // 0-23
+  
+  // Déterminer la période de la journée
+  let period;
+  if (hours < 12) {
+    period = 'morning'; // Matin
+  } else if (hours < 18) {
+    period = 'noon'; // Midi
+  } else {
+    period = 'evening'; // Soir
+  }
+  
+  // Décaler pour que Lundi = 0
+  const dayIndex = (dayOfWeek + 6) % 7;
+  
+  return STUDY_TIPS[dayIndex][period];
+}
+
+function renderDailyTip() {
+  const tip = pickDailyTip();
+  const tipTitle = document.getElementById('tipTitle');
+  const tipText = document.getElementById('tipText');
+  if (tipTitle && tipText) {
+    tipTitle.textContent = tip.title;
+    tipText.textContent = tip.text;
+  }
+}
+
+// ================================================================
+// DOM
 // ================================================================
 const skeletonLoading = document.getElementById('skeletonLoading');
 const dynamicContent = document.getElementById('dynamicContent');
 const userFirstName = document.getElementById('userFirstName');
 const userClassDisplay = document.getElementById('userClassDisplay');
 const userExamDisplay = document.getElementById('userExamDisplay');
-const globalProgressFill = document.getElementById('globalProgressFill');
-const globalProgressText = document.getElementById('globalProgressText');
-const dialFill = document.getElementById('dialFill');
 const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
 const nextStepCard = document.getElementById('nextStepCard');
 const subjectsGrid = document.getElementById('subjectsGrid');
 const examCountdown = document.getElementById('examCountdown');
 const streakCount = document.getElementById('streakCount');
-const weekStreakRow = document.getElementById('weekStreakRow');
-const streakLine = document.getElementById('streakLine');
-const tipTitle = document.getElementById('tipTitle');
-const tipText = document.getElementById('tipText');
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
@@ -682,17 +825,10 @@ const toastIcon = document.querySelector('.toast-icon i');
 // ÉTAT
 // ================================================================
 let userData = null;
-let userProgress = {
-  subjects: {},
-  stats: { courses: 0, exercises: 0, skills: 0 },
-  activities: [],
-  weekActivity: [],
-  streakDays: 0
-};
 let isPremium = false;
 
 // ================================================================
-// FONCTIONS UTILITAIRES
+// FONCTIONS
 // ================================================================
 
 function showToast(message, type = 'success') {
@@ -704,75 +840,6 @@ function showToast(message, type = 'success') {
   toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
-// randomProgress supprimé — les données viennent maintenant de Firestore
-
-function calculateGlobalProgress(subjects) {
-  if (!subjects || Object.keys(subjects).length === 0) return 0;
-  const values = Object.values(subjects);
-  const sum = values.reduce((a, b) => a + b, 0);
-  return Math.round(sum / values.length);
-}
-
-// Les 4 matières fixes de Terminale D
-
-const FIXED_SUBJECTS = [
-  { name: 'Mathématiques', icon: 'fa-square-root-variable', key: 'mathematiques' },
-  { name: 'Physique', icon: 'fa-bolt', key: 'physique' },
-  { name: 'Chimie', icon: 'fa-flask', key: 'chimie' },
-  { name: 'SVT', icon: 'fa-dna', key: 'svt' }
-];
-
-function determineNextStep(progress) {
-  const subjects = progress.subjects || {};
-  const activities = progress.activities || [];
-
-  // Trouver la matière la plus faible
-  let weakestSubject = null;
-  let weakestValue = Infinity;
-  FIXED_SUBJECTS.forEach(s => {
-    const val = subjects[s.name] || 0;
-    if (val < weakestValue) {
-      weakestValue = val;
-      weakestSubject = s.name;
-    }
-  });
-
-  if (activities.length === 0 && weakestValue === 0) {
-    return {
-      icon: '🚀',
-      title: 'Commence ton parcours',
-      subject: 'Premier cours',
-      message: 'Commence ton premier cours pour découvrir ARVEXa School.',
-      progress: 0,
-      action: 'Commencer',
-      actionType: 'start'
-    };
-  }
-
-  if (weakestSubject && weakestValue < MASTERY_THRESHOLD) {
-    return {
-      icon: '🔄',
-      title: 'À revoir',
-      subject: weakestSubject,
-      message: `Renforce tes compétences en ${weakestSubject} avant de continuer.`,
-      progress: weakestValue,
-      action: 'Revoir',
-      actionType: 'review'
-    };
-  }
-
-  return {
-    icon: '📝',
-    title: "Continue à t'entraîner",
-    subject: 'Exercice recommandé',
-    message: 'Entraîne-toi pour renforcer tes compétences.',
-    progress: 50,
-    action: 'Commencer',
-    actionType: 'exercise'
-  };
-}
-
-// Calcule le nombre de jours restants avant la prochaine session d'examen
 function computeExamCountdown(examType) {
   const conf = EXAM_DATES[examType] || EXAM_DATES.bac;
   const now = new Date();
@@ -784,182 +851,266 @@ function computeExamCountdown(examType) {
   return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }
 
-// Sélectionne un conseil du jour stable (change une fois par jour)
-function pickDailyTip() {
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-  return STUDY_TIPS[dayOfYear % STUDY_TIPS.length];
+// ================================================================
+// GESTION DE L'ABONNEMENT
+// ================================================================
+
+/**
+ * Vérifie si l'utilisateur est premium et si l'abonnement expire bientôt
+ */
+function checkSubscriptionStatus() {
+  const reminder = document.getElementById('subscriptionReminder');
+  const subTitle = document.getElementById('subTitle');
+  const subText = document.getElementById('subText');
+  const subExpiry = document.getElementById('subExpiry');
+  const subBtn = document.getElementById('subBtn');
+
+  if (!reminder) return;
+
+  // 1. Si l'utilisateur n'est pas premium → afficher
+  if (!isPremium) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
+    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Voir les offres';
+    subBtn.className = 'sub-btn';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  // 2. Si l'utilisateur est premium → vérifier la date d'expiration
+  const expiryDate = userData?.subscriptionEndDate;
+  
+  if (!expiryDate) {
+    // Premium sans date d'expiration (illimité) → ne rien afficher
+    reminder.style.display = 'none';
+    return;
+  }
+
+  const now = new Date();
+  const expiry = new Date(expiryDate);
+  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+
+  // 3. Si l'abonnement est expiré → afficher rappel
+  if (daysLeft < 0) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⏳ Abonnement expiré';
+    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  // 4. Si l'abonnement expire dans 7 jours ou moins → afficher rappel
+  if (daysLeft <= 7) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
+    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
+    subExpiry.style.display = 'block';
+    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  // 5. Premium actif avec plus de 7 jours restants → ne rien afficher
+  reminder.style.display = 'none';
+}
+
+/**
+ * Fonction appelée après le chargement des données utilisateur
+ */
+function updateSubscriptionDisplay() {
+  // Pour les tests, on peut simuler une date d'expiration
+  // userData.subscriptionEndDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
+  
+  checkSubscriptionStatus();
+}
+
+// ================================================================
+// SALUTATION DYNAMIQUE (matin/midi/soir)
+// ================================================================
+
+/**
+ * Configuration des salutations selon l'heure
+ */
+function getGreeting() {
+  const hours = new Date().getHours();
+  let text, emoji;
+
+  if (hours >= 5 && hours < 12) {
+    text = 'Bonjour';
+    emoji = '🌅';
+  } else if (hours >= 12 && hours < 18) {
+    text = 'Bon après-midi';
+    emoji = '☀️';
+  } else {
+    text = 'Bonsoir';
+    emoji = '🌙';
+  }
+
+  return { text, emoji };
+}
+
+/**
+ * Met à jour la salutation avec le prénom de l'utilisateur
+ * @param {string} firstName - Prénom de l'utilisateur
+ */
+function updateGreeting(firstName) {
+  const textEl = document.getElementById('greetingText');
+  const nameEl = document.getElementById('userFirstName');
+  const emojiEl = document.getElementById('greetingEmoji');
+
+  // Sécurité : vérifier que les éléments existent
+  if (!textEl || !nameEl || !emojiEl) return;
+
+  const { text, emoji } = getGreeting();
+
+  textEl.textContent = text;
+  nameEl.textContent = firstName || 'Élève';
+  emojiEl.textContent = emoji;
 }
 
 // ================================================================
 // RENDU DU DASHBOARD
 // ================================================================
-
 function renderDashboard() {
   if (!userData) return;
 
+  // ✅ Salutation dynamique
   const firstName = userData.firstName || 'Élève';
-  userFirstName.textContent = firstName;
+  updateGreeting(firstName);
 
-  // Fixe : Terminale D — Préparation BAC
   userClassDisplay.textContent = 'Terminale D';
   userExamDisplay.textContent = '🎓 Préparation BAC';
+
+// ===== CONSEIL DU JOUR =====
+renderDailyTip();
 
   isPremium = userData.premium === true;
   premiumBadgeContainer.innerHTML = isPremium
     ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
     : '';
 
-  const globalProgress = calculateGlobalProgress(userProgress.subjects);
-  globalProgressFill.style.width = globalProgress + '%';
-  globalProgressText.textContent = globalProgress + '%';
-  const offset = DIAL_CIRCUMFERENCE - (DIAL_CIRCUMFERENCE * globalProgress / 100);
-  dialFill.style.strokeDasharray = DIAL_CIRCUMFERENCE;
-  dialFill.style.strokeDashoffset = offset;
-
   const days = computeExamCountdown('bac');
-  examCountdown.textContent = days > 0 ? `${days} jour${days > 1 ? 's' : ''} avant l'examen` : "C'est le jour J !";
+let emoji = '⏳';
+if (days < 30) emoji = '🔥';
+if (days < 7) emoji = '🚨';
+if (days === 0) emoji = '🎯';
+
+examCountdown.textContent = days > 0 
+  ? `${emoji} ${days} jours avant le BAC` 
+  : `🎯 C'est le jour J !`;
+
+  // Streak (lecture)
+  const streak = localStorage.getItem('arvexa_reading_streak') || 0;
+  streakCount.textContent = streak;
 
   renderNextStep();
   renderSubjects();
-  renderWeekStreak();
-  renderDailyTip();
-  renderStats();
 
   skeletonLoading.style.display = 'none';
   dynamicContent.style.display = 'block';
 }
 
 function renderNextStep() {
-  const step = determineNextStep(userProgress);
-
-  let progressBar = '';
-  if (step.progress !== undefined && step.progress >= 0) {
-    const color = step.progress < 50 ? 'danger' : 'warning';
-    progressBar = `
-      <div class="progress-row">
-        <span class="label">${step.progress}%</span>
-        <div class="bar">
-          <div class="fill ${color}" style="width:${step.progress}%;"></div>
-        </div>
-      </div>
-    `;
-  }
-
   nextStepCard.innerHTML = `
     <div class="next-card">
-      <div class="badge">🎯 Prochaine étape</div>
-      <div class="title">${step.icon} ${step.title}</div>
-      ${step.subject ? `<div class="subject">📐 ${step.subject}</div>` : ''}
-      ${step.skill ? `<div class="subject" style="font-size:12px; color:var(--text-muted);">Compétence : ${step.skill}</div>` : ''}
-      <div class="message">${step.message}</div>
-      ${progressBar}
-      <div class="actions">
-        <button class="btn-primary" data-action="${step.actionType}">${step.action}</button>
-      </div>
+      <div class="badge">📚 Bienvenue</div>
+      <div class="title">Choisis une matière</div>
+      <div class="message">Clique sur l'une des matières ci-dessous pour commencer tes révisions.</div>
     </div>
   `;
-
-  const btn = nextStepCard.querySelector('.btn-primary');
-  if (btn) {
-    btn.addEventListener('click', function() {
-      handleNextStepAction(this.dataset.action);
-    });
-  }
-}
-
-function handleNextStepAction(action) {
-  const routes = {
-    'start': 'matiere.html',
-    'continue': 'matiere.html',
-    'review': 'matiere.html',
-    'exercise': 'exercices.html'
-  };
-  const route = routes[action] || 'cours.html';
-  showToast('🔄 Redirection...', 'success');
-  setTimeout(() => window.location.href = route, 800);
 }
 
 function renderSubjects() {
-  const subjects = userProgress.subjects || {};
-
-  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => {
-    const value = subjects[subject.name] || 0;
-    const isWeak = value < MASTERY_THRESHOLD;
-    const barColor = isWeak
-      ? 'linear-gradient(90deg, #B85C3A, #D97A3A)'
-      : 'linear-gradient(90deg, var(--accent), var(--accent-bright))';
-    return `
-     <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-        <div class="row-top">
-          <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-          <div class="subject-percent">${value}%</div>
-        </div>
+  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
+    <a href="matiere.html?subject=${subject.key}" class="subject-chip">
+      <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+      <div>
         <div class="subject-name">${subject.name}</div>
-        <div class="mini-bar"><div class="fill" style="width:${value}%; background:${barColor};"></div></div>
-        ${value === 0
-          ? '<span class="tag-review" style="color:var(--text-muted);"><i class="fas fa-circle-minus"></i> Pas commencé</span>'
-          : isWeak
-            ? '<span class="tag-review"><i class="fas fa-circle-exclamation"></i> À renforcer</span>'
-            : '<span class="tag-ok"><i class="fas fa-circle-check"></i> Acquis</span>'}
-      </a>
-    `;
-  }).join('');
-}
-
-function renderWeekStreak() {
-  const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-  const todayIndex = (new Date().getDay() + 6) % 7; // lundi = 0
-  const activeDays = userProgress.weekActivity || [];
-
-  weekStreakRow.innerHTML = days.map((letter, i) => {
-    const done = activeDays.includes(i);
-    const isToday = i === todayIndex;
-    const dotContent = done ? '<i class="fas fa-check"></i>' : (i + 1);
-    return `
-      <div class="day-dot ${done ? 'done' : ''} ${isToday ? 'today' : ''}">
-        <span class="letter">${letter}</span>
-        <span class="dot">${done ? '<i class="fas fa-check" style="font-size:9px;"></i>' : ''}</span>
+        <div class="subject-chapters">${subject.chapters} chapitres</div>
       </div>
-    `;
-  }).join('');
-
-  const streak = userProgress.streakDays || 0;
-  streakCount.textContent = streak;
-  streakLine.textContent = streak > 0
-    ? `Tu as révisé ${streak} jour${streak > 1 ? 's' : ''} d'affilée, continue ainsi !`
-    : "Reviens demain pour démarrer ta série !";
-}
-
-function renderDailyTip() {
-  const tip = pickDailyTip();
-  tipTitle.textContent = tip.title;
-  tipText.textContent = tip.text;
-}
-
-function renderStats() {
-  const stats = userProgress.stats || {};
-
-  document.getElementById('statCourses').textContent = stats.courses || 0;
-  document.getElementById('statExercises').textContent = stats.exercises || 0;
-  document.getElementById('statSkills').textContent = stats.skills || 0;
+    </a>
+  `).join('');
 }
 
 // ================================================================
-// LECTURE DES DONNÉES RÉELLES DEPUIS FIRESTORE
+// GESTION DU STREAK DE LECTURE
 // ================================================================
 
-// ================================================================
-// AUTH + FIRESTORE
-// ================================================================
+function updateReadingStreak() {
+  const today = new Date().toDateString();
+  const lastVisit = localStorage.getItem('arvexa_last_visit');
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'login.html';
+  let streak = parseInt(localStorage.getItem('arvexa_reading_streak')) || 0;
+
+  // 1. Si déjà visité aujourd'hui → rien ne change
+  if (lastVisit === today) {
     return;
   }
 
+  // 2. Calculer la différence en jours
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toDateString();
+
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+  const twoDaysAgoStr = twoDaysAgo.toDateString();
+
+  // 3. Vérifier la dernière visite
+  if (lastVisit === yesterdayStr) {
+    // Visite consécutive → +1
+    streak += 1;
+  } else if (lastVisit === today) {
+    // Déjà fait
+    return;
+  } else {
+    // Rupture (2 jours ou plus sans visite) → 🔥 0
+    streak = 0;
+  }
+
+  // 4. Sauvegarder
+  localStorage.setItem('arvexa_reading_streak', streak);
+  localStorage.setItem('arvexa_last_visit', today);
+
+  // 5. Mettre à jour l'affichage
+  const streakEl = document.getElementById('streakCount');
+  if (streakEl) {
+    streakEl.textContent = streak;
+    
+    // 🔥 Afficher les flammes selon le streak
+    const flames = getFlames(streak);
+    streakEl.textContent = `${streak} ${flames}`;
+  }
+}
+
+// 🔥 Fonction pour afficher les flammes
+function getFlames(streak) {
+  if (streak === 0) return '💀';
+  if (streak < 3) return '🔥'.repeat(1);
+  if (streak < 7) return '🔥'.repeat(2);
+  if (streak < 14) return '🔥'.repeat(3);
+  if (streak < 30) return '🔥'.repeat(4);
+  return '🔥'.repeat(5) + ' 👑';
+}
+
+// ================================================================
+// PROTECTION + CHARGEMENT
+// ================================================================
+
+protectPage(async (user) => {
+  console.log('✅ Dashboard - Utilisateur connecté:', user.uid);
+
+  // Mise à jour du streak de lecture
+  updateReadingStreak();
+
   try {
-    // Récupérer le profil utilisateur
     const userDoc = await getDoc(doc(db, 'users', user.uid));
     if (!userDoc.exists()) {
       showToast('Profil introuvable.', 'error');
@@ -970,25 +1121,15 @@ onAuthStateChanged(auth, async (user) => {
     userData = userDoc.data();
     isPremium = userData.premium === true;
 
-    // Récupérer les données de progression réelles
-    try {
-      const progressDoc = await getDoc(doc(db, 'users', user.uid, 'progress', 'overall'));
-      if (progressDoc.exists()) {
-        const data = progressDoc.data();
-        userProgress = {
-          subjects: data.subjects || {},
-          stats: data.stats || { courses: 0, exercises: 0, skills: 0 },
-          activities: data.activities || [],
-          weekActivity: data.weekActivity || [],
-          streakDays: data.streakDays || 0
-        };
-      }
-      // Si pas de document de progression, userProgress reste à ses valeurs par défaut (tout à 0)
-    } catch (progressError) {
-      console.warn('Pas encore de données de progression:', progressError.message);
+    // ✅ Récupérer la date d'expiration si elle existe
+    if (userData.subscriptionEndDate) {
+      userData.subscriptionEndDate = userData.subscriptionEndDate.toDate?.() || new Date(userData.subscriptionEndDate);
     }
 
     renderDashboard();
+
+    // ✅ Afficher/masquer la carte abonnement
+    updateSubscriptionDisplay();
 
     console.log('✅ Dashboard ARVEXa School chargé pour:', userData.firstName);
 
@@ -1005,7 +1146,7 @@ onAuthStateChanged(auth, async (user) => {
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   e.preventDefault();
   try {
-    await signOut(auth);
+    await logout();
     window.location.href = 'login.html';
   } catch (error) {
     showToast('Erreur de déconnexion.', 'error');
@@ -1030,7 +1171,7 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   window.location.href = 'profil.html';
 });
 
-console.log('🚀 ARVEXa School — Dashboard V4');
+console.log('🚀 ARVEXa School — Dashboard Simplifié');
 </script>
 
 </body>

@@ -264,22 +264,55 @@
 
   <div class="toast" id="toast"><i class="fas fa-info-circle"></i> <span id="toastText"></span></div>
 
-<script type="importmap">
-{ 
-  "imports": { 
-    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js", 
-    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
-    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
-  } 
-}
-</script>
+  <script type="importmap">
+  { 
+    "imports": { 
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js", 
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    } 
+  }
+  </script>
 
-<script type="module">
+  <script type="module">
+ // ================================================================
+// chapitre.html - Page de chapitre
+// ================================================================
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { protectPage, getAuthInstance } from './auth.js';
 
-// ✅ CONFIG UNIQUE - Projet ARVEXA
+// ================================================================
+// INITIALISER LA PROGRESSION
+// ================================================================
+async function initializeProgress() {
+  const authInstance = getAuthInstance();
+  const user = authInstance.currentUser;
+  if (!user) return;
+  
+  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+  const docSnap = await getDoc(progressRef);
+  
+  if (!docSnap.exists()) {
+    // Créer le document avec une structure vide
+    const initialData = {
+      subjects: {},
+      stats: {
+        courses: 0,
+        exercises: 0,
+        skills: 0,
+        totalTime: 0,
+        streakDays: 0
+      },
+      weekActivity: [0, 0, 0, 0, 0, 0, 0],
+      lastUpdate: new Date().toISOString()
+    };
+    
+    await setDoc(progressRef, initialData);
+    console.log('✅ Document de progression créé');
+  }
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -290,229 +323,471 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ✅ PERSISTANCE
-await setPersistence(auth, browserLocalPersistence);
+// ================================================================
+// CONFIG
+// ================================================================
+const SUBJECTS_CONFIG = {
+  mathematiques: {
+    name: 'Mathématiques', icon: 'fa-square-root-variable',
+    chapters: [
+      'Nombres complexes',
+      'Calcul de probabilités - Variable aléatoire',
+      'Fonction logarithme',
+      'Fonction exponentielle',
+      'Étude des fonctions numériques',
+      'Calcul intégral',
+      'Suites numériques',
+      'Équations différentielles'
+    ]
+  },
+  physique: {
+    name: 'Physique', icon: 'fa-bolt',
+    chapters: [
+      'Cinématique',
+      'Mouvement du centre d\'inertie',
+      'Mouvement dans le champ de pesanteur',
+      'Mouvement de particules chargées',
+      'Oscillateurs mécaniques de translation',
+      'Généralités sur les vibrations',
+      'Propagation d\'un phénomène vibratoire',
+      'Superposition de phénomènes vibratoires',
+      'Interférences d\'ondes lumineuses',
+      'Champ magnétique',
+      'Force de Lorentz',
+      'Force de Laplace',
+      'Induction électromagnétique',
+      'Auto-Induction',
+      'Circuit oscillant LC',
+      'Circuit en régime sinusoïdal forcé',
+      'Radioactivité'
+    ]
+  },
+  chimie: {
+    name: 'Chimie', icon: 'fa-flask',
+    chapters: [
+      'Solutions aqueuses',
+      'Solutions aqueuses d\'acide chlorhydrique et d\'hydroxyde de sodium',
+      'Couples acide / base',
+      'Réaction acide - base',
+      'Solution tampon',
+      'Alcools',
+      'Acides carboxyliques',
+      'Amines',
+      'Acides α-aminés'
+    ]
+  },
+  svt: {
+    name: 'SVT', icon: 'fa-dna',
+    chapters: [
+      'Génétique',
+      'Immunologie',
+      'Écologie',
+      'Évolution'
+    ]
+  }
+};
 
-// ✅ AUTH
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-    window.location.href = 'login.html';
+// ================================================================
+// URL PARAMS
+// ================================================================
+function getURLParams() {
+  const params = new URLSearchParams(window.location.search);
+  const _sKey = params.get('subject');
+  const _cIdx = params.get('chapter');
+  const _tab = params.get('tab');
+  
+  if (!_sKey || !SUBJECTS_CONFIG[_sKey]) {
+    window.location.replace('index.html');
+    return false;
+  }
+  
+  sKey = _sKey;
+  sConfig = SUBJECTS_CONFIG[_sKey];
+  
+  const total = sConfig.chapters.length;
+  chapIdx = _cIdx !== null ? parseInt(_cIdx) : 0;
+  if (isNaN(chapIdx) || chapIdx < 0 || chapIdx >= total) {
+    chapIdx = 0;
+  }
+  
+  currentTab = (_tab && ['cours','exercices','corrections'].includes(_tab)) ? _tab : 'cours';
+  return true;
+}
+
+// ================================================================
+// STATE
+// ================================================================
+let sKey = null;
+let sConfig = null;
+let chapIdx = 0;
+let currentTab = 'cours';
+let currentParts = [];
+let currentPartIndex = -1;
+let userData = null;
+let isPremium = false;
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function navigateToChapter(newChap) {
+  if (newChap < 0 || newChap >= sConfig.chapters.length) return;
+  window.location.href = 'chapitre.html?subject=' + sKey + '&chapter=' + newChap + '&tab=' + currentTab;
+}
+
+function setupNavigationButtons() {
+  const prevBtn = document.getElementById('prevChapBtn');
+  const nextBtn = document.getElementById('nextChapBtn');
+  
+  if (!prevBtn || !nextBtn) return;
+  
+  const total = sConfig.chapters.length;
+  
+  const newPrev = prevBtn.cloneNode(true);
+  const newNext = nextBtn.cloneNode(true);
+  prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+  nextBtn.parentNode.replaceChild(newNext, nextBtn);
+  
+  newPrev.disabled = chapIdx <= 0;
+  newPrev.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (chapIdx > 0) navigateToChapter(chapIdx - 1);
+  });
+  
+  newNext.disabled = chapIdx >= total - 1;
+  newNext.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (chapIdx < total - 1) navigateToChapter(chapIdx + 1);
+  });
+}
+
+// ================================================================
+// RENDER
+// ================================================================
+function renderPage() {
+  if (!sConfig || !sConfig.chapters) {
+    window.location.replace('index.html');
     return;
   }
-  console.log('[Chapitre] Connecté:', user.uid);
-  // ⚠️ Assure-toi que la fonction initPage est définie plus bas dans le code
-  initPage();
+  
+  const total = sConfig.chapters.length;
+  
+  if (chapIdx === null || chapIdx === undefined || chapIdx < 0 || chapIdx >= total) {
+    chapIdx = 0;
+  }
+  
+  const title = sConfig.chapters[chapIdx] || ('Chapitre ' + (chapIdx + 1));
+  
+  document.title = 'ARVEXA - ' + title;
+  document.getElementById('pageTitle').innerHTML = '<i class="fas ' + sConfig.icon + '"></i> ' + title;
+  document.getElementById('backBtn').href = 'matiere.html?subject=' + sKey;
+  document.getElementById('chapNum').textContent = chapIdx + 1;
+  document.getElementById('chapTitle').textContent = title;
+  
+  let statusText = '';
+  if (chapIdx === 0) {
+    statusText = '🎁 Gratuit';
+  } else if (isPremium) {
+    statusText = '✅ Premium';
+  } else {
+    statusText = '🔒 Premium';
+  }
+  document.getElementById('chapSub').textContent = sConfig.name + ' — Chapitre ' + (chapIdx + 1) + ' / ' + total + ' (' + statusText + ')';
+
+  setupNavigationButtons();
+  
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === currentTab);
+  });
+  
+  loadManifest();
+}
+
+// ================================================================
+// LOAD MANIFEST
+// ================================================================
+function loadManifest() {
+  const suffix = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exo' : 'corr');
+  const manifestPath = 'cours/' + sKey + '/ch' + chapIdx + '_' + suffix + '.json';
+  const container = document.getElementById('cardsView');
+  container.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>';
+
+  fetch(manifestPath)
+    .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+    .then(data => {
+      currentParts = data.parts || [];
+      renderCards();
+    })
+    .catch(() => {
+      currentParts = [];
+      renderEmpty(container);
+    });
+}
+
+function renderCards() {
+  const container = document.getElementById('cardsView');
+  if (currentParts.length === 0) {
+    renderEmpty(container);
+    return;
+  }
+
+  const tabLabels = { cours: 'Partie', exercices: 'Exercice', corrections: 'Correction' };
+  const tabIcons = { cours: 'fa-book-open', exercices: 'fa-pen-to-square', corrections: 'fa-check-double' };
+  const iconClass = { cours: '', exercices: 'exo', corrections: 'corr' };
+  const label = tabLabels[currentTab] || 'Partie';
+  const icon = tabIcons[currentTab] || 'fa-file';
+  const ic = iconClass[currentTab] || '';
+
+  container.innerHTML = currentParts.map((part, i) => {
+    const filePath = `cours/${sKey}/${part.file}`;
+    
+    // ✅ Ajouter un attribut data pour tracker la progression
+    const partType = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exercices' : 'correction');
+    
+    return `
+      <a href="${filePath}" 
+         target="_blank" 
+         class="part-card"
+         data-subject="${sKey}"
+         data-chapter="${chapIdx}"
+         data-parttype="${partType}"
+         data-partindex="${i}"
+         onclick="trackPartProgress('${sKey}', ${chapIdx}, '${partType}', ${i})">
+        <div class="pc-icon ${ic}"><i class="fas ${icon}"></i></div>
+        <div class="pc-info">
+          <div class="pc-title">${escapeHtml(part.title)}</div>
+          <div class="pc-sub">${label} ${i + 1} — ${sConfig.name}</div>
+        </div>
+        <div class="pc-arrow"><i class="fas fa-external-link-alt"></i></div>
+      </a>
+    `;
+  }).join('');
+}
+
+// ================================================================
+// GESTION DE LA PROGRESSION
+// ================================================================
+// ================================================================
+// CHARGER LE MANIFESTE — CORRIGÉE
+// ================================================================
+async function loadManifestData(subjectKey, chapterIndex, partType) {
+  const suffix = partType === 'cours' ? 'cours' : (partType === 'exercices' ? 'exo' : 'corr');
+  const manifestPath = `cours/${subjectKey}/ch${chapterIndex}_${suffix}.json`;
+  
+  console.log(`📂 Chargement manifeste: ${manifestPath}`);
+  
+  try {
+    const response = await fetch(manifestPath);
+    if (!response.ok) {
+      console.warn(`⚠️ Manifeste introuvable: ${manifestPath}`);
+      return null;
+    }
+    return await response.json();
+  } catch (error) {
+    console.error(`❌ Erreur chargement manifeste:`, error);
+    return null;
+  }
+}
+
+// ================================================================
+// MET À JOUR LA PROGRESSION — CORRIGÉE
+// ================================================================
+async function updatePartProgress(subjectKey, chapterIndex, partType, partIndex) {
+  const authInstance = getAuthInstance();
+  const user = authInstance.currentUser;
+  if (!user) {
+    console.warn('⏳ Utilisateur non connecté');
+    return;
+  }
+  
+  console.log('📊 Mise à jour progression:', { subjectKey, chapterIndex, partType, partIndex });
+  
+  // 1. Charger le manifeste pour connaître le total
+  const manifest = await loadManifestData(subjectKey, chapterIndex, partType);
+  if (!manifest) {
+    console.warn('⚠️ Manifeste introuvable');
+    return;
+  }
+  
+  const totalParts = manifest.parts.length;
+  if (totalParts === 0) return;
+  
+  // 2. Récupérer la progression actuelle
+  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+  const docSnap = await getDoc(progressRef);
+  
+  // 3. Créer la structure si elle n'existe pas
+  let data = docSnap.exists() ? docSnap.data() : { subjects: {} };
+  
+  // ✅ S'assurer que la structure existe
+  if (!data.subjects) data.subjects = {};
+  if (!data.subjects[subjectKey]) {
+    data.subjects[subjectKey] = { 
+      chapters: { 
+        progress: {} 
+      }, 
+      progress: 0 
+    };
+  }
+  if (!data.subjects[subjectKey].chapters) {
+    data.subjects[subjectKey].chapters = { progress: {} };
+  }
+  if (!data.subjects[subjectKey].chapters.progress) {
+    data.subjects[subjectKey].chapters.progress = {};
+  }
+  
+  // 4. Récupérer l'ancien pourcentage
+  const oldProgress = data.subjects[subjectKey].chapters.progress[chapterIndex] || 0;
+  
+  // 5. Incrémenter (chaque partie = +33%)
+  const newProgress = Math.min(oldProgress + 33, 100);
+  
+  // 6. Sauvegarder dans Firestore
+  await updateDoc(progressRef, {
+    [`subjects.${subjectKey}.chapters.progress.${chapterIndex}`]: newProgress,
+    lastUpdate: new Date().toISOString()
+  });
+  
+  console.log(`📊 Progression mise à jour: Chapitre ${chapterIndex+1} → ${newProgress}%`);
+  
+  // 7. Recalculer le pourcentage de la matière
+  await recalculateSubject(user.uid, subjectKey);
+}
+
+/**
+ * Recalcule le pourcentage d'une matière
+ */
+async function recalculateSubject(userId, subjectKey) {
+  const progressRef = doc(db, 'users', userId, 'progress', 'overall');
+  const docSnap = await getDoc(progressRef);
+  const data = docSnap.data();
+  
+  const chapterProgress = data.subjects?.[subjectKey]?.chapters?.progress || {};
+  const values = Object.values(chapterProgress);
+  
+  if (values.length === 0) return;
+  
+  const sum = values.reduce((a, b) => a + b, 0);
+  const subjectProgress = Math.round(sum / values.length);
+  
+  await updateDoc(progressRef, {
+    [`subjects.${subjectKey}.progress`]: subjectProgress
+  });
+  
+  console.log(`📊 Matière ${subjectKey} → ${subjectProgress}%`);
+}
+
+function renderEmpty(container) {
+  const tabNames = { cours: 'cours', exercices: 'exercices', corrections: 'corrections' };
+  container.innerHTML =
+    '<div class="empty-state">' +
+    '  <div class="es-icon"><i class="fas fa-folder-open"></i></div>' +
+    '  <h4>Aucun ' + (tabNames[currentTab] || 'contenu') + ' disponible</h4>' +
+    '  <p>Le contenu sera ajouté depuis la page admin.</p>' +
+    '</div>';
+}
+
+function escapeHtml(text) {
+  const d = document.createElement('div');
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+// ================================================================
+// GLOBAL FUNCTIONS (exposées pour les onclick)
+// ================================================================
+window._switchTab = function(tab) {
+  currentTab = tab;
+  currentPartIndex = -1;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  loadManifest();
+};
+
+window._backToCards = function() {
+  currentPartIndex = -1;
+  document.getElementById('cardsView').classList.remove('hidden');
+  document.getElementById('contentView').classList.remove('active');
+  document.getElementById('headerNav').style.display = 'flex';
+};
+
+window._navContent = function(dir) {
+  let newIdx = currentPartIndex + dir;
+  if (newIdx >= 0 && newIdx < currentParts.length) {
+    openPart(newIdx);
+  }
+};
+
+window.initPage = renderPage;
+window.renderEmpty = renderEmpty;
+window.escapeHtml = escapeHtml;
+
+// ✅ AJOUTER CETTE LIGNE
+window.trackPartProgress = function(subjectKey, chapterIndex, partType, partIndex) {
+  updatePartProgress(subjectKey, chapterIndex, partType, partIndex);
+};
+
+// ================================================================
+// PROTECTION
+// ================================================================
+
+protectPage(async (user) => {
+  console.log('📚 Chapitre - Utilisateur connecté:', user.uid);
+  
+  // ✅ Initialiser la progression
+  await initializeProgress();
+  
+  if (!sConfig) {
+    getURLParams();
+    if (!sConfig) {
+      window.location.replace('index.html');
+      return;
+    }
+  }
+  
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (!userDoc.exists()) {
+      window.location.href = 'register.html';
+      return;
+    }
+    
+    userData = userDoc.data();
+    isPremium = userData.isUnlocked === true || userData.hasDeposited === true;
+    
+    if (!isPremium && chapIdx !== 0) {
+      window.location.href = 'matiere.html?subject=' + sKey;
+      return;
+    }
+    
+    renderPage();
+    
+  } catch (error) {
+    console.error('❌ Erreur:', error);
+    window.location.href = 'matiere.html?subject=' + sKey;
+  }
 });
 
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  getURLParams();
+});
 
-    const SUBJECTS_CONFIG = {
-      mathematiques: {
-        name: 'Mathematiques', icon: 'fa-square-root-variable',
-        chapters: ['Nombres complexes','Calcul de probabilites - Variable aleatoire','Fonction logarithme','Fonction exponentielle','Etude des fonctions numeriques','Calcul integral','Suites numeriques','Equations differentielles']
-      },
-      physique: {
-        name: 'Physique', icon: 'fa-bolt',
-        chapters: ['Cinematique','Mouvement du centre d\'inertie','Mouvement dans le champ de pesanteur','Mouvement de particules chargees','Oscillateurs mecaniques de translation','Generalites sur les vibrations','Propagation d\'un phenomene vibratoire','Superposition de phenomenes vibratoires','Interferences d\'ondes lumineuses','Champ magnetique','Force de Lorentz','Force de Laplace','Induction electromagnetique','Auto-Induction','Circuit oscillant LC','Circuit en regime sinusoidal force','Radioactivite']
-      },
-      chimie: {
-        name: 'Chimie', icon: 'fa-flask',
-        chapters: ['Solutions aqueuses','Solutions aqueuses d\'acide chlorhydrique et d\'hydroxyde de sodium','Couples acide / base','Reaction acide - base','Solution tampon','Alcools','Acides carboxyliques','Amines','Acides a-amines']
-      },
-      svt: {
-        name: 'SVT', icon: 'fa-dna',
-        chapters: ['Genetique','Immunologie','Ecologie','Evolution']
-      }
-    };
+// ================================================================
+// SAUVEGARDE AUTOMATIQUE
+// ================================================================
 
-    // ==================== STATE ====================
-    let sKey = null;
-    let sConfig = null;
-    let chapIdx = null;
-    let currentTab = 'cours';
-    let currentParts = [];
-    let currentPartIndex = -1;
+// Quand l'utilisateur quitte la page, on sauvegarde la progression
+window.addEventListener('beforeunload', function() {
+  // La progression est déjà sauvegardée via le onclick
+  console.log('📊 Sauvegarde automatique...');
+}); 
 
-    // ==================== URL PARAMS ====================
-    const params = new URLSearchParams(window.location.search);
-    const _sKey = params.get('subject');
-    const _cIdx = params.get('chapter');
-    const _tab = params.get('tab');
-    sConfig = SUBJECTS_CONFIG[_sKey] || null;
+console.log('📚 ARVEXA - Page chapitre avec progression');
+console.log('📚 ARVEXA - Page chapitre');
 
-    if (!_sKey || !sConfig || _cIdx === null || _cIdx < 0) {
-      window.location.replace('index.html');
-    } else {
-      sKey = _sKey;
-      chapIdx = parseInt(_cIdx);
-      currentTab = (_tab && ['cours','exercices','corrections'].includes(_tab)) ? _tab : 'cours';
-      initPage();
-    }
-
-    // ==================== GLOBAL FUNCTIONS ====================
-    window._switchTab = function(tab) {
-      currentTab = tab;
-      currentPartIndex = -1;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-      showCardsView();
-      loadManifest();
-      const url = new URL(window.location);
-      url.searchParams.set('tab', tab);
-      window.history.replaceState({}, '', url);
-    };
-
-    window._backToCards = function() {
-      currentPartIndex = -1;
-      showCardsView();
-    };
-
-    window._navContent = function(dir) {
-      let newIdx = currentPartIndex + dir;
-      if (newIdx >= 0 && newIdx < currentParts.length) {
-        openPart(newIdx);
-      }
-    };
-
-    window._openPart = function(idx) {
-      openPart(idx);
-    };
-
-    // ==================== INIT ====================
-    function initPage() {
-      onAuthStateChanged(auth, (user) => {
-        if (!user) { window.location.href = 'login.html'; return; }
-
-        const total = sConfig.chapters.length;
-        const title = sConfig.chapters[chapIdx] || ('Chapitre ' + (chapIdx + 1));
-
-        document.title = 'ARVEXa School - ' + title;
-        document.getElementById('pageTitle').innerHTML = '<i class="fas ' + sConfig.icon + '"></i> ' + title;
-        document.getElementById('backBtn').href = 'matiere.html?subject=' + sKey;
-        document.getElementById('chapNum').textContent = chapIdx + 1;
-        document.getElementById('chapTitle').textContent = title;
-        document.getElementById('chapSub').textContent = sConfig.name + ' — Chapitre ' + (chapIdx + 1) + ' / ' + total;
-
-        const prevBtn = document.getElementById('prevChapBtn');
-        const nextBtn = document.getElementById('nextChapBtn');
-        prevBtn.disabled = chapIdx <= 0;
-        prevBtn.onclick = () => { window.location.href = 'chapitre.html?subject=' + sKey + '&chapter=' + (chapIdx - 1) + '&tab=' + currentTab; };
-        nextBtn.disabled = chapIdx >= total - 1;
-        nextBtn.onclick = () => { window.location.href = 'chapitre.html?subject=' + sKey + '&chapter=' + (chapIdx + 1) + '&tab=' + currentTab; };
-
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === currentTab));
-        loadManifest();
-      });
-    }
-
-    // ==================== MANIFEST LOADING ====================
-    function getTabSuffix(tab) {
-      if (tab === 'cours') return 'cours';
-      if (tab === 'exercices') return 'exo';
-      if (tab === 'corrections') return 'corr';
-      return tab;
-    }
-
-    function loadManifest() {
-      const suffix = getTabSuffix(currentTab);
-      const manifestPath = 'cours/' + sKey + '/ch' + chapIdx + '_' + suffix + '.json';
-      const container = document.getElementById('cardsView');
-      container.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>';
-
-      fetch(manifestPath)
-        .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
-        .then(data => {
-          currentParts = data.parts || [];
-          renderCards();
-        })
-        .catch(() => {
-          currentParts = [];
-          renderEmpty(container);
-        });
-    }
-
-    // ==================== RENDER CARDS ====================
-    function renderCards() {
-      const container = document.getElementById('cardsView');
-      if (currentParts.length === 0) { renderEmpty(container); return; }
-
-      const tabLabels = { cours: 'Partie', exercices: 'Exercice', corrections: 'Correction' };
-      const tabIcons = { cours: 'fa-book-open', exercices: 'fa-pen-to-square', corrections: 'fa-check-double' };
-      const iconClass = { cours: '', exercices: 'exo', corrections: 'corr' };
-      const label = tabLabels[currentTab] || 'Partie';
-      const icon = tabIcons[currentTab] || 'fa-file';
-      const ic = iconClass[currentTab] || '';
-
-      container.innerHTML = currentParts.map((part, i) =>
-        '<div class="part-card" onclick="_openPart(' + i + ')">' +
-        '  <div class="pc-icon ' + ic + '"><i class="fas ' + icon + '"></i></div>' +
-        '  <div class="pc-info">' +
-        '    <div class="pc-title">' + escapeHtml(part.title) + '</div>' +
-        '    <div class="pc-sub">' + label + ' ' + (i + 1) + ' — ' + sConfig.name + '</div>' +
-        '  </div>' +
-        '  <div class="pc-arrow"><i class="fas fa-chevron-right"></i></div>' +
-        '</div>'
-      ).join('');
-    }
-
-    function renderEmpty(container) {
-      const tabNames = { cours: 'cours', exercices: 'exercices', corrections: 'corrections' };
-      container.innerHTML =
-        '<div class="empty-state">' +
-        '  <div class="es-icon"><i class="fas fa-folder-open"></i></div>' +
-        '  <h4>Aucun ' + (tabNames[currentTab] || 'contenu') + ' disponible</h4>' +
-        '  <p>Le contenu sera ajoute depuis la page admin.</p>' +
-        '</div>';
-    }
-
-    // ==================== OPEN PART ====================
-    function openPart(idx) {
-      currentPartIndex = idx;
-      const part = currentParts[idx];
-      if (!part) return;
-
-      showContentView();
-      document.getElementById('contentTitle').textContent = part.title;
-      document.getElementById('contentPrevBtn').disabled = idx <= 0;
-      document.getElementById('contentNextBtn').disabled = idx >= currentParts.length - 1;
-
-      const body = document.getElementById('contentBody');
-      body.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>';
-
-      const filePath = 'cours/' + sKey + '/' + part.file;
-      fetch(filePath)
-        .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-        .then(html => { body.innerHTML = html; })
-        .catch(() => {
-          body.innerHTML =
-            '<div class="empty-state">' +
-            '  <div class="es-icon"><i class="fas fa-file-circle-xmark"></i></div>' +
-            '  <h4>Fichier introuvable</h4>' +
-            '  <p>Le fichier ' + escapeHtml(part.file) + ' n\'existe pas encore.</p>' +
-            '</div>';
-        });
-    }
-
-    // ==================== VIEW SWITCHING ====================
-    function showCardsView() {
-      document.getElementById('cardsView').classList.remove('hidden');
-      document.getElementById('contentView').classList.remove('active');
-      document.getElementById('headerNav').style.display = 'flex';
-    }
-
-    function showContentView() {
-      document.getElementById('cardsView').classList.add('hidden');
-      document.getElementById('contentView').classList.add('active');
-      document.getElementById('headerNav').style.display = 'none';
-    }
-
-    // ==================== UTILS ====================
-    function escapeHtml(text) {
-      const d = document.createElement('div');
-      d.textContent = text; return d.innerHTML;
-    }
   </script>
 </body>
 </html>
