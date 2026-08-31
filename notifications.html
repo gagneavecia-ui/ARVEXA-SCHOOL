@@ -768,7 +768,7 @@ async function registerFCMToken() {
     // Enregistrer le Service Worker d'abord
     let swRegistration;
     if ('serviceWorker' in navigator) {
-      swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      swRegistration = await navigator.serviceWorker.register('/ARVEXA-SCHOOL/firebase-messaging-sw.js');
       console.log('✅ Service Worker enregistré');
     } else {
       console.warn('⚠️ Service Worker non supporté');
