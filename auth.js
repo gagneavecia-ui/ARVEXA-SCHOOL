@@ -1,21 +1,28 @@
-// auth.js - Gestion centralisée de l'authentification
+// auth.js - Version avec variables d'environnement Vercel
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { 
   getAuth, 
   onAuthStateChanged, 
   setPersistence, 
   browserLocalPersistence,
-  signOut
+  signOut,
+  getIdToken
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
+// ✅ UTILISER LES VARIABLES D'ENVIRONNEMENT
 const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
+
+// ✅ VÉRIFICATION QUE LES VARIABLES SONT CHARGÉES
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey === 'undefined') {
+  console.error('❌ Firebase config manquante. Vérifiez vos variables d\'environnement.');
+}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -33,32 +40,41 @@ function isPublicPage() {
   return PUBLIC_PAGES.includes(filename);
 }
 
-// Fonction principale : protéger les pages et gérer les redirections
+// ✅ FONCTION PRINCIPALE AVEC RENOUVELLEMENT DE TOKEN
 export function protectPage(callback) {
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     const isPublic = isPublicPage();
     
     if (!user && !isPublic) {
-      // Non connecté sur une page protégée → rediriger vers login
       sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
       window.location.href = 'login.html';
       return;
     }
     
     if (user && isPublic) {
-      // Connecté sur une page publique → rediriger vers l'accueil
-      window.location.href = 'index.html';
+      const redirect = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+      sessionStorage.removeItem('redirectAfterLogin');
+      window.location.href = redirect;
       return;
     }
     
-    // Tout est bon, exécuter le callback avec l'utilisateur
+    if (user) {
+      // ✅ RENOUVELLER LE TOKEN TOUTES LES 30 MINUTES
+      try {
+        const token = await getIdToken(user, true);
+        sessionStorage.setItem('firebaseToken', token);
+      } catch (error) {
+        console.error('Erreur de token:', error);
+      }
+    }
+    
     if (callback) {
       callback(user);
     }
   });
 }
 
-// Exporter l'instance auth pour les cas où on en a besoin
+// Exporter l'instance auth
 export function getAuthInstance() {
   return auth;
 }
@@ -68,4 +84,15 @@ export function logout() {
   return signOut(auth);
 }
 
-console.log('🔐 Auth module chargé');
+// ✅ OBTENIR LE TOKEN ACTUEL
+export async function getCurrentToken() {
+  const user = auth.currentUser;
+  if (!user) return null;
+  try {
+    return await getIdToken(user, true);
+  } catch {
+    return null;
+  }
+}
+
+console.log('🔐 Auth module chargé (Vercel)');

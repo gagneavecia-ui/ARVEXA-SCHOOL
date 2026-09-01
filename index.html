@@ -1139,6 +1139,16 @@ protectPage(async (user) => {
   }
 });
 
+// ✅ AJOUTER CES IMPORTS
+import { monitorSecurityEvents } from './security-monitor.js';
+import { backupUserData } from './backup.js';
+
+// ✅ DÉMARRER LE MONITORING
+monitorSecurityEvents();
+
+// ✅ SAUVEGARDE AUTOMATIQUE
+backupUserData();
+
 // ================================================================
 // ÉVÉNEMENTS
 // ================================================================

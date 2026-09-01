@@ -1,0 +1,14 @@
+{
+  "name": "arvexa-school",
+  "version": "1.0.0",
+  "description": "ARVEXA School - Plateforme d'apprentissage sécurisée",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  }
+}

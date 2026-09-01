@@ -447,6 +447,15 @@
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
+.password-strength {
+  font-size: 11px;
+  margin-top: 4px;
+  transition: all 0.3s ease;
+}
+.password-strength.weak { color: #E74C3C; }
+.password-strength.medium { color: #F39C12; }
+.password-strength.strong { color: #2ECC71; }
+
     /* ============================================================
        TOAST
        ============================================================ */
@@ -531,7 +540,7 @@
 
 <!-- ===== HEADER ===== -->
 <header class="header">
-  <a href="bienvenue.html" class="logo">ARVE<span>XA</span></a>
+  <a href="bienvenue.html" class="logo">ARVE<span>XA<span> School</span></a>
   <div class="header-actions">
     <span>Déjà membre ?</span>
     <a href="login.html" class="btn-login-header"><i class="fas fa-sign-in-alt"></i> Connexion</a>
@@ -591,6 +600,7 @@
     <!-- Mot de passe -->
     <div class="form-group">
       <label for="password">Mot de passe</label>
+      <div class="password-strength" id="passwordStrength"></div>
       <div class="input-wrap" id="passwordWrap">
         <span class="input-icon"><i class="fas fa-lock"></i></span>
         <input type="password" id="password" placeholder="Min. 6 caractères" autocomplete="new-password" required>
@@ -658,6 +668,9 @@
 </script>
 
 <script type="module">
+// ================================================================
+// register.html - Page d'inscription
+// ================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getAuth,
@@ -666,12 +679,8 @@ import {
   browserLocalPersistence,
   fetchSignInMethodsForEmail
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { protectPage } from './auth.js';
 
 // ================================================================
 // FIREBASE CONFIG
@@ -689,8 +698,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Persistance
+await setPersistence(auth, browserLocalPersistence);
+
 // ================================================================
-// DOM ELEMENTS
+// DOM
 // ================================================================
 const form = document.getElementById('registerForm');
 const firstName = document.getElementById('firstName');
@@ -724,13 +736,68 @@ const errors = {
   terms: document.getElementById('termsError')
 };
 
-// ================================================================
-// STATE
-// ================================================================
 let isSubmitting = false;
 
+// ✅ VALIDATION DU MOT DE PASSE FORTE
+function validatePasswordStrength(password) {
+  const checks = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+  };
+  
+  const score = Object.values(checks).filter(Boolean).length;
+  const total = Object.keys(checks).length;
+  const percent = (score / total) * 100;
+  
+  let strength, className;
+  if (percent >= 80) { strength = 'Fort ✅'; className = 'strong'; }
+  else if (percent >= 60) { strength = 'Moyen ⚠️'; className = 'medium'; }
+  else { strength = 'Faible ❌'; className = 'weak'; }
+  
+  const missing = [];
+  if (!checks.length) missing.push('8 caractères');
+  if (!checks.uppercase) missing.push('1 majuscule');
+  if (!checks.lowercase) missing.push('1 minuscule');
+  if (!checks.number) missing.push('1 chiffre');
+  if (!checks.special) missing.push('1 caractère spécial');
+  
+  return {
+    valid: percent >= 80,
+    strength,
+    className,
+    missing,
+    score: Math.round(percent)
+  };
+}
+
+// ✅ ÉVÉNEMENT SUR LE CHAMP MOT DE PASSE
+const strengthEl = document.getElementById('passwordStrength');
+password.addEventListener('input', () => {
+  const result = validatePasswordStrength(password.value);
+  if (strengthEl) {
+    strengthEl.textContent = result.valid ? `✅ ${result.strength}` : `❌ ${result.strength}`;
+    strengthEl.className = `password-strength ${result.className}`;
+    if (!result.valid && result.missing.length) {
+      strengthEl.textContent += ` (manque: ${result.missing.join(', ')})`;
+    }
+  }
+  validateField(password);
+  validateForm();
+});
+
+// ✅ MODIFIER validateForm pour inclure le mot de passe fort
+function validateForm() {
+  // ... votre validation existante ...
+  
+  // Ajouter la vérification du mot de passe fort
+  const pwdResult = validatePasswordStrength(password.value);
+  const isPwdStrong = pwdResult.valid;
+  
 // ================================================================
-// HELPERS
+// FONCTIONS
 // ================================================================
 
 function showToast(message, type = 'success') {
@@ -813,12 +880,12 @@ async function checkEmailExists(emailValue) {
 }
 
 // ================================================================
-// EVENTS — FIELD VALIDATION
+// ÉVÉNEMENTS
 // ================================================================
+
 [firstName, lastName, email, establishment, password, confirmPassword].forEach(field => {
   field.addEventListener('input', () => {
     validateField(field);
-    // Revalider la confirmation si le mot de passe change
     if (field.id === 'password' && confirmPassword.value) validateField(confirmPassword);
     validateForm();
   });
@@ -828,9 +895,6 @@ async function checkEmailExists(emailValue) {
   });
 });
 
-// ================================================================
-// EVENTS — TOGGLE PASSWORD
-// ================================================================
 document.getElementById('togglePassword').addEventListener('click', function() {
   const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
   password.setAttribute('type', type);
@@ -843,14 +907,8 @@ document.getElementById('toggleConfirm').addEventListener('click', function() {
   this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 });
 
-// ================================================================
-// EVENTS — TERMS
-// ================================================================
 termsCheckbox.addEventListener('change', () => validateForm());
 
-// ================================================================
-// SUBMIT
-// ================================================================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (submitBtn.disabled || isSubmitting) return;
@@ -866,10 +924,9 @@ form.addEventListener('submit', async (e) => {
   const establishmentValue = establishment.value.trim();
 
   try {
-    // Vérifier si l'email existe déjà
     const emailExists = await checkEmailExists(emailValue);
     if (emailExists) {
-      showToast('Cette adresse e-mail est déjà utilisée. Connecte-toi ou utilise une autre adresse.', 'error');
+      showToast('Cette adresse e-mail est déjà utilisée.', 'error');
       isSubmitting = false;
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
@@ -877,11 +934,9 @@ form.addEventListener('submit', async (e) => {
       return;
     }
 
-    // Création du compte Firebase
     const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
     const user = userCredential.user;
 
-    // Enregistrement du profil dans Firestore
     await setDoc(doc(db, 'users', user.uid), {
       uid: user.uid,
       firstName: firstNameValue,
@@ -897,18 +952,14 @@ form.addEventListener('submit', async (e) => {
     });
 
     showToast('Compte créé avec succès !', 'success');
-
-    setTimeout(() => {
-      window.location.href = 'onboarding.html';
-    }, 1500);
+    setTimeout(() => window.location.href = 'onboarding.html', 1500);
 
   } catch (error) {
     console.error('Erreur inscription:', error);
-
     let message = 'Une erreur est survenue. Réessaie.';
     switch (error.code) {
       case 'auth/email-already-in-use':
-        message = 'Cette adresse e-mail est déjà utilisée. Connecte-toi ou utilise une autre adresse.';
+        message = 'Cette adresse e-mail est déjà utilisée.';
         break;
       case 'auth/invalid-email':
         message = 'Adresse e-mail invalide.';
@@ -916,19 +967,15 @@ form.addEventListener('submit', async (e) => {
       case 'auth/weak-password':
         message = 'Le mot de passe est trop faible (minimum 6 caractères).';
         break;
-      case 'auth/operation-not-allowed':
-        message = "L'inscription est temporairement désactivée.";
-        break;
       case 'auth/too-many-requests':
         message = 'Trop de tentatives. Réessaie dans quelques minutes.';
         break;
       case 'auth/network-request-failed':
-        message = 'Problème de connexion. Vérifie ta connexion internet.';
+        message = 'Problème de connexion internet.';
         break;
       default:
-        message = error.message || 'Une erreur est survenue. Réessaie.';
+        message = error.message || 'Une erreur est survenue.';
     }
-
     showToast(message, 'error');
   }
 
@@ -939,10 +986,13 @@ form.addEventListener('submit', async (e) => {
 });
 
 // ================================================================
-// INIT
+// PROTECTION
 // ================================================================
-validateForm();
-console.log('ARVEXA School — Page d\'inscription');
+
+// Register est une page publique
+protectPage();
+
+console.log('🚀 ARVEXA — Page Inscription');
 </script>
 
 </body>

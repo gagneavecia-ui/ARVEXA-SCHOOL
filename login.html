@@ -416,7 +416,7 @@
 <div class="login-container">
 
   <!-- Logo -->
-  <a href="bienvenue.html" class="logo">ARVE<span>XA</span></a>
+  <a href="bienvenue.html" class="logo">ARVE<span>XA<span> School</span></a>
   <div class="logo-sub">Apprendre · S'entraîner · Progresser</div>
 
   <!-- Login Card -->
@@ -503,19 +503,18 @@
 </script>
 
 <script type="module">
+// ================================================================
+// login.html - Page de connexion
+// ================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
   setPersistence,
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { protectPage } from './auth.js';
 
 // ================================================================
 // FIREBASE CONFIG
@@ -533,8 +532,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Persistance
+await setPersistence(auth, browserLocalPersistence);
+
 // ================================================================
-// ÉLÉMENTS DOM
+// DOM
 // ================================================================
 const form = document.getElementById('loginForm');
 const emailInput = document.getElementById('emailInput');
@@ -545,7 +547,6 @@ const passwordWrap = document.getElementById('passwordWrap');
 const emailError = document.getElementById('emailError');
 const passwordError = document.getElementById('passwordError');
 const togglePassword = document.getElementById('togglePassword');
-
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
@@ -570,10 +571,8 @@ function validateEmail(email) {
 function validateForm() {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
-
   let isValid = true;
 
-  // Email
   if (!email || !validateEmail(email)) {
     emailWrap.classList.add('error');
     emailError.classList.add('visible');
@@ -583,7 +582,6 @@ function validateForm() {
     emailError.classList.remove('visible');
   }
 
-  // Password
   if (!password || password.length < 6) {
     passwordWrap.classList.add('error');
     passwordError.classList.add('visible');
@@ -600,7 +598,6 @@ function validateForm() {
 // ÉVÉNEMENTS
 // ================================================================
 
-// Validation en temps réel
 emailInput.addEventListener('input', () => {
   const email = emailInput.value.trim();
   if (email && validateEmail(email)) {
@@ -619,37 +616,27 @@ passwordInput.addEventListener('input', () => {
   loginBtn.disabled = !validateForm();
 });
 
-// Toggle mot de passe
 togglePassword.addEventListener('click', () => {
   const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
   passwordInput.setAttribute('type', type);
   togglePassword.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 });
 
-// Soumission du formulaire
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  if (!validateForm()) {
-    loginBtn.disabled = true;
-    return;
-  }
+  if (!validateForm()) return;
 
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
 
-  // Désactiver le bouton
   loginBtn.disabled = true;
   loginBtn.classList.add('loading');
 
   try {
-    // Connexion Firebase
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Récupérer les données utilisateur
     const userDoc = await getDoc(doc(db, 'users', user.uid));
-
     if (!userDoc.exists()) {
       showToast('⚠️ Profil utilisateur introuvable.', 'error');
       loginBtn.disabled = false;
@@ -659,48 +646,25 @@ form.addEventListener('submit', async (e) => {
 
     const userData = userDoc.data();
 
-    // Vérifier si l'utilisateur a complété l'onboarding
     if (!userData.onboardingCompleted) {
       showToast('✅ Connexion réussie ! Redirection...', 'success');
-      setTimeout(() => {
-        window.location.href = 'onboarding.html';
-      }, 1000);
+      setTimeout(() => window.location.href = 'onboarding.html', 1000);
     } else {
       showToast('✅ Bon retour, ' + (userData.firstName || '') + ' !', 'success');
-      setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1000);
+      setTimeout(() => window.location.href = 'index.html', 1000);
     }
 
   } catch (error) {
     console.error('❌ Erreur connexion:', error);
-
     let message = 'Une erreur est survenue.';
-
     switch (error.code) {
-      case 'auth/user-not-found':
-        message = '❌ Aucun compte trouvé avec cette adresse.';
-        break;
-      case 'auth/wrong-password':
-        message = '❌ Mot de passe incorrect.';
-        passwordWrap.classList.add('error');
-        passwordError.classList.add('visible');
-        break;
-      case 'auth/invalid-email':
-        message = '❌ Adresse e-mail invalide.';
-        emailWrap.classList.add('error');
-        emailError.classList.add('visible');
-        break;
-      case 'auth/too-many-requests':
-        message = '⏳ Trop de tentatives. Réessaie dans quelques minutes.';
-        break;
-      case 'auth/network-request-failed':
-        message = '📶 Problème de connexion réseau. Vérifie ta connexion.';
-        break;
-      default:
-        message = '❌ ' + error.message;
+      case 'auth/user-not-found': message = '❌ Aucun compte trouvé avec cette adresse.'; break;
+      case 'auth/wrong-password': message = '❌ Mot de passe incorrect.'; break;
+      case 'auth/invalid-email': message = '❌ Adresse e-mail invalide.'; break;
+      case 'auth/too-many-requests': message = '⏳ Trop de tentatives. Réessaie dans quelques minutes.'; break;
+      case 'auth/network-request-failed': message = '📶 Problème de connexion réseau.'; break;
+      default: message = '❌ ' + error.message;
     }
-
     showToast(message, 'error');
     loginBtn.disabled = false;
     loginBtn.classList.remove('loading');
@@ -708,22 +672,94 @@ form.addEventListener('submit', async (e) => {
 });
 
 // ================================================================
-// AUTH — REDIRECTION SI DÉJÀ CONNECTÉ
+// PROTECTION
 // ================================================================
 
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    // Si déjà connecté, rediriger vers le dashboard
-    window.location.href = 'index.html';
+// Login est une page publique : si déjà connecté, redirige vers index
+protectPage();
+
+// ================================================================
+// login.html - AJOUT RATE LIMITING
+// ================================================================
+
+// ✅ RATE LIMITING
+const loginAttempts = {};
+const MAX_ATTEMPTS = 5;
+const BLOCK_DURATION = 15 * 60 * 1000; // 15 minutes
+
+// ✅ MODIFIER LA FONCTION handleLogin
+// Dans la fonction submit du formulaire, remplacer par :
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+  const key = `login_${email}`;
+
+  // ✅ Vérifier si l'utilisateur est bloqué
+  const attempts = loginAttempts[key] || { count: 0, blockedUntil: 0 };
+
+  if (attempts.blockedUntil > Date.now()) {
+    const remaining = Math.ceil((attempts.blockedUntil - Date.now()) / 60000);
+    showToast(`⏳ Trop de tentatives. Réessaie dans ${remaining} min.`, 'error');
+    return;
   }
+
+  loginBtn.disabled = true;
+  loginBtn.classList.add('loading');
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // ✅ Réinitialiser les tentatives
+    delete loginAttempts[key];
+
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (!userDoc.exists()) {
+      showToast('⚠️ Profil utilisateur introuvable.', 'error');
+      loginBtn.disabled = false;
+      loginBtn.classList.remove('loading');
+      return;
+    }
+
+    const userData = userDoc.data();
+    showToast(`✅ Bon retour, ${userData.firstName || ''} !`, 'success');
+
+    setTimeout(() => {
+      const redirect = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+      sessionStorage.removeItem('redirectAfterLogin');
+      window.location.href = redirect;
+    }, 1000);
+
+  } catch (error) {
+    // ✅ Incrémenter les tentatives
+    attempts.count++;
+    if (attempts.count >= MAX_ATTEMPTS) {
+      attempts.blockedUntil = Date.now() + BLOCK_DURATION;
+      showToast(`⏳ Trop de tentatives. Réessaie dans 15 min.`, 'error');
+    } else {
+      let message = '❌ Identifiants incorrects.';
+      switch (error.code) {
+        case 'auth/user-not-found': message = '❌ Aucun compte trouvé.'; break;
+        case 'auth/wrong-password': message = '❌ Mot de passe incorrect.'; break;
+        case 'auth/invalid-email': message = '❌ Email invalide.'; break;
+        case 'auth/too-many-requests': message = '⏳ Trop de tentatives. Réessaie plus tard.'; break;
+        case 'auth/network-request-failed': message = '📶 Problème de connexion.'; break;
+        default: message = '❌ ' + error.message;
+      }
+      showToast(message, 'error');
+    }
+    loginAttempts[key] = attempts;
+  }
+
+  loginBtn.disabled = false;
+  loginBtn.classList.remove('loading');
 });
 
-// ================================================================
-// INIT
-// ================================================================
-
-loginBtn.disabled = true;
-console.log('🚀 ARVEXA School — Page Connexion');
+console.log('🚀 ARVEXA — Page Connexion');
 </script>
 
 </body>
