@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nombres complexes - Introduction et forme algébrique</title>
+  <style>
+    /* ============================================================
+       STYLE ARVEXA SCHOOL - Pour le contenu des chapitres
+       ============================================================ */
+    :root {
+      --primary: #1A3A2A;
+      --primary-dark: #0A1A12;
+      --accent: #B8860B;
+      --accent-bright: #E0B84A;
+      --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-card: rgba(20, 20, 20, 0.7);
+      --text-light: #F5F0E8;
+      --text-dim: #8A8A7A;
+      --text-muted: #5A5A4A;
+      --card-border: rgba(184, 134, 11, 0.08);
+      --radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ===== CHAPITRE HEADER ===== */
+    .chapitre-header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(184, 134, 11, 0.1);
+    }
+    .chapitre-header .chapitre-numero {
+      font-size: 12px;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .chapitre-header .chapitre-titre {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+    .chapitre-header .chapitre-titre .accent {
+      color: var(--accent-bright);
+      font-style: italic;
+    }
+    .chapitre-header .chapitre-divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      margin-top: 12px;
+      border-radius: 4px;
+    }
+
+    /* ===== SECTION ===== */
+    .section {
+      margin-bottom: 28px;
+    }
+    .section-titre {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #3b82f6;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.08);
+    }
+    .section-titre::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-bright);
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+
+    /* ===== PARAGRAPHES ===== */
+    p {
+      color: #a0b0cc;
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+    p strong { color: var(--text-light); }
+    p em { color: var(--text-light); font-style: italic; }
+
+    /* ===== MATH INLINE ===== */
+    .math-inline {
+      background: rgba(59, 130, 246, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 16px;
+      color: #e8ecf8;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    /* ===== FORMULA BOX ===== */
+    .formula-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(184, 134, 11, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-left: 4px solid #3b82f6;
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin: 18px 0;
+      text-align: center;
+    }
+    .formula-box .formula-main {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #e8ecf8;
+      line-height: 1.6;
+    }
+    .formula-box .formula-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .formula-box-gold {
+      border-left-color: var(--accent-bright);
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(59, 130, 246, 0.02));
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .card .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 4px;
+    }
+    .card p { margin-bottom: 0; }
+
+    .card-key {
+      border-left: 4px solid var(--accent-bright);
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(184, 134, 11, 0.01));
+    }
+    .card-key .card-label {
+      background: rgba(184, 134, 11, 0.15);
+      color: var(--accent-bright);
+    }
+    .card-key p { color: var(--text-light); }
+
+    .card-tip {
+      border-left: 4px solid #3b82f6;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(59, 130, 246, 0.01));
+    }
+    .card-tip .card-label {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+    }
+    .card-tip p { color: #a0b0cc; }
+
+    .card-warning {
+      border-left: 4px solid #ef4444;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), rgba(239, 68, 68, 0.01));
+    }
+    .card-warning .card-label {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+    }
+    .card-warning p { color: #a0b0cc; }
+
+    .card-remember {
+      border-left: 4px solid #22c55e;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.01));
+    }
+    .card-remember .card-label {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+    .card-remember p { color: #a0b0cc; }
+
+    /* ===== BULLET LIST ===== */
+    .bullet-list {
+      padding-left: 0;
+      list-style: none;
+      margin: 12px 0;
+    }
+    .bullet-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 8px;
+      color: #a0b0cc;
+      line-height: 1.7;
+    }
+    .bullet-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, var(--accent-bright), #3b82f6);
+      border-radius: 50%;
+    }
+    .bullet-list li strong { color: var(--text-light); }
+
+    /* ===== TABLE ===== */
+    .table-wrap {
+      margin: 18px 0;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead th {
+      background: rgba(59, 130, 246, 0.06);
+      color: var(--accent-bright);
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid rgba(184, 134, 11, 0.15);
+    }
+    tbody td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      color: #a0b0cc;
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) td {
+      background: rgba(59, 130, 246, 0.02);
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    td strong { color: var(--text-light); }
+
+    /* ===== EXAMPLE ===== */
+    .example-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .example-block .example-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .example-block .example-content {
+      color: #a0b0cc;
+      line-height: 1.8;
+    }
+    .example-block .example-content .math-inline {
+      display: inline-block;
+      margin: 2px 0;
+    }
+    .example-block .example-content p { margin-bottom: 8px; }
+    .example-block .example-content p:last-child { margin-bottom: 0; }
+
+    /* ===== STEPS ===== */
+    .steps { margin: 18px 0; }
+    .step {
+      display: flex;
+      margin-bottom: 14px;
+    }
+    .step-number {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      margin-right: 14px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    }
+    .step-content { flex: 1; padding-top: 2px; }
+    .step-content strong {
+      color: var(--text-light);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+    .step-content p {
+      color: #a0b0cc;
+      font-size: 13px;
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+
+    /* ===== CALL OUT ===== */
+    .callout {
+      background: rgba(59, 130, 246, 0.04);
+      border-radius: 10px;
+      padding: 16px 22px;
+      margin: 16px 0;
+      text-align: center;
+      border-top: 2px solid #3b82f6;
+      border-bottom: 2px solid var(--accent-bright);
+    }
+    .callout-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    /* ===== SEPARATEUR ENTRE CHAPITRES ===== */
+    .chapitre-separateur {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.15), transparent);
+      margin: 40px 0 32px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      body { padding: 12px; font-size: 14px; }
+      .chapitre-header .chapitre-titre { font-size: 26px; }
+      .section-titre { font-size: 18px; }
+      .formula-box .formula-main { font-size: 18px; }
+      .math-inline { font-size: 14px; padding: 1px 6px; }
+      table { font-size: 12px; }
+      thead th, tbody td { padding: 8px 10px; }
+      .step-number { width: 28px; height: 28px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- CHAPITRE 1 : INTRODUCTION AUX NOMBRES COMPLEXES              -->
+  <!-- ============================================================ -->
+
+  <div class="chapitre-header">
+    <div class="chapitre-numero">Chapitre 1</div>
+    <h1 class="chapitre-titre">Introduction aux <span class="accent">nombres complexes</span></h1>
+    <div class="chapitre-divider"></div>
+  </div>
+
+  <!-- SECTION : Pourquoi les nombres complexes ? -->
+  <div class="section">
+    <h2 class="section-titre">Pourquoi les nombres complexes ?</h2>
+    <p>En mathématiques, on travaille depuis toujours avec les nombres réels. Ceux-ci permettent de mesurer des longueurs, des aires, des volumes, de représenter des quantités physiques. Cependant, les réels ont une limitation fondamentale : <strong>il n'existe aucun nombre réel dont le carré soit négatif</strong>. Autrement dit, l'équation <em>x</em><sup>2</sup> = -1 n'a aucune solution dans l'ensemble des réels. Cette impossibilité a longtemps bloqué les mathématiciens dans la résolution de nombreuses équations.</p>
+    <p>C'est pour surmonter cette difficulté qu'a été introduit un nouveau nombre, noté <strong>i</strong>, appelé <strong>nombre imaginaire</strong>, tel que <span class="math-inline">i<sup>2</sup> = -1</span>. Avec ce nombre, l'équation x<sup>2</sup> = -1 admet enfin deux solutions : x = i et x = -i. Plus généralement, tout nombre complexe s'écrit sous la forme <span class="math-inline">z = a + ib</span> où a et b sont des nombres réels, et i est le nombre imaginaire vérifiant i<sup>2</sup> = -1.</p>
+    <p>L'introduction des nombres complexes ne se limite pas à un simple artifice pour résoudre x<sup>2</sup> = -1. Ils permettent de résoudre <strong>toute</strong> équation polynomiale à coefficients réels (et même complexes), grâce au théorème fondamental de l'algèbre. Ils sont aussi indispensables en géométrie analytique, en électricité, en mécanique quantique et dans de nombreux autres domaines scientifiques.</p>
+  </div>
+
+  <!-- SECTION : L'ensemble des nombres complexes -->
+  <div class="section">
+    <h2 class="section-titre">L'ensemble des nombres complexes</h2>
+    <p>L'ensemble de tous les nombres complexes est noté <span class="math-inline">C</span>. Il contient l'ensemble des nombres réels <span class="math-inline">R</span> comme cas particulier (lorsque b = 0 dans z = a + ib). On peut le représenter comme une extension de la droite des réels à un plan à deux dimensions. Chaque nombre complexe correspond à un unique point dans ce plan.</p>
+    <p>De la même manière qu'on a construit les entiers relatifs à partir des entiers naturels (pour pouvoir soustraire), puis les rationnels à partir des entiers (pour pouvoir diviser), puis les réels à partir des rationnels (pour compléter la droite numérique), les complexes sont construits à partir des réels pour pouvoir extraire des racines carrées de nombres négatifs et résoudre toutes les équations polynomiales.</p>
+  </div>
+
+  <!-- SECTION : Notation et vocabulaire fondamentaux -->
+  <div class="section">
+    <h2 class="section-titre">Notation et vocabulaire fondamentaux</h2>
+    <p>Soit <span class="math-inline">z = a + ib</span> un nombre complexe, où a et b sont des réels. On utilise le vocabulaire suivant qu'il faut connaître par cœur :</p>
+    <ul class="bullet-list">
+      <li><strong>a</strong> est appelé la <strong>partie réelle</strong> de z, et on note <span class="math-inline">Re(z) = a</span></li>
+      <li><strong>b</strong> est appelé la <strong>partie imaginaire</strong> de z, et on note <span class="math-inline">Im(z) = b</span></li>
+      <li>On dit que z est un <strong>nombre réel</strong> si et seulement si Im(z) = 0 (c'est-à-dire b = 0)</li>
+      <li>On dit que z est un <strong>imaginaire pur</strong> si et seulement si Re(z) = 0 (c'est-à-dire a = 0, z s'écrit alors ib avec b réel)</li>
+      <li>Deux nombres complexes sont <strong>égaux</strong> si et seulement s'ils ont même partie réelle et même partie imaginaire : si z<sub>1</sub> = a<sub>1</sub> + ib<sub>1</sub> et z<sub>2</sub> = a<sub>2</sub> + ib<sub>2</sub>, alors z<sub>1</sub> = z<sub>2</sub> équivaut à a<sub>1</sub> = a<sub>2</sub> et b<sub>1</sub> = b<sub>2</sub></li>
+    </ul>
+
+    <div class="card card-key">
+      <div class="card-label">À retenir</div>
+      <p>Un nombre complexe n'est <strong>jamais</strong> strictement inférieur ou supérieur à un autre nombre complexe. Les inégalités n'ont pas de sens dans C. Seul l'ordre sur les parties réelles ou sur les modules a un sens.</p>
+    </div>
+  </div>
+
+  <!-- SECTION : Propriétés de i -->
+  <div class="section">
+    <h2 class="section-titre">Propriétés de i</h2>
+    <p>Le nombre i possède des propriétés régulières qu'il faut maîtriser pour tous les calculs. Par définition <span class="math-inline">i<sup>2</sup> = -1</span>, et on en déduit :</p>
+    <ul class="bullet-list">
+      <li><span class="math-inline">i<sup>3</sup> = i<sup>2</sup> × i = -i</span> : le cube de i vaut -i</li>
+      <li><span class="math-inline">i<sup>4</sup> = (i<sup>2</sup>)<sup>2</sup> = (-1)<sup>2</sup> = 1</span> : la puissance 4 de i vaut 1</li>
+      <li><span class="math-inline">i<sup>-1</sup> = 1/i = -i</span> : l'inverse de i est -i (car i × (-i) = -i<sup>2</sup> = 1)</li>
+      <li>Plus généralement, les puissances de i sont <strong>périodiques de période 4</strong> : i<sup>n</sup> = i, -1, -i, 1 selon que n est congru à 1, 2, 3, 0 modulo 4</li>
+    </ul>
+
+    <div class="card card-warning">
+      <div class="card-label">Attention</div>
+      <p>Ne jamais écrire i = √(-1). Cette écriture est incorrecte car la fonction racine carrée n'est pas définie pour les nombres négatifs. On écrit plutôt : <em>i est le nombre tel que i<sup>2</sup> = -1</em>.</p>
+    </div>
+  </div>
+
+  <!-- SECTION : Le plan complexe -->
+  <div class="section">
+    <h2 class="section-titre">Le plan complexe (représentation géométrique)</h2>
+    <p>À tout nombre complexe <span class="math-inline">z = a + ib</span>, on peut associer le point M de coordonnées (a, b) dans un repère orthonormal direct <span class="math-inline">(O, u, v)</span>. On dit alors que M est le <strong>point image</strong> de z, et réciproquement z est l'<strong>affixe</strong> du point M. On note M(z) ou z<sub>M</sub> l'affixe du point M.</p>
+    <p>Cette représentation est fondamentale car elle permet de faire le lien entre l'algèbre (calculs sur les nombres) et la géométrie (points, distances, angles). L'axe horizontal (des abscisses) correspond à l'ensemble des réels, et l'axe vertical (des ordonnées) correspond à l'ensemble des imaginaires purs. Tout point du plan représente un unique nombre complexe.</p>
+
+    <div class="example-block">
+      <div class="example-label">Exemple</div>
+      <div class="example-content">
+        <p>Placons les points suivants dans le plan complexe : A d'affixe <span class="math-inline">z<sub>A</sub> = 2 + 3i</span> se trouve à 2 unités sur l'axe des réels et 3 unités sur l'axe des imaginaires. B d'affixe <span class="math-inline">z<sub>B</sub> = -1 - 2i</span> se trouve à gauche et en bas de l'origine. C d'affixe <span class="math-inline">z<sub>C</sub> = 3i</span> est un imaginaire pur, il se trouve directement sur l'axe vertical. D d'affixe <span class="math-inline">z<sub>D</sub> = 2</span> est un réel, il se trouve sur l'axe horizontal.</p>
+      </div>
+    </div>
+
+    <div class="card card-tip">
+      <div class="card-label">Méthode</div>
+      <p>Pour retenir le vocabulaire : la partie RÉELLE se lit sur l'axe des Réels (horizontal), la partie IMAGINAIRE se lit sur l'axe des Imaginaires (vertical). L'affixe est le "nom algébrique" du point.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SÉPARATEUR ENTRE CHAPITRES                                   -->
+  <!-- ============================================================ -->
+
+  <div class="chapitre-separateur"></div>
+
+  <!-- ============================================================ -->
+  <!-- CHAPITRE 2 : FORME ALGÉBRIQUE                                -->
+  <!-- ============================================================ -->
+
+  <div class="chapitre-header">
+    <div class="chapitre-numero">Chapitre 2</div>
+    <h1 class="chapitre-titre">Forme algébrique : partie réelle et <span class="accent">imaginaire</span></h1>
+    <div class="chapitre-divider"></div>
+  </div>
+
+  <!-- SECTION : Écriture sous forme algébrique -->
+  <div class="section">
+    <h2 class="section-titre">Écriture sous forme algébrique</h2>
+    <p>Tout nombre complexe s'écrit de manière unique sous la forme <span class="math-inline">z = a + ib</span> où a et b sont des nombres réels. Cette écriture est appelée la <strong>forme algébrique</strong> (ou forme cartésienne) du nombre complexe z. C'est la forme la plus naturelle pour effectuer des additions et des soustractions, et elle est directement liée à la représentation géométrique dans le plan complexe.</p>
+    <p>Il est essentiel de bien distinguer la partie réelle et la partie imaginaire, car de nombreuses propriétés et de nombreux théorèmes s'énoncent en termes de Re(z) et Im(z). Par exemple, deux complexes sont égaux si et seulement si leurs parties réelles sont égales <strong>et</strong> leurs parties imaginaires sont égales. Cela permet de résoudre des équations en séparant parties réelle et imaginaire.</p>
+  </div>
+
+  <!-- SECTION : Opérations sous forme algébrique -->
+  <div class="section">
+    <h2 class="section-titre">Opérations sur les nombres complexes sous forme algébrique</h2>
+    <p>Toutes les opérations arithmétiques s'effectuent sur les nombres complexes de manière analogue aux réels, en utilisant la règle <span class="math-inline">i<sup>2</sup> = -1</span> à chaque fois qu'on rencontre i<sup>2</sup> dans un calcul. Voici les quatre opérations fondamentales détaillées :</p>
+
+    <div class="formula-box">
+      <div class="formula-main">Addition : z<sub>1</sub> + z<sub>2</sub> = (a<sub>1</sub> + a<sub>2</sub>) + i(b<sub>1</sub> + b<sub>2</sub>)</div>
+    </div>
+    <p>On additionne les parties réelles entre elles et les parties imaginaires entre elles. C'est exactement comme pour les vecteurs dans le plan. Par exemple : si z<sub>1</sub> = 3 + 4i et z<sub>2</sub> = 1 - i, alors z<sub>1</sub> + z<sub>2</sub> = (3 + 1) + i(4 + (-1)) = 4 + 3i.</p>
+
+    <div class="formula-box">
+      <div class="formula-main">Soustraction : z<sub>1</sub> - z<sub>2</sub> = (a<sub>1</sub> - a<sub>2</sub>) + i(b<sub>1</sub> - b<sub>2</sub>)</div>
+    </div>
+    <p>De même, on soustrait parties réelles et parties imaginaires séparément. Avec les mêmes valeurs : z<sub>1</sub> - z<sub>2</sub> = (3 - 1) + i(4 - (-1)) = 2 + 5i.</p>
+
+    <div class="formula-box">
+      <div class="formula-main">Multiplication : z<sub>1</sub> × z<sub>2</sub> = (a<sub>1</sub>a<sub>2</sub> - b<sub>1</sub>b<sub>2</sub>) + i(a<sub>1</sub>b<sub>2</sub> + a<sub>2</sub>b<sub>1</sub>)</div>
+    </div>
+    <p>Pour la multiplication, on développe comme pour un produit de doubles parenthèses, en regroupant les termes en i<sup>2</sup> = -1. Ainsi : (a<sub>1</sub> + ib<sub>1</sub>)(a<sub>2</sub> + ib<sub>2</sub>) = a<sub>1</sub>a<sub>2</sub> + ia<sub>1</sub>b<sub>2</sub> + ib<sub>1</sub>a<sub>2</sub> + i<sup>2</sup>b<sub>1</sub>b<sub>2</sub> = (a<sub>1</sub>a<sub>2</sub> - b<sub>1</sub>b<sub>2</sub>) + i(a<sub>1</sub>b<sub>2</sub> + a<sub>2</sub>b<sub>1</sub>).</p>
+  </div>
+
+  <!-- SECTION : Multiplication par un scalaire réel -->
+  <div class="section">
+    <h2 class="section-titre">Multiplication par un scalaire réel</h2>
+    <p>Si k est un réel et z = a + ib un complexe, alors <span class="math-inline">kz = ka + ikb</span>. On multiplie simplement les deux composantes par le réel k. Cette opération est importante car elle intervient dans les homothéties et de nombreux calculs vectoriels.</p>
+  </div>
+
+  <!-- SECTION : Identification -->
+  <div class="section">
+    <h2 class="section-titre">Identification : méthode fondamentale</h2>
+    <p>La méthode d'identification est l'une des techniques les plus importantes pour résoudre des problèmes avec les nombres complexes. Elle repose sur le principe suivant : si deux nombres complexes sont égaux, alors leurs parties réelles sont égales et leurs parties imaginaires sont égales.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <strong>Écrire l'égalité des nombres complexes</strong>
+          <p>Par exemple : (2 + 3i)(x + iy) = 5 + i</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <strong>Développer et réduire le membre de gauche</strong>
+          <p>(2x - 3y) + i(3x + 2y) = 5 + i</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <strong>Égaler les parties réelles entre elles</strong>
+          <p>2x - 3y = 5</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <strong>Égaler les parties imaginaires entre elles</strong>
+          <p>3x + 2y = 1</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <strong>Résoudre le système</strong>
+          <p>On obtient un système de 2 équations à 2 inconnues qu'on résout par substitution ou combinaison linéaire</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="example-block">
+      <div class="example-label">Exemple détaillé</div>
+      <div class="example-content">
+        <p>Déterminer les réels x et y tels que (1 + i)(x + iy) = 2 - i.<br>
+        On développe : (x - y) + i(x + y) = 2 - i.<br>
+        Par identification : x - y = 2 et x + y = -1.<br>
+        On additionne : 2x = 1, donc x = 1/2.<br>
+        On soustrait : -2y = 3, donc y = -3/2.<br>
+        Vérification : (1 + i)(1/2 - 3i/2) = 1/2 + i/2 - 3i/2 - 3i<sup>2</sup>/2 = 1/2 - i + 3/2 = 2 - i.</p>
+      </div>
+    </div>
+
+    <div class="card card-tip">
+      <div class="card-label">Conseil pratique</div>
+      <p>L'identification est utilisée partout : pour factoriser des polynômes, pour déterminer les parties réelle et imaginaire de puissances, pour trouver les racines carrées de complexes, etc. Maîtrisez cette méthode parfaitement.</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- FIN                                                          -->
+  <!-- ============================================================ -->
+
+  <div class="callout">
+    <div class="callout-text">Fin de l'extrait — Introduction et forme algébrique des nombres complexes. Ces deux chapitres posent les bases fondamentales pour la suite du cours.</div>
+  </div>
+
+</body>
+</html>
