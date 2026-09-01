@@ -191,6 +191,10 @@
       border-color: rgba(184, 134, 11, 0.2);
       box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.05);
     }
+    .form-group .input-wrap.success {
+      border-color: var(--success);
+      box-shadow: 0 0 0 3px rgba(45, 125, 90, 0.05);
+    }
     .form-group .input-wrap.error {
       border-color: var(--danger);
       box-shadow: 0 0 0 3px rgba(184, 92, 58, 0.05);
@@ -199,7 +203,10 @@
       padding: 0 4px 0 14px;
       color: var(--text-muted);
       font-size: 14px;
+      flex-shrink: 0;
     }
+    .form-group .input-wrap .icon.success { color: var(--success); }
+    .form-group .input-wrap .icon.error { color: var(--danger); }
     .form-group .input-wrap input {
       width: 100%;
       padding: 12px 14px 12px 8px;
@@ -234,6 +241,38 @@
       margin-top: 4px;
     }
     .form-group .error-message.visible { display: block; }
+    .form-group .success-message {
+      display: none;
+      font-size: 11px;
+      color: var(--success);
+      margin-top: 4px;
+    }
+    .form-group .success-message.visible { display: block; }
+
+    /* ============================================================
+       REMEMBER ME
+       ============================================================ */
+    .form-group-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0 18px;
+      padding: 4px 0;
+    }
+    .form-group-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .form-group-checkbox label {
+      font-size: 13px;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-weight: 400;
+    }
 
     /* ============================================================
        BOUTONS
@@ -258,11 +297,11 @@
       position: relative;
       overflow: hidden;
     }
-    .btn-login:hover {
+    .btn-login:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 30px rgba(184, 134, 11, 0.25);
     }
-    .btn-login:active { transform: scale(0.97); }
+    .btn-login:active:not(:disabled) { transform: scale(0.97); }
     .btn-login:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -336,6 +375,45 @@
     .btn-forgot:hover { color: var(--accent-bright); }
 
     /* ============================================================
+       VERIFICATION BANNER
+       ============================================================ */
+    .verification-banner {
+      display: none;
+      background: rgba(184, 134, 11, 0.08);
+      border: 1px solid rgba(184, 134, 11, 0.15);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .verification-banner.show { display: block; }
+    .verification-banner .banner-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-bright);
+    }
+    .verification-banner .banner-text {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .verification-banner .banner-btn {
+      margin-top: 8px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .verification-banner .banner-btn:hover {
+      background: rgba(184, 134, 11, 0.2);
+    }
+
+    /* ============================================================
        SECURE
        ============================================================ */
     .secure {
@@ -367,11 +445,14 @@
       max-width: 90%;
       text-align: center;
       box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { margin-right: 8px; }
+    .toast .toast-icon { flex-shrink: 0; }
 
     /* ============================================================
        RESPONSIVE
@@ -426,6 +507,13 @@
       <p>Retrouve ton espace personnel</p>
     </div>
 
+    <!-- Bannière de vérification (affichée si email non vérifié) -->
+    <div class="verification-banner" id="verificationBanner">
+      <div class="banner-title">📧 Vérifie ton adresse e-mail</div>
+      <div class="banner-text">Un email de vérification a été envoyé à <strong id="verifyEmailDisplay"></strong>. Clique sur le lien pour activer ton compte.</div>
+      <button class="banner-btn" id="resendVerifyBtn">📤 Renvoyer l'email</button>
+    </div>
+
     <!-- Formulaire -->
     <form id="loginForm" novalidate>
 
@@ -433,30 +521,38 @@
       <div class="form-group">
         <label for="emailInput">Adresse e-mail</label>
         <div class="input-wrap" id="emailWrap">
-          <span class="icon"><i class="fas fa-envelope"></i></span>
+          <span class="icon" id="emailIcon"><i class="fas fa-envelope"></i></span>
           <input type="email" id="emailInput" placeholder="exemple@email.com" autocomplete="email" required>
         </div>
-        <div class="error-message" id="emailError">Adresse e-mail invalide.</div>
+        <div class="error-message" id="emailError">Veuillez entrer une adresse e-mail valide.</div>
+        <div class="success-message" id="emailSuccess">✅ Email valide</div>
       </div>
 
       <!-- Mot de passe -->
       <div class="form-group">
         <label for="passwordInput">Mot de passe</label>
         <div class="input-wrap" id="passwordWrap">
-          <span class="icon"><i class="fas fa-lock"></i></span>
+          <span class="icon" id="passwordIcon"><i class="fas fa-lock"></i></span>
           <input type="password" id="passwordInput" placeholder="Entrer ton mot de passe" autocomplete="current-password" required>
           <button type="button" class="toggle-password" id="togglePassword" aria-label="Afficher/masquer le mot de passe">
             <i class="fas fa-eye"></i>
           </button>
         </div>
-        <div class="error-message" id="passwordError">Ce champ est obligatoire.</div>
+        <div class="error-message" id="passwordError">Le mot de passe doit contenir au moins 6 caractères.</div>
+        <div class="success-message" id="passwordSuccess">✅ Mot de passe valide</div>
+      </div>
+
+      <!-- Se souvenir de moi -->
+      <div class="form-group-checkbox">
+        <input type="checkbox" id="rememberMe">
+        <label for="rememberMe">🔒 Se souvenir de moi</label>
       </div>
 
       <!-- Mot de passe oublié -->
       <a href="forgot-password.html" class="btn-forgot">Mot de passe oublié ?</a>
 
       <!-- Bouton Connexion -->
-      <button type="submit" class="btn-login" id="loginBtn">
+      <button type="submit" class="btn-login" id="loginBtn" disabled>
         <span class="btn-icon"><i class="fas fa-sign-in-alt"></i></span>
         <span class="btn-text">Se connecter</span>
         <span class="spinner"></span>
@@ -504,36 +600,20 @@
 
 <script type="module">
 // ================================================================
-// login.html - Page de connexion
+// login.html - Page de connexion (CORRIGÉE)
 // ================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getAuth,
+import { 
   signInWithEmailAndPassword,
-  setPersistence,
-  browserLocalPersistence
+  sendEmailVerification,
+  fetchSignInMethodsForEmail
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { protectPage } from './auth.js';
-
-// ================================================================
-// FIREBASE CONFIG
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Persistance
-await setPersistence(auth, browserLocalPersistence);
+import { 
+  protectPage, 
+  getAuthInstance, 
+  getFirestoreInstance,
+  getFirebaseErrorMessage,
+  saveSession
+} from './auth.js';
 
 // ================================================================
 // DOM
@@ -544,12 +624,27 @@ const passwordInput = document.getElementById('passwordInput');
 const loginBtn = document.getElementById('loginBtn');
 const emailWrap = document.getElementById('emailWrap');
 const passwordWrap = document.getElementById('passwordWrap');
+const emailIcon = document.getElementById('emailIcon');
+const passwordIcon = document.getElementById('passwordIcon');
 const emailError = document.getElementById('emailError');
+const emailSuccess = document.getElementById('emailSuccess');
 const passwordError = document.getElementById('passwordError');
+const passwordSuccess = document.getElementById('passwordSuccess');
 const togglePassword = document.getElementById('togglePassword');
+const rememberMe = document.getElementById('rememberMe');
+const verificationBanner = document.getElementById('verificationBanner');
+const verifyEmailDisplay = document.getElementById('verifyEmailDisplay');
+const resendVerifyBtn = document.getElementById('resendVerifyBtn');
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
+
+// ================================================================
+// AUTH
+// ================================================================
+const auth = getAuthInstance();
+let isSubmitting = false;
+let pendingUser = null;
 
 // ================================================================
 // FONCTIONS
@@ -561,59 +656,101 @@ function showToast(message, type = 'success') {
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
   clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 5000);
 }
 
 function validateEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function validatePassword(password) {
+  return password.length >= 6;
+}
+
+function validateField(field) {
+  const value = field.value.trim();
+  const id = field.id;
+  
+  if (id === 'emailInput') {
+    const isValid = value && validateEmail(value);
+    emailWrap.classList.toggle('success', isValid && value !== '');
+    emailWrap.classList.toggle('error', !isValid && value !== '');
+    emailIcon.className = 'icon' + (isValid && value !== '' ? ' success' : '') + (!isValid && value !== '' ? ' error' : '');
+    emailIcon.innerHTML = isValid && value !== '' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-envelope"></i>';
+    emailError.classList.toggle('visible', !isValid && value !== '');
+    emailSuccess.classList.toggle('visible', isValid && value !== '');
+    return isValid;
+  }
+  
+  if (id === 'passwordInput') {
+    const isValid = value && validatePassword(value);
+    passwordWrap.classList.toggle('success', isValid && value !== '');
+    passwordWrap.classList.toggle('error', !isValid && value !== '');
+    passwordIcon.className = 'icon' + (isValid && value !== '' ? ' success' : '') + (!isValid && value !== '' ? ' error' : '');
+    passwordIcon.innerHTML = isValid && value !== '' ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-lock"></i>';
+    passwordError.classList.toggle('visible', !isValid && value !== '');
+    passwordSuccess.classList.toggle('visible', isValid && value !== '');
+    return isValid;
+  }
+  
+  return true;
+}
+
 function validateForm() {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
-  let isValid = true;
-
-  if (!email || !validateEmail(email)) {
-    emailWrap.classList.add('error');
-    emailError.classList.add('visible');
-    isValid = false;
-  } else {
-    emailWrap.classList.remove('error');
-    emailError.classList.remove('visible');
-  }
-
-  if (!password || password.length < 6) {
-    passwordWrap.classList.add('error');
-    passwordError.classList.add('visible');
-    isValid = false;
-  } else {
-    passwordWrap.classList.remove('error');
-    passwordError.classList.remove('visible');
-  }
-
+  const emailValid = validateField(emailInput);
+  const passwordValid = validateField(passwordInput);
+  const isValid = emailValid && passwordValid;
+  loginBtn.disabled = !isValid || isSubmitting;
   return isValid;
 }
+
+function showVerificationBanner(email) {
+  verificationBanner.classList.add('show');
+  verifyEmailDisplay.textContent = email;
+}
+
+function hideVerificationBanner() {
+  verificationBanner.classList.remove('show');
+}
+
+// ================================================================
+// CHARGEMENT DES DONNÉES SAUVEGARDÉES
+// ================================================================
+
+function loadSavedData() {
+  const savedEmail = localStorage.getItem('arvexa_remember_email');
+  if (savedEmail) {
+    emailInput.value = savedEmail;
+    rememberMe.checked = true;
+    validateField(emailInput);
+    validateForm();
+  }
+}
+
+loadSavedData();
 
 // ================================================================
 // ÉVÉNEMENTS
 // ================================================================
 
 emailInput.addEventListener('input', () => {
-  const email = emailInput.value.trim();
-  if (email && validateEmail(email)) {
-    emailWrap.classList.remove('error');
-    emailError.classList.remove('visible');
-  }
-  loginBtn.disabled = !validateForm();
+  validateField(emailInput);
+  validateForm();
 });
 
 passwordInput.addEventListener('input', () => {
-  const password = passwordInput.value.trim();
-  if (password && password.length >= 6) {
-    passwordWrap.classList.remove('error');
-    passwordError.classList.remove('visible');
-  }
-  loginBtn.disabled = !validateForm();
+  validateField(passwordInput);
+  validateForm();
+});
+
+emailInput.addEventListener('blur', () => {
+  validateField(emailInput);
+  validateForm();
+});
+
+passwordInput.addEventListener('blur', () => {
+  validateField(passwordInput);
+  validateForm();
 });
 
 togglePassword.addEventListener('click', () => {
@@ -622,52 +759,124 @@ togglePassword.addEventListener('click', () => {
   togglePassword.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 });
 
+// ================================================================
+// RENVOYER L'EMAIL DE VÉRIFICATION
+// ================================================================
+
+resendVerifyBtn.addEventListener('click', async () => {
+  if (!pendingUser) {
+    showToast('Veuillez vous connecter d\'abord.', 'error');
+    return;
+  }
+  
+  try {
+    await sendEmailVerification(pendingUser);
+    showToast('✅ Email de vérification renvoyé !', 'success');
+  } catch (error) {
+    console.error('❌ Erreur renvoi:', error);
+    showToast(getFirebaseErrorMessage(error.code) || 'Erreur lors du renvoi.', 'error');
+  }
+});
+
+// ================================================================
+// SOUMISSION DU FORMULAIRE (CORRIGÉE)
+// ================================================================
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (!validateForm()) return;
-
+  
+  if (!validateForm() || isSubmitting) return;
+  
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
-
+  
+  isSubmitting = true;
   loginBtn.disabled = true;
   loginBtn.classList.add('loading');
-
+  hideVerificationBanner();
+  
   try {
+    // 🔥 TENTATIVE DE CONNEXION DIRECTE
+    // On laisse Firebase gérer la vérification de l'existence du compte
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (!userDoc.exists()) {
-      showToast('⚠️ Profil utilisateur introuvable.', 'error');
+    pendingUser = user;
+    
+    // ✅ VÉRIFIER SI L'EMAIL EST CONFIRMÉ
+    if (!user.emailVerified) {
+      // L'email n'est pas vérifié → afficher la bannière
+      showVerificationBanner(email);
+      showToast('📧 Veuillez vérifier votre adresse e-mail.', 'error');
+      
+      // Sauvegarder l'email pour "Se souvenir de moi"
+      if (rememberMe.checked) {
+        localStorage.setItem('arvexa_remember_email', email);
+      }
+      
+      isSubmitting = false;
       loginBtn.disabled = false;
       loginBtn.classList.remove('loading');
+      validateForm();
       return;
     }
-
-    const userData = userDoc.data();
-
-    if (!userData.onboardingCompleted) {
-      showToast('✅ Connexion réussie ! Redirection...', 'success');
-      setTimeout(() => window.location.href = 'onboarding.html', 1000);
+    
+    // ✅ SUCCÈS - Email vérifié
+    // Sauvegarder "Se souvenir de moi"
+    if (rememberMe.checked) {
+      localStorage.setItem('arvexa_remember_email', email);
     } else {
-      showToast('✅ Bon retour, ' + (userData.firstName || '') + ' !', 'success');
-      setTimeout(() => window.location.href = 'index.html', 1000);
+      localStorage.removeItem('arvexa_remember_email');
     }
-
+    
+    // Sauvegarder la session
+    saveSession(user);
+    
+    showToast('✅ Connexion réussie !', 'success');
+    
+    // Redirection
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+    sessionStorage.removeItem('redirectAfterLogin');
+    setTimeout(() => window.location.href = redirectPath, 1000);
+    
   } catch (error) {
     console.error('❌ Erreur connexion:', error);
-    let message = 'Une erreur est survenue.';
+    
+    // 🔥 GESTION DES ERREURS CORRIGÉE
+    let message = '';
+    let type = 'error';
+    
     switch (error.code) {
-      case 'auth/user-not-found': message = '❌ Aucun compte trouvé avec cette adresse.'; break;
-      case 'auth/wrong-password': message = '❌ Mot de passe incorrect.'; break;
-      case 'auth/invalid-email': message = '❌ Adresse e-mail invalide.'; break;
-      case 'auth/too-many-requests': message = '⏳ Trop de tentatives. Réessaie dans quelques minutes.'; break;
-      case 'auth/network-request-failed': message = '📶 Problème de connexion réseau.'; break;
-      default: message = '❌ ' + error.message;
+      case 'auth/user-not-found':
+        message = '❌ Aucun compte trouvé avec cette adresse.';
+        break;
+      case 'auth/wrong-password':
+        message = '❌ Mot de passe incorrect.';
+        break;
+      case 'auth/invalid-email':
+        message = '❌ Adresse e-mail invalide.';
+        break;
+      case 'auth/too-many-requests':
+        message = '⏳ Trop de tentatives. Réessaie dans quelques minutes.';
+        break;
+      case 'auth/network-request-failed':
+        message = '📶 Problème de connexion réseau. Vérifie ta connexion internet.';
+        break;
+      case 'auth/user-disabled':
+        message = '🚫 Ce compte a été désactivé. Contacte le support.';
+        break;
+      case 'auth/requires-recent-login':
+        message = '⏰ Veuillez vous reconnecter pour cette action.';
+        break;
+      default:
+        message = '❌ ' + (error.message || 'Une erreur est survenue.');
     }
-    showToast(message, 'error');
+    
+    showToast(message, type);
+    
+    isSubmitting = false;
     loginBtn.disabled = false;
     loginBtn.classList.remove('loading');
+    validateForm();
   }
 });
 
@@ -676,9 +885,16 @@ form.addEventListener('submit', async (e) => {
 // ================================================================
 
 // Login est une page publique : si déjà connecté, redirige vers index
-protectPage();
+protectPage((user) => {
+  if (user) {
+    // Déjà connecté, rediriger
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+    sessionStorage.removeItem('redirectAfterLogin');
+    window.location.href = redirectPath;
+  }
+});
 
-console.log('🚀 ARVEXA — Page Connexion');
+console.log('🚀 ARVEXA — Page Connexion (corrigée)');
 </script>
 
 </body>

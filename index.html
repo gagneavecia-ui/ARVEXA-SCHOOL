@@ -16,7 +16,7 @@
 
   <style>
     /* ============================================================
-       ROOT — Design system ARVEXa
+       ROOT — Design system ARVEXA
        ============================================================ */
     :root {
       --primary: #1A3A2A;
@@ -136,8 +136,13 @@
       color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
     }
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
-    .header .greeting { font-size: 14px; font-weight: 600; color: var(--text-light); }
-    .header .greeting span { color: var(--accent); }
+    .header .greeting {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+      font-size: 14px; font-weight: 600; color: var(--text-light);
+    }
+    .header .greeting #greetingText { color: var(--text-dim); }
+    .header .greeting #userFirstName { color: var(--accent-bright); font-weight: 700; }
+    .header .greeting #greetingEmoji { font-size: 16px; line-height: 1; }
     .header .header-actions { display: flex; align-items: center; gap: 6px; }
     .header .header-actions button {
       width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
@@ -145,38 +150,15 @@
       display: flex; align-items: center; justify-content: center; position: relative;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
+    .header .header-actions button .notif-dot {
+      position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+      border-radius: 50%; background: var(--danger); border: 2px solid var(--bg-dark);
+      display: none;
+    }
+    .header .header-actions button .notif-dot.show { display: block; }
 
     .container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
 
-.greeting {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-light);
-}
-
-.greeting #greetingText {
-  color: var(--text-dim);
-}
-
-.greeting #userFirstName {
-  color: var(--accent-bright);
-  font-weight: 700;
-}
-
-.greeting #greetingEmoji {
-  font-size: 16px;
-  line-height: 1;
-}
-
-@media (max-width: 480px) {
-  .greeting {
-    font-size: 13px;
-  }
-}
     /* ===== CARTES GÉNÉRIQUES ===== */
     .card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
@@ -206,8 +188,18 @@
     }
     .premium-badge i { font-size: 9px; }
 
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skeleton-card { height: 160px; border-radius: var(--radius); }
+    .skeleton-card-sm { height: 100px; border-radius: var(--radius); }
+    .skeleton-card-xs { height: 80px; border-radius: var(--radius); }
+
     /* ============================================================
-       HERO — SIMPLE
+       HERO
        ============================================================ */
     .hero-card { position: relative; overflow: hidden; }
     .hero-card::before {
@@ -248,7 +240,7 @@
     .next-card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
 
     /* ============================================================
-       MES MATIÈRES — SIMPLE
+       MES MATIÈRES
        ============================================================ */
     .subjects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .subject-chip {
@@ -264,6 +256,9 @@
     }
     .subject-chip .subject-name { font-size: 14px; font-weight: 600; }
     .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .subject-chip .subject-progress {
+      margin-left: auto; font-size: 12px; font-weight: 700; color: var(--accent-bright);
+    }
 
     /* ============================================================
        OUTILS & RESSOURCES
@@ -282,177 +277,80 @@
     }
     .tool-card .name { font-size: 12px; font-weight: 600; }
 
+    /* ============================================================
+       CONSEIL DU JOUR
+       ============================================================ */
+    .tip-card { background: rgba(45,125,90,0.03); border-color: rgba(45,125,90,0.08); }
+    .tip-card .tip-icon { color: var(--success); }
+    .tip-card .tip-eyebrow { color: var(--success); }
+
+    /* ============================================================
+       ABONNEMENT
+       ============================================================ */
+    .subscription-reminder { margin-top: 14px; }
+    .sub-card {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
+      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius);
+      padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: var(--transition);
+    }
+    .sub-card:hover { border-color: rgba(184, 134, 11, 0.25); }
+    .sub-card .sub-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(184, 134, 11, 0.1); display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--accent-bright); flex-shrink: 0;
+    }
+    .sub-card .sub-content { flex: 1; min-width: 0; }
+    .sub-card .sub-title { font-size: 14px; font-weight: 600; color: var(--text-light); }
+    .sub-card .sub-text { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .sub-card .sub-expiry { font-size: 11px; color: #D97A3A; font-weight: 600; margin-top: 2px; }
+    .sub-card .sub-btn {
+      padding: 8px 18px; border-radius: 20px; border: none;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A; font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: var(--transition); font-family: 'Inter', sans-serif;
+      text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sub-card .sub-btn:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(184,134,11,0.2); }
+    .sub-card .sub-btn.renew { background: linear-gradient(135deg, #D97A3A, #B85C3A); color: #fff; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer {
+      margin-top: 40px; padding: 24px 16px 16px;
+      border-top: 1px solid rgba(184, 134, 11, 0.06);
+      background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px);
+    }
+    .footer-content {
+      max-width: 900px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+    }
+    .footer-logo {
+      font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif;
+      color: var(--text-light); letter-spacing: 1px;
+    }
+    .footer-logo span { color: var(--accent-bright); font-style: italic; }
+    .footer-links {
+      display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
+    }
+    .footer-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 12px; transition: var(--transition);
+    }
+    .footer-links a:hover { color: var(--text-light); }
+    .footer-copy { font-size: 11px; color: var(--text-muted); opacity: 0.6; }
+
     /* ===== TOAST ===== */
     .toast {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 12px 20px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
       border: 1px solid var(--card-border); color: var(--text-light); font-size: 13px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center; box-shadow: var(--shadow);
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center;
+      box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.footer {
-  margin-top: 40px;
-  padding: 24px 16px 16px;
-  border-top: 1px solid rgba(184, 134, 11, 0.06);
-  background: rgba(10, 10, 10, 0.6);
-  backdrop-filter: blur(10px);
-}
-.footer-content {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-.footer-logo {
-  font-size: 18px;
-  font-weight: 700;
-  font-family: 'Playfair Display', serif;
-  color: var(--text-light);
-  letter-spacing: 1px;
-}
-.footer-logo span {
-  color: var(--accent-bright);
-  font-style: italic;
-}
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-}
-.footer-links a {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 12px;
-  transition: var(--transition);
-}
-.footer-links a:hover {
-  color: var(--text-light);
-}
-.footer-copy {
-  font-size: 11px;
-  color: var(--text-muted);
-  opacity: 0.6;
-}
-
-@media (max-width: 480px) {
-  .footer-links {
-    gap: 10px;
-  }
-  .footer-links a {
-    font-size: 11px;
-  }
-}
-
-/* ============================================================
-   ABONNEMENT
-   ============================================================ */
-.subscription-reminder {
-  margin-top: 14px;
-}
-
-.sub-card {
-  background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
-  border: 1px solid rgba(184, 134, 11, 0.12);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  transition: var(--transition);
-}
-
-.sub-card:hover {
-  border-color: rgba(184, 134, 11, 0.25);
-}
-
-.sub-card .sub-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(184, 134, 11, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  color: var(--accent-bright);
-  flex-shrink: 0;
-}
-
-.sub-card .sub-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.sub-card .sub-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text-light);
-}
-
-.sub-card .sub-text {
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-top: 2px;
-}
-
-.sub-card .sub-expiry {
-  font-size: 11px;
-  color: #D97A3A;
-  font-weight: 600;
-  margin-top: 2px;
-}
-
-.sub-card .sub-btn {
-  padding: 8px 18px;
-  border-radius: 20px;
-  border: none;
-  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-  color: #0A0A0A;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
-  font-family: 'Inter', sans-serif;
-  text-decoration: none;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sub-card .sub-btn:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 16px rgba(184, 134, 11, 0.2);
-}
-
-.sub-card .sub-btn.renew {
-  background: linear-gradient(135deg, #D97A3A, #B85C3A);
-  color: #fff;
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  .sub-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 18px 14px;
-    gap: 10px;
-  }
-  .sub-card .sub-btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
+    .toast .toast-icon { flex-shrink: 0; }
 
     /* ============================================================
        RESPONSIVE
@@ -486,6 +384,10 @@
       .subject-chip { padding: 12px; }
       .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 14px; }
       .subject-chip .subject-name { font-size: 13px; }
+      .sub-card { flex-direction: column; text-align: center; padding: 18px 14px; gap: 10px; }
+      .sub-card .sub-btn { width: 100%; justify-content: center; }
+      .footer-links { gap: 10px; }
+      .footer-links a { font-size: 11px; }
     }
 
     @media (max-width: 360px) {
@@ -540,15 +442,21 @@
         <i class="fas fa-bars"></i>
       </button>
       <div class="greeting">
-  <span id="greetingText">Bonjour</span> <span id="userFirstName">Élève</span> <span id="greetingEmoji">👋</span>
-</div>
-</div>
+        <span id="greetingText">Bonjour</span>
+        <span id="userFirstName">Élève</span>
+        <span id="greetingEmoji">👋</span>
+      </div>
+    </div>
     <div class="header-actions">
       <button id="notifBtn" aria-label="Notifications">
         <i class="fas fa-bell"></i>
+        <span class="notif-dot" id="notifDot"></span>
       </button>
       <button id="profileBtn" aria-label="Profil">
         <i class="fas fa-user"></i>
+      </button>
+      <button id="refreshBtn" aria-label="Rafraîchir" title="Rafraîchir les données">
+        <i class="fas fa-sync-alt"></i>
       </button>
     </div>
   </header>
@@ -558,11 +466,11 @@
 
     <!-- ===== SKELETON LOADING ===== -->
     <div id="skeletonLoading">
-      <div class="skeleton" style="height:160px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div class="skeleton skeleton-card"></div>
       <div style="height:12px;"></div>
-      <div class="skeleton" style="height:100px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div class="skeleton skeleton-card-sm"></div>
       <div style="height:12px;"></div>
-      <div class="skeleton" style="height:80px; border-radius:var(--radius); background:rgba(255,255,255,0.03); animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div class="skeleton skeleton-card-xs"></div>
     </div>
 
     <!-- ===== CONTENU DYNAMIQUE ===== -->
@@ -579,20 +487,24 @@
         </div>
         <div class="hero-bottom">
           <span class="hero-pill"><i class="fas fa-hourglass-half"></i> <span id="examCountdown">-- jours avant l'examen</span></span>
-         <span class="hero-pill streak">
-  <i class="fas fa-fire"></i> 
-  <strong id="streakCount">0 💀</strong> jour(s) de suite
-</span>
-</div>
+          <span class="hero-pill streak">
+            <i class="fas fa-fire"></i> 
+            <strong id="streakCount">0 💀</strong> jour(s) de suite
+          </span>
+          <span class="hero-pill" id="lastVisitDisplay">
+            <i class="fas fa-clock"></i> Dernière visite: <span id="lastVisitTime">--</span>
+          </span>
+        </div>
       </div>
 
-            <!-- ===== PROCHAINE ÉTAPE ===== -->
+      <!-- ===== PROCHAINE ÉTAPE ===== -->
       <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
       <div id="nextStepCard"></div>
 
       <!-- ===== MES MATIÈRES ===== -->
       <div class="section-title">
         <h3>📐 Mes matières</h3>
+        <span style="font-size:11px;color:var(--text-muted);" id="subjectsProgress">0% complet</span>
       </div>
       <div class="subjects-grid" id="subjectsGrid"></div>
 
@@ -607,7 +519,7 @@
           <div class="icon-badge"><i class="fas fa-flask"></i></div>
           <div class="name">Formulaires</div>
         </a>
-        <a href="sujets-bac.html" class="tool-card">
+        <a href="sujets.html" class="tool-card">
           <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
           <div class="name">Sujets BAC</div>
         </a>
@@ -622,55 +534,55 @@
         <a href="chat.html" class="tool-card">
           <div class="icon-badge"><i class="fas fa-robot"></i></div>
           <div class="name">ARV-ASSISTANT</div>
-          
         </a>
       </div>
-<!-- ===== CONSEIL DU JOUR ===== -->
-<div class="section-title"><h3>💡 Conseil du jour</h3></div>
-<div class="card tip-card">
-  <div style="display:flex; gap:12px; align-items:flex-start;">
-    <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(45,125,90,0.1);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
-      <i class="fas fa-lightbulb"></i>
-    </div>
-    <div>
-      <div class="tip-eyebrow" style="font-size:10px;color:var(--success);text-transform:uppercase;letter-spacing:0.5px;font-weight:700;">Conseil du jour</div>
-      <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
-      <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
-    </div>
-    </div>
-    </div>
-    <!-- ===== SECTION ABONNEMENT ===== -->
-<div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
-  <div class="sub-card" id="subCard">
-    <div class="sub-icon">
-      <i class="fas fa-crown"></i>
-    </div>
-    <div class="sub-content">
-      <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
-      <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
-      <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
-    </div>
-    <a href="abonnement.html" class="sub-btn" id="subBtn">Voir les offres</a>
-  </div>
-</div>
-  </div>
-</div>
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-  <div class="footer-content">
-    <div class="footer-logo">ARVEX<span>A<span> School</span></div>
-    <div class="footer-links">
-      <a href="index.html">Accueil</a>
-      <a href="profil.html">Profil</a>
-      <a href="abonnement.html">Abonnement</a>
-    </div>
-    <div class="footer-copy">
-      &copy; 2026 ARVEXA School — Tous droits réservés
+
+      <!-- ===== CONSEIL DU JOUR ===== -->
+      <div class="section-title"><h3>💡 Conseil du jour</h3></div>
+      <div class="card tip-card">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(45,125,90,0.1);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <div>
+            <div class="tip-eyebrow" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;">Conseil du jour</div>
+            <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
+            <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECTION ABONNEMENT ===== -->
+      <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
+        <div class="sub-card" id="subCard">
+          <div class="sub-icon"><i class="fas fa-crown"></i></div>
+          <div class="sub-content">
+            <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
+            <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
+            <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
+          </div>
+          <a href="abonnement.html" class="sub-btn" id="subBtn">Voir les offres</a>
+        </div>
+      </div>
+
     </div>
   </div>
-</footer>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">ARVEX<span>A<span> School</span></div>
+      <div class="footer-links">
+        <a href="index.html">Accueil</a>
+        <a href="profil.html">Profil</a>
+        <a href="abonnement.html">Abonnement</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 ARVEXA School — Tous droits réservés
+      </div>
     </div>
-  </div>
+  </footer>
+
 </div>
 
 <!-- ===== TOAST ===== -->
@@ -678,7 +590,6 @@
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
-
 
 <!-- ============================================================ -->
 <!-- SCRIPTS -->
@@ -697,9 +608,28 @@
 // ================================================================
 // IMPORTS
 // ================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { protectPage, logout } from './auth.js';
+import { 
+  initializeApp 
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  onSnapshot,
+  collection,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { 
+  protectPage, 
+  getAuthInstance, 
+  getFirestoreInstance,
+  getFirebaseErrorMessage,
+  logout,
+  saveSession,
+  refreshUserToken
+} from './auth.js';
 
 // ================================================================
 // FIREBASE CONFIG
@@ -715,6 +645,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuthInstance();
 
 // ================================================================
 // CONSTANTES
@@ -730,67 +661,122 @@ const FIXED_SUBJECTS = [
   { name: 'SVT', icon: 'fa-dna', key: 'svt', chapters: 4 }
 ];
 
+const STUDY_TIPS = [
+  { morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." }, noon: { title: '☀️ Pleine forme !', text: "Travaille par blocs de 25 minutes. Après 4 blocs, prends une pause de 20 minutes." }, evening: { title: '🌙 Bonne soirée !', text: "Fais un bilan rapide : qu'as-tu appris aujourd'hui ? 1 phrase suffit." } },
+  { morning: { title: '🌅 Mardi matin', text: "Révise une notion difficile dès le matin. C'est le moment où ton cerveau est le plus frais." }, noon: { title: '☀️ Mardi midi', text: "Relis tes notes à voix haute. L'écoute active aide à mémoriser 2 fois plus vite." }, evening: { title: '🌙 Mardi soir', text: "Revois rapidement le cours d'aujourd'hui avant de dormir. Ta mémoire va le consolider." } },
+  { morning: { title: '🌅 Mercredi matin', text: "Commence par une matière que tu aimes pour te mettre en confiance." }, noon: { title: '☀️ Mercredi midi', text: "Fais un exercice sans regarder la correction. C'est le meilleur moyen de progresser." }, evening: { title: '🌙 Mercredi soir', text: "Prends 10 minutes pour organiser tes notes. Un espace de travail ordonné = un esprit clair." } },
+  { morning: { title: '🌅 Jeudi matin', text: "Réactive tes connaissances : relis le cours d'il y a 3 jours." }, noon: { title: '☀️ Jeudi midi', text: "Utilise la technique Feynman : explique une notion à un camarade (ou à toi-même)." }, evening: { title: '🌙 Jeudi soir', text: "Fais une petite pause détente. Un esprit reposé est plus efficace demain." } },
+  { morning: { title: '🌅 Vendredi matin', text: "Dernière ligne droite ! Concentre-toi sur les chapitres les plus importants." }, noon: { title: '☀️ Vendredi midi', text: "Entraîne-toi sur des sujets d'annales. Les conditions d'examen t'aideront à progresser." }, evening: { title: '🌙 Vendredi soir', text: "Bravo pour cette semaine ! Note ce que tu as accompli et félicite-toi." } },
+  { morning: { title: '🌅 Samedi matin', text: "Profite du week-end pour revoir les notions qui t'ont posé problème." }, noon: { title: '☀️ Samedi midi', text: "Varie les supports : cours, vidéos, exercices. La variété renforce l'apprentissage." }, evening: { title: '🌙 Samedi soir', text: "Prends du temps pour toi. Le repos est essentiel pour consolider les acquis." } },
+  { morning: { title: '🌅 Dimanche matin', text: "Planifie ta semaine : 1 matière par jour, 1 chapitre par séance." }, noon: { title: '☀️ Dimanche midi', text: "Fais une révision légère. L'objectif est de garder le rythme sans se fatiguer." }, evening: { title: '🌙 Dimanche soir', text: "Bonne nuit ! Un bon sommeil prépare une bonne semaine de révision." } }
+];
+
+// ================================================================
+// DOM
+// ================================================================
+const skeletonLoading = document.getElementById('skeletonLoading');
+const dynamicContent = document.getElementById('dynamicContent');
+const userFirstName = document.getElementById('userFirstName');
+const greetingText = document.getElementById('greetingText');
+const greetingEmoji = document.getElementById('greetingEmoji');
+const userClassDisplay = document.getElementById('userClassDisplay');
+const userExamDisplay = document.getElementById('userExamDisplay');
+const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
+const nextStepCard = document.getElementById('nextStepCard');
+const subjectsGrid = document.getElementById('subjectsGrid');
+const subjectsProgress = document.getElementById('subjectsProgress');
+const examCountdown = document.getElementById('examCountdown');
+const streakCount = document.getElementById('streakCount');
+const lastVisitTime = document.getElementById('lastVisitTime');
+const toast = document.getElementById('toast');
+const toastMessage = document.querySelector('.toast-message');
+const toastIcon = document.querySelector('.toast-icon i');
+const notifDot = document.getElementById('notifDot');
+
+// ================================================================
+// ÉTAT
+// ================================================================
+let userData = null;
+let isPremium = false;
+let unsubscribeUser = null;
+let isLoading = false;
+let refreshInterval = null;
+let streakCheckInterval = null;
+let tokenRefreshInterval = null;
+
+// ================================================================
+// FONCTIONS
+// ================================================================
+
+function showToast(message, type = 'success') {
+  toastMessage.textContent = message;
+  toast.className = `toast ${type}`;
+  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
+function getGreeting() {
+  const hours = new Date().getHours();
+  if (hours >= 5 && hours < 12) return { text: 'Bonjour', emoji: '🌅' };
+  if (hours >= 12 && hours < 18) return { text: 'Bon après-midi', emoji: '☀️' };
+  return { text: 'Bonsoir', emoji: '🌙' };
+}
+
+function updateGreeting(firstName) {
+  const { text, emoji } = getGreeting();
+  greetingText.textContent = text;
+  userFirstName.textContent = firstName || 'Élève';
+  greetingEmoji.textContent = emoji;
+}
+
+function computeExamCountdown() {
+  const now = new Date();
+  let target = new Date(now.getFullYear(), 5, 17);
+  if (target < now) {
+    target = new Date(now.getFullYear() + 1, 5, 17);
+  }
+  const diffMs = target - now;
+  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+}
+
+function getFlames(streak) {
+  if (streak === 0) return '💀';
+  if (streak < 3) return '🔥';
+  if (streak < 7) return '🔥🔥';
+  if (streak < 14) return '🔥🔥🔥';
+  if (streak < 30) return '🔥🔥🔥🔥';
+  return '🔥🔥🔥🔥🔥 👑';
+}
+
+function getLevel(completedChapters, totalChapters) {
+  if (!totalChapters || totalChapters === 0) return '🌱 Débutant';
+  const ratio = completedChapters / totalChapters;
+  if (ratio === 0) return '🌱 Débutant';
+  if (ratio < 0.25) return '📖 Apprenti';
+  if (ratio < 0.50) return '⚡ En progression';
+  if (ratio < 0.75) return '🔥 Enflammé';
+  if (ratio < 1) return '⭐ Expert';
+  return '👑 Maître ARVEXA';
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
 // ================================================================
 // CONSEIL DU JOUR
 // ================================================================
 
-const STUDY_TIPS = [
-  // Index 0 = Lundi, 1 = Mardi, ... 6 = Dimanche
-  // Chaque jour a 3 conseils : [matin, midi, soir]
-  {
-    morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
-    noon: { title: '☀️ Pleine forme !', text: "Travaille par blocs de 25 minutes. Après 4 blocs, prends une pause de 20 minutes." },
-    evening: { title: '🌙 Bonne soirée !', text: "Fais un bilan rapide : qu'as-tu appris aujourd'hui ? 1 phrase suffit." }
-  },
-  {
-    morning: { title: '🌅 Mardi matin', text: "Révise une notion difficile dès le matin. C'est le moment où ton cerveau est le plus frais." },
-    noon: { title: '☀️ Mardi midi', text: "Relis tes notes à voix haute. L'écoute active aide à mémoriser 2 fois plus vite." },
-    evening: { title: '🌙 Mardi soir', text: "Revois rapidement le cours d'aujourd'hui avant de dormir. Ta mémoire va le consolider." }
-  },
-  {
-    morning: { title: '🌅 Mercredi matin', text: "Commence par une matière que tu aimes pour te mettre en confiance." },
-    noon: { title: '☀️ Mercredi midi', text: "Fais un exercice sans regarder la correction. C'est le meilleur moyen de progresser." },
-    evening: { title: '🌙 Mercredi soir', text: "Prends 10 minutes pour organiser tes notes. Un espace de travail ordonné = un esprit clair." }
-  },
-  {
-    morning: { title: '🌅 Jeudi matin', text: "Réactive tes connaissances : relis le cours d'il y a 3 jours." },
-    noon: { title: '☀️ Jeudi midi', text: "Utilise la technique Feynman : explique une notion à un camarade (ou à toi-même)." },
-    evening: { title: '🌙 Jeudi soir', text: "Fais une petite pause détente. Un esprit reposé est plus efficace demain." }
-  },
-  {
-    morning: { title: '🌅 Vendredi matin', text: "Dernière ligne droite ! Concentre-toi sur les chapitres les plus importants." },
-    noon: { title: '☀️ Vendredi midi', text: "Entraîne-toi sur des sujets d'annales. Les conditions d'examen t'aideront à progresser." },
-    evening: { title: '🌙 Vendredi soir', text: "Bravo pour cette semaine ! Note ce que tu as accompli et félicite-toi." }
-  },
-  {
-    morning: { title: '🌅 Samedi matin', text: "Profite du week-end pour revoir les notions qui t'ont posé problème." },
-    noon: { title: '☀️ Samedi midi', text: "Varie les supports : cours, vidéos, exercices. La variété renforce l'apprentissage." },
-    evening: { title: '🌙 Samedi soir', text: "Prends du temps pour toi. Le repos est essentiel pour consolider les acquis." }
-  },
-  {
-    morning: { title: '🌅 Dimanche matin', text: "Planifie ta semaine : 1 matière par jour, 1 chapitre par séance." },
-    noon: { title: '☀️ Dimanche midi', text: "Fais une révision légère. L'objectif est de garder le rythme sans se fatiguer." },
-    evening: { title: '🌙 Dimanche soir', text: "Bonne nuit ! Un bon sommeil prépare une bonne semaine de révision." }
-  }
-];
-
 function pickDailyTip() {
-  const dayOfWeek = new Date().getDay(); // 0 = Dimanche, 1 = Lundi, ...
-  const hours = new Date().getHours(); // 0-23
-  
-  // Déterminer la période de la journée
+  const dayOfWeek = new Date().getDay();
+  const hours = new Date().getHours();
   let period;
-  if (hours < 12) {
-    period = 'morning'; // Matin
-  } else if (hours < 18) {
-    period = 'noon'; // Midi
-  } else {
-    period = 'evening'; // Soir
-  }
-  
-  // Décaler pour que Lundi = 0
+  if (hours < 12) period = 'morning';
+  else if (hours < 18) period = 'noon';
+  else period = 'evening';
   const dayIndex = (dayOfWeek + 6) % 7;
-  
   return STUDY_TIPS[dayIndex][period];
 }
 
@@ -805,216 +791,134 @@ function renderDailyTip() {
 }
 
 // ================================================================
-// DOM
-// ================================================================
-const skeletonLoading = document.getElementById('skeletonLoading');
-const dynamicContent = document.getElementById('dynamicContent');
-const userFirstName = document.getElementById('userFirstName');
-const userClassDisplay = document.getElementById('userClassDisplay');
-const userExamDisplay = document.getElementById('userExamDisplay');
-const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
-const nextStepCard = document.getElementById('nextStepCard');
-const subjectsGrid = document.getElementById('subjectsGrid');
-const examCountdown = document.getElementById('examCountdown');
-const streakCount = document.getElementById('streakCount');
-const toast = document.getElementById('toast');
-const toastMessage = document.querySelector('.toast-message');
-const toastIcon = document.querySelector('.toast-icon i');
-
-// ================================================================
-// ÉTAT
-// ================================================================
-let userData = null;
-let isPremium = false;
-
-// ================================================================
-// FONCTIONS
+// STREAK DE LECTURE
 // ================================================================
 
-function showToast(message, type = 'success') {
-  toastMessage.textContent = message;
-  toast.className = `toast ${type}`;
-  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-  toast.classList.add('show');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
+function updateReadingStreak() {
+  const today = new Date().toDateString();
+  const lastVisit = localStorage.getItem('arvexa_last_visit');
+  let streak = parseInt(localStorage.getItem('arvexa_reading_streak')) || 0;
 
-function computeExamCountdown(examType) {
-  const conf = EXAM_DATES[examType] || EXAM_DATES.bac;
+  if (lastVisit === today) return;
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toDateString();
+
+  if (lastVisit === yesterdayStr) {
+    streak += 1;
+  } else if (lastVisit !== today) {
+    streak = 0;
+  }
+
+  localStorage.setItem('arvexa_reading_streak', streak);
+  localStorage.setItem('arvexa_last_visit', today);
+
+  const streakEl = document.getElementById('streakCount');
+  if (streakEl) {
+    const flames = getFlames(streak);
+    streakEl.textContent = `${streak} ${flames}`;
+  }
+
+  // Mettre à jour l'heure de dernière visite
   const now = new Date();
-  let target = new Date(now.getFullYear(), conf.month, conf.day);
-  if (target < now) {
-    target = new Date(now.getFullYear() + 1, conf.month, conf.day);
+  const lastVisitEl = document.getElementById('lastVisitTime');
+  if (lastVisitEl) {
+    lastVisitEl.textContent = formatTime(now);
   }
-  const diffMs = target - now;
-  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
 }
 
 // ================================================================
-// GESTION DE L'ABONNEMENT
+// CHARGEMENT DES DONNÉES UTILISATEUR (temps réel)
 // ================================================================
 
-/**
- * Vérifie si l'utilisateur est premium et si l'abonnement expire bientôt
- */
-function checkSubscriptionStatus() {
-  const reminder = document.getElementById('subscriptionReminder');
-  const subTitle = document.getElementById('subTitle');
-  const subText = document.getElementById('subText');
-  const subExpiry = document.getElementById('subExpiry');
-  const subBtn = document.getElementById('subBtn');
-
-  if (!reminder) return;
-
-  // 1. Si l'utilisateur n'est pas premium → afficher
-  if (!isPremium) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
-    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Voir les offres';
-    subBtn.className = 'sub-btn';
-    subBtn.href = 'abonnement.html';
-    return;
+function loadUserData(user) {
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
   }
 
-  // 2. Si l'utilisateur est premium → vérifier la date d'expiration
-  const expiryDate = userData?.subscriptionEndDate;
-  
-  if (!expiryDate) {
-    // Premium sans date d'expiration (illimité) → ne rien afficher
-    reminder.style.display = 'none';
-    return;
-  }
+  const userRef = doc(db, 'users', user.uid);
 
-  const now = new Date();
-  const expiry = new Date(expiryDate);
-  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-
-  // 3. Si l'abonnement est expiré → afficher rappel
-  if (daysLeft < 0) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⏳ Abonnement expiré';
-    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  // 4. Si l'abonnement expire dans 7 jours ou moins → afficher rappel
-  if (daysLeft <= 7) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
-    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
-    subExpiry.style.display = 'block';
-    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  // 5. Premium actif avec plus de 7 jours restants → ne rien afficher
-  reminder.style.display = 'none';
-}
-
-/**
- * Fonction appelée après le chargement des données utilisateur
- */
-function updateSubscriptionDisplay() {
-  // Pour les tests, on peut simuler une date d'expiration
-  // userData.subscriptionEndDate = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString();
-  
-  checkSubscriptionStatus();
-}
-
-// ================================================================
-// SALUTATION DYNAMIQUE (matin/midi/soir)
-// ================================================================
-
-/**
- * Configuration des salutations selon l'heure
- */
-function getGreeting() {
-  const hours = new Date().getHours();
-  let text, emoji;
-
-  if (hours >= 5 && hours < 12) {
-    text = 'Bonjour';
-    emoji = '🌅';
-  } else if (hours >= 12 && hours < 18) {
-    text = 'Bon après-midi';
-    emoji = '☀️';
-  } else {
-    text = 'Bonsoir';
-    emoji = '🌙';
-  }
-
-  return { text, emoji };
-}
-
-/**
- * Met à jour la salutation avec le prénom de l'utilisateur
- * @param {string} firstName - Prénom de l'utilisateur
- */
-function updateGreeting(firstName) {
-  const textEl = document.getElementById('greetingText');
-  const nameEl = document.getElementById('userFirstName');
-  const emojiEl = document.getElementById('greetingEmoji');
-
-  // Sécurité : vérifier que les éléments existent
-  if (!textEl || !nameEl || !emojiEl) return;
-
-  const { text, emoji } = getGreeting();
-
-  textEl.textContent = text;
-  nameEl.textContent = firstName || 'Élève';
-  emojiEl.textContent = emoji;
+  // Écouter les changements en temps réel
+  unsubscribeUser = onSnapshot(userRef, 
+    (docSnap) => {
+      if (docSnap.exists()) {
+        userData = docSnap.data();
+        isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+        
+        // Mettre en cache
+        try {
+          localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
+        } catch (e) { /* ignore */ }
+        
+        renderDashboard();
+        updateSubscriptionDisplay();
+        
+        // Cacher le skeleton
+        skeletonLoading.style.display = 'none';
+        dynamicContent.style.display = 'block';
+        
+      } else {
+        showToast('⚠️ Profil utilisateur introuvable.', 'error');
+      }
+    },
+    (error) => {
+      console.error('❌ Erreur chargement utilisateur:', error);
+      showToast('📶 Impossible de charger les données.', 'error');
+      
+      // Essayer de charger depuis le cache
+      try {
+        const cached = localStorage.getItem('arvexa_user_data');
+        if (cached) {
+          userData = JSON.parse(cached);
+          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+          renderDashboard();
+          updateSubscriptionDisplay();
+          skeletonLoading.style.display = 'none';
+          dynamicContent.style.display = 'block';
+          showToast('📶 Données chargées depuis le cache', 'info');
+        }
+      } catch (e) { /* ignore */ }
+    }
+  );
 }
 
 // ================================================================
 // RENDU DU DASHBOARD
 // ================================================================
+
 function renderDashboard() {
   if (!userData) return;
 
-  // ✅ Salutation dynamique
   const firstName = userData.firstName || 'Élève';
   updateGreeting(firstName);
 
-  userClassDisplay.textContent = 'Terminale D';
+  userClassDisplay.textContent = userData.classId || 'Terminale D';
   userExamDisplay.textContent = '🎓 Préparation BAC';
 
-// ===== CONSEIL DU JOUR =====
-renderDailyTip();
-
-  isPremium = userData.premium === true;
+  // Badge premium
   premiumBadgeContainer.innerHTML = isPremium
     ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
     : '';
 
-  const days = computeExamCountdown('bac');
-let emoji = '⏳';
-if (days < 30) emoji = '🔥';
-if (days < 7) emoji = '🚨';
-if (days === 0) emoji = '🎯';
+  // Compte à rebours
+  const days = computeExamCountdown();
+  let emoji = '⏳';
+  if (days < 30) emoji = '🔥';
+  if (days < 7) emoji = '🚨';
+  if (days === 0) emoji = '🎯';
+  examCountdown.textContent = days > 0 ? `${emoji} ${days} jours avant le BAC` : `🎯 C'est le jour J !`;
 
-examCountdown.textContent = days > 0 
-  ? `${emoji} ${days} jours avant le BAC` 
-  : `🎯 C'est le jour J !`;
+  // Streak
+  updateReadingStreak();
 
-  // Streak (lecture)
-  const streak = localStorage.getItem('arvexa_reading_streak') || 0;
-  streakCount.textContent = streak;
+  // Conseil du jour
+  renderDailyTip();
 
+  // Prochaine étape et matières
   renderNextStep();
   renderSubjects();
-
-  skeletonLoading.style.display = 'none';
-  dynamicContent.style.display = 'block';
 }
 
 function renderNextStep() {
@@ -1028,126 +932,248 @@ function renderNextStep() {
 }
 
 function renderSubjects() {
-  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
-    <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-      <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-      <div>
-        <div class="subject-name">${subject.name}</div>
-        <div class="subject-chapters">${subject.chapters} chapitres</div>
-      </div>
-    </a>
-  `).join('');
-}
+  // Récupérer la progression depuis userData ou localStorage
+  let progressData = null;
+  try {
+    const cached = localStorage.getItem('arvexa_progress_data');
+    if (cached) progressData = JSON.parse(cached);
+  } catch (e) { /* ignore */ }
 
-// ================================================================
-// GESTION DU STREAK DE LECTURE
-// ================================================================
+  let totalChapters = 0;
+  let completedChapters = 0;
 
-function updateReadingStreak() {
-  const today = new Date().toDateString();
-  const lastVisit = localStorage.getItem('arvexa_last_visit');
-
-  let streak = parseInt(localStorage.getItem('arvexa_reading_streak')) || 0;
-
-  // 1. Si déjà visité aujourd'hui → rien ne change
-  if (lastVisit === today) {
-    return;
-  }
-
-  // 2. Calculer la différence en jours
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toDateString();
-
-  const twoDaysAgo = new Date();
-  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-  const twoDaysAgoStr = twoDaysAgo.toDateString();
-
-  // 3. Vérifier la dernière visite
-  if (lastVisit === yesterdayStr) {
-    // Visite consécutive → +1
-    streak += 1;
-  } else if (lastVisit === today) {
-    // Déjà fait
-    return;
-  } else {
-    // Rupture (2 jours ou plus sans visite) → 🔥 0
-    streak = 0;
-  }
-
-  // 4. Sauvegarder
-  localStorage.setItem('arvexa_reading_streak', streak);
-  localStorage.setItem('arvexa_last_visit', today);
-
-  // 5. Mettre à jour l'affichage
-  const streakEl = document.getElementById('streakCount');
-  if (streakEl) {
-    streakEl.textContent = streak;
+  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => {
+    // Calculer la progression pour cette matière
+    let progress = 0;
+    if (progressData?.subjects?.[subject.key]?.progress !== undefined) {
+      progress = progressData.subjects[subject.key].progress;
+    }
     
-    // 🔥 Afficher les flammes selon le streak
-    const flames = getFlames(streak);
-    streakEl.textContent = `${streak} ${flames}`;
-  }
-}
+    // Compter les chapitres
+    const chapterCount = subject.chapters || 0;
+    totalChapters += chapterCount;
+    if (progress >= 100) completedChapters += chapterCount;
 
-// 🔥 Fonction pour afficher les flammes
-function getFlames(streak) {
-  if (streak === 0) return '💀';
-  if (streak < 3) return '🔥'.repeat(1);
-  if (streak < 7) return '🔥'.repeat(2);
-  if (streak < 14) return '🔥'.repeat(3);
-  if (streak < 30) return '🔥'.repeat(4);
-  return '🔥'.repeat(5) + ' 👑';
+    const progressText = progress > 0 ? `${progress}%` : '';
+
+    return `
+      <a href="matiere.html?subject=${subject.key}" class="subject-chip">
+        <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+        <div>
+          <div class="subject-name">${subject.name}</div>
+          <div class="subject-chapters">${chapterCount} chapitres</div>
+        </div>
+        ${progressText ? `<div class="subject-progress">${progressText}</div>` : ''}
+      </a>
+    `;
+  }).join('');
+
+  // Mettre à jour le pourcentage global
+  const totalProgress = totalChapters > 0 ? Math.round((completedChapters / totalChapters) * 100) : 0;
+  subjectsProgress.textContent = `${totalProgress}% complet`;
 }
 
 // ================================================================
-// PROTECTION + CHARGEMENT
+// GESTION DE L'ABONNEMENT
+// ================================================================
+
+function updateSubscriptionDisplay() {
+  const reminder = document.getElementById('subscriptionReminder');
+  const subTitle = document.getElementById('subTitle');
+  const subText = document.getElementById('subText');
+  const subExpiry = document.getElementById('subExpiry');
+  const subBtn = document.getElementById('subBtn');
+
+  if (!reminder) return;
+
+  if (!isPremium) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
+    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Voir les offres';
+    subBtn.className = 'sub-btn';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  const expiryDate = userData?.subscriptionEndDate;
+  if (!expiryDate) {
+    reminder.style.display = 'none';
+    return;
+  }
+
+  const now = new Date();
+  const expiry = new Date(expiryDate);
+  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+
+  if (daysLeft < 0) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⏳ Abonnement expiré';
+    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  if (daysLeft <= 7) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
+    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
+    subExpiry.style.display = 'block';
+    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  reminder.style.display = 'none';
+}
+
+// ================================================================
+// CHARGER LA PROGRESSION
+// ================================================================
+
+async function loadProgress(user) {
+  try {
+    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+    const progressSnap = await getDoc(progressRef);
+    if (progressSnap.exists()) {
+      const data = progressSnap.data();
+      try {
+        localStorage.setItem('arvexa_progress_data', JSON.stringify(data));
+      } catch (e) { /* ignore */ }
+      renderSubjects();
+    }
+  } catch (error) {
+    console.warn('⚠️ Erreur chargement progression:', error);
+  }
+}
+
+// ================================================================
+// RAFRAÎCHISSEMENT
+// ================================================================
+
+async function refreshDashboard() {
+  if (isLoading) return;
+  isLoading = true;
+  
+  const refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) {
+    refreshBtn.querySelector('i').classList.add('fa-spin');
+  }
+
+  try {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Rafraîchir le token
+    await refreshUserToken();
+
+    // Recharger les données
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    loadUserData(user);
+    await loadProgress(user);
+
+    showToast('✅ Données actualisées', 'success');
+  } catch (error) {
+    console.error('❌ Erreur rafraîchissement:', error);
+    showToast('📶 Erreur lors du rafraîchissement', 'error');
+  }
+
+  isLoading = false;
+  if (refreshBtn) {
+    refreshBtn.querySelector('i').classList.remove('fa-spin');
+  }
+}
+
+// ================================================================
+// INITIALISATION
 // ================================================================
 
 protectPage(async (user) => {
   console.log('✅ Dashboard - Utilisateur connecté:', user.uid);
 
-  // Mise à jour du streak de lecture
+  // Mettre à jour le streak
   updateReadingStreak();
 
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (!userDoc.exists()) {
-      showToast('Profil introuvable.', 'error');
-      setTimeout(() => window.location.href = 'register.html', 2000);
-      return;
-    }
+  // Charger les données utilisateur en temps réel
+  loadUserData(user);
 
-    userData = userDoc.data();
-    isPremium = userData.premium === true;
+  // Charger la progression
+  await loadProgress(user);
 
-    // ✅ Récupérer la date d'expiration si elle existe
-    if (userData.subscriptionEndDate) {
-      userData.subscriptionEndDate = userData.subscriptionEndDate.toDate?.() || new Date(userData.subscriptionEndDate);
-    }
+  // Vérifier les notifications
+  checkNotifications(user);
 
-    renderDashboard();
+  // Configurer les intervalles
+  setupIntervals(user);
 
-    // ✅ Afficher/masquer la carte abonnement
-    updateSubscriptionDisplay();
+  // Gestion de la connexion réseau
+  window.addEventListener('online', () => {
+    showToast('📶 Connexion rétablie', 'success');
+    refreshDashboard();
+  });
 
-    console.log('✅ Dashboard ARVEXa School chargé pour:', userData.firstName);
+  window.addEventListener('offline', () => {
+    showToast('📶 Connexion perdue', 'error');
+  });
 
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    showToast('Erreur de chargement.', 'error');
-  }
+  console.log('✅ Dashboard ARVEXA School chargé');
 });
 
-// ✅ AJOUTER CES IMPORTS
-import { monitorSecurityEvents } from './security-monitor.js';
-import { backupUserData } from './backup.js';
+// ================================================================
+// INTERVALLES
+// ================================================================
 
-// ✅ DÉMARRER LE MONITORING
-monitorSecurityEvents();
+function setupIntervals(user) {
+  // Rafraîchir le token toutes les 30 minutes
+  if (tokenRefreshInterval) clearInterval(tokenRefreshInterval);
+  tokenRefreshInterval = setInterval(async () => {
+    try {
+      await refreshUserToken();
+      console.log('🔄 Token rafraîchi');
+    } catch (error) {
+      console.warn('⚠️ Erreur rafraîchissement token:', error);
+    }
+  }, 30 * 60 * 1000);
 
-// ✅ SAUVEGARDE AUTOMATIQUE
-backupUserData();
+  // Vérifier le streak toutes les 5 minutes
+  if (streakCheckInterval) clearInterval(streakCheckInterval);
+  streakCheckInterval = setInterval(() => {
+    const today = new Date().toDateString();
+    const lastVisit = localStorage.getItem('arvexa_last_visit');
+    if (lastVisit !== today) {
+      updateReadingStreak();
+    }
+  }, 5 * 60 * 1000);
+}
+
+// ================================================================
+// NOTIFICATIONS
+// ================================================================
+
+async function checkNotifications(user) {
+  try {
+    const notifsRef = collection(db, 'users', user.uid, 'notifications');
+    const q = query(notifsRef, where('read', '==', false));
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      notifDot.classList.add('show');
+    } else {
+      notifDot.classList.remove('show');
+    }
+  } catch (error) {
+    console.warn('⚠️ Erreur vérification notifications:', error);
+  }
+}
 
 // ================================================================
 // ÉVÉNEMENTS
@@ -1156,6 +1182,12 @@ backupUserData();
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   e.preventDefault();
   try {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    if (tokenRefreshInterval) clearInterval(tokenRefreshInterval);
+    if (streakCheckInterval) clearInterval(streakCheckInterval);
     await logout();
     window.location.href = 'login.html';
   } catch (error) {
@@ -1181,7 +1213,11 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   window.location.href = 'profil.html';
 });
 
-console.log('🚀 ARVEXa School — Dashboard Simplifié');
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  refreshDashboard();
+});
+
+console.log('🚀 ARVEXA School — Dashboard renforcé');
 </script>
 
 </body>

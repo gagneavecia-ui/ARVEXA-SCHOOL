@@ -16,7 +16,7 @@
 
   <style>
     /* ============================================================
-       ROOT — Design system ARVEXa
+       ROOT — Design system ARVEXA
        ============================================================ */
     :root {
       --primary: #1A3A2A;
@@ -187,6 +187,20 @@
       inset: 0;
       background: radial-gradient(ellipse at 30% 50%, rgba(184,134,11,0.1), transparent 70%);
     }
+    .profile-cover .cover-status {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .profile-cover .cover-status.online { color: var(--success); }
+    .profile-cover .cover-status.offline { color: var(--text-muted); }
 
     /* === AVATAR === */
     .profile-avatar-section {
@@ -438,32 +452,139 @@
     .btn-profile.danger:hover {
       background: rgba(184, 92, 58, 0.15);
     }
+    .btn-profile.danger:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-profile.danger .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(184,92,58,0.15);
+      border-top-color: var(--danger);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .btn-profile.danger.loading .spinner { display: block; }
+    .btn-profile.danger.loading .btn-text { display: none; }
+    .btn-profile.danger.loading .btn-icon { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ===== SKELETON ===== */
     .skeleton {
-      background: rgba(255,255,255,0.04);
-      border-radius: 8px;
-      animation: pulse 1.5s ease-in-out infinite;
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.85; }
-    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     .skeleton-avatar { width: 100px; height: 100px; border-radius: 50%; }
     .skeleton-text { height: 16px; border-radius: 6px; margin: 4px 0; }
     .skeleton-row { height: 44px; border-radius: 10px; }
+
+    /* ===== CONFIRMATION MODAL ===== */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(16px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .confirm-overlay.show { display: flex; }
+    .confirm-modal {
+      background: linear-gradient(145deg, #141414, #0A0A0A);
+      border: 1px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.8) translateY(30px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .confirm-modal .modal-icon {
+      font-size: 44px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .confirm-modal h3 {
+      font-size: 18px;
+      font-family: 'Playfair Display', serif;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .confirm-modal p {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .confirm-modal .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .confirm-modal .modal-actions button {
+      padding: 10px 24px;
+      border-radius: 30px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .confirm-modal .modal-actions .btn-cancel {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-dim);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .confirm-modal .modal-actions .btn-cancel:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text-light);
+    }
+    .confirm-modal .modal-actions .btn-confirm {
+      background: var(--danger);
+      color: #fff;
+    }
+    .confirm-modal .modal-actions .btn-confirm:hover {
+      background: #A0402A;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(184,92,58,0.3);
+    }
+    .confirm-modal .modal-actions .btn-confirm:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .confirm-modal .modal-actions .btn-confirm .spinner {
+      display: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .confirm-modal .modal-actions .btn-confirm.loading .spinner { display: block; }
+    .confirm-modal .modal-actions .btn-confirm.loading .btn-text { display: none; }
 
     /* ===== TOAST ===== */
     .toast {
       position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
       padding: 12px 20px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
       border: 1px solid var(--card-border); color: var(--text-light); font-size: 13px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center; box-shadow: var(--shadow);
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center;
+      box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { margin-right: 8px; }
+    .toast .toast-icon { flex-shrink: 0; }
 
     /* ============================================================
        RESPONSIVE
@@ -493,6 +614,7 @@
       .profile-cover { height: 60px; }
       .profile-avatar-section { margin-top: -36px; }
       .avatar-wrapper .avatar-upload-btn { width: 28px; height: 28px; font-size: 11px; }
+      .profile-cover .cover-status { font-size: 10px; padding: 2px 10px; bottom: 8px; right: 10px; }
     }
 
     a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
@@ -543,6 +665,9 @@
       <button id="notifBtn" aria-label="Notifications">
         <i class="fas fa-bell"></i>
       </button>
+      <button id="refreshBtn" aria-label="Rafraîchir" title="Rafraîchir">
+        <i class="fas fa-sync-alt"></i>
+      </button>
     </div>
   </header>
 
@@ -553,7 +678,7 @@
     <div id="skeletonLoading">
       <div class="profile-card">
         <div class="profile-cover" style="background:rgba(255,255,255,0.02);"></div>
-                <div class="profile-avatar-section">
+        <div class="profile-avatar-section">
           <div class="skeleton skeleton-avatar"></div>
           <div class="skeleton skeleton-text" style="width:150px;margin-top:10px;"></div>
           <div class="skeleton skeleton-text" style="width:200px;"></div>
@@ -581,6 +706,9 @@
         <!-- COVER -->
         <div class="profile-cover">
           <div class="cover-glow"></div>
+          <span class="cover-status online" id="connectionStatus">
+            <i class="fas fa-wifi"></i> En ligne
+          </span>
         </div>
 
         <!-- AVATAR -->
@@ -647,7 +775,9 @@
             <i class="fas fa-home"></i> Retour à l'accueil
           </a>
           <button class="btn-profile danger" id="logoutProfileBtn">
-            <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            <span class="btn-icon"><i class="fas fa-sign-out-alt"></i></span>
+            <span class="btn-text">Se déconnecter</span>
+            <span class="spinner"></span>
           </button>
         </div>
 
@@ -655,6 +785,22 @@
 
     </div>
 
+  </div>
+</div>
+
+<!-- ===== CONFIRMATION MODAL ===== -->
+<div class="confirm-overlay" id="logoutConfirm">
+  <div class="confirm-modal">
+    <span class="modal-icon">🚪</span>
+    <h3>Se déconnecter ?</h3>
+    <p>Tu seras redirigé vers la page de connexion. Tes données seront sauvegardées.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="cancelLogout">Annuler</button>
+      <button class="btn-confirm" id="confirmLogout">
+        <span class="spinner"></span>
+        <span class="btn-text">Se déconnecter</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -681,12 +827,29 @@
 // ================================================================
 // IMPORTS
 // ================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { protectPage, getAuthInstance, logout } from './auth.js';
+import { 
+  initializeApp 
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc, 
+  updateDoc, 
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { 
+  protectPage, 
+  getAuthInstance, 
+  getFirestoreInstance,
+  getFirebaseErrorMessage,
+  logout,
+  forceLogout,
+  saveSession
+} from './auth.js';
 
 // ================================================================
-// FIREBASE CONFIG
+// FIREBASE
 // ================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
@@ -699,6 +862,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuthInstance();
 
 // ================================================================
 // DOM
@@ -720,12 +884,15 @@ const statStreak = document.getElementById('statStreak');
 const statChapters = document.getElementById('statChapters');
 const statExercises = document.getElementById('statExercises');
 const statLevel = document.getElementById('statLevel');
+const connectionStatus = document.getElementById('connectionStatus');
 
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
 
 let userData = null;
+let user = null;
+let unsubscribeUser = null;
 
 // ================================================================
 // FONCTIONS
@@ -762,10 +929,6 @@ function getLevel(completedChapters, totalChapters) {
   if (ratio < 1) return '⭐ Expert';
   return '👑 Maître ARVEXA';
 }
-
-// ================================================================
-// COMPRESSION D'IMAGE
-// ================================================================
 
 function compressImage(file, maxWidth = 400, maxHeight = 400, quality = 0.7) {
   return new Promise((resolve, reject) => {
@@ -813,13 +976,13 @@ async function saveProfilePicture(base64, userId) {
   const userRef = doc(db, 'users', userId);
   await updateDoc(userRef, {
     profilePicture: base64,
-    updatedAt: new Date().toISOString()
+    updatedAt: serverTimestamp()
   });
 }
 
 function updateAvatarDisplay(base64, initials) {
   if (!userAvatar) return;
-  if (base64) {
+  if (base64 && base64.startsWith('data:image')) {
     userAvatar.innerHTML = `<img src="${base64}" alt="Photo de profil">`;
   } else {
     userAvatar.textContent = initials || '👤';
@@ -842,19 +1005,13 @@ async function renderProfile(data, progressData) {
   const establishment = data.establishment || 'Non renseigné';
   const className = data.classId || 'Terminale D';
   const createdAt = data.createdAt?.toDate?.() || data.createdAt || null;
-  const isPremium = data.premium === true;
+  const isPremium = data.premium === true || data.isUnlocked === true || data.hasDeposited === true;
 
   // Avatar
-  const userId = data.uid || getAuthInstance().currentUser?.uid;
-  let profilePicture = null;
-  if (userId) {
-    try {
-      const userRef = doc(db, 'users', userId);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        profilePicture = userSnap.data().profilePicture || null;
-      }
-    } catch (e) { console.warn('Erreur chargement photo:', e); }
+  const userId = data.uid || auth.currentUser?.uid;
+  let profilePicture = data.profilePicture || null;
+  if (profilePicture && !profilePicture.startsWith('data:image')) {
+    // Si c'est une URL, on la garde
   }
   const initials = getInitials(firstName, lastName);
   updateAvatarDisplay(profilePicture, initials);
@@ -892,11 +1049,11 @@ async function renderProfile(data, progressData) {
   }
 
   // Infos
-  userEstablishment.textContent = establishment;
+  userEstablishment.textContent = establishment || 'Non renseigné';
   userClass.textContent = className;
   userSince.textContent = createdAt ? formatDate(createdAt) : 'Inconnue';
 
-  // Statut Premium (info row)
+  // Statut Premium
   if (isPremium) {
     const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
     if (expiryDate) {
@@ -946,6 +1103,67 @@ async function renderProfile(data, progressData) {
 }
 
 // ================================================================
+// CHARGEMENT DES DONNÉES EN TEMPS RÉEL
+// ================================================================
+
+function loadUserData(user) {
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
+  }
+
+  const userRef = doc(db, 'users', user.uid);
+
+  unsubscribeUser = onSnapshot(userRef, 
+    async (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        userData = data;
+        
+        // Mettre en cache
+        try {
+          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+        } catch (e) { /* ignore */ }
+        
+        // Charger la progression
+        try {
+          const progressDoc = await getDoc(doc(db, 'users', user.uid, 'progress', 'overall'));
+          let progressData = null;
+          if (progressDoc.exists()) {
+            progressData = progressDoc.data();
+            try {
+              localStorage.setItem('arvexa_progress_data', JSON.stringify(progressData));
+            } catch (e) { /* ignore */ }
+          }
+          await renderProfile(data, progressData);
+        } catch (e) {
+          console.warn('Pas de progression trouvée');
+          await renderProfile(data, null);
+        }
+      } else {
+        showToast('⚠️ Profil utilisateur introuvable.', 'error');
+      }
+    },
+    (error) => {
+      console.error('❌ Erreur chargement:', error);
+      // Essayer le cache
+      try {
+        const cachedUser = localStorage.getItem('arvexa_user_data');
+        const cachedProgress = localStorage.getItem('arvexa_progress_data');
+        if (cachedUser) {
+          const data = JSON.parse(cachedUser);
+          const progressData = cachedProgress ? JSON.parse(cachedProgress) : null;
+          renderProfile(data, progressData);
+          showToast('📶 Données chargées depuis le cache', 'info');
+          return;
+        }
+      } catch (e) { /* ignore */ }
+      showToast('📶 Impossible de charger les données.', 'error');
+    }
+  );
+}
+
+// ================================================================
 // GESTION PHOTO DE PROFIL
 // ================================================================
 
@@ -971,13 +1189,13 @@ if (avatarInput) {
         return;
       }
 
-      const user = getAuthInstance().currentUser;
-      if (!user) {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
         showToast('⚠️ Vous devez être connecté', 'error');
         return;
       }
 
-      await saveProfilePicture(base64, user.uid);
+      await saveProfilePicture(base64, currentUser.uid);
 
       const firstName = userData?.firstName || 'Utilisateur';
       const lastName = userData?.lastName || '';
@@ -996,63 +1214,164 @@ if (avatarInput) {
 }
 
 // ================================================================
+// DÉCONNEXION
+// ================================================================
+
+let isLoggingOut = false;
+
+async function handleLogout() {
+  if (isLoggingOut) return;
+  isLoggingOut = true;
+
+  const confirmModal = document.getElementById('logoutConfirm');
+  const confirmBtn = document.getElementById('confirmLogout');
+  const cancelBtn = document.getElementById('cancelLogout');
+  const logoutBtn = document.getElementById('logoutProfileBtn');
+
+  // Afficher le modal
+  confirmModal.classList.add('show');
+
+  // Gestion du bouton Annuler
+  const handleCancel = () => {
+    confirmModal.classList.remove('show');
+    isLoggingOut = false;
+    if (logoutBtn) {
+      logoutBtn.disabled = false;
+      logoutBtn.classList.remove('loading');
+    }
+  };
+
+  // Gestion du bouton Confirmer
+  const handleConfirm = async () => {
+    if (confirmBtn.disabled) return;
+    
+    confirmBtn.disabled = true;
+    confirmBtn.classList.add('loading');
+
+    try {
+      // Déconnexion
+      await logout();
+      // La redirection est gérée par auth.js
+    } catch (error) {
+      console.error('❌ Erreur déconnexion:', error);
+      showToast('Erreur de déconnexion.', 'error');
+      confirmBtn.disabled = false;
+      confirmBtn.classList.remove('loading');
+      isLoggingOut = false;
+      confirmModal.classList.remove('show');
+    }
+  };
+
+  // Nettoyer les anciens événements
+  const newCancel = cancelBtn.cloneNode(true);
+  const newConfirm = confirmBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+
+  newCancel.addEventListener('click', handleCancel);
+  newConfirm.addEventListener('click', handleConfirm);
+
+  // Fermer en cliquant à l'extérieur
+  confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) handleCancel();
+  });
+
+  // Touche Echap
+  const handleEscape = (e) => {
+    if (e.key === 'Escape') handleCancel();
+  };
+  document.addEventListener('keydown', handleEscape);
+
+  // Nettoyer les événements lorsque le modal se ferme
+  const cleanup = () => {
+    document.removeEventListener('keydown', handleEscape);
+    confirmModal.removeEventListener('click', handleCancel);
+  };
+
+  // Sauvegarder la référence pour nettoyage
+  window._logoutCleanup = cleanup;
+}
+
+// ================================================================
+// RAFRAÎCHISSEMENT
+// ================================================================
+
+async function refreshProfile() {
+  const refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) refreshBtn.querySelector('i').classList.add('fa-spin');
+
+  try {
+    const currentUser = auth.currentUser;
+    if (!currentUser) return;
+
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    loadUserData(currentUser);
+    showToast('✅ Données actualisées', 'success');
+  } catch (error) {
+    showToast('📶 Erreur lors du rafraîchissement', 'error');
+  }
+
+  if (refreshBtn) refreshBtn.querySelector('i').classList.remove('fa-spin');
+}
+
+// ================================================================
+// GESTION DE LA CONNEXION RÉSEAU
+// ================================================================
+
+function updateConnectionStatus() {
+  if (navigator.onLine) {
+    connectionStatus.className = 'cover-status online';
+    connectionStatus.innerHTML = '<i class="fas fa-wifi"></i> En ligne';
+  } else {
+    connectionStatus.className = 'cover-status offline';
+    connectionStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Hors ligne';
+  }
+}
+
+window.addEventListener('online', () => {
+  updateConnectionStatus();
+  showToast('📶 Connexion rétablie', 'success');
+  refreshProfile();
+});
+
+window.addEventListener('offline', () => {
+  updateConnectionStatus();
+  showToast('📶 Connexion perdue', 'error');
+});
+
+// ================================================================
 // PROTECTION + CHARGEMENT
 // ================================================================
 
-protectPage(async (user) => {
-  console.log('👤 Profil - Utilisateur connecté:', user.uid);
+protectPage(async (authUser) => {
+  console.log('👤 Profil - Utilisateur connecté:', authUser.uid);
+  user = authUser;
 
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (!userDoc.exists()) {
-      showToast('Profil introuvable.', 'error');
-      setTimeout(() => window.location.href = 'register.html', 2000);
-      return;
-    }
+  // Mettre à jour le statut de connexion
+  updateConnectionStatus();
 
-    const data = userDoc.data();
+  // Charger les données
+  loadUserData(authUser);
 
-    let progressData = null;
-    try {
-      const progressDoc = await getDoc(doc(db, 'users', user.uid, 'progress', 'overall'));
-      if (progressDoc.exists()) {
-        progressData = progressDoc.data();
-      }
-    } catch (e) {
-      console.warn('Pas de progression trouvée');
-    }
-
-    await renderProfile(data, progressData);
-
-    console.log('👤 Profil chargé pour:', data.firstName);
-
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    showToast('Erreur de chargement.', 'error');
-  }
+  console.log('👤 Profil chargé');
 });
 
 // ================================================================
 // ÉVÉNEMENTS
 // ================================================================
 
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+// Déconnexion depuis la sidebar
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
   e.preventDefault();
-  try {
-    await logout();
-    window.location.href = 'login.html';
-  } catch (error) {
-    showToast('Erreur de déconnexion.', 'error');
-  }
+  handleLogout();
 });
 
-document.getElementById('logoutProfileBtn').addEventListener('click', async () => {
-  try {
-    await logout();
-    window.location.href = 'login.html';
-  } catch (error) {
-    showToast('Erreur de déconnexion.', 'error');
-  }
+// Déconnexion depuis le profil
+document.getElementById('logoutProfileBtn').addEventListener('click', () => {
+  handleLogout();
 });
 
 document.getElementById('menuToggle').addEventListener('click', () => {
@@ -1069,7 +1388,9 @@ document.getElementById('notifBtn').addEventListener('click', () => {
   window.location.href = 'notifications.html';
 });
 
-console.log('👤 ARVEXA School — Page Profil Premium');
+document.getElementById('refreshBtn').addEventListener('click', refreshProfile);
+
+console.log('👤 ARVEXA School — Page Profil renforcée');
 </script>
 
 </body>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXa School - Chapitre">
+  <meta name="description" content="ARVEXA School - Chapitre">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
@@ -74,20 +74,32 @@
   .ci-num{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
     font-size:16px;font-weight:700;flex-shrink:0;font-family:'Playfair Display',serif;
     background:rgba(184,134,11,.1);color:var(--accent-bright);border:1px solid rgba(184,134,11,.12)}
+  .ci-num.completed{background:rgba(45,125,90,.15);border-color:rgba(45,125,90,.2);color:var(--success)}
   .ci-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
   .ci-title{font-size:15px;font-weight:600;color:var(--text-light);line-height:1.3}
-  .ci-sub{font-size:11px;color:var(--text-muted)}
+  .ci-sub{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:8px}
+  .ci-sub .ci-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+  .ci-sub .ci-status.premium{background:rgba(184,134,11,.1);color:var(--accent-bright)}
+  .ci-sub .ci-status.free{background:rgba(45,125,90,.1);color:var(--success)}
+  .ci-sub .ci-status.locked{background:rgba(184,92,58,.1);color:var(--danger)}
+  .ci-sub .ci-status.completed{background:rgba(45,125,90,.1);color:var(--success)}
+  .ci-progress{margin-left:auto;font-size:12px;font-weight:700;color:var(--accent-bright);font-family:'Playfair Display',serif}
 
   /* TABS */
   .tabs{display:flex;gap:4px;background:rgba(255,255,255,.02);border-radius:12px;padding:4px;
     border:1px solid rgba(255,255,255,.04)}
   .tab-btn{flex:1;padding:10px 8px;border:none;border-radius:10px;background:transparent;color:var(--text-muted);
     font-size:12px;font-weight:600;cursor:pointer;transition:var(--transition);font-family:'Inter',sans-serif;
-    display:flex;align-items:center;justify-content:center;gap:6px}
+    display:flex;align-items:center;justify-content:center;gap:6px;position:relative}
   .tab-btn i{font-size:12px}
   .tab-btn.active{background:rgba(184,134,11,.1);color:var(--accent-bright);border:1px solid rgba(184,134,11,.12)}
   .tab-btn:not(.active){border:1px solid transparent}
   .tab-btn:hover:not(.active){color:var(--text-dim)}
+  .tab-btn .tab-badge{position:absolute;top:-4px;right:-4px;font-size:8px;background:var(--success);
+    color:#fff;border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;
+    font-weight:700}
+  .tab-btn .tab-badge.completed{background:var(--success)}
+  .tab-btn .tab-badge.in-progress{background:var(--warning)}
 
   /* ===== VIEW: CARDS LIST ===== */
   .cards-view{display:flex;flex-direction:column;gap:8px;flex:1}
@@ -99,11 +111,14 @@
   .part-card:hover{border-color:rgba(184,134,11,.15);transform:translateY(-1px)}
   .part-card:hover::before{opacity:1}
   .part-card:active{transform:scale(.98)}
+  .part-card.completed{border-color:rgba(45,125,90,.15)}
+  .part-card.completed::before{background:linear-gradient(90deg,transparent,var(--success),transparent);opacity:1}
   .pc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
     font-size:18px;flex-shrink:0;
     background:rgba(184,134,11,.06);color:var(--accent-bright);border:1px solid rgba(184,134,11,.08)}
   .pc-icon.exo{background:rgba(45,125,90,.06);color:var(--success);border-color:rgba(45,125,90,.08)}
   .pc-icon.corr{background:rgba(74,175,224,.06);color:#4AAFE0;border-color:rgba(74,175,224,.08)}
+  .pc-icon.completed{background:rgba(45,125,90,.12);color:var(--success);border-color:rgba(45,125,90,.2)}
   .pc-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
   .pc-title{font-size:14px;font-weight:600;color:var(--text-light);line-height:1.4;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -127,19 +142,30 @@
   .content-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
     border-radius:var(--radius);overflow:hidden;flex:1}
   .content-card-header{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.04);
-    display:flex;align-items:center;justify-content:space-between}
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .cch-left{display:flex;align-items:center;gap:12px}
   .cch-title{font-size:14px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
+  .cch-status{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+  .cch-status.completed{background:rgba(45,125,90,.1);color:var(--success)}
+  .cch-status.in-progress{background:rgba(212,160,23,.1);color:var(--warning)}
+  .cch-status.not-started{background:rgba(255,255,255,.04);color:var(--text-muted)}
   .cch-nav{display:flex;gap:6px}
   .cch-nav-btn{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;
     border:1px solid rgba(255,255,255,.05);background:transparent;color:var(--text-dim);cursor:pointer;
     transition:var(--transition);font-size:11px}
   .cch-nav-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
   .cch-nav-btn:disabled{opacity:.2;cursor:not-allowed;pointer-events:none}
+  .cch-actions{display:flex;gap:6px}
+  .cch-actions .action-btn{width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.05);
+    background:transparent;color:var(--text-muted);cursor:pointer;transition:var(--transition);font-size:12px}
+  .cch-actions .action-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
+  .cch-actions .action-btn.active{color:var(--accent-bright);border-color:rgba(184,134,11,.2)}
+
   .content-card-body{padding:20px 18px;min-height:300px;max-height:calc(100vh - 320px);overflow-y:auto}
   .content-card-body::-webkit-scrollbar{width:3px}
   .content-card-body::-webkit-scrollbar-thumb{background:rgba(184,134,11,.2);border-radius:10px}
 
-  /* CONTENT STYLING */
+  /* ===== CONTENT STYLING ===== */
   .content-card-body h1,.content-card-body h2,.content-card-body h3,.content-card-body h4{
     color:var(--text-light);font-family:'Playfair Display',serif;margin:20px 0 10px}
   .content-card-body h1{font-size:20px}
@@ -167,6 +193,26 @@
   .content-card-body th,.content-card-body td{padding:8px 12px;border:1px solid rgba(255,255,255,.06);text-align:left}
   .content-card-body th{background:rgba(184,134,11,.08);color:var(--accent-bright);font-weight:600}
 
+  /* ===== TIMER ===== */
+  .timer-display{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);padding:2px 8px;
+    border-radius:8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04)}
+  .timer-display i{color:var(--accent-bright);font-size:10px}
+  .timer-display .time{font-weight:600;color:var(--text-light);font-family:'Inter',monospace;min-width:50px}
+
+  /* ===== NOTES ===== */
+  .notes-section{margin-top:12px;padding:12px 16px;border-radius:var(--radius);
+    background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);display:none}
+  .notes-section.show{display:block}
+  .notes-section .notes-label{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  .notes-section .notes-label i{color:var(--accent-bright)}
+  .notes-section textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.06);
+    background:rgba(255,255,255,.02);color:var(--text-light);font-size:13px;font-family:'Inter',sans-serif;
+    resize:vertical;min-height:60px;transition:var(--transition)}
+  .notes-section textarea:focus{outline:none;border-color:rgba(184,134,11,.2)}
+  .notes-section textarea::placeholder{color:var(--text-muted)}
+  .notes-section .notes-saved{font-size:10px;color:var(--success);display:none;margin-top:2px;text-align:right}
+  .notes-section .notes-saved.show{display:block}
+
   /* LOADING */
   .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
     padding:60px 20px;gap:12px;min-height:300px}
@@ -189,6 +235,10 @@
     z-index:300;opacity:0;transition:all .4s cubic-bezier(.25,1,.5,1);display:flex;align-items:center;gap:8px}
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
   .toast i{color:var(--accent-bright)}
+  .toast.success{border-color:rgba(45,125,90,.2)}
+  .toast.success i{color:var(--success)}
+  .toast.error{border-color:rgba(184,92,58,.2)}
+  .toast.error i{color:var(--danger)}
 
   /* RESPONSIVE */
   @media(max-width:480px){
@@ -197,6 +247,9 @@
     .ci-title{font-size:14px}
     .tab-btn{font-size:11px;padding:9px 6px}
     .content-card-body{padding:16px 14px}
+    .cch-title{font-size:13px}
+    .timer-display{font-size:10px}
+    .cch-actions .action-btn{width:26px;height:26px;font-size:10px}
   }
 </style>
 </head>
@@ -221,19 +274,26 @@
       <div class="ci-num" id="chapNum">1</div>
       <div class="ci-text">
         <div class="ci-title" id="chapTitle">Chargement...</div>
-        <div class="ci-sub" id="chapSub"></div>
+        <div class="ci-sub">
+          <span id="chapSub"></span>
+          <span class="ci-status" id="chapStatus">Gratuit</span>
+        </div>
       </div>
+      <div class="ci-progress" id="chapProgress">0%</div>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="cours" onclick="window._switchTab('cours')">
+      <button class="tab-btn active" data-tab="cours" id="tabCours">
         <i class="fas fa-book-open"></i> Chapitre
+        <span class="tab-badge" id="badgeCours" style="display:none;"></span>
       </button>
-      <button class="tab-btn" data-tab="exercices" onclick="window._switchTab('exercices')">
+      <button class="tab-btn" data-tab="exercices" id="tabExercices">
         <i class="fas fa-pen-to-square"></i> Exercices
+        <span class="tab-badge" id="badgeExercices" style="display:none;"></span>
       </button>
-      <button class="tab-btn" data-tab="corrections" onclick="window._switchTab('corrections')">
+      <button class="tab-btn" data-tab="corrections" id="tabCorrections">
         <i class="fas fa-check-double"></i> Corrections
+        <span class="tab-badge" id="badgeCorrections" style="display:none;"></span>
       </button>
     </div>
 
@@ -242,21 +302,40 @@
       <div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>
     </div>
 
-    <!-- CONTENT VIEW (hidden by default) -->
+    <!-- CONTENT VIEW -->
     <div class="content-view" id="contentView">
-      <button class="content-back" id="contentBackBtn" onclick="window._backToCards()">
+      <button class="content-back" id="contentBackBtn">
         <i class="fas fa-arrow-left"></i> Retour aux parties
       </button>
       <div class="content-card">
         <div class="content-card-header">
-          <span class="cch-title" id="contentTitle"></span>
-          <div class="cch-nav">
-            <button class="cch-nav-btn" id="contentPrevBtn" onclick="window._navContent(-1)"><i class="fas fa-chevron-left"></i></button>
-            <button class="cch-nav-btn" id="contentNextBtn" onclick="window._navContent(1)"><i class="fas fa-chevron-right"></i></button>
+          <div class="cch-left">
+            <span class="cch-title" id="contentTitle"></span>
+            <span class="cch-status" id="contentStatus">Non commencé</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <div class="timer-display">
+              <i class="fas fa-clock"></i>
+              <span class="time" id="timerDisplay">00:00</span>
+            </div>
+            <div class="cch-actions">
+              <button class="action-btn" id="bookmarkBtn" title="Marquer cette section"><i class="fas fa-bookmark"></i></button>
+              <button class="action-btn" id="notesToggleBtn" title="Notes"><i class="fas fa-sticky-note"></i></button>
+            </div>
+            <div class="cch-nav">
+              <button class="cch-nav-btn" id="contentPrevBtn"><i class="fas fa-chevron-left"></i></button>
+              <button class="cch-nav-btn" id="contentNextBtn"><i class="fas fa-chevron-right"></i></button>
+            </div>
           </div>
         </div>
         <div class="content-card-body" id="contentBody">
           <div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>
+        </div>
+        <!-- Notes -->
+        <div class="notes-section" id="notesSection">
+          <div class="notes-label"><i class="fas fa-sticky-note"></i> Mes notes</div>
+          <textarea id="notesTextarea" placeholder="Écris tes notes personnelles sur ce chapitre..."></textarea>
+          <div class="notes-saved" id="notesSaved">✅ Sauvegardé</div>
         </div>
       </div>
     </div>
@@ -275,44 +354,16 @@
   </script>
 
   <script type="module">
- // ================================================================
-// chapitre.html - Page de chapitre
+// ================================================================
+// chapitre.html - Page du chapitre (renforcée)
 // ================================================================
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
-import { protectPage, getAuthInstance } from './auth.js';
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { protectPage, getAuthInstance, getFirebaseErrorMessage } from './auth.js';
 
 // ================================================================
-// INITIALISER LA PROGRESSION
+// FIREBASE
 // ================================================================
-async function initializeProgress() {
-  const authInstance = getAuthInstance();
-  const user = authInstance.currentUser;
-  if (!user) return;
-  
-  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
-  const docSnap = await getDoc(progressRef);
-  
-  if (!docSnap.exists()) {
-    // Créer le document avec une structure vide
-    const initialData = {
-      subjects: {},
-      stats: {
-        courses: 0,
-        exercises: 0,
-        skills: 0,
-        totalTime: 0,
-        streakDays: 0
-      },
-      weekActivity: [0, 0, 0, 0, 0, 0, 0],
-      lastUpdate: new Date().toISOString()
-    };
-    
-    await setDoc(progressRef, initialData);
-    console.log('✅ Document de progression créé');
-  }
-}
-
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -324,6 +375,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuthInstance();
 
 // ================================================================
 // CONFIG
@@ -427,9 +479,37 @@ let currentParts = [];
 let currentPartIndex = -1;
 let userData = null;
 let isPremium = false;
+let user = null;
+
+// Progression des parties
+let partProgress = {}; // { 'cours': [true, false, ...], 'exercices': [...], 'corrections': [...] }
+let chapterCompleted = false;
+let chapterProgress = 0;
+
+// Timer
+let timerSeconds = 0;
+let timerInterval = null;
+let timerStartTime = null;
+
+// Notes
+let notesContent = '';
+let notesSaveTimeout = null;
 
 // ================================================================
-// NAVIGATION
+// TOAST
+// ================================================================
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  toastText.textContent = message;
+  toast.className = 'toast ' + type;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ================================================================
+// NAVIGATION ENTRE CHAPITRES
 // ================================================================
 function navigateToChapter(newChap) {
   if (newChap < 0 || newChap >= sConfig.chapters.length) return;
@@ -440,31 +520,184 @@ function setupNavigationButtons() {
   const prevBtn = document.getElementById('prevChapBtn');
   const nextBtn = document.getElementById('nextChapBtn');
   
-  if (!prevBtn || !nextBtn) return;
-  
   const total = sConfig.chapters.length;
   
-  const newPrev = prevBtn.cloneNode(true);
-  const newNext = nextBtn.cloneNode(true);
-  prevBtn.parentNode.replaceChild(newPrev, prevBtn);
-  nextBtn.parentNode.replaceChild(newNext, nextBtn);
+  if (prevBtn) {
+    const newPrev = prevBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+    newPrev.disabled = chapIdx <= 0;
+    newPrev.addEventListener('click', () => {
+      if (chapIdx > 0) navigateToChapter(chapIdx - 1);
+    });
+  }
   
-  newPrev.disabled = chapIdx <= 0;
-  newPrev.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (chapIdx > 0) navigateToChapter(chapIdx - 1);
-  });
-  
-  newNext.disabled = chapIdx >= total - 1;
-  newNext.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (chapIdx < total - 1) navigateToChapter(chapIdx + 1);
-  });
+  if (nextBtn) {
+    const newNext = nextBtn.cloneNode(true);
+    nextBtn.parentNode.replaceChild(newNext, nextBtn);
+    newNext.disabled = chapIdx >= total - 1;
+    newNext.addEventListener('click', () => {
+      if (chapIdx < total - 1) navigateToChapter(chapIdx + 1);
+    });
+  }
 }
 
 // ================================================================
-// RENDER
+// TIMER
 // ================================================================
+function startTimer() {
+  if (timerInterval) return;
+  
+  // Récupérer le temps sauvegardé
+  const savedTime = localStorage.getItem('arvexa_chapter_timer_' + sKey + '_' + chapIdx);
+  if (savedTime) {
+    timerSeconds = parseInt(savedTime) || 0;
+  }
+  
+  timerStartTime = Date.now() - (timerSeconds * 1000);
+  
+  timerInterval = setInterval(() => {
+    timerSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+    updateTimerDisplay();
+    
+    // Sauvegarder toutes les 30 secondes
+    if (timerSeconds % 30 === 0) {
+      localStorage.setItem('arvexa_chapter_timer_' + sKey + '_' + chapIdx, timerSeconds);
+      saveStudyTime(timerSeconds);
+    }
+  }, 1000);
+  
+  updateTimerDisplay();
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    // Sauvegarde finale
+    localStorage.setItem('arvexa_chapter_timer_' + sKey + '_' + chapIdx, timerSeconds);
+    saveStudyTime(timerSeconds);
+  }
+}
+
+function updateTimerDisplay() {
+  const display = document.getElementById('timerDisplay');
+  if (display) {
+    const mins = Math.floor(timerSeconds / 60);
+    const secs = timerSeconds % 60;
+    display.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  }
+}
+
+async function saveStudyTime(seconds) {
+  if (!user) return;
+  try {
+    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+    const docSnap = await getDoc(progressRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const currentTime = data.stats?.totalTime || 0;
+      await updateDoc(progressRef, {
+        'stats.totalTime': currentTime + seconds,
+        lastUpdate: serverTimestamp()
+      });
+    }
+  } catch (error) {
+    console.warn('⚠️ Erreur sauvegarde temps:', error);
+  }
+}
+
+// ================================================================
+// CHARGEMENT DE LA PROGRESSION
+// ================================================================
+
+async function loadChapterProgress() {
+  if (!user) return;
+  try {
+    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+    const docSnap = await getDoc(progressRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const subjectProgress = data.subjects?.[sKey]?.chapters?.progress || {};
+      chapterProgress = subjectProgress[chapIdx] || 0;
+      
+      // Récupérer les parties complétées
+      const partsData = data.subjects?.[sKey]?.chapters?.parts || {};
+      partProgress = partsData[chapIdx] || { cours: [], exercices: [], corrections: [] };
+      
+      // Vérifier si le chapitre est terminé
+      const totalParts = getTotalParts();
+      const completedParts = getCompletedParts();
+      chapterCompleted = completedParts >= totalParts && totalParts > 0;
+      
+      updateChapterInfo();
+    }
+  } catch (error) {
+    console.warn('⚠️ Erreur chargement progression chapitre:', error);
+  }
+}
+
+function getTotalParts() {
+  let total = 0;
+  ['cours', 'exercices', 'corrections'].forEach(tab => {
+    if (currentTab === tab) {
+      total += currentParts.length;
+    }
+  });
+  return total || 1;
+}
+
+function getCompletedParts() {
+  let completed = 0;
+  ['cours', 'exercices', 'corrections'].forEach(tab => {
+    if (partProgress[tab]) {
+      completed += partProgress[tab].filter(v => v === true).length;
+    }
+  });
+  return completed;
+}
+
+// ================================================================
+// SAUVEGARDE DE LA PROGRESSION
+// ================================================================
+
+async function saveProgress() {
+  if (!user) return;
+  try {
+    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+    const totalParts = getTotalParts();
+    const completedParts = getCompletedParts();
+    const progress = totalParts > 0 ? Math.round((completedParts / totalParts) * 100) : 0;
+    
+    await updateDoc(progressRef, {
+      [`subjects.${sKey}.chapters.progress.${chapIdx}`]: progress,
+      [`subjects.${sKey}.chapters.parts.${chapIdx}`]: partProgress,
+      lastUpdate: serverTimestamp()
+    });
+    
+    chapterProgress = progress;
+    chapterCompleted = progress >= 100;
+    updateChapterInfo();
+    updateBadges();
+    
+  } catch (error) {
+    console.warn('⚠️ Erreur sauvegarde progression:', error);
+  }
+}
+
+function markPartCompleted(tab, index) {
+  if (!partProgress[tab]) partProgress[tab] = [];
+  partProgress[tab][index] = true;
+  saveProgress();
+}
+
+function isPartCompleted(tab, index) {
+  return partProgress[tab] && partProgress[tab][index] === true;
+}
+
+// ================================================================
+// RENDU DE LA PAGE
+// ================================================================
+
 function renderPage() {
   if (!sConfig || !sConfig.chapters) {
     window.location.replace('index.html');
@@ -472,7 +705,6 @@ function renderPage() {
   }
   
   const total = sConfig.chapters.length;
-  
   if (chapIdx === null || chapIdx === undefined || chapIdx < 0 || chapIdx >= total) {
     chapIdx = 0;
   }
@@ -485,28 +717,71 @@ function renderPage() {
   document.getElementById('chapNum').textContent = chapIdx + 1;
   document.getElementById('chapTitle').textContent = title;
   
-  let statusText = '';
-  if (chapIdx === 0) {
-    statusText = '🎁 Gratuit';
+  // Statut du chapitre
+  const isFree = chapIdx === 0;
+  const statusEl = document.getElementById('chapStatus');
+  if (chapterCompleted) {
+    statusEl.textContent = '✅ Terminé';
+    statusEl.className = 'ci-status completed';
+    document.getElementById('chapNum').classList.add('completed');
+  } else if (isFree) {
+    statusEl.textContent = '🎁 Gratuit';
+    statusEl.className = 'ci-status free';
   } else if (isPremium) {
-    statusText = '✅ Premium';
+    statusEl.textContent = '👑 Premium';
+    statusEl.className = 'ci-status premium';
   } else {
-    statusText = '🔒 Premium';
+    statusEl.textContent = '🔒 Verrouillé';
+    statusEl.className = 'ci-status locked';
   }
-  document.getElementById('chapSub').textContent = sConfig.name + ' — Chapitre ' + (chapIdx + 1) + ' / ' + total + ' (' + statusText + ')';
-
+  
+  document.getElementById('chapSub').textContent = sConfig.name + ' — Chapitre ' + (chapIdx + 1) + ' / ' + total;
+  
+  // Mettre à jour la progression
+  updateChapterInfo();
+  
   setupNavigationButtons();
   
   document.querySelectorAll('.tab-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.tab === currentTab);
   });
   
+  // Charger le manifest
   loadManifest();
 }
 
+function updateChapterInfo() {
+  const progressEl = document.getElementById('chapProgress');
+  if (progressEl) {
+    progressEl.textContent = chapterProgress + '%';
+  }
+}
+
+function updateBadges() {
+  ['cours', 'exercices', 'corrections'].forEach(tab => {
+    const badge = document.getElementById('badge' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    if (badge && partProgress[tab]) {
+      const completed = partProgress[tab].filter(v => v === true).length;
+      const total = partProgress[tab].length || 1;
+      if (completed === total && total > 0) {
+        badge.textContent = '✓';
+        badge.className = 'tab-badge completed';
+        badge.style.display = 'flex';
+      } else if (completed > 0) {
+        badge.textContent = completed + '/' + total;
+        badge.className = 'tab-badge in-progress';
+        badge.style.display = 'flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  });
+}
+
 // ================================================================
-// LOAD MANIFEST
+// CHARGEMENT DU MANIFEST
 // ================================================================
+
 function loadManifest() {
   const suffix = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exo' : 'corr');
   const manifestPath = 'cours/' + sKey + '/ch' + chapIdx + '_' + suffix + '.json';
@@ -517,7 +792,16 @@ function loadManifest() {
     .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
     .then(data => {
       currentParts = data.parts || [];
+      // Initialiser la progression des parties si nécessaire
+      if (!partProgress[currentTab]) {
+        partProgress[currentTab] = new Array(currentParts.length).fill(false);
+      } else if (partProgress[currentTab].length < currentParts.length) {
+        while (partProgress[currentTab].length < currentParts.length) {
+          partProgress[currentTab].push(false);
+        }
+      }
       renderCards();
+      updateBadges();
     })
     .catch(() => {
       currentParts = [];
@@ -541,141 +825,27 @@ function renderCards() {
 
   container.innerHTML = currentParts.map((part, i) => {
     const filePath = `cours/${sKey}/${part.file}`;
-    
-    // ✅ Ajouter un attribut data pour tracker la progression
+    const completed = isPartCompleted(currentTab, i);
     const partType = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exercices' : 'correction');
     
     return `
-      <a href="${filePath}" 
-         target="_blank" 
-         class="part-card"
-         data-subject="${sKey}"
-         data-chapter="${chapIdx}"
-         data-parttype="${partType}"
-         data-partindex="${i}"
-         onclick="trackPartProgress('${sKey}', ${chapIdx}, '${partType}', ${i})">
-        <div class="pc-icon ${ic}"><i class="fas ${icon}"></i></div>
+      <div class="part-card ${completed ? 'completed' : ''}" 
+           onclick="openPart(${i})"
+           data-subject="${sKey}"
+           data-chapter="${chapIdx}"
+           data-parttype="${partType}"
+           data-partindex="${i}">
+        <div class="pc-icon ${ic} ${completed ? 'completed' : ''}">
+          <i class="fas ${completed ? 'fa-check-circle' : icon}"></i>
+        </div>
         <div class="pc-info">
-          <div class="pc-title">${escapeHtml(part.title)}</div>
+          <div class="pc-title">${escapeHtml(part.title)} ${completed ? '✅' : ''}</div>
           <div class="pc-sub">${label} ${i + 1} — ${sConfig.name}</div>
         </div>
-        <div class="pc-arrow"><i class="fas fa-external-link-alt"></i></div>
-      </a>
+        <div class="pc-arrow"><i class="fas fa-chevron-right"></i></div>
+      </div>
     `;
   }).join('');
-}
-
-// ================================================================
-// GESTION DE LA PROGRESSION
-// ================================================================
-// ================================================================
-// CHARGER LE MANIFESTE — CORRIGÉE
-// ================================================================
-async function loadManifestData(subjectKey, chapterIndex, partType) {
-  const suffix = partType === 'cours' ? 'cours' : (partType === 'exercices' ? 'exo' : 'corr');
-  const manifestPath = `cours/${subjectKey}/ch${chapterIndex}_${suffix}.json`;
-  
-  console.log(`📂 Chargement manifeste: ${manifestPath}`);
-  
-  try {
-    const response = await fetch(manifestPath);
-    if (!response.ok) {
-      console.warn(`⚠️ Manifeste introuvable: ${manifestPath}`);
-      return null;
-    }
-    return await response.json();
-  } catch (error) {
-    console.error(`❌ Erreur chargement manifeste:`, error);
-    return null;
-  }
-}
-
-// ================================================================
-// MET À JOUR LA PROGRESSION — CORRIGÉE
-// ================================================================
-async function updatePartProgress(subjectKey, chapterIndex, partType, partIndex) {
-  const authInstance = getAuthInstance();
-  const user = authInstance.currentUser;
-  if (!user) {
-    console.warn('⏳ Utilisateur non connecté');
-    return;
-  }
-  
-  console.log('📊 Mise à jour progression:', { subjectKey, chapterIndex, partType, partIndex });
-  
-  // 1. Charger le manifeste pour connaître le total
-  const manifest = await loadManifestData(subjectKey, chapterIndex, partType);
-  if (!manifest) {
-    console.warn('⚠️ Manifeste introuvable');
-    return;
-  }
-  
-  const totalParts = manifest.parts.length;
-  if (totalParts === 0) return;
-  
-  // 2. Récupérer la progression actuelle
-  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
-  const docSnap = await getDoc(progressRef);
-  
-  // 3. Créer la structure si elle n'existe pas
-  let data = docSnap.exists() ? docSnap.data() : { subjects: {} };
-  
-  // ✅ S'assurer que la structure existe
-  if (!data.subjects) data.subjects = {};
-  if (!data.subjects[subjectKey]) {
-    data.subjects[subjectKey] = { 
-      chapters: { 
-        progress: {} 
-      }, 
-      progress: 0 
-    };
-  }
-  if (!data.subjects[subjectKey].chapters) {
-    data.subjects[subjectKey].chapters = { progress: {} };
-  }
-  if (!data.subjects[subjectKey].chapters.progress) {
-    data.subjects[subjectKey].chapters.progress = {};
-  }
-  
-  // 4. Récupérer l'ancien pourcentage
-  const oldProgress = data.subjects[subjectKey].chapters.progress[chapterIndex] || 0;
-  
-  // 5. Incrémenter (chaque partie = +33%)
-  const newProgress = Math.min(oldProgress + 33, 100);
-  
-  // 6. Sauvegarder dans Firestore
-  await updateDoc(progressRef, {
-    [`subjects.${subjectKey}.chapters.progress.${chapterIndex}`]: newProgress,
-    lastUpdate: new Date().toISOString()
-  });
-  
-  console.log(`📊 Progression mise à jour: Chapitre ${chapterIndex+1} → ${newProgress}%`);
-  
-  // 7. Recalculer le pourcentage de la matière
-  await recalculateSubject(user.uid, subjectKey);
-}
-
-/**
- * Recalcule le pourcentage d'une matière
- */
-async function recalculateSubject(userId, subjectKey) {
-  const progressRef = doc(db, 'users', userId, 'progress', 'overall');
-  const docSnap = await getDoc(progressRef);
-  const data = docSnap.data();
-  
-  const chapterProgress = data.subjects?.[subjectKey]?.chapters?.progress || {};
-  const values = Object.values(chapterProgress);
-  
-  if (values.length === 0) return;
-  
-  const sum = values.reduce((a, b) => a + b, 0);
-  const subjectProgress = Math.round(sum / values.length);
-  
-  await updateDoc(progressRef, {
-    [`subjects.${subjectKey}.progress`]: subjectProgress
-  });
-  
-  console.log(`📊 Matière ${subjectKey} → ${subjectProgress}%`);
 }
 
 function renderEmpty(container) {
@@ -695,20 +865,75 @@ function escapeHtml(text) {
 }
 
 // ================================================================
-// GLOBAL FUNCTIONS (exposées pour les onclick)
+// OUVERTURE D'UNE PARTIE
 // ================================================================
-window._switchTab = function(tab) {
-  currentTab = tab;
-  currentPartIndex = -1;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  loadManifest();
+
+window.openPart = function(index) {
+  if (index < 0 || index >= currentParts.length) return;
+  currentPartIndex = index;
+  const part = currentParts[index];
+  const filePath = `cours/${sKey}/${part.file}`;
+  
+  // Marquer comme commencé
+  const partType = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exercices' : 'correction');
+  
+  // Afficher le contenu
+  document.getElementById('cardsView').classList.add('hidden');
+  document.getElementById('contentView').classList.add('active');
+  document.getElementById('contentTitle').textContent = part.title;
+  
+  // Statut
+  const statusEl = document.getElementById('contentStatus');
+  if (isPartCompleted(currentTab, index)) {
+    statusEl.textContent = '✅ Terminé';
+    statusEl.className = 'cch-status completed';
+  } else {
+    statusEl.textContent = '📖 En cours';
+    statusEl.className = 'cch-status in-progress';
+  }
+  
+  // Charger le contenu
+  const body = document.getElementById('contentBody');
+  body.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement du contenu...</p></div>';
+  
+  fetch(filePath)
+    .then(r => {
+      if (!r.ok) throw new Error('not found');
+      return r.text();
+    })
+    .then(html => {
+      body.innerHTML = html;
+      // Marquer comme terminé si ce n'est pas déjà fait
+      if (!isPartCompleted(currentTab, index)) {
+        markPartCompleted(currentTab, index);
+        // Mettre à jour le statut
+        statusEl.textContent = '✅ Terminé';
+        statusEl.className = 'cch-status completed';
+        // Recharger les cartes
+        renderCards();
+        updateBadges();
+        showToast('✅ Partie terminée !', 'success');
+      }
+      // Démarrer le timer si ce n'est pas déjà fait
+      startTimer();
+    })
+    .catch(() => {
+      body.innerHTML = '<div class="empty-state"><div class="es-icon"><i class="fas fa-exclamation-triangle"></i></div><h4>Contenu non disponible</h4><p>Le contenu de cette partie n\'est pas encore disponible.</p></div>';
+    });
+  
+  // Configurer la navigation entre parties
+  setupContentNavigation();
+  
+  // Charger les notes
+  loadNotes();
 };
 
 window._backToCards = function() {
   currentPartIndex = -1;
   document.getElementById('cardsView').classList.remove('hidden');
   document.getElementById('contentView').classList.remove('active');
-  document.getElementById('headerNav').style.display = 'flex';
+  
+  // Ne pas arrêter le timer, il continue en arrière-plan
 };
 
 window._navContent = function(dir) {
@@ -718,24 +943,231 @@ window._navContent = function(dir) {
   }
 };
 
-window.initPage = renderPage;
-window.renderEmpty = renderEmpty;
-window.escapeHtml = escapeHtml;
+function setupContentNavigation() {
+  const prevBtn = document.getElementById('contentPrevBtn');
+  const nextBtn = document.getElementById('contentNextBtn');
+  
+  if (prevBtn) {
+    const newPrev = prevBtn.cloneNode(true);
+    prevBtn.parentNode.replaceChild(newPrev, prevBtn);
+    newPrev.disabled = currentPartIndex <= 0;
+    newPrev.addEventListener('click', () => _navContent(-1));
+  }
+  
+  if (nextBtn) {
+    const newNext = nextBtn.cloneNode(true);
+    nextBtn.parentNode.replaceChild(newNext, nextBtn);
+    newNext.disabled = currentPartIndex >= currentParts.length - 1;
+    newNext.addEventListener('click', () => _navContent(1));
+  }
+  
+  // Bouton retour
+  const backBtn = document.getElementById('contentBackBtn');
+  if (backBtn) {
+    const newBack = backBtn.cloneNode(true);
+    backBtn.parentNode.replaceChild(newBack, backBtn);
+    newBack.addEventListener('click', _backToCards);
+  }
+}
 
-// ✅ AJOUTER CETTE LIGNE
-window.trackPartProgress = function(subjectKey, chapterIndex, partType, partIndex) {
-  updatePartProgress(subjectKey, chapterIndex, partType, partIndex);
-};
+// ================================================================
+// NOTES
+// ================================================================
+
+function loadNotes() {
+  const notesKey = 'arvexa_notes_' + sKey + '_' + chapIdx;
+  notesContent = localStorage.getItem(notesKey) || '';
+  const textarea = document.getElementById('notesTextarea');
+  if (textarea) {
+    textarea.value = notesContent;
+  }
+}
+
+function setupNotes() {
+  const textarea = document.getElementById('notesTextarea');
+  const savedEl = document.getElementById('notesSaved');
+  
+  if (textarea) {
+    textarea.addEventListener('input', () => {
+      notesContent = textarea.value;
+      if (savedEl) savedEl.classList.remove('show');
+      
+      clearTimeout(notesSaveTimeout);
+      notesSaveTimeout = setTimeout(() => {
+        const notesKey = 'arvexa_notes_' + sKey + '_' + chapIdx;
+        localStorage.setItem(notesKey, notesContent);
+        if (savedEl) savedEl.classList.add('show');
+        setTimeout(() => {
+          if (savedEl) savedEl.classList.remove('show');
+        }, 2000);
+        
+        // Sauvegarder dans Firestore
+        saveNotesToFirestore(notesContent);
+      }, 1000);
+    });
+  }
+  
+  // Toggle notes
+  const toggleBtn = document.getElementById('notesToggleBtn');
+  const notesSection = document.getElementById('notesSection');
+  if (toggleBtn && notesSection) {
+    toggleBtn.addEventListener('click', () => {
+      notesSection.classList.toggle('show');
+      toggleBtn.classList.toggle('active');
+    });
+  }
+}
+
+async function saveNotesToFirestore(content) {
+  if (!user) return;
+  try {
+    const notesRef = doc(db, 'users', user.uid, 'notes', sKey + '_' + chapIdx);
+    await setDoc(notesRef, {
+      subject: sKey,
+      chapter: chapIdx,
+      content: content,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.warn('⚠️ Erreur sauvegarde notes:', error);
+  }
+}
+
+// ================================================================
+// MARQUE-PAGES
+// ================================================================
+
+function setupBookmark() {
+  const btn = document.getElementById('bookmarkBtn');
+  if (!btn) return;
+  
+  const bookmarkKey = 'arvexa_bookmark_' + sKey + '_' + chapIdx + '_' + currentTab + '_' + currentPartIndex;
+  const isBookmarked = localStorage.getItem(bookmarkKey) === 'true';
+  
+  if (isBookmarked) {
+    btn.classList.add('active');
+  }
+  
+  btn.addEventListener('click', () => {
+    const newState = !btn.classList.contains('active');
+    btn.classList.toggle('active');
+    const bookmarkKey = 'arvexa_bookmark_' + sKey + '_' + chapIdx + '_' + currentTab + '_' + currentPartIndex;
+    localStorage.setItem(bookmarkKey, newState ? 'true' : 'false');
+    showToast(newState ? '📌 Section marquée !' : '🔖 Marque-page retiré', 'info');
+    
+    // Sauvegarder dans Firestore
+    if (user) {
+      saveBookmarkToFirestore(newState);
+    }
+  });
+}
+
+async function saveBookmarkToFirestore(isBookmarked) {
+  if (!user) return;
+  try {
+    const bookmarkRef = doc(db, 'users', user.uid, 'bookmarks', sKey + '_' + chapIdx + '_' + currentPartIndex);
+    if (isBookmarked) {
+      await setDoc(bookmarkRef, {
+        subject: sKey,
+        chapter: chapIdx,
+        partIndex: currentPartIndex,
+        partType: currentTab,
+        title: currentParts[currentPartIndex]?.title || '',
+        createdAt: serverTimestamp()
+      });
+    } else {
+      // Supprimer le marque-page
+      // Note: deleteDoc ne fonctionne pas avec les sous-collections dans certaines versions
+      // On peut simplement mettre un champ active: false
+      await updateDoc(bookmarkRef, { active: false });
+    }
+  } catch (error) {
+    console.warn('⚠️ Erreur sauvegarde marque-page:', error);
+  }
+}
+
+// ================================================================
+// TABS
+// ================================================================
+
+function setupTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      if (tab === currentTab) return;
+      
+      // Sauvegarder la position actuelle
+      if (currentPartIndex >= 0) {
+        // Fermer la vue de contenu
+        _backToCards();
+      }
+      
+      currentTab = tab;
+      
+      // Mettre à jour l'URL
+      const url = new URL(window.location);
+      url.searchParams.set('tab', tab);
+      window.history.pushState({}, '', url);
+      
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tab);
+      });
+      
+      loadManifest();
+    });
+  });
+}
+
+// ================================================================
+// RESTAURER LA POSITION
+// ================================================================
+
+function restorePosition() {
+  // Vérifier si une partie était ouverte
+  const savedPartIndex = localStorage.getItem('arvexa_last_part_' + sKey + '_' + chapIdx + '_' + currentTab);
+  if (savedPartIndex !== null) {
+    const index = parseInt(savedPartIndex);
+    if (index >= 0 && index < currentParts.length) {
+      // Ouvrir automatiquement la partie
+      setTimeout(() => openPart(index), 300);
+    }
+  }
+}
+
+// ================================================================
+// INITIALISATION
+// ================================================================
+
+function initPage() {
+  if (!sConfig) {
+    getURLParams();
+    if (!sConfig) {
+      window.location.replace('index.html');
+      return;
+    }
+  }
+  
+  renderPage();
+  setupTabs();
+  setupNotes();
+  setupBookmark();
+  
+  // Restaurer la position après le chargement
+  setTimeout(restorePosition, 500);
+}
+
+// Exposer les fonctions globalement
+window._backToCards = _backToCards;
+window._navContent = _navContent;
+window.openPart = openPart;
 
 // ================================================================
 // PROTECTION
 // ================================================================
 
-protectPage(async (user) => {
-  console.log('📚 Chapitre - Utilisateur connecté:', user.uid);
-  
-  // ✅ Initialiser la progression
-  await initializeProgress();
+protectPage(async (authUser) => {
+  console.log('📚 Chapitre - Utilisateur connecté:', authUser.uid);
+  user = authUser;
   
   if (!sConfig) {
     getURLParams();
@@ -753,14 +1185,19 @@ protectPage(async (user) => {
     }
     
     userData = userDoc.data();
-    isPremium = userData.isUnlocked === true || userData.hasDeposited === true;
+    isPremium = userData.isUnlocked === true || userData.hasDeposited === true || userData.premium === true;
     
+    // Vérifier si premium pour les chapitres non gratuits
     if (!isPremium && chapIdx !== 0) {
       window.location.href = 'matiere.html?subject=' + sKey;
       return;
     }
     
-    renderPage();
+    // Charger la progression
+    await loadChapterProgress();
+    
+    // Initialiser la page
+    initPage();
     
   } catch (error) {
     console.error('❌ Erreur:', error);
@@ -769,25 +1206,18 @@ protectPage(async (user) => {
 });
 
 // ================================================================
-// INIT
+// SAUVEGARDE AUTOMATIQUE À LA FERMETURE
 // ================================================================
-document.addEventListener('DOMContentLoaded', function() {
-  getURLParams();
+
+window.addEventListener('beforeunload', () => {
+  stopTimer();
+  // Sauvegarder la position
+  if (currentPartIndex >= 0) {
+    localStorage.setItem('arvexa_last_part_' + sKey + '_' + chapIdx + '_' + currentTab, currentPartIndex);
+  }
 });
 
-// ================================================================
-// SAUVEGARDE AUTOMATIQUE
-// ================================================================
-
-// Quand l'utilisateur quitte la page, on sauvegarde la progression
-window.addEventListener('beforeunload', function() {
-  // La progression est déjà sauvegardée via le onclick
-  console.log('📊 Sauvegarde automatique...');
-}); 
-
-console.log('📚 ARVEXA - Page chapitre avec progression');
-console.log('📚 ARVEXA - Page chapitre');
-
+console.log('📚 ARVEXA - Page chapitre renforcée');
   </script>
 </body>
 </html>
