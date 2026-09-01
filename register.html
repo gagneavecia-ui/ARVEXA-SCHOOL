@@ -447,15 +447,6 @@
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
-.password-strength {
-  font-size: 11px;
-  margin-top: 4px;
-  transition: all 0.3s ease;
-}
-.password-strength.weak { color: #E74C3C; }
-.password-strength.medium { color: #F39C12; }
-.password-strength.strong { color: #2ECC71; }
-
     /* ============================================================
        TOAST
        ============================================================ */
@@ -600,7 +591,6 @@
     <!-- Mot de passe -->
     <div class="form-group">
       <label for="password">Mot de passe</label>
-      <div class="password-strength" id="passwordStrength"></div>
       <div class="input-wrap" id="passwordWrap">
         <span class="input-icon"><i class="fas fa-lock"></i></span>
         <input type="password" id="password" placeholder="Min. 6 caractères" autocomplete="new-password" required>
@@ -738,64 +728,6 @@ const errors = {
 
 let isSubmitting = false;
 
-// ✅ VALIDATION DU MOT DE PASSE FORTE
-function validatePasswordStrength(password) {
-  const checks = {
-    length: password.length >= 8,
-    uppercase: /[A-Z]/.test(password),
-    lowercase: /[a-z]/.test(password),
-    number: /[0-9]/.test(password),
-    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
-  };
-  
-  const score = Object.values(checks).filter(Boolean).length;
-  const total = Object.keys(checks).length;
-  const percent = (score / total) * 100;
-  
-  let strength, className;
-  if (percent >= 80) { strength = 'Fort ✅'; className = 'strong'; }
-  else if (percent >= 60) { strength = 'Moyen ⚠️'; className = 'medium'; }
-  else { strength = 'Faible ❌'; className = 'weak'; }
-  
-  const missing = [];
-  if (!checks.length) missing.push('8 caractères');
-  if (!checks.uppercase) missing.push('1 majuscule');
-  if (!checks.lowercase) missing.push('1 minuscule');
-  if (!checks.number) missing.push('1 chiffre');
-  if (!checks.special) missing.push('1 caractère spécial');
-  
-  return {
-    valid: percent >= 80,
-    strength,
-    className,
-    missing,
-    score: Math.round(percent)
-  };
-}
-
-// ✅ ÉVÉNEMENT SUR LE CHAMP MOT DE PASSE
-const strengthEl = document.getElementById('passwordStrength');
-password.addEventListener('input', () => {
-  const result = validatePasswordStrength(password.value);
-  if (strengthEl) {
-    strengthEl.textContent = result.valid ? `✅ ${result.strength}` : `❌ ${result.strength}`;
-    strengthEl.className = `password-strength ${result.className}`;
-    if (!result.valid && result.missing.length) {
-      strengthEl.textContent += ` (manque: ${result.missing.join(', ')})`;
-    }
-  }
-  validateField(password);
-  validateForm();
-});
-
-// ✅ MODIFIER validateForm pour inclure le mot de passe fort
-function validateForm() {
-  // ... votre validation existante ...
-  
-  // Ajouter la vérification du mot de passe fort
-  const pwdResult = validatePasswordStrength(password.value);
-  const isPwdStrong = pwdResult.valid;
-  
 // ================================================================
 // FONCTIONS
 // ================================================================
