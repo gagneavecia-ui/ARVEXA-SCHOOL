@@ -1,1 +1,36 @@
-
+{
+  "parts": [
+    {
+      "title": "Intro + Forme algébrique",
+      "file": "chapitre_1.html#part1"
+    },
+    {
+      "title": "Module, Argument & Formes",
+      "file": "chapitre_1.html#part2"
+    },
+    {
+      "title": "Conjugué & Propriétés",
+      "file": "chapitre_1.html#part3"
+    },
+    {
+      "title": "Équations & Réels purs",
+      "file": "chapitre_1.html#part4"
+    },
+    {
+      "title": "Géométrie complexe",
+      "file": "chapitre_1.html#part5"
+    },
+    {
+      "title": "Formules & Transformations",
+      "file": "chapitre_1.html#part6"
+    },
+    {
+      "title": "Racines",
+      "file": "chapitre_1.html#part7"
+    },
+    {
+      "title": "Linearisation & Méthodes",
+      "file": "chapitre_1.html#part8"
+    }
+  ]
+}
