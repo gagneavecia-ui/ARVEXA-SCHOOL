@@ -2,11 +2,9 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXA School - Chapitres">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="ARVEXA School - Matière">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
@@ -14,239 +12,404 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-<style>
-  :root {
-    --primary: #1A3A2A; --primary-dark: #0A1A12; --primary-light: #2A5A3A;
-    --accent: #B8860B; --accent-bright: #E0B84A; --accent-dim: rgba(184,134,11,0.08);
-    --success: #2D7D5A; --danger: #B85C3A; --warning: #D4A017;
-    --bg-dark: #0A0A0A; --bg-surface: #141414; --bg-card: rgba(20,20,20,0.7);
-    --text-light: #F5F0E8; --text-dim: #8A8A7A; --text-muted: #5A5A4A;
-    --card-border: rgba(184,134,11,0.08);
-    --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
-    --shadow: 0 8px 32px rgba(0,0,0,0.4); --radius: 16px;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
-  body{
-    font-family:'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif;
-    background:var(--bg-dark);color:var(--text-light);font-size:14px;line-height:1.6;
-    min-height:100vh;width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-    display:flex;flex-direction:column;
-  }
-  .gradient-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;
-    background:radial-gradient(ellipse 40% 30% at 30% 15%,rgba(26,58,42,.16) 0%,transparent 70%),
-                radial-gradient(ellipse 35% 25% at 75% 85%,rgba(184,134,11,.05) 0%,transparent 60%),
-                linear-gradient(180deg,#0A0A0A 0%,#060606 100%)}
-  .glow{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:-1;
-    opacity:.15;animation:glowMove 10s ease-in-out infinite alternate}
-  .glow-1{width:300px;height:300px;background:rgba(26,58,42,.18);top:-80px;right:-80px}
-  .glow-2{width:180px;height:180px;background:rgba(184,134,11,.05);bottom:0;left:0;animation-delay:-4s}
-  @keyframes glowMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(30px,-20px) scale(1.1)}}
+  <style>
+    :root {
+      --primary: #1A3A2A;
+      --primary-dark: #0A1A12;
+      --primary-light: #2A5A3A;
+      --accent: #B8860B;
+      --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
+      --success: #2D7D5A;
+      --danger: #B85C3A;
+      --warning: #D4A017;
+      --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-card: rgba(20,20,20,0.7);
+      --text-light: #F5F0E8;
+      --text-dim: #8A8A7A;
+      --text-muted: #5A5A4A;
+      --card-border: rgba(184,134,11,0.08);
+      --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --radius: 16px;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
+    body {
+      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+    }
+    .gradient-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
+                  radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
+                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+    }
+    .glow {
+      position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
+      opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
+    }
+    .glow-1 { width: 300px; height: 300px; background: rgba(26,58,42,0.18); top: -80px; right: -80px; }
+    .glow-2 { width: 180px; height: 180px; background: rgba(184,134,11,0.05); bottom: 0; left: 0; animation-delay: -4s; }
+    @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
-  /* HEADER */
-  .header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
-    padding:10px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(12px);
-    border-bottom:1px solid rgba(184,134,11,.06);gap:12px;min-height:56px}
-  .header-left{display:flex;align-items:center;gap:12px}
-  .back-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;
-    border:1px solid rgba(255,255,255,.05);background:transparent;color:var(--text-dim);cursor:pointer;
-    transition:var(--transition);font-size:16px;text-decoration:none}
-  .back-btn:hover{border-color:rgba(184,134,11,.14);color:var(--text-light)}
-  .page-title{font-size:15px;font-weight:600;color:var(--text-light);font-family:'Playfair Display',serif}
-  .page-title i{color:var(--accent-bright);margin-right:6px;font-size:14px}
-  .header-right{display:flex;align-items:center;gap:8px}
+    /* ===== HEADER ===== */
+    .header {
+      position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
+      justify-content: space-between; padding: 10px 16px; background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184,134,11,0.06);
+      gap: 12px; min-height: 56px;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
+      text-decoration: none;
+    }
+    .back-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
+    .page-title {
+      font-size: 15px; font-weight: 600; color: var(--text-light);
+      font-family: 'Playfair Display', serif;
+    }
+    .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
+    .header-right { display: flex; align-items: center; gap: 8px; }
+    .header-right button {
+      background: transparent; border: none; color: var(--text-muted);
+      font-size: 14px; cursor: pointer; padding: 6px; transition: var(--transition);
+    }
+    .header-right button:hover { color: var(--text-light); }
 
-  /* CONTAINER */
-  .container{max-width:600px;margin:0 auto;padding:12px 12px 32px;width:100%;display:flex;flex-direction:column;gap:12px;flex:1}
+    /* ===== CONTAINER ===== */
+    .container { max-width: 600px; margin: 0 auto; padding: 12px 12px 32px; width: 100%; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 
-  /* SUBJECT HERO */
-  .subject-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 16px 16px;gap:10px}
-  .subject-icon-wrap{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;
-    font-size:26px;position:relative}
-  .subject-icon-wrap::before{content:'';position:absolute;inset:-3px;border-radius:21px;
-    background:linear-gradient(135deg,var(--accent),var(--success));opacity:.25;z-index:-1}
-  .subject-hero h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text-light)}
-  .subject-hero .subject-subtitle{font-size:12px;color:var(--text-dim)}
+    /* ===== SUBJECT HERO ===== */
+    .subject-hero {
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      padding: 20px 16px 16px; gap: 10px;
+    }
+    .subject-icon-wrap {
+      width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center;
+      justify-content: center; font-size: 26px; position: relative;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright);
+    }
+    .subject-icon-wrap::before {
+      content: ''; position: absolute; inset: -3px; border-radius: 21px;
+      background: linear-gradient(135deg, var(--accent), var(--success)); opacity: 0.25; z-index: -1;
+    }
+    .subject-hero h2 {
+      font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700;
+      color: var(--text-light);
+    }
+    .subject-hero .subject-subtitle { font-size: 12px; color: var(--text-dim); }
 
-  /* HERO STATS */
-  .hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:420px;margin-top:4px}
-  .hero-stat{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:8px 4px;text-align:center}
-  .hero-stat-value{display:block;font-size:15px;font-weight:700;font-family:'Playfair Display',serif;color:var(--accent-bright);line-height:1.3}
-  .hero-stat-label{font-size:8px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+    /* ===== HERO STATS ===== */
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+      width: 100%; max-width: 420px; margin-top: 4px;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px; padding: 8px 4px; text-align: center;
+    }
+    .hero-stat-value {
+      display: block; font-size: 15px; font-weight: 700;
+      font-family: 'Playfair Display', serif; color: var(--accent-bright); line-height: 1.3;
+    }
+    .hero-stat-label {
+      font-size: 8px; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.3px; font-weight: 600;
+    }
 
-  /* SECTION LABEL */
-  .section-label{font-size:11px;font-weight:700;color:var(--accent-bright);text-transform:uppercase;
-    letter-spacing:1px;padding:6px 4px 0;display:flex;align-items:center;gap:8px}
-  .section-label::after{content:'';flex:1;height:1px;background:rgba(184,134,11,.1)}
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      font-size: 11px; font-weight: 700; color: var(--accent-bright);
+      text-transform: uppercase; letter-spacing: 1px; padding: 6px 4px 0;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(184,134,11,0.1); }
 
-  /* CHAPTER LIST */
-  .chapter-list{display:flex;flex-direction:column;gap:8px;padding-bottom:16px}
+    /* ===== CHAPTER LIST ===== */
+    .chapter-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px; }
 
-  /* CHAPTER CARD */
-  .chapter-card{background:var(--bg-card);backdrop-filter:blur(10px);border:1px solid var(--card-border);
-    border-radius:var(--radius);padding:14px 16px;cursor:pointer;transition:var(--transition);
-    text-decoration:none;color:inherit;position:relative;overflow:hidden}
-  .chapter-card:hover{border-color:rgba(184,134,11,.15);transform:translateY(-2px)}
-  .chapter-card:active{transform:scale(.98)}
-  .chapter-card.locked{opacity:.7}
-  .chapter-card.locked:hover{opacity:.9}
+    /* ===== CHAPTER CARD ===== */
+    .chapter-card {
+      background: var(--bg-card); backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      padding: 14px 16px; cursor: pointer; transition: var(--transition);
+      text-decoration: none; color: inherit; position: relative; overflow: hidden;
+    }
+    .chapter-card:hover { border-color: rgba(184,134,11,0.15); transform: translateY(-2px); }
+    .chapter-card:active { transform: scale(0.98); }
+    .chapter-card.locked { opacity: 0.7; }
+    .chapter-card.locked:hover { opacity: 0.9; }
 
-  .cc-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .cc-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
-  .cc-num{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-    font-size:13px;font-weight:700;flex-shrink:0;font-family:'Playfair Display',serif;
-    background:rgba(184,134,11,.08);color:var(--accent-bright);border:1px solid rgba(184,134,11,.08)}
-  .cc-num.completed{background:rgba(45,125,90,.15);border-color:rgba(45,125,90,.2);color:var(--success)}
-  .cc-num.in-progress{background:rgba(212,160,23,.12);border-color:rgba(212,160,23,.15);color:var(--warning)}
-  .cc-info{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
-  .cc-title{font-size:14px;font-weight:600;color:var(--text-light);line-height:1.3;
-    display:flex;align-items:center;flex-wrap:wrap;gap:4px}
-  .cc-chapter-label{font-size:11px;color:var(--text-muted)}
-  .cc-progress{display:flex;align-items:center;gap:8px;margin-top:4px}
-  .cc-progress-bar{flex:1;height:3px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden}
-  .cc-progress-bar .fill{height:100%;border-radius:4px;transition:width .6s ease}
-  .cc-progress-text{font-size:10px;font-weight:600;color:var(--text-muted);min-width:32px;text-align:right}
-  .cc-arrow{display:flex;align-items:center;justify-content:center;width:26px;height:26px;
-    border-radius:8px;background:rgba(255,255,255,.03);color:var(--text-muted);flex-shrink:0;
-    transition:var(--transition);font-size:11px}
-  .chapter-card:hover .cc-arrow{color:var(--accent-bright);background:rgba(184,134,11,.08)}
+    .cc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .cc-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+    .cc-num {
+      width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright);
+      border: 1px solid rgba(184,134,11,0.08);
+    }
+    .cc-num.completed {
+      background: rgba(45,125,90,0.15); border-color: rgba(45,125,90,0.2);
+      color: var(--success);
+    }
+    .cc-num.in-progress {
+      background: rgba(212,160,23,0.12); border-color: rgba(212,160,23,0.15);
+      color: var(--warning);
+    }
+    .cc-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+    .cc-title {
+      font-size: 14px; font-weight: 600; color: var(--text-light); line-height: 1.3;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+    }
+    .cc-chapter-label { font-size: 11px; color: var(--text-muted); }
+    .cc-progress { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .cc-progress-bar {
+      flex: 1; height: 3px; border-radius: 4px; background: rgba(255,255,255,0.06);
+      overflow: hidden;
+    }
+    .cc-progress-bar .fill {
+      height: 100%; border-radius: 4px; transition: width 0.6s ease;
+    }
+    .cc-progress-text {
+      font-size: 10px; font-weight: 600; color: var(--text-muted);
+      min-width: 32px; text-align: right;
+    }
+    .cc-arrow {
+      display: flex; align-items: center; justify-content: center; width: 26px; height: 26px;
+      border-radius: 8px; background: rgba(255,255,255,0.03); color: var(--text-muted);
+      flex-shrink: 0; transition: var(--transition); font-size: 11px;
+    }
+    .chapter-card:hover .cc-arrow { color: var(--accent-bright); background: rgba(184,134,11,0.08); }
 
-  /* BADGES */
-  .badge-free{display:inline-block;font-size:9px;color:var(--success);background:rgba(45,125,90,.1);
-    padding:0 6px;border-radius:10px;border:1px solid rgba(45,125,90,.12)}
-  .badge-locked{display:inline-block;font-size:9px;color:var(--accent-bright);background:rgba(184,134,11,.1);
-    padding:0 6px;border-radius:10px;border:1px solid rgba(184,134,11,.12)}
-  .badge-completed{display:inline-block;font-size:9px;color:var(--success);background:rgba(45,125,90,.1);
-    padding:0 6px;border-radius:10px;border:1px solid rgba(45,125,90,.12)}
-  .badge-progress{display:inline-block;font-size:9px;color:var(--warning);background:rgba(212,160,23,.1);
-    padding:0 6px;border-radius:10px;border:1px solid rgba(212,160,23,.12)}
+    /* ===== BADGES ===== */
+    .badge-free {
+      display: inline-block; font-size: 9px; color: var(--success);
+      background: rgba(45,125,90,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(45,125,90,0.12);
+    }
+    .badge-locked {
+      display: inline-block; font-size: 9px; color: var(--accent-bright);
+      background: rgba(184,134,11,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(184,134,11,0.12);
+    }
+    .badge-completed {
+      display: inline-block; font-size: 9px; color: var(--success);
+      background: rgba(45,125,90,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(45,125,90,0.12);
+    }
+    .badge-progress {
+      display: inline-block; font-size: 9px; color: var(--warning);
+      background: rgba(212,160,23,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(212,160,23,0.12);
+    }
 
-  /* SKELETON */
-  .skeleton{background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.06) 50%,rgba(255,255,255,.03) 75%);
-    background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
-  @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-  .skeleton-card{height:80px;border-radius:var(--radius)}
-  .skeleton-hero{height:120px;border-radius:var(--radius)}
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skeleton-card { height: 80px; border-radius: var(--radius); }
+    .skeleton-hero { height: 120px; border-radius: var(--radius); }
 
-  /* TOAST */
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
-    padding:12px 20px;border-radius:12px;background:rgba(20,20,20,.95);backdrop-filter:blur(16px);
-    border:1px solid rgba(184,134,11,.15);color:var(--text-light);font-size:13px;font-weight:500;
-    z-index:300;opacity:0;transition:all .4s cubic-bezier(.25,1,.5,1);display:flex;align-items:center;gap:8px}
-  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-  .toast i{color:var(--accent-bright)}
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 12px 20px; border-radius: 12px; background: rgba(20,20,20,0.95);
+      backdrop-filter: blur(16px); border: 1px solid rgba(184,134,11,0.15);
+      color: var(--text-light); font-size: 13px; font-weight: 500; z-index: 300;
+      opacity: 0; transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .toast i { color: var(--accent-bright); }
+    .toast.success { border-color: rgba(45,125,90,0.2); }
+    .toast.success i { color: var(--success); }
+    .toast.error { border-color: rgba(184,92,58,0.2); }
+    .toast.error i { color: var(--danger); }
 
-  /* ============================================================
-     POPUP PREMIUM AMÉLIORÉE
-     ============================================================ */
-  .premium-popup-overlay{position:fixed;top:0;left:0;right:0;bottom:0;
-    background:rgba(0,0,0,.85);backdrop-filter:blur(16px);z-index:9999;
-    display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;
-    transition:all .4s ease;padding:16px}
-  .premium-popup-overlay.show{opacity:1;visibility:visible}
-  .premium-popup-overlay.hide{opacity:0;visibility:hidden}
+    /* ============================================================
+       POPUP PREMIUM
+       ============================================================ */
+    .premium-popup-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: all 0.4s ease; padding: 16px;
+    }
+    .premium-popup-overlay.show { opacity: 1; visibility: visible; }
+    .premium-popup-overlay.hide { opacity: 0; visibility: hidden; }
 
-  .premium-popup{background:linear-gradient(145deg,#141414,#0A0A0A);border:1px solid var(--accent);
-    border-radius:var(--radius);padding:28px 24px;max-width:380px;width:100%;
-    transform:scale(.9) translateY(30px);transition:transform .5s cubic-bezier(.34,1.56,.64,1);
-    box-shadow:0 20px 60px rgba(0,0,0,.6);position:relative;overflow:hidden;max-height:90vh;overflow-y:auto}
-  .premium-popup-overlay.show .premium-popup{transform:scale(1) translateY(0)}
-  .premium-popup::-webkit-scrollbar{width:2px}
-  .premium-popup::-webkit-scrollbar-thumb{background:var(--accent);border-radius:4px}
-  .premium-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-    background:linear-gradient(90deg,var(--accent),var(--accent-bright),var(--accent))}
-  .premium-popup .popup-close{position:absolute;top:8px;right:8px;width:28px;height:28px;
-    background:rgba(255,255,255,.03);border:1px solid rgba(184,134,11,.06);border-radius:8px;
-    color:var(--text-dim);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;
-    transition:var(--transition)}
-  .premium-popup .popup-close:hover{border-color:rgba(184,134,11,.15);color:var(--text-light)}
-  .premium-popup .popup-icon{font-size:40px;display:block;text-align:center;margin-bottom:4px}
-  .premium-popup h2{font-size:20px;font-weight:700;font-family:'Playfair Display','Georgia',serif;
-    color:var(--text-light);text-align:center;margin-bottom:2px}
-  .premium-popup h2 span{color:var(--accent);font-style:italic}
-  .premium-popup .popup-subtitle{font-size:12px;color:var(--text-dim);text-align:center;line-height:1.5;margin-bottom:14px}
-  .premium-popup .popup-subtitle strong{color:var(--accent-bright)}
+    .premium-popup {
+      background: linear-gradient(145deg, #141414, #0A0A0A);
+      border: 1px solid var(--accent); border-radius: var(--radius);
+      padding: 28px 24px; max-width: 380px; width: 100%;
+      transform: scale(0.9) translateY(30px);
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative; overflow: hidden; max-height: 90vh; overflow-y: auto;
+    }
+    .premium-popup-overlay.show .premium-popup { transform: scale(1) translateY(0); }
+    .premium-popup::-webkit-scrollbar { width: 2px; }
+    .premium-popup::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    .premium-popup::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+    }
+    .premium-popup .popup-close {
+      position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(184,134,11,0.06);
+      border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 11px;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .premium-popup .popup-close:hover { border-color: rgba(184,134,11,0.15); color: var(--text-light); }
+    .premium-popup .popup-icon { font-size: 40px; display: block; text-align: center; margin-bottom: 4px; }
+    .premium-popup h2 {
+      font-size: 20px; font-weight: 700; font-family: 'Playfair Display', 'Georgia', serif;
+      color: var(--text-light); text-align: center; margin-bottom: 2px;
+    }
+    .premium-popup h2 span { color: var(--accent); font-style: italic; }
+    .premium-popup .popup-subtitle {
+      font-size: 12px; color: var(--text-dim); text-align: center;
+      line-height: 1.5; margin-bottom: 14px;
+    }
+    .premium-popup .popup-subtitle strong { color: var(--accent-bright); }
+    .premium-popup .popup-features {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px;
+    }
+    .premium-popup .popup-features .feature {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 8px; padding: 8px 6px; text-align: center;
+      font-size: 10px; color: var(--text-dim);
+    }
+    .premium-popup .popup-features .feature i {
+      color: var(--accent-bright); display: block; font-size: 14px; margin-bottom: 2px;
+    }
+    .offers-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+    }
+    .offer-card {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
+      border-radius: 10px; padding: 12px 8px; text-align: center;
+      transition: var(--transition);
+    }
+    .offer-card:hover { border-color: rgba(184,134,11,0.15); }
+    .offer-card.popular {
+      border-color: var(--accent); background: rgba(184,134,11,0.04);
+      position: relative;
+    }
+    .offer-card.popular::before {
+      content: '⭐ Meilleur choix'; position: absolute; top: -8px; left: 50%;
+      transform: translateX(-50%); font-size: 8px; background: var(--accent);
+      color: #0A0A0A; padding: 1px 10px; border-radius: 10px; font-weight: 700;
+      white-space: nowrap;
+    }
+    .offer-card .offer-name { font-size: 10px; font-weight: 600; color: var(--text-light); }
+    .offer-card .offer-price {
+      font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif;
+      color: var(--accent); margin: 1px 0;
+    }
+    .offer-card .offer-price small { font-size: 10px; font-weight: 400; color: var(--text-muted); }
+    .offer-card .offer-save {
+      font-size: 8px; color: var(--success); background: rgba(45,125,90,0.08);
+      padding: 1px 6px; border-radius: 8px; display: inline-block;
+    }
+    .offer-card .offer-desc { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+    .premium-popup .popup-buttons { display: flex; flex-direction: column; gap: 6px; }
+    .premium-popup .popup-buttons .btn-subscribe {
+      padding: 10px; border: none; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: var(--bg-dark); font-weight: 700; font-size: 14px; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .premium-popup .popup-buttons .btn-subscribe:hover {
+      background: #9A7209; box-shadow: 0 0 20px rgba(184,134,11,0.15);
+    }
+    .premium-popup .popup-buttons .btn-subscribe:active { transform: scale(0.96); }
+    .premium-popup .popup-buttons .btn-later {
+      padding: 8px; background: transparent; border: none;
+      color: var(--text-muted); font-size: 11px; cursor: pointer;
+      transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 400;
+    }
+    .premium-popup .popup-buttons .btn-later:hover { color: var(--text-dim); }
 
-  .premium-popup .popup-features{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
-  .premium-popup .popup-features .feature{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);
-    border-radius:8px;padding:8px 6px;text-align:center;font-size:10px;color:var(--text-dim)}
-  .premium-popup .popup-features .feature i{color:var(--accent-bright);display:block;font-size:14px;margin-bottom:2px}
-
-  .offers-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-  .offer-card{background:rgba(255,255,255,.02);border:1px solid var(--card-border);border-radius:10px;
-    padding:12px 8px;text-align:center;transition:var(--transition);cursor:pointer}
-  .offer-card:hover{border-color:rgba(184,134,11,.15)}
-  .offer-card.popular{border-color:var(--accent);background:rgba(184,134,11,.04);position:relative}
-  .offer-card.popular::before{content:'⭐ Meilleur choix';position:absolute;top:-8px;left:50%;transform:translateX(-50%);
-    font-size:8px;background:var(--accent);color:#0A0A0A;padding:1px 10px;border-radius:10px;font-weight:700;white-space:nowrap}
-  .offer-card .offer-name{font-size:10px;font-weight:600;color:var(--text-light)}
-  .offer-card .offer-price{font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:var(--accent);margin:1px 0}
-  .offer-card .offer-price small{font-size:10px;font-weight:400;color:var(--text-muted)}
-  .offer-card .offer-save{font-size:8px;color:var(--success);background:rgba(45,125,90,.08);padding:1px 6px;border-radius:8px;display:inline-block}
-  .offer-card .offer-desc{font-size:9px;color:var(--text-muted);margin-top:2px}
-
-  .premium-popup .popup-buttons{display:flex;flex-direction:column;gap:6px}
-  .premium-popup .popup-buttons .btn-subscribe{padding:10px;border:none;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent-bright),var(--accent));
-    color:var(--bg-dark);font-weight:700;font-size:14px;cursor:pointer;
-    text-decoration:none;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;
-    font-family:'Inter',sans-serif}
-  .premium-popup .popup-buttons .btn-subscribe:hover{background:#9A7209;box-shadow:0 0 20px rgba(184,134,11,.15)}
-  .premium-popup .popup-buttons .btn-subscribe:active{transform:scale(.96)}
-  .premium-popup .popup-buttons .btn-later{padding:8px;background:transparent;border:none;
-    color:var(--text-muted);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;font-weight:400}
-  .premium-popup .popup-buttons .btn-later:hover{color:var(--text-dim)}
-
-  /* RESPONSIVE */
-  @media(max-width:480px){
-    .container{padding:10px 10px 24px}
-    .subject-hero h2{font-size:18px}
-    .subject-icon-wrap{width:56px;height:56px;font-size:22px}
-    .hero-stats{grid-template-columns:repeat(2,2fr);gap:6px}
-    .hero-stat-value{font-size:14px}
-    .cc-title{font-size:13px}
-    .cc-num{width:30px;height:30px;font-size:12px}
-    .premium-popup{padding:20px 16px;max-width:340px}
-    .premium-popup h2{font-size:17px}
-    .offers-grid{gap:6px}
-    .offer-card{padding:10px 6px}
-    .offer-card .offer-price{font-size:16px}
-    .premium-popup .popup-features{grid-template-columns:1fr 1fr}
-  }
-  @media(max-width:360px){
-    .hero-stats{grid-template-columns:repeat(2,1fr);gap:4px}
-    .cc-title{font-size:12px}
-    .offers-grid{grid-template-columns:1fr}
-    .premium-popup .popup-features{grid-template-columns:1fr}
-  }
-</style>
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .container { padding: 10px 10px 24px; }
+      .subject-hero h2 { font-size: 18px; }
+      .subject-icon-wrap { width: 56px; height: 56px; font-size: 22px; }
+      .hero-stats { grid-template-columns: repeat(2, 2fr); gap: 6px; }
+      .hero-stat-value { font-size: 14px; }
+      .cc-title { font-size: 13px; }
+      .cc-num { width: 30px; height: 30px; font-size: 12px; }
+      .premium-popup { padding: 20px 16px; max-width: 340px; }
+      .premium-popup h2 { font-size: 17px; }
+      .offers-grid { gap: 6px; }
+      .offer-card { padding: 10px 6px; }
+      .offer-card .offer-price { font-size: 16px; }
+      .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 360px) {
+      .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+      .cc-title { font-size: 12px; }
+      .offers-grid { grid-template-columns: 1fr; }
+      .premium-popup .popup-features { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.25); border-radius: 10px; }
+  </style>
 </head>
 <body>
+
   <div class="gradient-bg"></div>
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
-  <!-- HEADER -->
+  <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header-left">
       <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
-      <h1 class="page-title" id="pageTitle"><i class="fas fa-book"></i> <span></span></h1>
+      <h1 class="page-title" id="pageTitle"><i class="fas fa-book"></i> <span>Chargement...</span></h1>
     </div>
     <div class="header-right">
-      <button id="refreshBtn" aria-label="Rafraîchir" style="background:transparent;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:6px;">
-        <i class="fas fa-sync-alt"></i>
-      </button>
+      <button id="refreshBtn" aria-label="Rafraîchir"><i class="fas fa-sync-alt"></i></button>
     </div>
   </header>
 
+  <!-- ===== CONTAINER ===== -->
   <main class="container">
-    <!-- SUBJECT HERO -->
+
+    <!-- ===== SUBJECT HERO ===== -->
     <div class="subject-hero" id="subjectHero">
       <div class="subject-icon-wrap" id="subjectIconWrap"><i class="fas fa-book"></i></div>
       <h2 id="subjectTitle">Chargement...</h2>
       <p class="subject-subtitle" id="subjectSubtitle"></p>
-      
-      <!-- STATS -->
+
       <div class="hero-stats">
         <div class="hero-stat">
           <span class="hero-stat-value" id="heroLevel">🌱 Débutant</span>
@@ -262,18 +425,20 @@
         </div>
         <div class="hero-stat">
           <span class="hero-stat-value" id="heroTimer">--j</span>
-          <span class="hero-stat-label">Avant BAC</span>
+                <span class="hero-stat-label">Avant BAC</span>
         </div>
       </div>
     </div>
 
-    <!-- CHAPTER LIST -->
+    <!-- ===== CHAPTER LIST ===== -->
     <div class="section-label">📚 Chapitres</div>
     <div class="chapter-list" id="chapterList">
       <div class="skeleton skeleton-card"></div>
       <div class="skeleton skeleton-card"></div>
       <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
+
   </main>
 
   <!-- ===== POPUP PREMIUM ===== -->
@@ -283,14 +448,14 @@
       <span class="popup-icon">🔓</span>
       <h2>Accès <span>Premium</span></h2>
       <p class="popup-subtitle">Débloque <strong>tous</strong> les chapitres, exercices et corrections !</p>
-      
+
       <div class="popup-features">
-  <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
-  <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
-  <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
-  <div class="feature"><i class="fas fa-chart-line"></i> Suivi de progression</div>
-</div>
-      
+        <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
+        <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
+        <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
+        <div class="feature"><i class="fas fa-chart-line"></i> Suivi de progression</div>
+      </div>
+
       <div class="offers-grid">
         <div class="offer-card">
           <div class="offer-name">📱 Mensuel</div>
@@ -304,7 +469,7 @@
           <div class="offer-desc">2 mois offerts</div>
         </div>
       </div>
-      
+
       <div class="popup-buttons">
         <a href="abonnement.html" class="btn-subscribe"><i class="fas fa-crown"></i> S'abonner maintenant</a>
         <button class="btn-later" id="popupLaterBtn">✕ Plus tard</button>
@@ -312,411 +477,350 @@
     </div>
   </div>
 
-  <!-- TOAST -->
+  <!-- ===== TOAST ===== -->
   <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
-  <!-- ========== SCRIPTS ========== -->
+  <!-- ============================================================ -->
+  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
+  <!-- ============================================================ -->
   <script type="importmap">
-  { "imports": { "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js", "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js", "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js" } }
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    }
+  }
   </script>
 
   <script type="module">
-// ================================================================
-// matiere.html - Page des chapitres (renforcée)
-// ================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  onSnapshot,
-  collection,
-  query,
-  where,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { protectPage, getAuthInstance, getFirestoreInstance, getFirebaseErrorMessage } from './auth.js';
+  // ================================================================
+  // MATIERE - AUTH INTÉGRÉE (SANS BOUCLE)
+  // ================================================================
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    onSnapshot,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-// ================================================================
-// FIREBASE CONFIG
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
+  // ================================================================
+  // CONFIG
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+  };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuthInstance();
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// ================================================================
-// CONFIG PAR DÉFAUT
-// ================================================================
-const DEFAULT_SUBJECTS = {
-  mathematiques: {
-    name: 'Mathématiques',
-    icon: 'fa-square-root-variable',
-    color: '#E0B84A',
-    chapters: [
-      { title: 'Nombres complexes', isFree: true },
-      { title: 'Calcul de probabilités - Variable aléatoire', isFree: false },
-      { title: 'Fonction logarithme', isFree: false },
-      { title: 'Fonction exponentielle', isFree: false },
-      { title: 'Étude des fonctions numériques', isFree: false },
-      { title: 'Calcul intégral', isFree: false },
-      { title: 'Suites numériques', isFree: false },
-      { title: 'Équations différentielles', isFree: false }
-    ]
-  },
-  physique: {
-    name: 'Physique',
-    icon: 'fa-bolt',
-    color: '#4AAFE0',
-    chapters: [
-      { title: 'Cinématique', isFree: true },
-      { title: 'Mouvement du centre d\'inertie', isFree: false },
-      { title: 'Mouvement dans le champ de pesanteur', isFree: false },
-      { title: 'Mouvement de particules chargées', isFree: false },
-      { title: 'Oscillateurs mécaniques de translation', isFree: false },
-      { title: 'Généralités sur les vibrations', isFree: false },
-      { title: 'Propagation d\'un phénomène vibratoire', isFree: false },
-      { title: 'Superposition de phénomènes vibratoires', isFree: false },
-      { title: 'Interférences d\'ondes lumineuses', isFree: false },
-      { title: 'Champ magnétique', isFree: false },
-      { title: 'Force de Lorentz', isFree: false },
-      { title: 'Force de Laplace', isFree: false },
-      { title: 'Induction électromagnétique', isFree: false },
-      { title: 'Auto-Induction', isFree: false },
-      { title: 'Circuit oscillant LC', isFree: false },
-      { title: 'Circuit en régime sinusoïdal forcé', isFree: false },
-      { title: 'Radioactivité', isFree: false }
-    ]
-  },
-  chimie: {
-    name: 'Chimie',
-    icon: 'fa-flask',
-    color: '#E07A4A',
-    chapters: [
-      { title: 'Solutions aqueuses', isFree: true },
-      { title: 'Solutions aqueuses d\'acide chlorhydrique et d\'hydroxyde de sodium', isFree: false },
-      { title: 'Couples acide / base', isFree: false },
-      { title: 'Réaction acide - base', isFree: false },
-      { title: 'Solution tampon', isFree: false },
-      { title: 'Alcools', isFree: false },
-      { title: 'Acides carboxyliques', isFree: false },
-      { title: 'Amines', isFree: false },
-      { title: 'Acides α-aminés', isFree: false }
-    ]
-  },
-  svt: {
-    name: 'SVT',
-    icon: 'fa-dna',
-    color: '#7AE04A',
-    chapters: [
-      { title: 'Génétique', isFree: true },
-      { title: 'Immunologie', isFree: false },
-      { title: 'Écologie', isFree: false },
-      { title: 'Évolution', isFree: false }
-    ]
+  // ✅ Persistance
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+    console.log('🔐 Persistance locale activée');
+  } catch (e) { console.warn('⚠️ Persistance:', e); }
+
+  // ================================================================
+  // SESSION CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        emailVerified: user.emailVerified,
+        lastLogin: new Date().toISOString()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    } catch (e) {}
   }
-};
 
-// ================================================================
-// URL PARAMS
-// ================================================================
-const params = new URLSearchParams(window.location.search);
-const subjectKey = params.get('subject');
-
-// ================================================================
-// STATE
-// ================================================================
-let userData = null;
-let isPremium = false;
-let subjectConfig = null;
-let chapters = [];
-let chapterProgress = {};
-let unsubscribeSubject = null;
-let unsubscribeProgress = null;
-let isLoading = false;
-
-// ================================================================
-// DOM
-// ================================================================
-const skeletonList = document.querySelector('.chapter-list');
-const dynamicContent = document.getElementById('dynamicContent');
-const toast = document.getElementById('toast');
-const toastText = document.getElementById('toastText');
-
-// ================================================================
-// FONCTIONS
-// ================================================================
-
-function showToast(message, type = 'info') {
-  toastText.textContent = message;
-  toast.className = 'toast';
-  toast.classList.add('show');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-function computeExamCountdown() {
-  const now = new Date();
-  let target = new Date(now.getFullYear(), 5, 17);
-  if (target < now) {
-    target = new Date(now.getFullYear() + 1, 5, 17);
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem('arvexa_user_data');
+      localStorage.removeItem('arvexa_progress_data');
+    } catch (e) {}
   }
-  const diffMs = target - now;
-  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-}
 
-function getLevel(completed, total) {
-  if (!total || total === 0) return '🌱 Débutant';
-  const ratio = completed / total;
-  if (ratio === 0) return '🌱 Débutant';
-  if (ratio < 0.25) return '📖 Apprenti';
-  if (ratio < 0.50) return '⚡ En progression';
-  if (ratio < 0.75) return '🔥 Enflammé';
-  if (ratio < 1) return '⭐ Expert';
-  return '👑 Maître ARVEXA';
-}
+  function getCachedSession() {
+    try {
+      let data = sessionStorage.getItem(SESSION_KEY);
+      if (!data) data = localStorage.getItem(SESSION_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch (e) { return null; }
+  }
 
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+  // ================================================================
+  // URL PARAMS
+  // ================================================================
+  const params = new URLSearchParams(window.location.search);
+  const subjectKey = params.get('subject') || 'mathematiques';
 
-// ================================================================
-// POPUP PREMIUM
-// ================================================================
+  // ================================================================
+  // CONFIG MATIÈRES
+  // ================================================================
+  const SUBJECTS_CONFIG = {
+    mathematiques: { name: 'Mathématiques', icon: 'fa-square-root-variable', color: '#E0B84A' },
+    physique: { name: 'Physique', icon: 'fa-bolt', color: '#4AAFE0' },
+    chimie: { name: 'Chimie', icon: 'fa-flask', color: '#E07A4A' },
+    svt: { name: 'SVT', icon: 'fa-dna', color: '#7AE04A' }
+  };
 
-function showPremiumPopup() {
-  const popup = document.getElementById('premiumPopup');
-  if (popup) {
-    popup.classList.remove('hide');
-    popup.classList.add('show');
+  const DEFAULT_CHAPTERS = {
+    mathematiques: [
+      'Nombres complexes',
+      'Probabilités - Variable aléatoire',
+      'Fonction logarithme',
+      'Fonction exponentielle',
+      'Étude des fonctions numériques',
+      'Calcul intégral',
+      'Suites numériques',
+      'Équations différentielles'
+    ],
+    physique: [
+      'Cinématique',
+      'Mouvement du centre d\'inertie',
+      'Champ de pesanteur',
+      'Particules chargées',
+      'Oscillateurs mécaniques',
+      'Vibrations',
+      'Propagation des ondes',
+      'Superposition',
+      'Interférences lumineuses',
+      'Champ magnétique',
+      'Force de Lorentz',
+      'Force de Laplace',
+      'Induction électromagnétique',
+      'Auto-Induction',
+      'Circuit LC',
+      'Régime sinusoïdal',
+      'Radioactivité'
+    ],
+    chimie: [
+      'Solutions aqueuses',
+      'Acide chlorhydrique / Soude',
+      'Couples acide/base',
+      'Réaction acide-base',
+      'Solution tampon',
+      'Alcools',
+      'Acides carboxyliques',
+      'Amines',
+      'Acides α-aminés'
+    ],
+    svt: ['Génétique', 'Immunologie', 'Écologie', 'Évolution']
+  };
+
+  // ================================================================
+  // DOM
+  // ================================================================
+  const chapterList = document.getElementById('chapterList');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'info') {
+    toastText.textContent = message;
+    toast.className = 'toast ' + type;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ================================================================
+  // NAVIGATION
+  // ================================================================
+  function navigateToChapter(chapterIndex) {
+    window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
+  }
+
+  function showPremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('hide');
+    document.getElementById('premiumPopup').classList.add('show');
     document.body.style.overflow = 'hidden';
   }
-}
 
-function hidePremiumPopup() {
-  const popup = document.getElementById('premiumPopup');
-  if (popup) {
-    popup.classList.remove('show');
-    popup.classList.add('hide');
+  function hidePremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('show');
+    document.getElementById('premiumPopup').classList.add('hide');
     document.body.style.overflow = '';
   }
-}
 
-// ================================================================
-// NAVIGATION
-// ================================================================
+  // Exposer pour les onclick
+  window.navigateToChapter = navigateToChapter;
+  window.showPremiumPopup = showPremiumPopup;
+  window.hidePremiumPopup = hidePremiumPopup;
 
-function navigateToChapter(chapterIndex) {
-  const chapter = chapters[chapterIndex];
-  if (!chapter) return;
-  
-  if (!chapter.isFree && !isPremium) {
-    showPremiumPopup();
-    return;
+  // ================================================================
+  // POPUP ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('premiumPopup').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hidePremiumPopup();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hidePremiumPopup();
+  });
+
+  // ================================================================
+  // CALCULS
+  // ================================================================
+  function computeExamCountdown() {
+    const now = new Date();
+    let target = new Date(now.getFullYear(), 5, 17);
+    if (target < now) target = new Date(now.getFullYear() + 1, 5, 17);
+    const diffMs = target - now;
+    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
   }
-  
-  window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
-}
 
-// ================================================================
-// RENDER
-// ================================================================
+  function getLevel(completed, total) {
+    if (!total || total === 0) return '🌱 Débutant';
+    const ratio = completed / total;
+    if (ratio === 0) return '🌱 Débutant';
+    if (ratio < 0.25) return '📖 Apprenti';
+    if (ratio < 0.50) return '⚡ En progression';
+    if (ratio < 0.75) return '🔥 Enflammé';
+    if (ratio < 1) return '⭐ Expert';
+    return '👑 Maître ARVEXA';
+  }
 
-function renderPage() {
-  if (!subjectConfig || !chapters.length) return;
-  
-  // Page title
-  document.querySelector('#pageTitle span').textContent = subjectConfig.name;
-  document.getElementById('pageTitle').querySelector('i').className = 'fas ' + subjectConfig.icon;
-  document.title = 'ARVEXA School - ' + subjectConfig.name;
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
 
-  // Hero
-  const iconWrap = document.getElementById('subjectIconWrap');
-  iconWrap.innerHTML = '<i class="fas ' + subjectConfig.icon + '"></i>';
-  iconWrap.style.background = subjectConfig.color + '12';
-  iconWrap.style.color = subjectConfig.color;
-  document.getElementById('subjectTitle').textContent = subjectConfig.name;
-  
-  const total = chapters.length;
-  const completed = Object.values(chapterProgress).filter(v => v >= 100).length;
-  const unlocked = isPremium ? total : chapters.filter(c => c.isFree).length;
-  
-  document.getElementById('subjectSubtitle').textContent = 
-    `${total} chapitres — ${completed} terminés — ${unlocked} disponibles`;
+  // ================================================================
+  // RENDU
+  // ================================================================
 
-  // Stats
-  updateHeroStats(completed, total, unlocked);
-  
-  // Chapitres
-  renderChapters();
-}
+  let subjectConfig = null;
+  let chapters = [];
+  let chapterProgress = {};
+  let isPremium = false;
+  let userData = null;
 
-function updateHeroStats(completed, total, unlocked) {
-  const ratio = total > 0 ? completed / total : 0;
-  
-  document.getElementById('heroLevel').textContent = getLevel(completed, total);
-  document.getElementById('heroChapters').textContent = `${completed}/${total}`;
-  document.getElementById('heroProgress').textContent = Math.round(ratio * 100) + '%';
-  
-  const days = computeExamCountdown();
-  document.getElementById('heroTimer').textContent = days > 0 ? `${days}j` : '🎯 BAC!';
-}
+  function renderPage() {
+    if (!subjectConfig || !chapters.length) return;
 
-function renderChapters() {
-  const list = document.getElementById('chapterList');
-  if (!list) return;
+    // Titre
+    document.querySelector('#pageTitle span').textContent = subjectConfig.name;
+    document.title = 'ARVEXA - ' + subjectConfig.name;
 
-  let html = '';
-  let completedCount = 0;
-  let progressCount = 0;
+    // Hero
+    const iconWrap = document.getElementById('subjectIconWrap');
+    iconWrap.innerHTML = '<i class="fas ' + subjectConfig.icon + '"></i>';
+    iconWrap.style.background = subjectConfig.color + '12';
+    iconWrap.style.color = subjectConfig.color;
+    document.getElementById('subjectTitle').textContent = subjectConfig.name;
 
-  chapters.forEach((chap, index) => {
-    const isFree = chap.isFree === true;
-    const isLocked = !isPremium && !isFree;
-    const progress = chapterProgress[index] || 0;
-    const isCompleted = progress >= 100;
-    const isInProgress = progress > 0 && progress < 100;
-    
-    if (isCompleted) completedCount++;
-    if (isInProgress) progressCount++;
+    const total = chapters.length;
+    const completed = Object.values(chapterProgress).filter(v => v >= 100).length;
+    const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    // Déterminer la classe du numéro
-    let numClass = '';
-    if (isCompleted) numClass = 'completed';
-    else if (isInProgress) numClass = 'in-progress';
+    document.getElementById('subjectSubtitle').textContent =
+      `${total} chapitres — ${completed} terminés — ${isPremium ? '✅ Premium' : '🔓 Gratuit + Premium'}`;
 
-    // Badge de statut
-    let badge = '';
-    if (isCompleted) badge = '<span class="badge-completed">✅ Terminé</span>';
-    else if (isInProgress) badge = `<span class="badge-progress">⏳ ${Math.round(progress)}%</span>`;
-    else if (isLocked) badge = '<span class="badge-locked">🔒 Premium</span>';
-    else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
+    document.getElementById('heroLevel').textContent = getLevel(completed, total);
+    document.getElementById('heroChapters').textContent = `${completed}/${total}`;
+    document.getElementById('heroProgress').textContent = progress + '%';
 
-    // Barre de progression
-    const progressBar = isInProgress || isCompleted ? `
-      <div class="cc-progress">
-        <div class="cc-progress-bar">
-          <div class="fill" style="width:${Math.min(progress, 100)}%;background:${isCompleted ? 'var(--success)' : 'var(--warning)'};"></div>
-        </div>
-        <span class="cc-progress-text">${Math.round(progress)}%</span>
-      </div>
-    ` : '';
+    const days = computeExamCountdown();
+    document.getElementById('heroTimer').textContent = days > 0 ? days + 'j' : '🎯 BAC!';
 
-    html += `
-      <div class="chapter-card ${isLocked ? 'locked' : ''}" 
-           onclick="${isLocked ? 'showPremiumPopup()' : `navigateToChapter(${index})`}">
-        <div class="cc-top">
-          <div class="cc-left">
-            <div class="cc-num ${numClass}">${index + 1}</div>
-            <div class="cc-info">
-              <div class="cc-title">
-                ${escapeHtml(chap.title)}
-                ${badge}
-              </div>
-              <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
-              ${progressBar}
+    // Liste des chapitres
+    renderChapters();
+  }
+
+  function renderChapters() {
+    const list = document.getElementById('chapterList');
+    if (!list) return;
+
+    let html = '';
+
+    chapters.forEach((chap, index) => {
+      const isFree = index === 0 || chap.isFree === true;
+      const isLocked = !isPremium && !isFree;
+      const prog = chapterProgress[index] || 0;
+      const isCompleted = prog >= 100;
+      const isInProgress = prog > 0 && prog < 100;
+
+      let numClass = '';
+      if (isCompleted) numClass = 'completed';
+      else if (isInProgress) numClass = 'in-progress';
+
+      let badge = '';
+      if (isCompleted) badge = '<span class="badge-completed">✅ Terminé</span>';
+      else if (isInProgress) badge = `<span class="badge-progress">⏳ ${Math.round(prog)}%</span>`;
+      else if (isLocked) badge = '<span class="badge-locked">🔒 Premium</span>';
+      else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
+
+      let progressBar = '';
+      if (isInProgress || isCompleted) {
+        const color = isCompleted ? 'var(--success)' : 'var(--warning)';
+        progressBar = `
+          <div class="cc-progress">
+            <div class="cc-progress-bar">
+              <div class="fill" style="width:${Math.min(prog, 100)}%;background:${color};"></div>
             </div>
+            <span class="cc-progress-text">${Math.round(prog)}%</span>
           </div>
-          <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
+        `;
+      }
+
+      const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
+
+      html += `
+        <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
+          <div class="cc-top">
+            <div class="cc-left">
+              <div class="cc-num ${numClass}">${index + 1}</div>
+              <div class="cc-info">
+                <div class="cc-title">
+                  ${escapeHtml(chap.title)}
+                  ${badge}
+                </div>
+                <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
+                ${progressBar}
+              </div>
+            </div>
+            <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
         </div>
-      </div>
-    `;
-  });
+      `;
+    });
 
-  list.innerHTML = html;
-}
-
-// ================================================================
-// CHARGER LA PROGRESSION
-// ================================================================
-
-function loadProgress(user) {
-  if (unsubscribeProgress) {
-    unsubscribeProgress();
-    unsubscribeProgress = null;
+    list.innerHTML = html;
   }
 
-  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+  // ================================================================
+  // CHARGEMENT DES DONNÉES (Cache + Firestore)
+  // ================================================================
 
-  unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      if (data.subjects && data.subjects[subjectKey]) {
-        const subjectProgress = data.subjects[subjectKey];
-        if (subjectProgress.chapters && subjectProgress.chapters.progress) {
-          chapterProgress = subjectProgress.chapters.progress || {};
-        }
-      }
-      // Mettre à jour l'affichage
-      if (subjectConfig && chapters.length) {
-        renderPage();
-      }
-    }
-  }, (error) => {
-    console.warn('⚠️ Erreur chargement progression:', error);
-  });
-}
-
-// ================================================================
-// CHARGER LES DONNÉES DE LA MATIÈRE
-// ================================================================
-
-function loadSubjectData(user) {
-  if (unsubscribeSubject) {
-    unsubscribeSubject();
-    unsubscribeSubject = null;
-  }
-
-  const subjectRef = doc(db, 'subjects', subjectKey);
-
-  unsubscribeSubject = onSnapshot(subjectRef, (snap) => {
-    if (snap.exists()) {
-      const data = snap.data();
-      subjectConfig = {
-        name: data.name || DEFAULT_SUBJECTS[subjectKey]?.name || subjectKey,
-        icon: data.icon || DEFAULT_SUBJECTS[subjectKey]?.icon || 'fa-book',
-        color: data.color || DEFAULT_SUBJECTS[subjectKey]?.color || '#B8860B'
-      };
-      chapters = data.chapters || DEFAULT_SUBJECTS[subjectKey]?.chapters || [];
-      
-      // Mettre en cache
-      try {
-        localStorage.setItem('arvexa_subject_' + subjectKey, JSON.stringify({ subjectConfig, chapters }));
-      } catch (e) { /* ignore */ }
-      
-      renderPage();
-      // Charger la progression après avoir les chapitres
-      if (user) loadProgress(user);
-      
-    } else {
-      // Fallback
-      const defaultData = DEFAULT_SUBJECTS[subjectKey];
-      if (defaultData) {
-        subjectConfig = {
-          name: defaultData.name,
-          icon: defaultData.icon,
-          color: defaultData.color
-        };
-        chapters = defaultData.chapters;
-        renderPage();
-        if (user) loadProgress(user);
-      } else {
-        window.location.replace('index.html');
-      }
-    }
-  }, (error) => {
-    console.warn('⚠️ Erreur Firestore:', error);
-    // Essayer le cache
+  function loadFromCache() {
     try {
       const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
       if (cached) {
@@ -724,116 +828,160 @@ function loadSubjectData(user) {
         subjectConfig = data.subjectConfig;
         chapters = data.chapters;
         renderPage();
-        if (user) loadProgress(user);
-        showToast('📶 Données chargées depuis le cache', 'info');
-        return;
+        return true;
       }
-    } catch (e) { /* ignore */ }
-    
-    const defaultData = DEFAULT_SUBJECTS[subjectKey];
-    if (defaultData) {
-      subjectConfig = {
-        name: defaultData.name,
-        icon: defaultData.icon,
-        color: defaultData.color
-      };
-      chapters = defaultData.chapters;
-      renderPage();
-      if (user) loadProgress(user);
-    } else {
-      window.location.replace('index.html');
-    }
-  });
-}
+    } catch (e) {}
+    return false;
+  }
 
-// ================================================================
-// RAFRAÎCHISSEMENT
-// ================================================================
+  let unsubscribeSubject = null;
+  let unsubscribeProgress = null;
 
-async function refreshData() {
-  if (isLoading) return;
-  isLoading = true;
-  
-  const refreshBtn = document.getElementById('refreshBtn');
-  if (refreshBtn) refreshBtn.querySelector('i').classList.add('fa-spin');
-  
-  try {
-    const user = auth.currentUser;
-    if (!user) return;
-    
-    // Recharger les données
+  function loadSubjectData(user) {
     if (unsubscribeSubject) {
       unsubscribeSubject();
       unsubscribeSubject = null;
     }
+
+    const subjectRef = doc(db, 'subjects', subjectKey);
+
+    unsubscribeSubject = onSnapshot(subjectRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        subjectConfig = {
+          name: data.name || SUBJECTS_CONFIG[subjectKey]?.name || subjectKey,
+          icon: data.icon || SUBJECTS_CONFIG[subjectKey]?.icon || 'fa-book',
+          color: data.color || SUBJECTS_CONFIG[subjectKey]?.color || '#B8860B'
+        };
+        chapters = data.chapters || DEFAULT_CHAPTERS[subjectKey] || [];
+
+        // Mettre en cache
+        try {
+          localStorage.setItem('arvexa_subject_' + subjectKey, JSON.stringify({ subjectConfig, chapters }));
+        } catch (e) {}
+
+        renderPage();
+        if (user) loadProgress(user);
+
+      } else {
+        // Fallback
+        const defaultData = SUBJECTS_CONFIG[subjectKey];
+        if (defaultData) {
+          subjectConfig = {
+            name: defaultData.name,
+            icon: defaultData.icon,
+            color: defaultData.color
+          };
+          chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+          renderPage();
+          if (user) loadProgress(user);
+        } else {
+          window.location.replace('index.html');
+        }
+      }
+    }, (error) => {
+      console.warn('⚠️ Erreur Firestore:', error);
+      if (!loadFromCache()) {
+        const defaultData = SUBJECTS_CONFIG[subjectKey];
+        if (defaultData) {
+          subjectConfig = {
+            name: defaultData.name,
+            icon: defaultData.icon,
+            color: defaultData.color
+          };
+          chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+          renderPage();
+          if (user) loadProgress(user);
+        } else {
+          window.location.replace('index.html');
+        }
+      }
+    });
+  }
+
+  function loadProgress(user) {
     if (unsubscribeProgress) {
       unsubscribeProgress();
       unsubscribeProgress = null;
     }
-    
-    loadSubjectData(user);
-    showToast('✅ Données actualisées', 'success');
-  } catch (error) {
-    showToast('❌ Erreur lors du rafraîchissement', 'error');
+
+    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+
+    unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.subjects && data.subjects[subjectKey]) {
+          const subjectProgress = data.subjects[subjectKey];
+          if (subjectProgress.chapters && subjectProgress.chapters.progress) {
+            chapterProgress = subjectProgress.chapters.progress || {};
+          }
+        }
+        if (subjectConfig && chapters.length) {
+          renderPage();
+        }
+      }
+    }, (error) => {
+      console.warn('⚠️ Erreur progression:', error);
+    });
   }
-  
-  isLoading = false;
-  if (refreshBtn) refreshBtn.querySelector('i').classList.remove('fa-spin');
-}
 
-// ================================================================
-// INITIALISATION
-// ================================================================
+  // ================================================================
+  // RAFRAÎCHISSEMENT
+  // ================================================================
 
-// Exposer les fonctions globalement pour les onclick
-window.navigateToChapter = navigateToChapter;
-window.showPremiumPopup = showPremiumPopup;
-window.hidePremiumPopup = hidePremiumPopup;
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    showToast('🔄 Rafraîchissement...', 'info');
+    // Les listeners sont déjà en place
+  });
 
-// Gestionnaire d'événements pour le popup
-document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
-document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
-document.getElementById('premiumPopup').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) hidePremiumPopup();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') hidePremiumPopup();
-});
+  // ================================================================
+  // ⭐ VÉRIFICATION D'AUTH - UNE SEULE FOIS (SANS BOUCLE)
+  // ================================================================
+  let authChecked = false;
+  let isRedirecting = false;
 
-// Rafraîchissement
-document.getElementById('refreshBtn').addEventListener('click', refreshData);
+  onAuthStateChanged(auth, (user) => {
+    if (authChecked) return;
+    authChecked = true;
 
-// Gestion réseau
-window.addEventListener('online', () => {
-  showToast('📶 Connexion rétablie', 'success');
-  refreshData();
-});
-window.addEventListener('offline', () => {
-  showToast('📶 Connexion perdue', 'error');
-});
+    if (user) {
+      // ✅ Connecté
+      saveSession(user);
+      console.log('📚 Matière - Utilisateur:', user.uid);
 
-// ================================================================
-// PROTECTION + INIT
-// ================================================================
+      // Charger les données utilisateur
+      getDoc(doc(db, 'users', user.uid)).then((docSnap) => {
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+        }
+        loadSubjectData(user);
+      }).catch(() => {
+        loadSubjectData(user);
+      });
 
-protectPage(async (user) => {
-  console.log('[Matière] Connecté:', user.uid);
-  
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (userDoc.exists()) {
-      userData = userDoc.data();
-      isPremium = userData.isUnlocked === true || userData.hasDeposited === true || userData.premium === true;
+    } else {
+      // ❌ Non connecté - REDIRECTION UNIQUE
+      if (isRedirecting) return;
+      isRedirecting = true;
+      clearSession();
+      console.log('🔒 Non connecté, redirection vers login');
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+      window.location.href = 'login.html';
     }
-  } catch(e) {
-    console.log('[Matière] Erreur chargement user:', e);
-  }
-  
-  // Charger les données de la matière
-  loadSubjectData(user);
-});
+  });
 
-console.log('📚 ARVEXA - Page matière (renforcée)');
+  // ================================================================
+  // RÉSEAU : GESTION HORS-LIGNE
+  // ================================================================
+  window.addEventListener('online', () => {
+    showToast('📶 Connexion rétablie', 'success');
+  });
+  window.addEventListener('offline', () => {
+    showToast('📶 Connexion perdue', 'error');
+  });
+
+  console.log('📚 ARVEXA - Matière (auth intégrée, sans boucle)');
   </script>
 </body>
 </html>
