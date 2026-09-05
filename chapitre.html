@@ -95,7 +95,16 @@
     .chap-nav-btn:disabled { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
 
     /* ===== CONTAINER ===== */
-    .container { max-width: 640px; margin: 0 auto; padding: 12px 12px 32px; width: 100%; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .container { 
+  max-width: 100%; 
+  margin: 0; 
+  padding: 12px 16px 32px; 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  flex: 1; 
+}
 
     /* ===== CHAPTER INFO ===== */
     .chapter-info {
@@ -214,9 +223,15 @@
       overflow: hidden; flex: 1;
     }
     .content-card-header {
-      padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.04);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-    }
+  padding: 12px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: rgba(255,255,255,0.02);
+}
     .cch-left { display: flex; align-items: center; gap: 12px; }
     .cch-title { font-size: 14px; font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
     .cch-status {
@@ -242,9 +257,14 @@
     .cch-actions .action-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
     .cch-actions .action-btn.active { color: var(--accent-bright); border-color: rgba(184,134,11,0.2); }
 
-    .content-card-body {
-      padding: 20px 18px; min-height: 300px; max-height: calc(100vh - 320px); overflow-y: auto;
-    }
+   .content-card-body {
+  padding: 24px 24px;
+  min-height: 400px;
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  font-size: 15px;
+  line-height: 1.8;
+}
     .content-card-body::-webkit-scrollbar { width: 3px; }
     .content-card-body::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.2); border-radius: 10px; }
 
@@ -374,6 +394,117 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.25); border-radius: 10px; }
+    @media (max-width: 480px) {
+  .content-card-body {
+    padding: 16px 16px !important;
+  }
+  
+  .content-card-body p {
+    font-size: 14px;
+  }
+  
+  .content-card-body h1 {
+    font-size: 20px;
+  }
+  
+  .content-card-body h2 {
+    font-size: 18px;
+  }
+  
+  .content-card-body h3 {
+    font-size: 16px;
+  }
+  
+  .content-card-body .formula {
+    font-size: 17px;
+    padding: 14px 16px;
+  }
+}
+/* Supprimer toutes les max-width */
+.container,
+.content-card,
+.cards-view,
+.content-view {
+  max-width: 100% !important;
+}
+
+/* Ajuster les marges pour le header */
+.header {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.chapter-info {
+  margin: 0 -8px;
+  border-radius: 0;
+  padding: 16px 20px;
+}
+    /* ===== CONTENU PLEIN ÉCRAN ===== */
+.content-card-body {
+  padding: 24px 28px !important;
+}
+
+.content-card-body p {
+  font-size: 15px;
+  line-height: 1.9;
+  margin-bottom: 16px;
+}
+
+.content-card-body h1 {
+  font-size: 24px;
+  margin-top: 28px;
+  margin-bottom: 14px;
+}
+
+.content-card-body h2 {
+  font-size: 20px;
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+.content-card-body h3 {
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.content-card-body h4 {
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.content-card-body .formula {
+  font-size: 20px;
+  padding: 18px 20px;
+}
+
+.content-card-body pre {
+  font-size: 14px;
+  padding: 16px 18px;
+}
+
+.content-card-body li {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+/* Supprimer la max-height pour que tout soit visible */
+.content-card-body {
+  max-height: none !important;
+  min-height: 500px;
+}
+
+/* Ajuster l'en-tête de la carte */
+.content-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-card-body {
+  flex: 1;
+}
   </style>
 </head>
 <body>
@@ -846,10 +977,7 @@
   // OUVERTURE D'UNE PARTIE
   // ================================================================
   window.openPart = function(index) {
-    if (index < 0 || index >= currentParts.length) return;
-    currentPartIndex = index;
-    const part = currentParts[index];
-    const filePath = `cours/${subjectKey}/${part.file}`;
+  window.location.href = `lecture.html?subject=${subjectKey}&chapter=${chapIdx}&tab=${currentTab}&part=${index}`;
 
     // Afficher la vue de contenu
     document.getElementById('cardsView').classList.add('hidden');

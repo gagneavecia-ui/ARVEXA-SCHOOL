@@ -195,7 +195,7 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
     }
-    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
     .hero-info .class-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
     .hero-info .exam-label { font-size: 19px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 0; }
     .hero-info .exam-label span { color: var(--accent-bright); }
@@ -211,6 +211,10 @@
     .hero-pill i { color: var(--accent); font-size: 12px; }
     .hero-pill.streak i { color: #D97A3A; }
     .hero-pill strong { color: var(--text-light); font-weight: 700; }
+    .hero-pill.warning { border-color: rgba(184,134,11,0.2); background: rgba(184,134,11,0.05); }
+    .hero-pill.warning i { color: #D97A3A; }
+    .hero-pill.danger { border-color: rgba(184,92,58,0.2); background: rgba(184,92,58,0.05); }
+    .hero-pill.danger i { color: var(--danger); }
 
     /* ===== PROCHAINE ÉTAPE ===== */
     .next-card {
@@ -240,12 +244,13 @@
     }
     .subject-chip .subject-name { font-size: 14px; font-weight: 600; }
     .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .subject-chip .subject-progress {
-      margin-left: auto; font-size: 12px; font-weight: 700; color: var(--accent-bright);
-    }
 
-    /* ===== OUTILS ===== */
-    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+ /* ===== OUTILS ===== */
+.tools-grid { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 10px; 
+}
     .tool-card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
       border-radius: 14px; padding: 16px 8px; text-align: center; transition: var(--transition);
@@ -258,11 +263,6 @@
       background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 15px;
     }
     .tool-card .name { font-size: 12px; font-weight: 600; }
-
-    /* ===== CONSEIL ===== */
-    .tip-card { background: rgba(45,125,90,0.03); border-color: rgba(45,125,90,0.08); }
-    .tip-card .tip-icon { color: var(--success); }
-    .tip-card .tip-eyebrow { color: var(--success); }
 
     /* ===== ABONNEMENT ===== */
     .subscription-reminder { margin-top: 14px; }
@@ -291,7 +291,7 @@
     .sub-card .sub-btn:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(184,134,11,0.2); }
     .sub-card .sub-btn.renew { background: linear-gradient(135deg, #D97A3A, #B85C3A); color: #fff; }
 
-    /* ===== FOOTER ===== */
+       /* ===== FOOTER ===== */
     .footer {
       margin-top: 40px; padding: 24px 16px 16px;
       border-top: 1px solid rgba(184, 134, 11, 0.06);
@@ -344,8 +344,8 @@
       .hero-info .exam-label { font-size: 16px; }
     }
     @media (max-width: 480px) {
-      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-      .tool-card { padding: 12px 6px; min-height: 76px; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .tool-card { padding: 12px 6px; min-height: 76px; }  
       .tool-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
       .tool-card .name { font-size: 11px; }
       .subjects-grid { gap: 8px; }
@@ -360,9 +360,12 @@
       .sub-card .sub-btn { width: 100%; justify-content: center; }
       .footer-links { gap: 10px; }
       .footer-links a { font-size: 11px; }
+      .tip-card .tip-header { flex-direction: column; text-align: center; }
+      .tip-card .tip-actions { justify-content: center; }
     }
     @media (max-width: 360px) {
       .header .greeting { font-size: 11px; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -371,215 +374,238 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    /* Forcer 3 colonnes pour les outils sur tous les écrans */
+.tools-grid { 
+  grid-template-columns: repeat(3, 1fr) !important; 
+}
+
+@media (max-width: 480px) {
+  .tools-grid { 
+    grid-template-columns: repeat(3, 1fr) !important; 
+    gap: 6px; 
+  }
+  .tool-card { 
+    padding: 10px 4px; 
+    min-height: 70px; 
+  }
+  .tool-card .icon-badge { 
+    width: 28px; 
+    height: 28px; 
+    font-size: 12px; 
+  }
+  .tool-card .name { 
+    font-size: 10px; 
+  }
+}
   </style>
 </head>
 <body>
 
-<!-- ===== BACKGROUND ===== -->
-<div class="gradient-bg"></div>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
-<div class="glow glow-3"></div>
+  <!-- ===== BACKGROUND ===== -->
+  <div class="gradient-bg"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
 
-<!-- ===== OVERLAY ===== -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- ===== OVERLAY ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- ===== SIDEBAR ===== -->
-<aside class="sidebar" id="sidebar">
-  <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
-  <nav class="nav">
-    <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
-    <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
-    <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
-    <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
-    <div class="nav-divider"></div>
-    <div class="nav-bottom">
-      <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-    </div>
-  </nav>
-</aside>
-
-<!-- ===== MAIN ===== -->
-<div class="main-content">
-
-  <!-- ===== HEADER ===== -->
-  <header class="header">
-    <div class="header-left">
-      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="greeting">
-        <span id="greetingText">Bonjour</span>
-        <span id="userFirstName">Élève</span>
-        <span id="greetingEmoji">👋</span>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
+    <nav class="nav">
+      <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
+      <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+      <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
+      <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+      <div class="nav-divider"></div>
+      <div class="nav-bottom">
+        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
       </div>
-    </div>
-    <div class="header-actions">
-      <button id="notifBtn" aria-label="Notifications">
-        <i class="fas fa-bell"></i>
-        <span class="notif-dot" id="notifDot"></span>
-      </button>
-      <button id="profileBtn" aria-label="Profil">
-        <i class="fas fa-user"></i>
-      </button>
-      <button id="refreshBtn" aria-label="Rafraîchir" title="Rafraîchir les données">
-        <i class="fas fa-sync-alt"></i>
-      </button>
-    </div>
-  </header>
+    </nav>
+  </aside>
 
-  <!-- ===== CONTAINER ===== -->
-  <div class="container" id="dashboardContent">
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
 
-    <!-- ===== SKELETON LOADING ===== -->
-    <div id="skeletonLoading">
-      <div class="skeleton skeleton-card"></div>
-      <div style="height:12px;"></div>
-      <div class="skeleton skeleton-card-sm"></div>
-      <div style="height:12px;"></div>
-      <div class="skeleton skeleton-card-xs"></div>
-    </div>
-
-    <!-- ===== CONTENU DYNAMIQUE ===== -->
-    <div id="dynamicContent" style="display:none;">
-
-      <!-- ===== HERO ===== -->
-      <div class="card hero-card">
-        <div class="hero-top">
-          <div class="hero-info">
-            <div class="class-label" id="userClassDisplay">Classe</div>
-            <div class="exam-label" id="userExamDisplay">🎓 Objectif</div>
-            <div id="premiumBadgeContainer"></div>
-          </div>
-        </div>
-        <div class="hero-bottom">
-          <span class="hero-pill"><i class="fas fa-hourglass-half"></i> <span id="examCountdown">-- jours avant l'examen</span></span>
-          <span class="hero-pill streak">
-            <i class="fas fa-fire"></i> 
-            <strong id="streakCount">0 💀</strong> jour(s) de suite
-          </span>
-          </span>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="greeting">
+          <span id="greetingText">Bonjour</span>
+          <span id="userFirstName">Élève</span>
+          <span id="greetingEmoji">👋</span>
         </div>
       </div>
-
-      <!-- ===== PROCHAINE ÉTAPE ===== -->
-      <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
-      <div id="nextStepCard"></div>
-
-      <!-- ===== MES MATIÈRES ===== -->
-      <div class="section-title">
-        <h3>📐 Mes matières</h3>
-        <span style="font-size:11px;color:var(--text-muted);" id="subjectsProgress">0% complet</span>
+      <div class="header-actions">
+        <button id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+        <button id="profileBtn" aria-label="Profil">
+          <i class="fas fa-user"></i>
+        </button>
+        <button id="refreshBtn" aria-label="Rafraîchir" title="Rafraîchir les données">
+          <i class="fas fa-sync-alt"></i>
+        </button>
       </div>
-      <div class="subjects-grid" id="subjectsGrid"></div>
+    </header>
 
-      <!-- ===== OUTILS & RESSOURCES ===== -->
-      <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
-      <div class="tools-grid">
-        <a href="calculatrice.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-calculator"></i></div>
-          <div class="name">Calculatrice</div>
-        </a>
-        <a href="formulaires.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-flask"></i></div>
-          <div class="name">Formulaires</div>
-        </a>
-        <a href="sujets.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
-          <div class="name">Sujets BAC</div>
-        </a>
-        <a href="mode-examen.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-clock"></i></div>
-          <div class="name">Mode Examen</div>
-        </a>
-        <a href="tableau-periodique.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
-          <div class="name">Table périodique</div>
-        </a>
-        <a href="chat.html" class="tool-card">
-          <div class="icon-badge"><i class="fas fa-robot"></i></div>
-          <div class="name">ARV-ASSISTANT</div>
-        </a>
+    <!-- ===== CONTAINER ===== -->
+    <div class="container" id="dashboardContent">
+
+      <!-- ===== SKELETON LOADING ===== -->
+      <div id="skeletonLoading">
+        <div class="skeleton skeleton-card"></div>
+        <div style="height:12px;"></div>
+        <div class="skeleton skeleton-card-sm"></div>
+        <div style="height:12px;"></div>
+        <div class="skeleton skeleton-card-xs"></div>
       </div>
 
-      <!-- ===== CONSEIL DU JOUR ===== -->
-      <div class="section-title"><h3>💡 Conseil du jour</h3></div>
-      <div class="card tip-card">
-        <div style="display:flex; gap:12px; align-items:flex-start;">
-          <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(45,125,90,0.1);color:var(--success);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
-            <i class="fas fa-lightbulb"></i>
+      <!-- ===== CONTENU DYNAMIQUE ===== -->
+      <div id="dynamicContent" style="display:none;">
+
+        <!-- ===== HERO ===== -->
+        <div class="card hero-card">
+          <div class="hero-top">
+            <div class="hero-info">
+              <div class="class-label" id="userClassDisplay">Classe</div>
+              <div class="exam-label" id="userExamDisplay">🎓 Objectif</div>
+              <div id="premiumBadgeContainer"></div>
+            </div>
           </div>
-          <div>
-            <div class="tip-eyebrow" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;">Conseil du jour</div>
-            <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
-            <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
+          <div class="hero-bottom">
+            <span class="hero-pill" id="examCountdown">
+              <i class="fas fa-hourglass-half"></i> <span>-- jours avant l'examen</span>
+            </span>
+            <span class="hero-pill streak" id="streakDisplay">
+              <i class="fas fa-fire"></i>
+              <strong id="streakCount">0 💀</strong> jour(s) de suite
+            </span>
           </div>
         </div>
-      </div>
 
-      <!-- ===== ABONNEMENT ===== -->
-      <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
-        <div class="sub-card" id="subCard">
-          <div class="sub-icon"><i class="fas fa-crown"></i></div>
-          <div class="sub-content">
-            <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
-            <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
-            <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
-          </div>
-          <a href="abonnement.html" class="sub-btn" id="subBtn">Voir les offres</a>
+        <!-- ===== PROCHAINE ÉTAPE ===== -->
+        <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
+        <div id="nextStepCard"></div>
+
+        <!-- ===== MES MATIÈRES ===== -->
+        <div class="section-title"><h3>📐 Mes matières</h3></div>
+        <div class="subjects-grid" id="subjectsGrid"></div>
+
+        <!-- ===== OUTILS & RESSOURCES ===== -->
+        <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
+        <div class="tools-grid">
+          <a href="calculatrice.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-calculator"></i></div>
+            <div class="name">Calculatrice</div>
+          </a>
+          <a href="formulaires.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-flask"></i></div>
+            <div class="name">Formulaires</div>
+          </a>
+          <a href="sujets.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
+            <div class="name">Sujets BAC</div>
+          </a>
+          <a href="mode-examen.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-clock"></i></div>
+            <div class="name">Mode Examen</div>
+          </a>
+          <a href="tableau-periodique.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
+            <div class="name">Table périodique</div>
+          </a>
+          <a href="chat.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-robot"></i></div>
+            <div class="name">ARV-ASSISTANT</div>
+          </a>
         </div>
-      </div>
 
+        <!-- ===== CONSEIL DU JOUR ===== -->
+<div class="section-title"><h3>💡 Conseil du jour</h3></div>
+<div class="card tip-card">
+  <div style="display:flex; gap:12px; align-items:flex-start;">
+    <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(184,134,11,0.1);color:var(--accent-bright);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <div>
+      <div class="tip-eyebrow" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;color:var(--accent-bright);">Conseil du jour</div>
+      <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
+      <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
     </div>
   </div>
+</div>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-logo">ARVEX<span>A<span> School</span></div>
-      <div class="footer-links">
-        <a href="index.html">Accueil</a>
-        <a href="profil.html">Profil</a>
-        <a href="abonnement.html">Abonnement</a>
-      </div>
-      <div class="footer-copy">
-        &copy; 2026 ARVEXA School — Tous droits réservés
+        <!-- ===== SECTION ABONNEMENT ===== -->
+        <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
+          <div class="sub-card" id="subCard">
+            <div class="sub-icon"><i class="fas fa-crown"></i></div>
+            <div class="sub-content">
+              <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
+              <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
+              <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
+            </div>
+            <a href="abonnement.html" class="sub-btn" id="subBtn">Voir les offres</a>
+          </div>
+        </div>
+
       </div>
     </div>
-  </footer>
 
-</div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-logo">ARVEX<span>A<span> School</span></div>
+        <div class="footer-links">
+          <a href="index.html">Accueil</a>
+          <a href="profil.html">Profil</a>
+          <a href="abonnement.html">Abonnement</a>
+        </div>
+        <div class="footer-copy">
+          &copy; 2026 ARVEXA School — Tous droits réservés
+        </div>
+      </div>
+    </footer>
 
-<!-- ===== TOAST ===== -->
-<div class="toast" id="toast">
-  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
-  <span class="toast-message"></span>
-</div>
+  </div>
 
-<!-- ============================================================ -->
-<!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
-<!-- ============================================================ -->
-<script type="importmap">
-{
-  "imports": {
-    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
-    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
-    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+    <span class="toast-message"></span>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
+  <!-- ============================================================ -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    }
   }
-}
-</script>
+  </script>
 
-<script type="module">
+  <script type="module">
 // ================================================================
-// INDEX - AUTH INTÉGRÉE (SANS BOUCLE)
+// INDEX - AUTH INTÉGRÉE - VERSION RENFORCÉE (SANS BOUCLE)
 // ================================================================
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signOut
+  signOut,
+  getIdToken
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
   getFirestore,
@@ -587,7 +613,13 @@ import {
   getDoc,
   onSnapshot,
   updateDoc,
-  serverTimestamp
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  increment
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 // ================================================================
@@ -613,7 +645,7 @@ try {
 } catch (e) { console.warn('⚠️ Persistance:', e); }
 
 // ================================================================
-// SESSION CACHE
+// SESSION CACHE - VERSION RENFORCÉE
 // ================================================================
 const SESSION_KEY = 'arvexa_session';
 
@@ -625,11 +657,21 @@ function saveSession(user) {
       email: user.email,
       displayName: user.displayName,
       emailVerified: user.emailVerified,
-      lastLogin: new Date().toISOString()
+      lastLogin: new Date().toISOString(),
+      token: user.accessToken
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(data));
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    console.log('💾 Session sauvegardée:', user.uid);
   } catch (e) {}
+}
+
+function getSession() {
+  try {
+    let data = sessionStorage.getItem(SESSION_KEY);
+    if (!data) data = localStorage.getItem(SESSION_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (e) { return null; }
 }
 
 function clearSession() {
@@ -640,17 +682,9 @@ function clearSession() {
     localStorage.removeItem('arvexa_progress_data');
     localStorage.removeItem('arvexa_last_visit');
     localStorage.removeItem('arvexa_reading_streak');
+    console.log('🗑️ Session effacée');
   } catch (e) {}
 }
-
-function getCachedSession() {
-  try {
-    let data = sessionStorage.getItem(SESSION_KEY);
-    if (!data) data = localStorage.getItem(SESSION_KEY);
-    return data ? JSON.parse(data) : null;
-  } catch (e) { return null; }
-}
-
 
 // ================================================================
 // DOM
@@ -665,11 +699,13 @@ const userExamDisplay = document.getElementById('userExamDisplay');
 const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
 const nextStepCard = document.getElementById('nextStepCard');
 const subjectsGrid = document.getElementById('subjectsGrid');
-const subjectsProgress = document.getElementById('subjectsProgress');
 const examCountdown = document.getElementById('examCountdown');
 const streakCount = document.getElementById('streakCount');
-const lastVisitTime = document.getElementById('lastVisitTime');
 const notifDot = document.getElementById('notifDot');
+
+// Conseils DOM
+const tipTitle = document.getElementById('tipTitle');
+const tipText = document.getElementById('tipText');
 
 // ================================================================
 // TOAST
@@ -690,7 +726,6 @@ function showToast(message, type = 'success') {
 // ================================================================
 // CONSTANTES
 // ================================================================
-const EXAM_DATES = { bac: { month: 5, day: 17 } };
 const FIXED_SUBJECTS = [
   { name: 'Mathématiques', icon: 'fa-square-root-variable', key: 'mathematiques', chapters: 8 },
   { name: 'Physique', icon: 'fa-bolt', key: 'physique', chapters: 17 },
@@ -698,10 +733,39 @@ const FIXED_SUBJECTS = [
   { name: 'SVT', icon: 'fa-dna', key: 'svt', chapters: 4 }
 ];
 
+// ================================================================
+// CONSEIL DU JOUR - VERSION SIMPLE (LOCALE)
+// ================================================================
 const STUDY_TIPS = [
-  { morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." }, noon: { title: '☀️ Pleine forme !', text: "Travaille par blocs de 25 minutes. Après 4 blocs, prends une pause de 20 minutes." }, evening: { title: '🌙 Bonne soirée !', text: "Fais un bilan rapide : qu'as-tu appris aujourd'hui ? 1 phrase suffit." } },
-  // ... (autres conseils déjà présents dans la version originale)
+  { morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." } },
+  { morning: { title: '🌅 Mardi matin', text: "Révise une notion difficile dès le matin. C'est le moment où ton cerveau est le plus frais." } },
+  { morning: { title: '🌅 Mercredi matin', text: "Commence par une matière que tu aimes pour te mettre en confiance." } },
+  { morning: { title: '🌅 Jeudi matin', text: "Réactive tes connaissances : relis le cours d'il y a 3 jours." } },
+  { morning: { title: '🌅 Vendredi matin', text: "Dernière ligne droite ! Concentre-toi sur les chapitres les plus importants." } },
+  { morning: { title: '🌅 Samedi matin', text: "Profite du week-end pour revoir les notions qui t'ont posé problème." } },
+  { morning: { title: '🌅 Dimanche matin', text: "Planifie ta semaine : 1 matière par jour, 1 chapitre par séance." } }
 ];
+
+function getDailyTip() {
+  const dayOfWeek = new Date().getDay();
+  const dayIndex = (dayOfWeek + 6) % 7;
+  return STUDY_TIPS[dayIndex]?.morning || STUDY_TIPS[0].morning;
+}
+
+function renderDailyTip() {
+  const tip = getDailyTip();
+  tipTitle.textContent = tip.title;
+  tipText.textContent = tip.text;
+}
+
+// ================================================================
+// ÉTAT
+// ================================================================
+let userData = null;
+let isPremium = false;
+let unsubscribeUser = null;
+let currentTipIndex = 0;
+let tipsList = [];
 
 // ================================================================
 // FONCTIONS UTILITAIRES
@@ -738,114 +802,227 @@ function getFlames(streak) {
   return '🔥🔥🔥🔥🔥 👑';
 }
 
-function getLevel(completedChapters, totalChapters) {
-  if (!totalChapters || totalChapters === 0) return '🌱 Débutant';
-  const ratio = completedChapters / totalChapters;
-  if (ratio === 0) return '🌱 Débutant';
-  if (ratio < 0.25) return '📖 Apprenti';
-  if (ratio < 0.50) return '⚡ En progression';
-  if (ratio < 0.75) return '🔥 Enflammé';
-  if (ratio < 1) return '⭐ Expert';
-  return '👑 Maître ARVEXA';
+function getCategoryIcon(category) {
+  const icons = {
+    motivation: 'fa-star',
+    methode: 'fa-clock',
+    sante: 'fa-heart',
+    organisation: 'fa-list-check',
+    bac: 'fa-graduation-cap',
+    revision: 'fa-eye',
+    relaxation: 'fa-spa'
+  };
+  return icons[category] || 'fa-lightbulb';
 }
 
-function formatTime(date) {
-  return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+function getCategoryIconClass(category) {
+  const classes = {
+    motivation: 'motivation',
+    methode: 'methode',
+    sante: 'sante',
+    organisation: 'organisation',
+    bac: 'bac',
+    revision: 'revision',
+    relaxation: 'relaxation'
+  };
+  return classes[category] || 'motivation';
 }
 
-function pickDailyTip() {
-  const dayOfWeek = new Date().getDay();
-  const hours = new Date().getHours();
-  let period = hours < 12 ? 'morning' : (hours < 18 ? 'noon' : 'evening');
-  const dayIndex = (dayOfWeek + 6) % 7;
-  return STUDY_TIPS[dayIndex]?.[period] || { title: '💡 Astuce', text: 'Révise un peu chaque jour pour de meilleurs résultats.' };
-}
-
-function renderDailyTip() {
-  const tip = pickDailyTip();
-  document.getElementById('tipTitle').textContent = tip.title;
-  document.getElementById('tipText').textContent = tip.text;
-}
-
-// ================================================================
-// STREAK DE LECTURE
-// ================================================================
-
-function updateReadingStreak() {
-  const today = new Date().toDateString();
-  const lastVisit = localStorage.getItem('arvexa_last_visit');
-  let streak = parseInt(localStorage.getItem('arvexa_reading_streak')) || 0;
-
-  if (lastVisit === today) return streak;
-
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toDateString();
-
-  if (lastVisit === yesterdayStr) {
-    streak += 1;
-  } else if (lastVisit !== today) {
-    streak = 1;
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-
-  localStorage.setItem('arvexa_reading_streak', streak);
-  localStorage.setItem('arvexa_last_visit', today);
-
-  // Mettre à jour l'affichage
-  const flames = getFlames(streak);
-  streakCount.textContent = `${streak} ${flames}`;
-  lastVisitTime.textContent = formatTime(new Date());
-  return streak;
+  return array;
 }
 
 // ================================================================
-// CHARGEMENT DES DONNÉES (Réel + Cache)
+// CHARGEMENT DES CONSEILS (Firestore + Fallback)
 // ================================================================
 
-let userData = null;
-let isPremium = false;
-let unsubscribeUser = null;
-let unsubscribeProgress = null;
-let progressData = null;
+async function loadTips() {
+  try {
+    const tipsRef = collection(db, 'tips');
+    const today = new Date().toISOString().split('T')[0];
+    const q = query(tipsRef, where('date', '==', today));
+    const snapshot = await getDocs(q);
+
+    if (!snapshot.empty) {
+      tipsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log('💡 Conseils chargés depuis Firestore:', tipsList.length);
+    } else {
+      tipsList = TIPS_DEFAULT.map((tip, index) => ({
+        ...tip,
+        id: 'default_' + index,
+        date: today
+      }));
+      console.log('💡 Conseils chargés depuis le fallback');
+    }
+
+    tipsList = shuffleArray(tipsList);
+    currentTipIndex = 0;
+    renderTip();
+
+  } catch (error) {
+    console.warn('⚠️ Erreur chargement conseils:', error);
+    tipsList = TIPS_DEFAULT.map((tip, index) => ({
+      ...tip,
+      id: 'default_' + index,
+      date: new Date().toISOString().split('T')[0]
+    }));
+    tipsList = shuffleArray(tipsList);
+    currentTipIndex = 0;
+    renderTip();
+  }
+}
+
+function renderTip() {
+  if (!tipsList.length) return;
+
+  const tip = tipsList[currentTipIndex];
+  if (!tip) return;
+
+  tipIcon.className = 'tip-icon ' + getCategoryIconClass(tip.category);
+  tipIcon.innerHTML = `<i class="fas ${getCategoryIcon(tip.category)}"></i>`;
+  tipCategory.textContent = tip.category ? tip.category.toUpperCase() : 'CONSEIL';
+  tipTitle.textContent = tip.title || 'Conseil du jour';
+  tipText.textContent = tip.text || '...';
+  tipTag.textContent = tip.tag || '📚 Astuce';
+  tipLikes.textContent = tip.likes || 0;
+
+  tipDots.innerHTML = tipsList.map((_, i) =>
+    `<span class="dot ${i === currentTipIndex ? 'active' : ''}" data-index="${i}"></span>`
+  ).join('');
+
+  tipCounter.textContent = `${currentTipIndex + 1} / ${tipsList.length}`;
+
+  document.querySelectorAll('.dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      currentTipIndex = parseInt(dot.dataset.index);
+      renderTip();
+    });
+  });
+}
+
+function nextTip() {
+  currentTipIndex = (currentTipIndex + 1) % tipsList.length;
+  renderTip();
+}
+
+async function likeTip() {
+  const tip = tipsList[currentTipIndex];
+  if (!tip) return;
+
+  try {
+    if (tip.id && !tip.id.startsWith('default_')) {
+      const tipRef = doc(db, 'tips', tip.id);
+      await updateDoc(tipRef, {
+        likes: increment(1)
+      });
+      tip.likes = (tip.likes || 0) + 1;
+    } else {
+      tip.likes = (tip.likes || 0) + 1;
+    }
+    tipLikes.textContent = tip.likes;
+    showToast('❤️ Merci pour ton retour !', 'success');
+  } catch (error) {
+    console.warn('⚠️ Erreur like:', error);
+    tip.likes = (tip.likes || 0) + 1;
+    tipLikes.textContent = tip.likes;
+  }
+}
+
+// ================================================================
+// STREAK (Firestore)
+// ================================================================
+
+async function updateStreak(userId) {
+  if (!userId) return 0;
+
+  const today = new Date().toISOString().split('T')[0];
+  const userRef = doc(db, 'users', userId);
+
+  try {
+    const userDoc = await getDoc(userRef);
+    if (!userDoc.exists()) return 0;
+
+    const data = userDoc.data();
+    const lastDate = data.lastStreakDate || null;
+    let streak = data.readingStreak || 0;
+
+    if (lastDate === today) {
+      return streak;
+    }
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    if (lastDate === yesterdayStr) {
+      streak += 1;
+    } else {
+      streak = 1;
+    }
+
+    await updateDoc(userRef, {
+      readingStreak: streak,
+      lastStreakDate: today,
+      updatedAt: serverTimestamp()
+    });
+
+    return streak;
+
+  } catch (error) {
+    console.warn('⚠️ Erreur streak:', error);
+    return 0;
+  }
+}
+
+// ================================================================
+// CHARGEMENT DES DONNÉES UTILISATEUR
+// ================================================================
+
+let unsubscribeUserData = null;
 
 function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
+  if (unsubscribeUserData) {
+    unsubscribeUserData();
+    unsubscribeUserData = null;
   }
 
   const userRef = doc(db, 'users', user.uid);
 
-  unsubscribeUser = onSnapshot(userRef, 
-    (docSnap) => {
+  unsubscribeUserData = onSnapshot(userRef,
+    async (docSnap) => {
       if (docSnap.exists()) {
         userData = docSnap.data();
         isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-        
-        // Mettre en cache
+
         try {
           localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
         } catch (e) {}
 
-        renderDashboard();
+        const streak = await updateStreak(user.uid);
+
+        renderDashboard(streak);
         updateSubscriptionDisplay();
         updateUserGreeting();
-        
+
         skeletonLoading.style.display = 'none';
         dynamicContent.style.display = 'block';
+
       } else {
         showToast('⚠️ Profil introuvable.', 'error');
       }
     },
     (error) => {
       console.error('❌ Erreur Firestore:', error);
-      // Essayer le cache
       try {
         const cached = localStorage.getItem('arvexa_user_data');
         if (cached) {
           userData = JSON.parse(cached);
           isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-          renderDashboard();
+          renderDashboard(0);
           updateSubscriptionDisplay();
           skeletonLoading.style.display = 'none';
           dynamicContent.style.display = 'block';
@@ -854,34 +1031,6 @@ function loadUserData(user) {
       } catch (e) {}
     }
   );
-}
-
-function loadProgress(user) {
-  if (unsubscribeProgress) {
-    unsubscribeProgress();
-    unsubscribeProgress = null;
-  }
-
-  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
-
-  unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
-    if (docSnap.exists()) {
-      progressData = docSnap.data();
-      try {
-        localStorage.setItem('arvexa_progress_data', JSON.stringify(progressData));
-      } catch (e) {}
-      renderSubjects();
-    }
-  }, (error) => {
-    console.warn('⚠️ Erreur progression:', error);
-    try {
-      const cached = localStorage.getItem('arvexa_progress_data');
-      if (cached) {
-        progressData = JSON.parse(cached);
-        renderSubjects();
-      }
-    } catch (e) {}
-  });
 }
 
 function updateUserGreeting() {
@@ -895,7 +1044,7 @@ function updateUserGreeting() {
 // RENDU DU DASHBOARD
 // ================================================================
 
-function renderDashboard() {
+function renderDashboard(streak) {
   if (!userData) return;
 
   const firstName = userData.firstName || 'Élève';
@@ -904,119 +1053,60 @@ function renderDashboard() {
   userClassDisplay.textContent = userData.classId || 'Terminale D';
   userExamDisplay.textContent = '🎓 Préparation BAC';
 
-  // Badge premium
   premiumBadgeContainer.innerHTML = isPremium
     ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
     : '';
 
-  // Compte à rebours
   const days = computeExamCountdown();
   let emoji = '⏳';
-  if (days < 30) emoji = '🔥';
-  if (days < 7) emoji = '🚨';
-  if (days === 0) emoji = '🎯';
-  examCountdown.textContent = days > 0 ? `${emoji} ${days} jours avant le BAC` : `🎯 C'est le jour J !`;
+  let className = '';
+  if (days < 30) { emoji = '🔥'; className = 'warning'; }
+  if (days < 7) { emoji = '🚨'; className = 'danger'; }
+  if (days === 0) { emoji = '🎯'; }
+  examCountdown.className = 'hero-pill ' + className;
+  examCountdown.innerHTML = `<i class="fas fa-hourglass-half"></i> <span>${emoji} ${days} jours avant le BAC</span>`;
 
-  // Streak
-  updateReadingStreak();
+  const flames = getFlames(streak || 0);
+  streakCount.textContent = `${streak || 0} ${flames}`;
 
-  // Conseil du jour
-  renderDailyTip();
-
-  // Prochaine étape
   renderNextStep();
+  renderSubjects();
+renderDailyTip();
 }
 
-function renderNextStep() {
-  // Logique simple : si aucune matière n'est commencée, proposer de commencer par la première
-  if (progressData) {
-    const totalSubjects = FIXED_SUBJECTS.length;
-    let started = false;
-    for (const subj of FIXED_SUBJECTS) {
-      const subjProgress = progressData.subjects?.[subj.key]?.chapters?.progress;
-      if (subjProgress) {
-        const values = Object.values(subjProgress);
-        if (values.some(v => v > 0)) {
-          started = true;
-          break;
-        }
-      }
-    }
-    if (started) {
-      // Trouver la matière la moins avancée
-      let minProgress = 100;
-      let bestSubject = FIXED_SUBJECTS[0];
-      for (const subj of FIXED_SUBJECTS) {
-        const subjProgress = progressData.subjects?.[subj.key]?.chapters?.progress;
-        if (subjProgress) {
-          const values = Object.values(subjProgress);
-          const avg = values.reduce((a,b) => a+b, 0) / values.length;
-          if (avg < minProgress) {
-            minProgress = avg;
-            bestSubject = subj;
-          }
-        }
-      }
-      nextStepCard.innerHTML = `
-        <div class="next-card">
-          <div class="badge">📚 Prochaine étape</div>
-          <div class="title">Continue avec ${bestSubject.name}</div>
-          <div class="subject">Tu as terminé ${Math.round(minProgress)}% de cette matière</div>
-          <div class="message">Termine les chapitres restants pour être prêt pour le BAC.</div>
-          <div class="actions">
-            <a href="matiere.html?subject=${bestSubject.key}" class="btn-primary">Reprendre</a>
-          </div>
-        </div>
-      `;
-      return;
-    }
-  }
+// ================================================================
+// PROCHAINE ÉTAPE - VERSION SIMPLIFIÉE
+// ================================================================
 
-  // Par défaut
+function renderNextStep() {
   nextStepCard.innerHTML = `
     <div class="next-card">
-      <div class="badge">📚 Bienvenue</div>
-      <div class="title">Choisir une matière</div>
+      <div class="badge">🚀 Commence ton parcours</div>
+      <div class="title">Choisis une matière</div>
       <div class="message">Clique sur l'une des matières ci-dessous pour commencer tes révisions.</div>
+      <div class="actions">
+        <a href="matiere.html?subject=mathematiques" class="btn-primary">Commencer</a>
       </div>
     </div>
   `;
 }
 
 function renderSubjects() {
-  // Récupérer la progression
-  let totalChapters = 0;
-  let completedChapters = 0;
-
-  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => {
-    let progress = 0;
-    if (progressData?.subjects?.[subject.key]?.chapters?.progress) {
-      const values = Object.values(progressData.subjects[subject.key].chapters.progress);
-      const completed = values.filter(v => v >= 100).length;
-      totalChapters += values.length;
-      completedChapters += completed;
-      progress = values.length > 0 ? Math.round((completed / values.length) * 100) : 0;
-    } else {
-      totalChapters += subject.chapters || 0;
-    }
-
-    const progressText = progress > 0 ? `${progress}%` : '';
-    return `
-      <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-        <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-        <div>
-          <div class="subject-name">${subject.name}</div>
-          <div class="subject-chapters">${subject.chapters} chapitres</div>
-        </div>
-        ${progressText ? `<div class="subject-progress">${progressText}</div>` : ''}
-      </a>
-    `;
-  }).join('');
-
-  // Mettre à jour le pourcentage global
-  const totalProgress = totalChapters > 0 ? Math.round((completedChapters / totalChapters) * 100) : 0;
-  subjectsProgress.textContent = `${totalProgress}% complet`;
+  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
+    <a href="matiere.html?subject=${subject.key}" class="subject-chip">
+      <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+      <div>
+        <div class="subject-name">${subject.name}</div>
+        <div class="subject-chapters">${subject.chapters} chapitres</div>
+      </div>
+    </a>
+  `).join('');
 }
+
+
+// ================================================================
+// ABONNEMENT
+// ================================================================
 
 function updateSubscriptionDisplay() {
   const reminder = document.getElementById('subscriptionReminder');
@@ -1080,44 +1170,66 @@ function updateSubscriptionDisplay() {
 
 async function refreshDashboard() {
   showToast('🔄 Rafraîchissement...', 'info');
-  // Les listeners sont déjà en place, ils mettront à jour automatiquement
+  if (unsubscribeUserData) {
+    unsubscribeUserData();
+    unsubscribeUserData = null;
+  }
+  const user = auth.currentUser;
+  if (user) {
+    loadUserData(user);
+  }
 }
 
 // ================================================================
-// ⭐ VÉRIFICATION D'AUTH - UNE SEULE FOIS (SANS BOUCLE)
+// ⭐ VÉRIFICATION D'AUTH - VERSION RENFORCÉE (SANS BOUCLE)
 // ================================================================
 let authChecked = false;
 let isRedirecting = false;
+let redirectCooldown = 0;
 
-onAuthStateChanged(auth, (user) => {
-  if (authChecked) return;
+onAuthStateChanged(auth, async (user) => {
+  // Éviter les appels multiples
+  if (authChecked) {
+    console.log('⏳ Auth déjà vérifié, skip');
+    return;
+  }
+
+  // Éviter les redirections en boucle (cooldown)
+  const now = Date.now();
+  if (now - redirectCooldown < 3000) {
+    console.log('⏳ Cooldown actif, skip');
+    return;
+  }
+
   authChecked = true;
 
   if (user) {
     // ✅ Connecté
-    saveSession(user);
     console.log('✅ Index - Utilisateur connecté:', user.uid);
 
-    // Charger les données
-    loadUserData(user);
-    loadProgress(user);
-    updateReadingStreak();
-
-    // Mettre à jour la dernière visite dans Firestore
+    // Rafraîchir le token
     try {
-      updateDoc(doc(db, 'users', user.uid), {
-        lastVisit: serverTimestamp()
-      });
-    } catch (e) {}
+      await getIdToken(user, true);
+      console.log('🔄 Token rafraîchi');
+    } catch (e) {
+      console.warn('⚠️ Erreur rafraîchissement token:', e);
+    }
+
+    saveSession(user);
+    loadUserData(user);
 
   } else {
     // ❌ Non connecté - REDIRECTION UNIQUE
     if (isRedirecting) return;
     isRedirecting = true;
+    redirectCooldown = now;
+
     clearSession();
     console.log('🔒 Non connecté, redirection vers login');
     sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-    window.location.href = 'login.html';
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 300);
   }
 });
 
@@ -1128,8 +1240,7 @@ onAuthStateChanged(auth, (user) => {
 document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   e.preventDefault();
   try {
-    if (unsubscribeUser) unsubscribeUser();
-    if (unsubscribeProgress) unsubscribeProgress();
+    if (unsubscribeUserData) unsubscribeUserData();
     await signOut(auth);
     clearSession();
     window.location.href = 'login.html';
@@ -1158,7 +1269,15 @@ document.getElementById('profileBtn').addEventListener('click', () => {
 
 document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
 
-console.log('🚀 ARVEXA School — Index (auth intégrée, sans boucle)');
-</script>
+// Gestion des dots (event delegation)
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('dot')) {
+    currentTipIndex = parseInt(e.target.dataset.index);
+    renderTip();
+  }
+});
+
+console.log('🚀 ARVEXA School — Index (version renforcée)');
+  </script>
 </body>
 </html>

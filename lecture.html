@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#0A0A0A">
+  <meta name="description" content="ARVEXA School - Lecture">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png" type="image/png">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #1A3A2A;
+      --primary-dark: #0A1A12;
+      --accent: #B8860B;
+      --accent-bright: #E0B84A;
+      --success: #2D7D5A;
+      --danger: #B85C3A;
+      --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-card: rgba(20,20,20,0.7);
+      --text-light: #F5F0E8;
+      --text-dim: #8A8A7A;
+      --text-muted: #5A5A4A;
+      --card-border: rgba(184,134,11,0.08);
+      --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; height: 100%; }
+    body {
+      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-size: 15px;
+      line-height: 1.8;
+      min-height: 100vh;
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .gradient-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
+                  radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
+                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+    }
+
+    .header {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184, 134, 11, 0.06);
+      gap: 12px;
+      min-height: 56px;
+      flex-shrink: 0;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-dim); cursor: pointer; transition: var(--transition);
+      font-size: 16px; text-decoration: none;
+    }
+    .header .back-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
+    .header .header-title {
+      font-size: 14px; font-weight: 600; color: var(--text-light);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;
+    }
+    .header .header-title i { color: var(--accent-bright); margin-right: 6px; font-size: 13px; }
+    .header-right { display: flex; align-items: center; gap: 6px; }
+    .header-right button {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-muted); cursor: pointer; transition: var(--transition);
+      font-size: 13px;
+    }
+    .header-right button:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
+    .header-right button.active { color: var(--accent-bright); border-color: rgba(184,134,11,0.2); }
+    .header-right .timer-display {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--text-muted);
+      padding: 4px 10px; border-radius: 8px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .header-right .timer-display i { color: var(--accent-bright); font-size: 10px; }
+    .header-right .timer-display .time { font-weight: 600; color: var(--text-light); font-family: 'Inter', monospace; min-width: 45px; }
+
+    .content-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 28px 100px;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .content-wrapper::-webkit-scrollbar { width: 4px; }
+    .content-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .content-wrapper::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.2); border-radius: 10px; }
+
+    /* ===== CONTENT STYLING ===== */
+    .content-wrapper .chapitre-header {
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(184, 134, 11, 0.1);
+    }
+    .content-wrapper .chapitre-header .chapitre-numero {
+      font-size: 12px;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .content-wrapper .chapitre-header .chapitre-titre {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-light);
+    }
+    .content-wrapper .chapitre-header .chapitre-titre .accent {
+      color: var(--accent-bright);
+      font-style: italic;
+    }
+    .content-wrapper .chapitre-header .chapitre-divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      margin-top: 12px;
+      border-radius: 4px;
+    }
+    .content-wrapper .section { margin-bottom: 28px; }
+    .content-wrapper .section-titre {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #3b82f6;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(59, 130, 246, 0.08);
+    }
+    .content-wrapper .section-titre::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--accent-bright);
+      border-radius: 50%;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .content-wrapper p {
+      color: #a0b0cc;
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+    .content-wrapper p strong { color: var(--text-light); }
+    .content-wrapper .math-inline {
+      background: rgba(59, 130, 246, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 2px 10px;
+      border-radius: 6px;
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 16px;
+      color: #e8ecf8;
+      white-space: nowrap;
+      display: inline-block;
+    }
+    .content-wrapper .formula-box {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(184, 134, 11, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-left: 4px solid #3b82f6;
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin: 18px 0;
+      text-align: center;
+    }
+    .content-wrapper .formula-box .formula-main {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #e8ecf8;
+      line-height: 1.6;
+    }
+    .content-wrapper .formula-box .formula-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+    .content-wrapper .card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .content-wrapper .card .card-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 4px;
+    }
+    .content-wrapper .card p { margin-bottom: 0; }
+    .content-wrapper .card-key { border-left: 4px solid var(--accent-bright); background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(184, 134, 11, 0.01)); }
+    .content-wrapper .card-key .card-label { background: rgba(184, 134, 11, 0.15); color: var(--accent-bright); }
+    .content-wrapper .card-key p { color: var(--text-light); }
+    .content-wrapper .card-tip { border-left: 4px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(59, 130, 246, 0.01)); }
+    .content-wrapper .card-tip .card-label { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .content-wrapper .card-warning { border-left: 4px solid #ef4444; background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), rgba(239, 68, 68, 0.01)); }
+    .content-wrapper .card-warning .card-label { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .content-wrapper .card-remember { border-left: 4px solid #22c55e; background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(34, 197, 94, 0.01)); }
+    .content-wrapper .card-remember .card-label { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .content-wrapper .bullet-list {
+      padding-left: 0;
+      list-style: none;
+      margin: 12px 0;
+    }
+    .content-wrapper .bullet-list li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 8px;
+      color: #a0b0cc;
+      line-height: 1.7;
+    }
+    .content-wrapper .bullet-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      background: linear-gradient(135deg, var(--accent-bright), #3b82f6);
+      border-radius: 50%;
+    }
+    .content-wrapper .bullet-list li strong { color: var(--text-light); }
+    .content-wrapper .example-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin: 16px 0;
+    }
+    .content-wrapper .example-block .example-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .content-wrapper .example-block .example-content {
+      color: #a0b0cc;
+      line-height: 1.8;
+    }
+    .content-wrapper .example-block .example-content p { margin-bottom: 8px; }
+    .content-wrapper .example-block .example-content p:last-child { margin-bottom: 0; }
+    .content-wrapper .steps { margin: 18px 0; }
+    .content-wrapper .step {
+      display: flex;
+      margin-bottom: 14px;
+    }
+    .content-wrapper .step-number {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      margin-right: 14px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    }
+    .content-wrapper .step-content { flex: 1; padding-top: 2px; }
+    .content-wrapper .step-content strong {
+      color: var(--text-light);
+      display: block;
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+    .content-wrapper .step-content p {
+      color: #a0b0cc;
+      font-size: 13px;
+      margin-bottom: 0;
+      line-height: 1.6;
+    }
+    .content-wrapper .callout {
+      background: rgba(59, 130, 246, 0.04);
+      border-radius: 10px;
+      padding: 16px 22px;
+      margin: 16px 0;
+      text-align: center;
+      border-top: 2px solid #3b82f6;
+      border-bottom: 2px solid var(--accent-bright);
+    }
+    .content-wrapper .callout .callout-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+    .content-wrapper .chapitre-separateur {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.15), transparent);
+      margin: 40px 0 32px;
+    }
+
+    .content-wrapper .loading-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 80px 20px; gap: 16px;
+    }
+    .content-wrapper .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(184,134,11,0.15);
+      border-top-color: var(--accent-bright);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .content-wrapper .loading-state p { font-size: 14px; color: var(--text-muted); }
+    .content-wrapper .empty-state {
+      text-align: center; padding: 80px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+    }
+    .content-wrapper .empty-state .es-icon {
+      width: 72px; height: 72px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(184,134,11,0.06); border: 1px solid rgba(184,134,11,0.08);
+      font-size: 28px; color: var(--text-muted);
+    }
+    .content-wrapper .empty-state h4 { font-size: 18px; color: var(--text-dim); font-weight: 600; }
+    .content-wrapper .empty-state p { font-size: 14px; color: var(--text-muted); max-width: 400px; }
+
+    .notes-section {
+      margin-top: 30px;
+      padding: 16px 20px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      display: none;
+    }
+    .notes-section.show { display: block; }
+    .notes-section .notes-label {
+      font-size: 12px; font-weight: 600; color: var(--text-muted);
+      margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+    }
+    .notes-section .notes-label i { color: var(--accent-bright); font-size: 14px; }
+    .notes-section textarea {
+      width: 100%; padding: 12px 14px; border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color: var(--text-light); font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      resize: vertical; min-height: 80px;
+      transition: var(--transition);
+    }
+    .notes-section textarea:focus { outline: none; border-color: rgba(184,134,11,0.2); }
+    .notes-section textarea::placeholder { color: var(--text-muted); }
+    .notes-section .notes-saved {
+      font-size: 11px; color: var(--success);
+      display: none; margin-top: 4px; text-align: right;
+    }
+    .notes-section .notes-saved.show { display: block; }
+
+    .nav-bottom {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(184,134,11,0.06);
+      z-index: 40;
+      gap: 12px;
+    }
+    .nav-bottom .nav-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: transparent;
+      color: var(--text-dim); cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px; font-weight: 500;
+    }
+    .nav-bottom .nav-btn:hover:not(:disabled) {
+      border-color: rgba(184,134,11,0.14);
+      color: var(--text-light);
+      background: rgba(255,255,255,0.03);
+    }
+    .nav-bottom .nav-btn:disabled {
+      opacity: 0.2; cursor: not-allowed;
+    }
+    .nav-bottom .nav-btn i { font-size: 14px; }
+    .nav-bottom .nav-btn.primary {
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A; border-color: transparent;
+    }
+    .nav-bottom .nav-btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(184,134,11,0.2);
+    }
+    .nav-bottom .nav-center {
+      font-size: 12px; color: var(--text-muted);
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 20px; border-radius: 12px;
+      background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      color: var(--text-light); font-size: 13px; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25,1,0.5,1);
+      max-width: 90%; text-align: center;
+      box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(45,125,90,0.25); }
+    .toast.error { border-color: rgba(184,92,58,0.3); }
+
+    @media (max-width: 768px) {
+      .content-wrapper { padding: 16px 16px 100px; }
+      .content-wrapper .chapitre-header .chapitre-titre { font-size: 24px; }
+      .content-wrapper .section-titre { font-size: 18px; }
+      .content-wrapper .formula-box .formula-main { font-size: 18px; }
+      .header .header-title { max-width: 150px; font-size: 13px; }
+      .nav-bottom .nav-btn { padding: 8px 12px; font-size: 12px; }
+      .nav-bottom .nav-btn span { display: none; }
+    }
+    @media (max-width: 480px) {
+      .content-wrapper { padding: 12px 12px 90px; }
+      .content-wrapper .chapitre-header .chapitre-titre { font-size: 20px; }
+      .content-wrapper .section-titre { font-size: 16px; }
+      .header { padding: 8px 12px; }
+      .header .header-title { max-width: 100px; font-size: 12px; }
+      .header-right .timer-display { font-size: 10px; padding: 2px 8px; }
+      .header-right button { width: 30px; height: 30px; font-size: 12px; }
+      .nav-bottom { padding: 8px 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="gradient-bg"></div>
+
+<header class="header">
+  <div class="header-left">
+    <button class="back-btn" id="backBtn" aria-label="Retour">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title" id="pageTitle">
+      <i class="fas fa-book-open"></i> <span>Chargement...</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="timer-display">
+      <i class="fas fa-clock"></i>
+      <span class="time" id="timerDisplay">00:00</span>
+    </div>
+    <button id="bookmarkBtn" title="Marquer cette section">
+      <i class="fas fa-bookmark"></i>
+    </button>
+    <button id="notesToggleBtn" title="Notes">
+      <i class="fas fa-sticky-note"></i>
+    </button>
+  </div>
+</header>
+
+<div class="content-wrapper" id="contentWrapper">
+  <div id="contentBody">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement du contenu...</p>
+    </div>
+  </div>
+
+  <div class="notes-section" id="notesSection">
+    <div class="notes-label"><i class="fas fa-sticky-note"></i> Mes notes</div>
+    <textarea id="notesTextarea" placeholder="Écris tes notes personnelles sur cette partie..."></textarea>
+    <div class="notes-saved" id="notesSaved">✅ Sauvegardé</div>
+  </div>
+</div>
+
+<div class="nav-bottom">
+  <button class="nav-btn" id="prevBtn" disabled>
+    <i class="fas fa-chevron-left"></i>
+    <span>Précédent</span>
+  </button>
+  <div class="nav-center" id="navProgress">0 / 0</div>
+  <button class="nav-btn primary" id="nextBtn" disabled>
+    <span>Suivant</span>
+    <i class="fas fa-chevron-right"></i>
+  </button>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+  <span class="toast-message"></span>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  }
+}
+</script>
+
+<script type="module">
+// ================================================================
+// LECTURE - PAGE DE LECTURE PLEIN ÉCRAN
+// ================================================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+try {
+  await setPersistence(auth, browserLocalPersistence);
+} catch (e) {}
+
+// ================================================================
+// URL PARAMS
+// ================================================================
+const params = new URLSearchParams(window.location.search);
+const subject = params.get('subject') || 'mathematiques';
+const chapter = parseInt(params.get('chapter')) || 0;
+const tab = params.get('tab') || 'cours';
+const partIndex = parseInt(params.get('part')) || 0;
+
+// ================================================================
+// DOM
+// ================================================================
+const contentBody = document.getElementById('contentBody');
+const pageTitle = document.querySelector('#pageTitle span');
+const backBtn = document.getElementById('backBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const navProgress = document.getElementById('navProgress');
+const toast = document.getElementById('toast');
+const toastMessage = document.querySelector('.toast-message');
+const toastIcon = document.querySelector('.toast-icon i');
+
+const timerDisplay = document.getElementById('timerDisplay');
+let timerSeconds = 0;
+let timerInterval = null;
+
+const notesTextarea = document.getElementById('notesTextarea');
+const notesSaved = document.getElementById('notesSaved');
+const notesToggleBtn = document.getElementById('notesToggleBtn');
+const notesSection = document.getElementById('notesSection');
+const bookmarkBtn = document.getElementById('bookmarkBtn');
+
+// ================================================================
+// TOAST
+// ================================================================
+function showToast(message, type = 'success') {
+  toastMessage.textContent = message;
+  toast.className = `toast ${type}`;
+  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ================================================================
+// TIMER
+// ================================================================
+function startTimer() {
+  if (timerInterval) return;
+  const key = `arvexa_timer_${subject}_${chapter}_${tab}_${partIndex}`;
+  const saved = localStorage.getItem(key);
+  if (saved) timerSeconds = parseInt(saved) || 0;
+  
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimerDisplay();
+    if (timerSeconds % 30 === 0) {
+      localStorage.setItem(key, timerSeconds);
+    }
+  }, 1000);
+  updateTimerDisplay();
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    const key = `arvexa_timer_${subject}_${chapter}_${tab}_${partIndex}`;
+    localStorage.setItem(key, timerSeconds);
+  }
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(timerSeconds / 60);
+  const secs = timerSeconds % 60;
+  timerDisplay.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+}
+
+// ================================================================
+// CHARGEMENT DU CONTENU
+// ================================================================
+let parts = [];
+let currentIndex = partIndex;
+
+function loadContent() {
+  const suffix = tab === 'cours' ? 'cours' : (tab === 'exercices' ? 'exo' : 'corr');
+  const manifestPath = `cours/${subject}/ch${chapter}_${suffix}.json`;
+  
+  contentBody.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement du contenu...</p>
+    </div>
+  `;
+
+  fetch(manifestPath)
+    .then(r => { 
+      if (!r.ok) throw new Error('Manifest non trouvé');
+      return r.json(); 
+    })
+    .then(data => {
+      parts = data.parts || [];
+      console.log('📚 Parts chargées:', parts.length);
+      if (currentIndex >= parts.length) currentIndex = 0;
+      renderPart();
+    })
+    .catch((error) => {
+      console.error('❌ Erreur:', error);
+      contentBody.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon"><i class="fas fa-exclamation-triangle"></i></div>
+          <h4>Contenu non disponible</h4>
+          <p>Le manifest n'a pas été trouvé.</p>
+        </div>
+      `;
+      pageTitle.textContent = 'Contenu indisponible';
+      navProgress.textContent = '0 / 0';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    });
+}
+
+function renderPart() {
+  // ✅ VÉRIFICATION CRITIQUE
+  if (!parts || parts.length === 0) {
+    contentBody.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon"><i class="fas fa-folder-open"></i></div>
+        <h4>Aucune partie disponible</h4>
+        <p>Le contenu de cette section n'est pas encore disponible.</p>
+      </div>
+    `;
+    pageTitle.textContent = 'Contenu indisponible';
+    navProgress.textContent = '0 / 0';
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+    return;
+  }
+
+  if (currentIndex >= parts.length || currentIndex < 0) {
+    currentIndex = 0;
+  }
+
+  // ✅ ICI on est SÛR que parts existe et que l'index est valide
+  const part = parts[currentIndex];
+  
+  if (!part) {
+    contentBody.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h4>Partie introuvable</h4>
+        <p>La partie demandée n'existe pas.</p>
+      </div>
+    `;
+    return;
+  }
+
+  pageTitle.textContent = part.title || 'Partie ' + (currentIndex + 1);
+  document.title = 'ARVEXA - ' + part.title;
+
+  navProgress.textContent = `${currentIndex + 1} / ${parts.length}`;
+  prevBtn.disabled = currentIndex === 0;
+  nextBtn.disabled = currentIndex === parts.length - 1;
+
+  const filePath = `cours/${subject}/${part.file}`;
+  contentBody.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement...</p>
+    </div>
+  `;
+
+  fetch(filePath)
+    .then(r => { 
+      if (!r.ok) throw new Error('Fichier non trouvé');
+      return r.text(); 
+    })
+    .then(html => {
+      contentBody.innerHTML = html;
+      startTimer();
+      loadNotes();
+    })
+    .catch((error) => {
+      console.error('❌ Erreur:', error);
+      contentBody.innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon"><i class="fas fa-file-lines"></i></div>
+          <h4>Contenu non disponible</h4>
+          <p>Le fichier <strong>${part.file}</strong> n'a pas été trouvé.</p>
+        </div>
+      `;
+    });
+}
+
+// ================================================================
+// NOTES
+// ================================================================
+function loadNotes() {
+  const key = `arvexa_notes_${subject}_${chapter}_${tab}_${partIndex}`;
+  const content = localStorage.getItem(key) || '';
+  notesTextarea.value = content;
+}
+
+function saveNotes() {
+  const key = `arvexa_notes_${subject}_${chapter}_${tab}_${partIndex}`;
+  localStorage.setItem(key, notesTextarea.value);
+  notesSaved.classList.add('show');
+  setTimeout(() => notesSaved.classList.remove('show'), 2000);
+}
+
+notesTextarea.addEventListener('input', () => {
+  clearTimeout(notesTextarea._saveTimeout);
+  notesTextarea._saveTimeout = setTimeout(saveNotes, 1000);
+});
+
+notesToggleBtn.addEventListener('click', () => {
+  notesSection.classList.toggle('show');
+  notesToggleBtn.classList.toggle('active');
+});
+
+// ================================================================
+// BOOKMARK
+// ================================================================
+bookmarkBtn.addEventListener('click', () => {
+  bookmarkBtn.classList.toggle('active');
+  const key = `arvexa_bookmark_${subject}_${chapter}_${tab}_${partIndex}`;
+  localStorage.setItem(key, bookmarkBtn.classList.contains('active') ? 'true' : 'false');
+  showToast(
+    bookmarkBtn.classList.contains('active') ? '📌 Section marquée !' : '🔖 Marque-page retiré',
+    'success'
+  );
+});
+
+const bookmarkKey = `arvexa_bookmark_${subject}_${chapter}_${tab}_${partIndex}`;
+if (localStorage.getItem(bookmarkKey) === 'true') {
+  bookmarkBtn.classList.add('active');
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function goToPrev() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderPart();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function goToNext() {
+  if (currentIndex < parts.length - 1) {
+    currentIndex++;
+    renderPart();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+prevBtn.addEventListener('click', goToPrev);
+nextBtn.addEventListener('click', goToNext);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') goToPrev();
+  if (e.key === 'ArrowRight') goToNext();
+  if (e.key === 'Escape') backBtn.click();
+});
+
+// ================================================================
+// RETOUR
+// ================================================================
+backBtn.addEventListener('click', () => {
+  stopTimer();
+  window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
+});
+
+// ================================================================
+// AUTH
+// ================================================================
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+  loadContent();
+});
+
+window.addEventListener('beforeunload', stopTimer);
+
+console.log('📖 ARVEXA - Lecture plein écran');
+</script>
+</body>
+</html>

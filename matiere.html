@@ -96,7 +96,7 @@
     /* ===== SUBJECT HERO ===== */
     .subject-hero {
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      padding: 20px 16px 16px; gap: 10px;
+      padding: 20px 16px 16px; gap: 8px;
     }
     .subject-icon-wrap {
       width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center;
@@ -112,24 +112,6 @@
       color: var(--text-light);
     }
     .subject-hero .subject-subtitle { font-size: 12px; color: var(--text-dim); }
-
-    /* ===== HERO STATS ===== */
-    .hero-stats {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-      width: 100%; max-width: 420px; margin-top: 4px;
-    }
-    .hero-stat {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 10px; padding: 8px 4px; text-align: center;
-    }
-    .hero-stat-value {
-      display: block; font-size: 15px; font-weight: 700;
-      font-family: 'Playfair Display', serif; color: var(--accent-bright); line-height: 1.3;
-    }
-    .hero-stat-label {
-      font-size: 8px; color: var(--text-muted); text-transform: uppercase;
-      letter-spacing: 0.3px; font-weight: 600;
-    }
 
     /* ===== SECTION LABEL ===== */
     .section-label {
@@ -171,7 +153,7 @@
       background: rgba(212,160,23,0.12); border-color: rgba(212,160,23,0.15);
       color: var(--warning);
     }
-    .cc-info { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1; }
+    .cc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .cc-title {
       font-size: 14px; font-weight: 600; color: var(--text-light); line-height: 1.3;
       display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
@@ -225,7 +207,6 @@
     }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     .skeleton-card { height: 80px; border-radius: var(--radius); }
-    .skeleton-hero { height: 120px; border-radius: var(--radius); }
 
     /* ===== TOAST ===== */
     .toast {
@@ -356,8 +337,6 @@
       .container { padding: 10px 10px 24px; }
       .subject-hero h2 { font-size: 18px; }
       .subject-icon-wrap { width: 56px; height: 56px; font-size: 22px; }
-      .hero-stats { grid-template-columns: repeat(2, 2fr); gap: 6px; }
-      .hero-stat-value { font-size: 14px; }
       .cc-title { font-size: 13px; }
       .cc-num { width: 30px; height: 30px; font-size: 12px; }
       .premium-popup { padding: 20px 16px; max-width: 340px; }
@@ -368,7 +347,6 @@
       .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 360px) {
-      .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; }
       .cc-title { font-size: 12px; }
       .offers-grid { grid-template-columns: 1fr; }
       .premium-popup .popup-features { grid-template-columns: 1fr; }
@@ -408,26 +386,7 @@
     <div class="subject-hero" id="subjectHero">
       <div class="subject-icon-wrap" id="subjectIconWrap"><i class="fas fa-book"></i></div>
       <h2 id="subjectTitle">Chargement...</h2>
-      <p class="subject-subtitle" id="subjectSubtitle"></p>
-
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="heroLevel">🌱 Débutant</span>
-          <span class="hero-stat-label">Niveau</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="heroChapters">0/0</span>
-          <span class="hero-stat-label">Chapitres</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="heroProgress">0%</span>
-          <span class="hero-stat-label">Progression</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-value" id="heroTimer">--j</span>
-                <span class="hero-stat-label">Avant BAC</span>
-        </div>
-      </div>
+      <p class="subject-subtitle" id="subjectSubtitle">Chargement des chapitres...</p>
     </div>
 
     <!-- ===== CHAPTER LIST ===== -->
@@ -464,7 +423,7 @@
         </div>
         <div class="offer-card popular">
           <div class="offer-name">📅 Annuel</div>
-          <div class="offer-price">18 000 <small>FCFA</small></div>
+                <div class="offer-price">18 000 <small>FCFA</small></div>
           <div class="offer-save">Économisez 6 000 FCFA</div>
           <div class="offer-desc">2 mois offerts</div>
         </div>
@@ -481,7 +440,7 @@
   <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
   <!-- ============================================================ -->
-  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
+  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                  -->
   <!-- ============================================================ -->
   <script type="importmap">
   {
@@ -495,493 +454,575 @@
 
   <script type="module">
   // ================================================================
-  // MATIERE - AUTH INTÉGRÉE (SANS BOUCLE)
-  // ================================================================
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc,
-    onSnapshot,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+// MATIERE - AUTH INTÉGRÉE - VERSION CORRIGÉE
+// ================================================================
 
-  // ================================================================
-  // CONFIG
-  // ================================================================
-  const firebaseConfig = {
-    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-    authDomain: "arvexa-fbf10.firebaseapp.com",
-    projectId: "arvexa-fbf10",
-    storageBucket: "arvexa-fbf10.firebasestorage.app",
-    messagingSenderId: "920108330053",
-    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-  };
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  getIdToken
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+// ================================================================
+// CONFIG
+// ================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
 
-  // ✅ Persistance
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ✅ Persistance
+try {
+  await setPersistence(auth, browserLocalPersistence);
+  console.log('🔐 Persistance locale activée');
+} catch (e) { console.warn('⚠️ Persistance:', e); }
+
+// ================================================================
+// SESSION CACHE
+// ================================================================
+const SESSION_KEY = 'arvexa_session';
+
+function saveSession(user) {
+  if (!user) return;
   try {
-    await setPersistence(auth, browserLocalPersistence);
-    console.log('🔐 Persistance locale activée');
-  } catch (e) { console.warn('⚠️ Persistance:', e); }
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      displayName: user.displayName,
+      emailVerified: user.emailVerified,
+      lastLogin: new Date().toISOString(),
+      token: user.accessToken
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+  } catch (e) {}
+}
 
-  // ================================================================
-  // SESSION CACHE
-  // ================================================================
-  const SESSION_KEY = 'arvexa_session';
+function getSession() {
+  try {
+    let data = sessionStorage.getItem(SESSION_KEY);
+    if (!data) data = localStorage.getItem(SESSION_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (e) { return null; }
+}
 
-  function saveSession(user) {
-    if (!user) return;
-    try {
-      const data = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        emailVerified: user.emailVerified,
-        lastLogin: new Date().toISOString()
+function clearSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem('arvexa_user_data');
+    localStorage.removeItem('arvexa_progress_data');
+  } catch (e) {}
+}
+
+// ================================================================
+// URL PARAMS
+// ================================================================
+const params = new URLSearchParams(window.location.search);
+const subjectKey = params.get('subject') || 'mathematiques';
+console.log('📚 Matière sélectionnée:', subjectKey);
+
+// ================================================================
+// CONFIG MATIÈRES (FALLBACK)
+// ================================================================
+const SUBJECTS_CONFIG = {
+  mathematiques: { name: 'Mathématiques', icon: 'fa-square-root-variable', color: '#E0B84A' },
+  physique: { name: 'Physique', icon: 'fa-bolt', color: '#4AAFE0' },
+  chimie: { name: 'Chimie', icon: 'fa-flask', color: '#E07A4A' },
+  svt: { name: 'SVT', icon: 'fa-dna', color: '#7AE04A' }
+};
+
+const DEFAULT_CHAPTERS = {
+  mathematiques: [
+    'Nombres complexes',
+    'Probabilités - Variable aléatoire',
+    'Fonction logarithme',
+    'Fonction exponentielle',
+    'Étude des fonctions numériques',
+    'Calcul intégral',
+    'Suites numériques',
+    'Équations différentielles'
+  ],
+  physique: [
+    'Cinématique',
+    'Mouvement du centre d\'inertie',
+    'Champ de pesanteur',
+    'Particules chargées',
+    'Oscillateurs mécaniques',
+    'Vibrations',
+    'Propagation des ondes',
+    'Superposition',
+    'Interférences lumineuses',
+    'Champ magnétique',
+    'Force de Lorentz',
+    'Force de Laplace',
+    'Induction électromagnétique',
+    'Auto-Induction',
+    'Circuit LC',
+    'Régime sinusoïdal',
+    'Radioactivité'
+  ],
+  chimie: [
+    'Solutions aqueuses',
+    'Acide chlorhydrique / Soude',
+    'Couples acide/base',
+    'Réaction acide-base',
+    'Solution tampon',
+    'Alcools',
+    'Acides carboxyliques',
+    'Amines',
+    'Acides α-aminés'
+  ],
+  svt: ['Génétique', 'Immunologie', 'Écologie', 'Évolution']
+};
+
+// ================================================================
+// DOM
+// ================================================================
+const chapterList = document.getElementById('chapterList');
+const toast = document.getElementById('toast');
+const toastText = document.getElementById('toastText');
+
+// ================================================================
+// TOAST
+// ================================================================
+function showToast(message, type = 'info') {
+  toastText.textContent = message;
+  toast.className = 'toast ' + type;
+  toast.classList.add('show');
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function navigateToChapter(chapterIndex) {
+  window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
+}
+
+function showPremiumPopup() {
+  document.getElementById('premiumPopup').classList.remove('hide');
+  document.getElementById('premiumPopup').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function hidePremiumPopup() {
+  document.getElementById('premiumPopup').classList.remove('show');
+  document.getElementById('premiumPopup').classList.add('hide');
+  document.body.style.overflow = '';
+}
+
+// Exposer pour les onclick
+window.navigateToChapter = navigateToChapter;
+window.showPremiumPopup = showPremiumPopup;
+window.hidePremiumPopup = hidePremiumPopup;
+
+// ================================================================
+// POPUP ÉVÉNEMENTS
+// ================================================================
+document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
+document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
+document.getElementById('premiumPopup').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) hidePremiumPopup();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') hidePremiumPopup();
+});
+
+// ================================================================
+// ESCAPE HTML
+// ================================================================
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ================================================================
+// ÉTAT
+// ================================================================
+let subjectConfig = null;
+let chapters = [];
+let chapterProgress = {};
+let isPremium = false;
+let userData = null;
+let unsubscribeSubject = null;
+let unsubscribeProgress = null;
+
+// ================================================================
+// CHARGEMENT DES DONNÉES (Cache + Firestore)
+// ================================================================
+
+function loadFromCache() {
+  try {
+    const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
+    if (cached) {
+      const data = JSON.parse(cached);
+      console.log('📦 Cache trouvé:', data);
+      subjectConfig = data.subjectConfig;
+      chapters = data.chapters;
+      
+      if (chapters && chapters.length > 0) {
+        renderPage();
+        return true;
+      } else {
+        console.warn('⚠️ Cache vide, fallback nécessaire');
+        return false;
+      }
+    }
+  } catch (e) {
+    console.warn('⚠️ Erreur lecture cache:', e);
+  }
+  return false;
+}
+
+function loadSubjectData(user) {
+  if (unsubscribeSubject) {
+    unsubscribeSubject();
+    unsubscribeSubject = null;
+  }
+
+  const subjectRef = doc(db, 'subjects', subjectKey);
+
+  unsubscribeSubject = onSnapshot(subjectRef, (snap) => {
+    console.log('📡 Firestore réponse pour:', subjectKey);
+    
+    if (snap.exists()) {
+      const data = snap.data();
+      console.log('✅ Données Firestore reçues:', data);
+      
+      subjectConfig = {
+        name: data.name || SUBJECTS_CONFIG[subjectKey]?.name || subjectKey,
+        icon: data.icon || SUBJECTS_CONFIG[subjectKey]?.icon || 'fa-book',
+        color: data.color || SUBJECTS_CONFIG[subjectKey]?.color || '#B8860B'
       };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-    } catch (e) {}
-  }
+      
+      // Récupérer les chapitres
+      if (data.chapters && Array.isArray(data.chapters) && data.chapters.length > 0) {
+        chapters = data.chapters;
+        console.log('📚 Chapitres Firestore:', chapters);
+      } else {
+        // Fallback sur DEFAULT_CHAPTERS
+        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+        console.log('📚 Chapitres fallback (DEFAULT_CHAPTERS):', chapters);
+      }
 
-  function clearSession() {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem('arvexa_user_data');
-      localStorage.removeItem('arvexa_progress_data');
-    } catch (e) {}
-  }
+      // Mettre en cache
+      try {
+        localStorage.setItem('arvexa_subject_' + subjectKey, JSON.stringify({ subjectConfig, chapters }));
+        console.log('💾 Données mises en cache');
+      } catch (e) {}
 
-  function getCachedSession() {
-    try {
-      let data = sessionStorage.getItem(SESSION_KEY);
-      if (!data) data = localStorage.getItem(SESSION_KEY);
-      return data ? JSON.parse(data) : null;
-    } catch (e) { return null; }
-  }
+      renderPage();
+      if (user) loadProgress(user);
 
-  // ================================================================
-  // URL PARAMS
-  // ================================================================
-  const params = new URLSearchParams(window.location.search);
-  const subjectKey = params.get('subject') || 'mathematiques';
-
-  // ================================================================
-  // CONFIG MATIÈRES
-  // ================================================================
-  const SUBJECTS_CONFIG = {
-    mathematiques: { name: 'Mathématiques', icon: 'fa-square-root-variable', color: '#E0B84A' },
-    physique: { name: 'Physique', icon: 'fa-bolt', color: '#4AAFE0' },
-    chimie: { name: 'Chimie', icon: 'fa-flask', color: '#E07A4A' },
-    svt: { name: 'SVT', icon: 'fa-dna', color: '#7AE04A' }
-  };
-
-  const DEFAULT_CHAPTERS = {
-    mathematiques: [
-      'Nombres complexes',
-      'Probabilités - Variable aléatoire',
-      'Fonction logarithme',
-      'Fonction exponentielle',
-      'Étude des fonctions numériques',
-      'Calcul intégral',
-      'Suites numériques',
-      'Équations différentielles'
-    ],
-    physique: [
-      'Cinématique',
-      'Mouvement du centre d\'inertie',
-      'Champ de pesanteur',
-      'Particules chargées',
-      'Oscillateurs mécaniques',
-      'Vibrations',
-      'Propagation des ondes',
-      'Superposition',
-      'Interférences lumineuses',
-      'Champ magnétique',
-      'Force de Lorentz',
-      'Force de Laplace',
-      'Induction électromagnétique',
-      'Auto-Induction',
-      'Circuit LC',
-      'Régime sinusoïdal',
-      'Radioactivité'
-    ],
-    chimie: [
-      'Solutions aqueuses',
-      'Acide chlorhydrique / Soude',
-      'Couples acide/base',
-      'Réaction acide-base',
-      'Solution tampon',
-      'Alcools',
-      'Acides carboxyliques',
-      'Amines',
-      'Acides α-aminés'
-    ],
-    svt: ['Génétique', 'Immunologie', 'Écologie', 'Évolution']
-  };
-
-  // ================================================================
-  // DOM
-  // ================================================================
-  const chapterList = document.getElementById('chapterList');
-  const toast = document.getElementById('toast');
-  const toastText = document.getElementById('toastText');
-
-  // ================================================================
-  // TOAST
-  // ================================================================
-  function showToast(message, type = 'info') {
-    toastText.textContent = message;
-    toast.className = 'toast ' + type;
-    toast.classList.add('show');
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-  }
-
-  // ================================================================
-  // NAVIGATION
-  // ================================================================
-  function navigateToChapter(chapterIndex) {
-    window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
-  }
-
-  function showPremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('hide');
-    document.getElementById('premiumPopup').classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function hidePremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('show');
-    document.getElementById('premiumPopup').classList.add('hide');
-    document.body.style.overflow = '';
-  }
-
-  // Exposer pour les onclick
-  window.navigateToChapter = navigateToChapter;
-  window.showPremiumPopup = showPremiumPopup;
-  window.hidePremiumPopup = hidePremiumPopup;
-
-  // ================================================================
-  // POPUP ÉVÉNEMENTS
-  // ================================================================
-  document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
-  document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
-  document.getElementById('premiumPopup').addEventListener('click', (e) => {
-    if (e.target === e.currentTarget) hidePremiumPopup();
+    } else {
+      // ❌ Document Firestore inexistant
+      console.warn('⚠️ Document Firestore inexistant pour:', subjectKey);
+      
+      // Fallback direct sur DEFAULT_CHAPTERS
+      const defaultData = SUBJECTS_CONFIG[subjectKey];
+      if (defaultData) {
+        subjectConfig = {
+          name: defaultData.name,
+          icon: defaultData.icon,
+          color: defaultData.color
+        };
+        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+        console.log('📚 Fallback DEFAULT_CHAPTERS:', chapters);
+        
+        renderPage();
+        if (user) loadProgress(user);
+      } else {
+        console.error('❌ Aucune donnée disponible pour:', subjectKey);
+        window.location.replace('index.html');
+      }
+    }
+  }, (error) => {
+    console.error('❌ Erreur Firestore:', error);
+    
+    // Essayer le cache
+    if (!loadFromCache()) {
+      // Fallback final
+      const defaultData = SUBJECTS_CONFIG[subjectKey];
+      if (defaultData) {
+        subjectConfig = {
+          name: defaultData.name,
+          icon: defaultData.icon,
+          color: defaultData.color
+        };
+        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+        console.log('📚 Fallback final DEFAULT_CHAPTERS:', chapters);
+        renderPage();
+        if (user) loadProgress(user);
+        showToast('📶 Données chargées depuis le cache', 'info');
+      } else {
+        window.location.replace('index.html');
+      }
+    }
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') hidePremiumPopup();
+}
+
+function loadProgress(user) {
+  if (unsubscribeProgress) {
+    unsubscribeProgress();
+    unsubscribeProgress = null;
+  }
+
+  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+
+  unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      console.log('📊 Progression reçue:', data);
+      
+      if (data.subjects && data.subjects[subjectKey]) {
+        const subjectProgress = data.subjects[subjectKey];
+        if (subjectProgress.chapters && subjectProgress.chapters.progress) {
+          chapterProgress = subjectProgress.chapters.progress || {};
+          console.log('📊 ChapterProgress:', chapterProgress);
+        }
+      }
+      if (subjectConfig && chapters.length) {
+        renderPage();
+      }
+    }
+  }, (error) => {
+    console.warn('⚠️ Erreur progression:', error);
   });
+}
 
-  // ================================================================
-  // CALCULS
-  // ================================================================
-  function computeExamCountdown() {
-    const now = new Date();
-    let target = new Date(now.getFullYear(), 5, 17);
-    if (target < now) target = new Date(now.getFullYear() + 1, 5, 17);
-    const diffMs = target - now;
-    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+// ================================================================
+// RENDU
+// ================================================================
+
+function renderPage() {
+  console.log('🔧 renderPage() appelé');
+  console.log('📚 subjectConfig:', subjectConfig);
+  console.log('📚 chapters:', chapters);
+  
+  if (!subjectConfig) {
+    console.warn('⚠️ subjectConfig est null');
+    return;
+  }
+  
+  if (!chapters || chapters.length === 0) {
+    console.warn('⚠️ chapters est vide ou null');
+    const list = document.getElementById('chapterList');
+    if (list) {
+      list.innerHTML = `
+        <div style="text-align:center;padding:40px 20px;color:var(--text-muted);">
+          <div style="font-size:32px;margin-bottom:8px;">📭</div>
+          <p>Aucun chapitre disponible pour cette matière.</p>
+        </div>
+      `;
+    }
+    return;
   }
 
-  function getLevel(completed, total) {
-    if (!total || total === 0) return '🌱 Débutant';
-    const ratio = completed / total;
-    if (ratio === 0) return '🌱 Débutant';
-    if (ratio < 0.25) return '📖 Apprenti';
-    if (ratio < 0.50) return '⚡ En progression';
-    if (ratio < 0.75) return '🔥 Enflammé';
-    if (ratio < 1) return '⭐ Expert';
-    return '👑 Maître ARVEXA';
-  }
+  // Titre
+  const titleSpan = document.querySelector('#pageTitle span');
+  if (titleSpan) titleSpan.textContent = subjectConfig.name;
+  document.title = 'ARVEXA - ' + subjectConfig.name;
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // ================================================================
-  // RENDU
-  // ================================================================
-
-  let subjectConfig = null;
-  let chapters = [];
-  let chapterProgress = {};
-  let isPremium = false;
-  let userData = null;
-
-  function renderPage() {
-    if (!subjectConfig || !chapters.length) return;
-
-    // Titre
-    document.querySelector('#pageTitle span').textContent = subjectConfig.name;
-    document.title = 'ARVEXA - ' + subjectConfig.name;
-
-    // Hero
-    const iconWrap = document.getElementById('subjectIconWrap');
+  // Hero
+  const iconWrap = document.getElementById('subjectIconWrap');
+  if (iconWrap) {
     iconWrap.innerHTML = '<i class="fas ' + subjectConfig.icon + '"></i>';
     iconWrap.style.background = subjectConfig.color + '12';
     iconWrap.style.color = subjectConfig.color;
-    document.getElementById('subjectTitle').textContent = subjectConfig.name;
+  }
+  
+  const titleEl = document.getElementById('subjectTitle');
+  if (titleEl) titleEl.textContent = subjectConfig.name;
+  
+  const subtitleEl = document.getElementById('subjectSubtitle');
+  if (subtitleEl) subtitleEl.textContent = chapters.length + ' chapitres disponibles';
 
-    const total = chapters.length;
-    const completed = Object.values(chapterProgress).filter(v => v >= 100).length;
-    const progress = total > 0 ? Math.round((completed / total) * 100) : 0;
+  // Liste des chapitres
+  renderChapters();
+}
 
-    document.getElementById('subjectSubtitle').textContent =
-      `${total} chapitres — ${completed} terminés — ${isPremium ? '✅ Premium' : '🔓 Gratuit + Premium'}`;
-
-    document.getElementById('heroLevel').textContent = getLevel(completed, total);
-    document.getElementById('heroChapters').textContent = `${completed}/${total}`;
-    document.getElementById('heroProgress').textContent = progress + '%';
-
-    const days = computeExamCountdown();
-    document.getElementById('heroTimer').textContent = days > 0 ? days + 'j' : '🎯 BAC!';
-
-    // Liste des chapitres
-    renderChapters();
+function renderChapters() {
+  const list = document.getElementById('chapterList');
+  if (!list) {
+    console.warn('⚠️ chapterList introuvable');
+    return;
   }
 
-  function renderChapters() {
-    const list = document.getElementById('chapterList');
-    if (!list) return;
+  console.log('🔧 renderChapters() - Nombre de chapitres:', chapters.length);
 
-    let html = '';
+  if (!chapters || chapters.length === 0) {
+    list.innerHTML = `
+      <div style="text-align:center;padding:40px 20px;color:var(--text-muted);">
+        <div style="font-size:32px;margin-bottom:8px;">📭</div>
+        <p>Aucun chapitre disponible pour cette matière.</p>
+      </div>
+    `;
+    return;
+  }
 
-    chapters.forEach((chap, index) => {
-      const isFree = index === 0 || chap.isFree === true;
-      const isLocked = !isPremium && !isFree;
-      const prog = chapterProgress[index] || 0;
-      const isCompleted = prog >= 100;
-      const isInProgress = prog > 0 && prog < 100;
+  let html = '';
 
-      let numClass = '';
-      if (isCompleted) numClass = 'completed';
-      else if (isInProgress) numClass = 'in-progress';
+  chapters.forEach((chap, index) => {
+    // Gérer le cas où chap est une string ou un objet
+    let title = typeof chap === 'string' ? chap : (chap.title || 'Chapitre ' + (index + 1));
+    let isFree = typeof chap === 'object' ? (chap.isFree === true) : (index === 0);
+    
+    const isLocked = !isPremium && !isFree;
+    const prog = chapterProgress[index] || 0;
+    const isCompleted = prog >= 100;
+    const isInProgress = prog > 0 && prog < 100;
 
-      let badge = '';
-      if (isCompleted) badge = '<span class="badge-completed">✅ Terminé</span>';
-      else if (isInProgress) badge = `<span class="badge-progress">⏳ ${Math.round(prog)}%</span>`;
-      else if (isLocked) badge = '<span class="badge-locked">🔒 Premium</span>';
-      else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
+    let numClass = '';
+    if (isCompleted) numClass = 'completed';
+    else if (isInProgress) numClass = 'in-progress';
 
-      let progressBar = '';
-      if (isInProgress || isCompleted) {
-        const color = isCompleted ? 'var(--success)' : 'var(--warning)';
-        progressBar = `
-          <div class="cc-progress">
-            <div class="cc-progress-bar">
-              <div class="fill" style="width:${Math.min(prog, 100)}%;background:${color};"></div>
-            </div>
-            <span class="cc-progress-text">${Math.round(prog)}%</span>
+    let badge = '';
+    if (isCompleted) badge = '<span class="badge-completed">✅ Terminé</span>';
+    else if (isInProgress) badge = `<span class="badge-progress">⏳ ${Math.round(prog)}%</span>`;
+    else if (isLocked) badge = '<span class="badge-locked">🔒 Premium</span>';
+    else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
+
+    let progressBar = '';
+    if (isInProgress || isCompleted) {
+      const color = isCompleted ? 'var(--success)' : 'var(--warning)';
+      progressBar = `
+        <div class="cc-progress">
+          <div class="cc-progress-bar">
+            <div class="fill" style="width:${Math.min(prog, 100)}%;background:${color};"></div>
           </div>
-        `;
-      }
-
-      const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
-
-      html += `
-        <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
-          <div class="cc-top">
-            <div class="cc-left">
-              <div class="cc-num ${numClass}">${index + 1}</div>
-              <div class="cc-info">
-                <div class="cc-title">
-                  ${escapeHtml(chap.title)}
-                  ${badge}
-                </div>
-                <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
-                ${progressBar}
-              </div>
-            </div>
-            <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
-          </div>
+          <span class="cc-progress-text">${Math.round(prog)}%</span>
         </div>
       `;
-    });
+    }
 
-    list.innerHTML = html;
+    const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
+
+    html += `
+      <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
+        <div class="cc-top">
+          <div class="cc-left">
+            <div class="cc-num ${numClass}">${index + 1}</div>
+            <div class="cc-info">
+              <div class="cc-title">
+                ${escapeHtml(title)}
+                ${badge}
+              </div>
+              <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
+              ${progressBar}
+            </div>
+          </div>
+          <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+    `;
+  });
+
+  list.innerHTML = html;
+  console.log('✅ Chapitres rendus:', chapters.length);
+}
+
+// ================================================================
+// RAFRAÎCHISSEMENT
+// ================================================================
+
+document.getElementById('refreshBtn').addEventListener('click', () => {
+  showToast('🔄 Rafraîchissement...', 'info');
+  // Les listeners sont déjà en place
+});
+
+// ================================================================
+// ⭐ VÉRIFICATION D'AUTH - VERSION RENFORCÉE (SANS BOUCLE)
+// ================================================================
+let authChecked = false;
+let isRedirecting = false;
+let redirectCooldown = 0;
+
+onAuthStateChanged(auth, async (user) => {
+  if (authChecked) {
+    console.log('⏳ Auth déjà vérifié, skip');
+    return;
   }
 
-  // ================================================================
-  // CHARGEMENT DES DONNÉES (Cache + Firestore)
-  // ================================================================
+  const now = Date.now();
+  if (now - redirectCooldown < 3000) {
+    console.log('⏳ Cooldown actif, skip');
+    return;
+  }
 
-  function loadFromCache() {
+  authChecked = true;
+
+  if (user) {
+    console.log('✅ Utilisateur connecté:', user.uid);
+
     try {
-      const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
-      if (cached) {
-        const data = JSON.parse(cached);
-        subjectConfig = data.subjectConfig;
-        chapters = data.chapters;
-        renderPage();
-        return true;
-      }
-    } catch (e) {}
-    return false;
-  }
-
-  let unsubscribeSubject = null;
-  let unsubscribeProgress = null;
-
-  function loadSubjectData(user) {
-    if (unsubscribeSubject) {
-      unsubscribeSubject();
-      unsubscribeSubject = null;
+      await getIdToken(user, true);
+      console.log('🔄 Token rafraîchi');
+    } catch (e) {
+      console.warn('⚠️ Erreur rafraîchissement token:', e);
     }
 
-    const subjectRef = doc(db, 'subjects', subjectKey);
+    saveSession(user);
 
-    unsubscribeSubject = onSnapshot(subjectRef, (snap) => {
-      if (snap.exists()) {
-        const data = snap.data();
-        subjectConfig = {
-          name: data.name || SUBJECTS_CONFIG[subjectKey]?.name || subjectKey,
-          icon: data.icon || SUBJECTS_CONFIG[subjectKey]?.icon || 'fa-book',
-          color: data.color || SUBJECTS_CONFIG[subjectKey]?.color || '#B8860B'
-        };
-        chapters = data.chapters || DEFAULT_CHAPTERS[subjectKey] || [];
-
-        // Mettre en cache
-        try {
-          localStorage.setItem('arvexa_subject_' + subjectKey, JSON.stringify({ subjectConfig, chapters }));
-        } catch (e) {}
-
-        renderPage();
-        if (user) loadProgress(user);
-
-      } else {
-        // Fallback
-        const defaultData = SUBJECTS_CONFIG[subjectKey];
-        if (defaultData) {
-          subjectConfig = {
-            name: defaultData.name,
-            icon: defaultData.icon,
-            color: defaultData.color
-          };
-          chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-          renderPage();
-          if (user) loadProgress(user);
-        } else {
-          window.location.replace('index.html');
-        }
+    // Charger les données utilisateur
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        userData = userDoc.data();
+        isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+        console.log('👑 Premium:', isPremium);
       }
-    }, (error) => {
-      console.warn('⚠️ Erreur Firestore:', error);
-      if (!loadFromCache()) {
-        const defaultData = SUBJECTS_CONFIG[subjectKey];
-        if (defaultData) {
-          subjectConfig = {
-            name: defaultData.name,
-            icon: defaultData.icon,
-            color: defaultData.color
-          };
-          chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-          renderPage();
-          if (user) loadProgress(user);
-        } else {
-          window.location.replace('index.html');
-        }
-      }
-    });
-  }
-
-  function loadProgress(user) {
-    if (unsubscribeProgress) {
-      unsubscribeProgress();
-      unsubscribeProgress = null;
+    } catch (e) {
+      console.warn('⚠️ Erreur chargement user:', e);
     }
 
-    const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+    loadSubjectData(user);
 
-    unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.subjects && data.subjects[subjectKey]) {
-          const subjectProgress = data.subjects[subjectKey];
-          if (subjectProgress.chapters && subjectProgress.chapters.progress) {
-            chapterProgress = subjectProgress.chapters.progress || {};
-          }
-        }
-        if (subjectConfig && chapters.length) {
-          renderPage();
-        }
-      }
-    }, (error) => {
-      console.warn('⚠️ Erreur progression:', error);
-    });
-  }
-
-  // ================================================================
-  // RAFRAÎCHISSEMENT
-  // ================================================================
-
-  document.getElementById('refreshBtn').addEventListener('click', () => {
-    showToast('🔄 Rafraîchissement...', 'info');
-    // Les listeners sont déjà en place
-  });
-
-  // ================================================================
-  // ⭐ VÉRIFICATION D'AUTH - UNE SEULE FOIS (SANS BOUCLE)
-  // ================================================================
-  let authChecked = false;
-  let isRedirecting = false;
-
-  onAuthStateChanged(auth, (user) => {
-    if (authChecked) return;
-    authChecked = true;
-
-    if (user) {
-      // ✅ Connecté
-      saveSession(user);
-      console.log('📚 Matière - Utilisateur:', user.uid);
-
-      // Charger les données utilisateur
-      getDoc(doc(db, 'users', user.uid)).then((docSnap) => {
-        if (docSnap.exists()) {
-          userData = docSnap.data();
-          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-        }
-        loadSubjectData(user);
-      }).catch(() => {
-        loadSubjectData(user);
-      });
-
-    } else {
-      // ❌ Non connecté - REDIRECTION UNIQUE
-      if (isRedirecting) return;
-      isRedirecting = true;
-      clearSession();
-      console.log('🔒 Non connecté, redirection vers login');
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+  } else {
+    if (isRedirecting) return;
+    isRedirecting = true;
+    redirectCooldown = now;
+    clearSession();
+    console.log('🔒 Non connecté, redirection vers login');
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+    setTimeout(() => {
       window.location.href = 'login.html';
-    }
-  });
+    }, 300);
+  }
+});
 
-  // ================================================================
-  // RÉSEAU : GESTION HORS-LIGNE
-  // ================================================================
-  window.addEventListener('online', () => {
-    showToast('📶 Connexion rétablie', 'success');
-  });
-  window.addEventListener('offline', () => {
-    showToast('📶 Connexion perdue', 'error');
-  });
+// ================================================================
+// RÉSEAU : GESTION HORS-LIGNE
+// ================================================================
+window.addEventListener('online', () => {
+  showToast('📶 Connexion rétablie', 'success');
+});
+window.addEventListener('offline', () => {
+  showToast('📶 Connexion perdue', 'error');
+});
 
-  console.log('📚 ARVEXA - Matière (auth intégrée, sans boucle)');
+console.log('📚 ARVEXA - Matière (version corrigée)');
   </script>
 </body>
+</html>
 </html>
