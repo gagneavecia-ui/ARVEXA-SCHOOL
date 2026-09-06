@@ -28,14 +28,13 @@
       --text-muted: #5A5A4A;
       --card-border: rgba(184,134,11,0.08);
       --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
-      --shadow: 0 8px 32px rgba(0,0,0,0.4);
       --radius: 16px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; height: 100%; }
     body {
-      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
       color: var(--text-light);
       font-size: 15px;
@@ -44,7 +43,6 @@
       height: 100%;
       width: 100%;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
     }
@@ -56,6 +54,7 @@
                   linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
     }
 
+    /* ===== HEADER ===== */
     .header {
       position: sticky; top: 0; z-index: 50;
       display: flex; align-items: center; justify-content: space-between;
@@ -81,30 +80,12 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;
     }
     .header .header-title i { color: var(--accent-bright); margin-right: 6px; font-size: 13px; }
-    .header-right { display: flex; align-items: center; gap: 6px; }
-    .header-right button {
-      display: flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.05); background: transparent;
-      color: var(--text-muted); cursor: pointer; transition: var(--transition);
-      font-size: 13px;
-    }
-    .header-right button:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
-    .header-right button.active { color: var(--accent-bright); border-color: rgba(184,134,11,0.2); }
-    .header-right .timer-display {
-      display: flex; align-items: center; gap: 4px;
-      font-size: 12px; color: var(--text-muted);
-      padding: 4px 10px; border-radius: 8px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-    .header-right .timer-display i { color: var(--accent-bright); font-size: 10px; }
-    .header-right .timer-display .time { font-weight: 600; color: var(--text-light); font-family: 'Inter', monospace; min-width: 45px; }
 
+    /* ===== CONTENT ===== */
     .content-wrapper {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 28px 100px;
+      padding: 20px 28px 40px;
       max-width: 900px;
       margin: 0 auto;
       width: 100%;
@@ -196,12 +177,6 @@
       font-weight: 700;
       color: #e8ecf8;
       line-height: 1.6;
-    }
-    .content-wrapper .formula-box .formula-desc {
-      font-size: 13px;
-      color: var(--text-dim);
-      margin-top: 8px;
-      line-height: 1.5;
     }
     .content-wrapper .card {
       background: rgba(255, 255, 255, 0.02);
@@ -356,81 +331,60 @@
     .content-wrapper .empty-state h4 { font-size: 18px; color: var(--text-dim); font-weight: 600; }
     .content-wrapper .empty-state p { font-size: 14px; color: var(--text-muted); max-width: 400px; }
 
-    .notes-section {
-      margin-top: 30px;
-      padding: 16px 20px;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      display: none;
-    }
-    .notes-section.show { display: block; }
-    .notes-section .notes-label {
-      font-size: 12px; font-weight: 600; color: var(--text-muted);
-      margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
-    }
-    .notes-section .notes-label i { color: var(--accent-bright); font-size: 14px; }
-    .notes-section textarea {
-      width: 100%; padding: 12px 14px; border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02);
-      color: var(--text-light); font-size: 14px;
-      font-family: 'Inter', sans-serif;
-      resize: vertical; min-height: 80px;
-      transition: var(--transition);
-    }
-    .notes-section textarea:focus { outline: none; border-color: rgba(184,134,11,0.2); }
-    .notes-section textarea::placeholder { color: var(--text-muted); }
-    .notes-section .notes-saved {
-      font-size: 11px; color: var(--success);
-      display: none; margin-top: 4px; text-align: right;
-    }
-    .notes-section .notes-saved.show { display: block; }
-
-    .nav-bottom {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 20px;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(184,134,11,0.06);
-      z-index: 40;
-      gap: 12px;
-    }
-    .nav-bottom .nav-btn {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 18px; border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.05);
-      background: transparent;
-      color: var(--text-dim); cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      font-size: 13px; font-weight: 500;
-    }
-    .nav-bottom .nav-btn:hover:not(:disabled) {
-      border-color: rgba(184,134,11,0.14);
-      color: var(--text-light);
-      background: rgba(255,255,255,0.03);
-    }
-    .nav-bottom .nav-btn:disabled {
-      opacity: 0.2; cursor: not-allowed;
-    }
-    .nav-bottom .nav-btn i { font-size: 14px; }
-    .nav-bottom .nav-btn.primary {
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A; border-color: transparent;
-    }
-    .nav-bottom .nav-btn.primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(184,134,11,0.2);
-    }
-    .nav-bottom .nav-center {
-      font-size: 12px; color: var(--text-muted);
+    /* ===== PREMIUM BLOCKED ===== */
+    .premium-blocked {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      padding: 80px 20px;
+      min-height: 400px;
+      gap: 16px;
+    }
+    .premium-blocked .premium-blocked-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(184, 134, 11, 0.1);
+      border: 2px solid rgba(184, 134, 11, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: var(--accent-bright);
+    }
+    .premium-blocked h2 {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      color: var(--text-light);
+    }
+    .premium-blocked p {
+      font-size: 15px;
+      color: var(--text-dim);
+      max-width: 400px;
+    }
+    .premium-blocked .btn-premium {
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A;
+      font-weight: 700;
+      font-size: 15px;
+      text-decoration: none;
+      transition: var(--transition);
+      margin-top: 8px;
+    }
+    .premium-blocked .btn-premium:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(184, 134, 11, 0.25);
     }
 
+    /* ===== TOAST ===== */
     .toast {
-      position: fixed; bottom: 80px; left: 50%;
+      position: fixed; bottom: 30px; left: 50%;
       transform: translateX(-50%) translateY(100px);
       padding: 12px 20px; border-radius: 12px;
       background: var(--bg-card); backdrop-filter: blur(16px);
@@ -446,23 +400,20 @@
     .toast.error { border-color: rgba(184,92,58,0.3); }
 
     @media (max-width: 768px) {
-      .content-wrapper { padding: 16px 16px 100px; }
+      .content-wrapper { padding: 16px 16px 40px; }
       .content-wrapper .chapitre-header .chapitre-titre { font-size: 24px; }
       .content-wrapper .section-titre { font-size: 18px; }
       .content-wrapper .formula-box .formula-main { font-size: 18px; }
       .header .header-title { max-width: 150px; font-size: 13px; }
-      .nav-bottom .nav-btn { padding: 8px 12px; font-size: 12px; }
-      .nav-bottom .nav-btn span { display: none; }
     }
     @media (max-width: 480px) {
-      .content-wrapper { padding: 12px 12px 90px; }
+      .content-wrapper { padding: 12px 12px 30px; }
       .content-wrapper .chapitre-header .chapitre-titre { font-size: 20px; }
       .content-wrapper .section-titre { font-size: 16px; }
       .header { padding: 8px 12px; }
       .header .header-title { max-width: 100px; font-size: 12px; }
-      .header-right .timer-display { font-size: 10px; padding: 2px 8px; }
-      .header-right button { width: 30px; height: 30px; font-size: 12px; }
-      .nav-bottom { padding: 8px 12px; }
+      .premium-blocked h2 { font-size: 20px; }
+      .premium-blocked .btn-premium { padding: 10px 20px; font-size: 13px; }
     }
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -476,6 +427,7 @@
 
 <div class="gradient-bg"></div>
 
+<!-- ===== HEADER ===== -->
 <header class="header">
   <div class="header-left">
     <button class="back-btn" id="backBtn" aria-label="Retour">
@@ -485,20 +437,9 @@
       <i class="fas fa-book-open"></i> <span>Chargement...</span>
     </div>
   </div>
-  <div class="header-right">
-    <div class="timer-display">
-      <i class="fas fa-clock"></i>
-      <span class="time" id="timerDisplay">00:00</span>
-    </div>
-    <button id="bookmarkBtn" title="Marquer cette section">
-      <i class="fas fa-bookmark"></i>
-    </button>
-    <button id="notesToggleBtn" title="Notes">
-      <i class="fas fa-sticky-note"></i>
-    </button>
-  </div>
 </header>
 
+<!-- ===== CONTENT ===== -->
 <div class="content-wrapper" id="contentWrapper">
   <div id="contentBody">
     <div class="loading-state">
@@ -506,31 +447,17 @@
       <p>Chargement du contenu...</p>
     </div>
   </div>
-
-  <div class="notes-section" id="notesSection">
-    <div class="notes-label"><i class="fas fa-sticky-note"></i> Mes notes</div>
-    <textarea id="notesTextarea" placeholder="Écris tes notes personnelles sur cette partie..."></textarea>
-    <div class="notes-saved" id="notesSaved">✅ Sauvegardé</div>
-  </div>
 </div>
 
-<div class="nav-bottom">
-  <button class="nav-btn" id="prevBtn" disabled>
-    <i class="fas fa-chevron-left"></i>
-    <span>Précédent</span>
-  </button>
-  <div class="nav-center" id="navProgress">0 / 0</div>
-  <button class="nav-btn primary" id="nextBtn" disabled>
-    <span>Suivant</span>
-    <i class="fas fa-chevron-right"></i>
-  </button>
-</div>
-
+<!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
 
+<!-- ============================================================ -->
+<!-- SCRIPTS                                                       -->
+<!-- ============================================================ -->
 <script type="importmap">
 {
   "imports": {
@@ -543,7 +470,7 @@
 
 <script type="module">
 // ================================================================
-// LECTURE - PAGE DE LECTURE PLEIN ÉCRAN
+// LECTURE - PAGE DE LECTURE PLEIN ÉCRAN (AVEC PROTECTION PREMIUM)
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -553,12 +480,10 @@ import {
   setPersistence,
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
+// ================================================================
+// CONFIG
+// ================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -570,7 +495,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 try {
   await setPersistence(auth, browserLocalPersistence);
@@ -591,22 +515,9 @@ const partIndex = parseInt(params.get('part')) || 0;
 const contentBody = document.getElementById('contentBody');
 const pageTitle = document.querySelector('#pageTitle span');
 const backBtn = document.getElementById('backBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const navProgress = document.getElementById('navProgress');
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
-
-const timerDisplay = document.getElementById('timerDisplay');
-let timerSeconds = 0;
-let timerInterval = null;
-
-const notesTextarea = document.getElementById('notesTextarea');
-const notesSaved = document.getElementById('notesSaved');
-const notesToggleBtn = document.getElementById('notesToggleBtn');
-const notesSection = document.getElementById('notesSection');
-const bookmarkBtn = document.getElementById('bookmarkBtn');
 
 // ================================================================
 // TOAST
@@ -621,37 +532,55 @@ function showToast(message, type = 'success') {
 }
 
 // ================================================================
-// TIMER
+// VÉRIFICATION DES ACCÈS (PROTECTION PREMIUM)
 // ================================================================
-function startTimer() {
-  if (timerInterval) return;
-  const key = `arvexa_timer_${subject}_${chapter}_${tab}_${partIndex}`;
-  const saved = localStorage.getItem(key);
-  if (saved) timerSeconds = parseInt(saved) || 0;
-  
-  timerInterval = setInterval(() => {
-    timerSeconds++;
-    updateTimerDisplay();
-    if (timerSeconds % 30 === 0) {
-      localStorage.setItem(key, timerSeconds);
-    }
-  }, 1000);
-  updateTimerDisplay();
-}
 
-function stopTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-    const key = `arvexa_timer_${subject}_${chapter}_${tab}_${partIndex}`;
-    localStorage.setItem(key, timerSeconds);
+function checkAccess() {
+  // Récupérer le statut Premium depuis localStorage
+  let isPremium = false;
+  try {
+    const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+    isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+    console.log('👑 Premium:', isPremium);
+  } catch (e) {
+    console.warn('⚠️ Erreur récupération statut premium:', e);
   }
+
+  // Chapitre 0 = gratuit (premier chapitre)
+  const isFree = chapter === 0;
+
+  // Si chapitre Premium et utilisateur non Premium
+  if (!isFree && !isPremium) {
+    showBlockedMessage(
+      '🔒 Chapitre Premium',
+      'Ce chapitre est réservé aux abonnés Premium. Abonne-toi pour y accéder !'
+    );
+    return false;
+  }
+
+  // Si c'est une correction et que le chapitre est Premium (non gratuit)
+  if (tab === 'corrections' && !isFree && !isPremium) {
+    showBlockedMessage(
+      '🔒 Correction Premium',
+      'Les corrections sont réservées aux abonnés Premium.'
+    );
+    return false;
+  }
+
+  return true;
 }
 
-function updateTimerDisplay() {
-  const mins = Math.floor(timerSeconds / 60);
-  const secs = timerSeconds % 60;
-  timerDisplay.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+function showBlockedMessage(title, message) {
+  contentBody.innerHTML = `
+    <div class="premium-blocked">
+      <div class="premium-blocked-icon"><i class="fas fa-lock"></i></div>
+      <h2>${title}</h2>
+      <p>${message}</p>
+      <a href="abonnement.html" class="btn-premium">Voir les offres</a>
+    </div>
+  `;
+  pageTitle.textContent = '🔒 Verrouillé';
+  document.title = 'ARVEXA - Verrouillé';
 }
 
 // ================================================================
@@ -661,6 +590,11 @@ let parts = [];
 let currentIndex = partIndex;
 
 function loadContent() {
+  // ✅ VÉRIFICATION DES ACCÈS AVANT CHARGEMENT
+  if (!checkAccess()) {
+    return;
+  }
+
   const suffix = tab === 'cours' ? 'cours' : (tab === 'exercices' ? 'exo' : 'corr');
   const manifestPath = `cours/${subject}/ch${chapter}_${suffix}.json`;
   
@@ -692,14 +626,10 @@ function loadContent() {
         </div>
       `;
       pageTitle.textContent = 'Contenu indisponible';
-      navProgress.textContent = '0 / 0';
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
     });
 }
 
 function renderPart() {
-  // ✅ VÉRIFICATION CRITIQUE
   if (!parts || parts.length === 0) {
     contentBody.innerHTML = `
       <div class="empty-state">
@@ -709,9 +639,6 @@ function renderPart() {
       </div>
     `;
     pageTitle.textContent = 'Contenu indisponible';
-    navProgress.textContent = '0 / 0';
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
     return;
   }
 
@@ -719,7 +646,6 @@ function renderPart() {
     currentIndex = 0;
   }
 
-  // ✅ ICI on est SÛR que parts existe et que l'index est valide
   const part = parts[currentIndex];
   
   if (!part) {
@@ -736,10 +662,6 @@ function renderPart() {
   pageTitle.textContent = part.title || 'Partie ' + (currentIndex + 1);
   document.title = 'ARVEXA - ' + part.title;
 
-  navProgress.textContent = `${currentIndex + 1} / ${parts.length}`;
-  prevBtn.disabled = currentIndex === 0;
-  nextBtn.disabled = currentIndex === parts.length - 1;
-
   const filePath = `cours/${subject}/${part.file}`;
   contentBody.innerHTML = `
     <div class="loading-state">
@@ -755,8 +677,8 @@ function renderPart() {
     })
     .then(html => {
       contentBody.innerHTML = html;
-      startTimer();
-      loadNotes();
+      // ✅ MARQUER COMME "LU" DANS LOCALSTORAGE
+      markPartAsRead(subject, chapter, tab, currentIndex);
     })
     .catch((error) => {
       console.error('❌ Erreur:', error);
@@ -771,82 +693,23 @@ function renderPart() {
 }
 
 // ================================================================
-// NOTES
+// "LU" - LOCALSTORAGE
 // ================================================================
-function loadNotes() {
-  const key = `arvexa_notes_${subject}_${chapter}_${tab}_${partIndex}`;
-  const content = localStorage.getItem(key) || '';
-  notesTextarea.value = content;
-}
 
-function saveNotes() {
-  const key = `arvexa_notes_${subject}_${chapter}_${tab}_${partIndex}`;
-  localStorage.setItem(key, notesTextarea.value);
-  notesSaved.classList.add('show');
-  setTimeout(() => notesSaved.classList.remove('show'), 2000);
-}
-
-notesTextarea.addEventListener('input', () => {
-  clearTimeout(notesTextarea._saveTimeout);
-  notesTextarea._saveTimeout = setTimeout(saveNotes, 1000);
-});
-
-notesToggleBtn.addEventListener('click', () => {
-  notesSection.classList.toggle('show');
-  notesToggleBtn.classList.toggle('active');
-});
-
-// ================================================================
-// BOOKMARK
-// ================================================================
-bookmarkBtn.addEventListener('click', () => {
-  bookmarkBtn.classList.toggle('active');
-  const key = `arvexa_bookmark_${subject}_${chapter}_${tab}_${partIndex}`;
-  localStorage.setItem(key, bookmarkBtn.classList.contains('active') ? 'true' : 'false');
-  showToast(
-    bookmarkBtn.classList.contains('active') ? '📌 Section marquée !' : '🔖 Marque-page retiré',
-    'success'
-  );
-});
-
-const bookmarkKey = `arvexa_bookmark_${subject}_${chapter}_${tab}_${partIndex}`;
-if (localStorage.getItem(bookmarkKey) === 'true') {
-  bookmarkBtn.classList.add('active');
-}
-
-// ================================================================
-// NAVIGATION
-// ================================================================
-function goToPrev() {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderPart();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+function markPartAsRead(subject, chapter, tab, partIndex) {
+  const key = `${subject}_${chapter}_${tab}_${partIndex}`;
+  const readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
+  if (!readParts.includes(key)) {
+    readParts.push(key);
+    localStorage.setItem('arvexa_read_parts', JSON.stringify(readParts));
+    console.log('📌 Partie marquée comme lue:', key);
   }
 }
-
-function goToNext() {
-  if (currentIndex < parts.length - 1) {
-    currentIndex++;
-    renderPart();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-}
-
-prevBtn.addEventListener('click', goToPrev);
-nextBtn.addEventListener('click', goToNext);
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') goToPrev();
-  if (e.key === 'ArrowRight') goToNext();
-  if (e.key === 'Escape') backBtn.click();
-});
 
 // ================================================================
 // RETOUR
 // ================================================================
 backBtn.addEventListener('click', () => {
-  stopTimer();
   window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
 });
 
@@ -858,12 +721,17 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = 'login.html';
     return;
   }
+  
+  // Charger les données utilisateur depuis localStorage
+  try {
+    const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+    console.log('👤 Utilisateur:', userData.firstName || 'Élève');
+  } catch (e) {}
+
   loadContent();
 });
 
-window.addEventListener('beforeunload', stopTimer);
-
-console.log('📖 ARVEXA - Lecture plein écran');
+console.log('📖 ARVEXA - Lecture plein écran (avec protection Premium)');
 </script>
 </body>
 </html>

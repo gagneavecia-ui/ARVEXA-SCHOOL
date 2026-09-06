@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
+    /* ===== ROOT ===== */
     :root {
       --primary: #1A3A2A;
       --primary-dark: #0A1A12;
@@ -34,10 +35,11 @@
       --shadow: 0 8px 32px rgba(0,0,0,0.4);
       --radius: 16px;
     }
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
     body {
-      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
       color: var(--text-light);
       font-size: 14px;
@@ -45,16 +47,17 @@
       min-height: 100vh;
       width: 100%;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
     }
+
     .gradient-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
                   radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
                   linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
     }
+
     .glow {
       position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
       opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
@@ -65,17 +68,22 @@
 
     /* ===== HEADER ===== */
     .header {
-      position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10,10,10,0.92);
-      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184,134,11,0.06);
-      gap: 12px; min-height: 56px;
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,134,11,0.06);
+      gap: 12px;
+      min-height: 56px;
     }
     .header-left { display: flex; align-items: center; gap: 12px; }
     .back-btn {
-      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
-      border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-dim); cursor: pointer; transition: var(--transition);
+      font-size: 16px; text-decoration: none;
     }
     .back-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
     .page-title {
@@ -83,7 +91,6 @@
       font-family: 'Playfair Display', serif;
     }
     .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
-    .header-right { display: flex; align-items: center; gap: 8px; }
     .header-right button {
       background: transparent; border: none; color: var(--text-muted);
       font-size: 14px; cursor: pointer; padding: 6px; transition: var(--transition);
@@ -91,7 +98,7 @@
     .header-right button:hover { color: var(--text-light); }
 
     /* ===== CONTAINER ===== */
-    .container { max-width: 600px; margin: 0 auto; padding: 12px 12px 32px; width: 100%; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+    .container { max-width: 600px; margin: 0 auto; padding: 12px 12px 32px; width: 100%; }
 
     /* ===== SUBJECT HERO ===== */
     .subject-hero {
@@ -99,8 +106,9 @@
       padding: 20px 16px 16px; gap: 8px;
     }
     .subject-icon-wrap {
-      width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center;
-      justify-content: center; font-size: 26px; position: relative;
+      width: 64px; height: 64px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; position: relative;
       background: rgba(184,134,11,0.08); color: var(--accent-bright);
     }
     .subject-icon-wrap::before {
@@ -108,8 +116,8 @@
       background: linear-gradient(135deg, var(--accent), var(--success)); opacity: 0.25; z-index: -1;
     }
     .subject-hero h2 {
-      font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700;
-      color: var(--text-light);
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 700; color: var(--text-light);
     }
     .subject-hero .subject-subtitle { font-size: 12px; color: var(--text-dim); }
 
@@ -139,19 +147,12 @@
     .cc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .cc-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
     .cc-num {
-      width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center;
-      justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
       font-family: 'Playfair Display', serif;
       background: rgba(184,134,11,0.08); color: var(--accent-bright);
       border: 1px solid rgba(184,134,11,0.08);
-    }
-    .cc-num.completed {
-      background: rgba(45,125,90,0.15); border-color: rgba(45,125,90,0.2);
-      color: var(--success);
-    }
-    .cc-num.in-progress {
-      background: rgba(212,160,23,0.12); border-color: rgba(212,160,23,0.15);
-      color: var(--warning);
     }
     .cc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .cc-title {
@@ -159,21 +160,10 @@
       display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
     }
     .cc-chapter-label { font-size: 11px; color: var(--text-muted); }
-    .cc-progress { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-    .cc-progress-bar {
-      flex: 1; height: 3px; border-radius: 4px; background: rgba(255,255,255,0.06);
-      overflow: hidden;
-    }
-    .cc-progress-bar .fill {
-      height: 100%; border-radius: 4px; transition: width 0.6s ease;
-    }
-    .cc-progress-text {
-      font-size: 10px; font-weight: 600; color: var(--text-muted);
-      min-width: 32px; text-align: right;
-    }
     .cc-arrow {
-      display: flex; align-items: center; justify-content: center; width: 26px; height: 26px;
-      border-radius: 8px; background: rgba(255,255,255,0.03); color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 8px;
+      background: rgba(255,255,255,0.03); color: var(--text-muted);
       flex-shrink: 0; transition: var(--transition); font-size: 11px;
     }
     .chapter-card:hover .cc-arrow { color: var(--accent-bright); background: rgba(184,134,11,0.08); }
@@ -184,20 +174,10 @@
       background: rgba(45,125,90,0.1); padding: 0 6px; border-radius: 10px;
       border: 1px solid rgba(45,125,90,0.12);
     }
-    .badge-locked {
+    .badge-premium {
       display: inline-block; font-size: 9px; color: var(--accent-bright);
       background: rgba(184,134,11,0.1); padding: 0 6px; border-radius: 10px;
       border: 1px solid rgba(184,134,11,0.12);
-    }
-    .badge-completed {
-      display: inline-block; font-size: 9px; color: var(--success);
-      background: rgba(45,125,90,0.1); padding: 0 6px; border-radius: 10px;
-      border: 1px solid rgba(45,125,90,0.12);
-    }
-    .badge-progress {
-      display: inline-block; font-size: 9px; color: var(--warning);
-      background: rgba(212,160,23,0.1); padding: 0 6px; border-radius: 10px;
-      border: 1px solid rgba(212,160,23,0.12);
     }
 
     /* ===== SKELETON ===== */
@@ -210,9 +190,11 @@
 
     /* ===== TOAST ===== */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 12px 20px; border-radius: 12px; background: rgba(20,20,20,0.95);
-      backdrop-filter: blur(16px); border: 1px solid rgba(184,134,11,0.15);
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 20px; border-radius: 12px;
+      background: rgba(20,20,20,0.95); backdrop-filter: blur(16px);
+      border: 1px solid rgba(184,134,11,0.15);
       color: var(--text-light); font-size: 13px; font-weight: 500; z-index: 300;
       opacity: 0; transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
       display: flex; align-items: center; gap: 8px;
@@ -224,9 +206,7 @@
     .toast.error { border-color: rgba(184,92,58,0.2); }
     .toast.error i { color: var(--danger); }
 
-    /* ============================================================
-       POPUP PREMIUM
-       ============================================================ */
+    /* ===== POPUP PREMIUM ===== */
     .premium-popup-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 9999;
@@ -246,16 +226,15 @@
       position: relative; overflow: hidden; max-height: 90vh; overflow-y: auto;
     }
     .premium-popup-overlay.show .premium-popup { transform: scale(1) translateY(0); }
-    .premium-popup::-webkit-scrollbar { width: 2px; }
-    .premium-popup::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
     .premium-popup::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
     .premium-popup .popup-close {
-      position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(184,134,11,0.06);
-      border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 11px;
+      position: absolute; top: 8px; right: 8px;
+      width: 28px; height: 28px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(184,134,11,0.06); border-radius: 8px;
+      color: var(--text-dim); cursor: pointer; font-size: 11px;
       display: flex; align-items: center; justify-content: center;
       transition: var(--transition);
     }
@@ -292,8 +271,7 @@
     }
     .offer-card:hover { border-color: rgba(184,134,11,0.15); }
     .offer-card.popular {
-      border-color: var(--accent); background: rgba(184,134,11,0.04);
-      position: relative;
+      border-color: var(--accent); background: rgba(184,134,11,0.04); position: relative;
     }
     .offer-card.popular::before {
       content: '⭐ Meilleur choix'; position: absolute; top: -8px; left: 50%;
@@ -324,7 +302,6 @@
     .premium-popup .popup-buttons .btn-subscribe:hover {
       background: #9A7209; box-shadow: 0 0 20px rgba(184,134,11,0.15);
     }
-    .premium-popup .popup-buttons .btn-subscribe:active { transform: scale(0.96); }
     .premium-popup .popup-buttons .btn-later {
       padding: 8px; background: transparent; border: none;
       color: var(--text-muted); font-size: 11px; cursor: pointer;
@@ -354,7 +331,7 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
-    a:focus-visible, button:focus-visible, input:focus-visible {
+    a:focus-visible, button:focus-visible {
       outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
     }
     ::-webkit-scrollbar { width: 4px; }
@@ -412,7 +389,7 @@
         <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
         <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
         <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
-        <div class="feature"><i class="fas fa-chart-line"></i> Suivi de progression</div>
+        <div class="feature"><i class="fas fa-gear"></i> Outils avancer</div>
       </div>
 
       <div class="offers-grid">
@@ -423,7 +400,7 @@
         </div>
         <div class="offer-card popular">
           <div class="offer-name">📅 Annuel</div>
-                <div class="offer-price">18 000 <small>FCFA</small></div>
+          <div class="offer-price">18 000 <small>FCFA</small></div>
           <div class="offer-save">Économisez 6 000 FCFA</div>
           <div class="offer-desc">2 mois offerts</div>
         </div>
@@ -440,7 +417,7 @@
   <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toastText"></span></div>
 
   <!-- ============================================================ -->
-  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                  -->
+  <!-- SCRIPTS                                                       -->
   <!-- ============================================================ -->
   <script type="importmap">
   {
@@ -454,575 +431,275 @@
 
   <script type="module">
   // ================================================================
-// MATIERE - AUTH INTÉGRÉE - VERSION CORRIGÉE
-// ================================================================
+  // MATIERE - VERSION SIMPLIFIÉE (SANS PROGRESSION)
+  // ================================================================
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
-  getIdToken
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
-// ================================================================
-// CONFIG
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
+  // ================================================================
+  // CONFIG
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// ✅ Persistance
-try {
-  await setPersistence(auth, browserLocalPersistence);
-  console.log('🔐 Persistance locale activée');
-} catch (e) { console.warn('⚠️ Persistance:', e); }
-
-// ================================================================
-// SESSION CACHE
-// ================================================================
-const SESSION_KEY = 'arvexa_session';
-
-function saveSession(user) {
-  if (!user) return;
   try {
-    const data = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      emailVerified: user.emailVerified,
-      lastLogin: new Date().toISOString(),
-      token: user.accessToken
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
-}
 
-function getSession() {
-  try {
-    let data = sessionStorage.getItem(SESSION_KEY);
-    if (!data) data = localStorage.getItem(SESSION_KEY);
-    return data ? JSON.parse(data) : null;
-  } catch (e) { return null; }
-}
+  // ================================================================
+  // URL PARAMS
+  // ================================================================
+  const params = new URLSearchParams(window.location.search);
+  const subjectKey = params.get('subject') || 'mathematiques';
 
-function clearSession() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem('arvexa_user_data');
-    localStorage.removeItem('arvexa_progress_data');
-  } catch (e) {}
-}
+  // ================================================================
+  // CONFIG MATIÈRES (FALLBACK)
+  // ================================================================
+  const SUBJECTS_CONFIG = {
+    mathematiques: { name: 'Mathématiques', icon: 'fa-square-root-variable', color: '#E0B84A' },
+    physique: { name: 'Physique', icon: 'fa-bolt', color: '#4AAFE0' },
+    chimie: { name: 'Chimie', icon: 'fa-flask', color: '#E07A4A' },
+    svt: { name: 'SVT', icon: 'fa-dna', color: '#7AE04A' }
+  };
 
-// ================================================================
-// URL PARAMS
-// ================================================================
-const params = new URLSearchParams(window.location.search);
-const subjectKey = params.get('subject') || 'mathematiques';
-console.log('📚 Matière sélectionnée:', subjectKey);
+  const DEFAULT_CHAPTERS = {
+    mathematiques: [
+      'Nombres complexes',
+      'Probabilités - Variable aléatoire',
+      'Fonction logarithme',
+      'Fonction exponentielle',
+      'Étude des fonctions numériques',
+      'Calcul intégral',
+      'Suites numériques',
+      'Équations différentielles'
+    ],
+    physique: [
+      'Cinématique',
+      'Mouvement du centre d\'inertie',
+      'Champ de pesanteur',
+      'Particules chargées',
+      'Oscillateurs mécaniques',
+      'Vibrations',
+      'Propagation des ondes',
+      'Superposition',
+      'Interférences lumineuses',
+      'Champ magnétique',
+      'Force de Lorentz',
+      'Force de Laplace',
+      'Induction électromagnétique',
+      'Auto-Induction',
+      'Circuit LC',
+      'Régime sinusoïdal',
+      'Radioactivité'
+    ],
+    chimie: [
+      'Solutions aqueuses',
+      'Acide chlorhydrique / Soude',
+      'Couples acide/base',
+      'Réaction acide-base',
+      'Solution tampon',
+      'Alcools',
+      'Acides carboxyliques',
+      'Amines',
+      'Acides α-aminés'
+    ],
+    svt: ['Génétique', 'Immunologie', 'Écologie', 'Évolution']
+  };
 
-// ================================================================
-// CONFIG MATIÈRES (FALLBACK)
-// ================================================================
-const SUBJECTS_CONFIG = {
-  mathematiques: { name: 'Mathématiques', icon: 'fa-square-root-variable', color: '#E0B84A' },
-  physique: { name: 'Physique', icon: 'fa-bolt', color: '#4AAFE0' },
-  chimie: { name: 'Chimie', icon: 'fa-flask', color: '#E07A4A' },
-  svt: { name: 'SVT', icon: 'fa-dna', color: '#7AE04A' }
-};
+  // ================================================================
+  // DOM
+  // ================================================================
+  const chapterList = document.getElementById('chapterList');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
 
-const DEFAULT_CHAPTERS = {
-  mathematiques: [
-    'Nombres complexes',
-    'Probabilités - Variable aléatoire',
-    'Fonction logarithme',
-    'Fonction exponentielle',
-    'Étude des fonctions numériques',
-    'Calcul intégral',
-    'Suites numériques',
-    'Équations différentielles'
-  ],
-  physique: [
-    'Cinématique',
-    'Mouvement du centre d\'inertie',
-    'Champ de pesanteur',
-    'Particules chargées',
-    'Oscillateurs mécaniques',
-    'Vibrations',
-    'Propagation des ondes',
-    'Superposition',
-    'Interférences lumineuses',
-    'Champ magnétique',
-    'Force de Lorentz',
-    'Force de Laplace',
-    'Induction électromagnétique',
-    'Auto-Induction',
-    'Circuit LC',
-    'Régime sinusoïdal',
-    'Radioactivité'
-  ],
-  chimie: [
-    'Solutions aqueuses',
-    'Acide chlorhydrique / Soude',
-    'Couples acide/base',
-    'Réaction acide-base',
-    'Solution tampon',
-    'Alcools',
-    'Acides carboxyliques',
-    'Amines',
-    'Acides α-aminés'
-  ],
-  svt: ['Génétique', 'Immunologie', 'Écologie', 'Évolution']
-};
-
-// ================================================================
-// DOM
-// ================================================================
-const chapterList = document.getElementById('chapterList');
-const toast = document.getElementById('toast');
-const toastText = document.getElementById('toastText');
-
-// ================================================================
-// TOAST
-// ================================================================
-function showToast(message, type = 'info') {
-  toastText.textContent = message;
-  toast.className = 'toast ' + type;
-  toast.classList.add('show');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-// ================================================================
-// NAVIGATION
-// ================================================================
-function navigateToChapter(chapterIndex) {
-  window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
-}
-
-function showPremiumPopup() {
-  document.getElementById('premiumPopup').classList.remove('hide');
-  document.getElementById('premiumPopup').classList.add('show');
-  document.body.style.overflow = 'hidden';
-}
-
-function hidePremiumPopup() {
-  document.getElementById('premiumPopup').classList.remove('show');
-  document.getElementById('premiumPopup').classList.add('hide');
-  document.body.style.overflow = '';
-}
-
-// Exposer pour les onclick
-window.navigateToChapter = navigateToChapter;
-window.showPremiumPopup = showPremiumPopup;
-window.hidePremiumPopup = hidePremiumPopup;
-
-// ================================================================
-// POPUP ÉVÉNEMENTS
-// ================================================================
-document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
-document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
-document.getElementById('premiumPopup').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) hidePremiumPopup();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') hidePremiumPopup();
-});
-
-// ================================================================
-// ESCAPE HTML
-// ================================================================
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-// ================================================================
-// ÉTAT
-// ================================================================
-let subjectConfig = null;
-let chapters = [];
-let chapterProgress = {};
-let isPremium = false;
-let userData = null;
-let unsubscribeSubject = null;
-let unsubscribeProgress = null;
-
-// ================================================================
-// CHARGEMENT DES DONNÉES (Cache + Firestore)
-// ================================================================
-
-function loadFromCache() {
-  try {
-    const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
-    if (cached) {
-      const data = JSON.parse(cached);
-      console.log('📦 Cache trouvé:', data);
-      subjectConfig = data.subjectConfig;
-      chapters = data.chapters;
-      
-      if (chapters && chapters.length > 0) {
-        renderPage();
-        return true;
-      } else {
-        console.warn('⚠️ Cache vide, fallback nécessaire');
-        return false;
-      }
-    }
-  } catch (e) {
-    console.warn('⚠️ Erreur lecture cache:', e);
-  }
-  return false;
-}
-
-function loadSubjectData(user) {
-  if (unsubscribeSubject) {
-    unsubscribeSubject();
-    unsubscribeSubject = null;
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'info') {
+    toastText.textContent = message;
+    toast.className = 'toast ' + type;
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
   }
 
-  const subjectRef = doc(db, 'subjects', subjectKey);
+  // ================================================================
+  // NAVIGATION
+  // ================================================================
+  function navigateToChapter(chapterIndex) {
+    window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + chapterIndex;
+  }
 
-  unsubscribeSubject = onSnapshot(subjectRef, (snap) => {
-    console.log('📡 Firestore réponse pour:', subjectKey);
-    
-    if (snap.exists()) {
-      const data = snap.data();
-      console.log('✅ Données Firestore reçues:', data);
-      
-      subjectConfig = {
-        name: data.name || SUBJECTS_CONFIG[subjectKey]?.name || subjectKey,
-        icon: data.icon || SUBJECTS_CONFIG[subjectKey]?.icon || 'fa-book',
-        color: data.color || SUBJECTS_CONFIG[subjectKey]?.color || '#B8860B'
-      };
-      
-      // Récupérer les chapitres
-      if (data.chapters && Array.isArray(data.chapters) && data.chapters.length > 0) {
-        chapters = data.chapters;
-        console.log('📚 Chapitres Firestore:', chapters);
-      } else {
-        // Fallback sur DEFAULT_CHAPTERS
-        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-        console.log('📚 Chapitres fallback (DEFAULT_CHAPTERS):', chapters);
-      }
+  function showPremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('hide');
+    document.getElementById('premiumPopup').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
 
-      // Mettre en cache
-      try {
-        localStorage.setItem('arvexa_subject_' + subjectKey, JSON.stringify({ subjectConfig, chapters }));
-        console.log('💾 Données mises en cache');
-      } catch (e) {}
+  function hidePremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('show');
+    document.getElementById('premiumPopup').classList.add('hide');
+    document.body.style.overflow = '';
+  }
 
-      renderPage();
-      if (user) loadProgress(user);
+  window.navigateToChapter = navigateToChapter;
+  window.showPremiumPopup = showPremiumPopup;
+  window.hidePremiumPopup = hidePremiumPopup;
 
-    } else {
-      // ❌ Document Firestore inexistant
-      console.warn('⚠️ Document Firestore inexistant pour:', subjectKey);
-      
-      // Fallback direct sur DEFAULT_CHAPTERS
-      const defaultData = SUBJECTS_CONFIG[subjectKey];
-      if (defaultData) {
-        subjectConfig = {
-          name: defaultData.name,
-          icon: defaultData.icon,
-          color: defaultData.color
-        };
-        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-        console.log('📚 Fallback DEFAULT_CHAPTERS:', chapters);
-        
-        renderPage();
-        if (user) loadProgress(user);
-      } else {
-        console.error('❌ Aucune donnée disponible pour:', subjectKey);
-        window.location.replace('index.html');
-      }
-    }
-  }, (error) => {
-    console.error('❌ Erreur Firestore:', error);
-    
+  // ================================================================
+  // POPUP ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('premiumPopup').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hidePremiumPopup();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hidePremiumPopup();
+  });
+
+  // ================================================================
+  // RENDU
+  // ================================================================
+  let subjectConfig = null;
+  let chapters = [];
+  let isPremium = false;
+
+  function loadSubjectData() {
     // Essayer le cache
-    if (!loadFromCache()) {
-      // Fallback final
-      const defaultData = SUBJECTS_CONFIG[subjectKey];
-      if (defaultData) {
-        subjectConfig = {
-          name: defaultData.name,
-          icon: defaultData.icon,
-          color: defaultData.color
-        };
-        chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-        console.log('📚 Fallback final DEFAULT_CHAPTERS:', chapters);
+    try {
+      const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
+      if (cached) {
+        const data = JSON.parse(cached);
+        subjectConfig = data.subjectConfig;
+        chapters = data.chapters;
         renderPage();
-        if (user) loadProgress(user);
-        showToast('📶 Données chargées depuis le cache', 'info');
-      } else {
-        window.location.replace('index.html');
+        return;
       }
-    }
-  });
-}
+    } catch (e) {}
 
-function loadProgress(user) {
-  if (unsubscribeProgress) {
-    unsubscribeProgress();
-    unsubscribeProgress = null;
+    // Fallback
+    const defaultData = SUBJECTS_CONFIG[subjectKey];
+    if (defaultData) {
+      subjectConfig = {
+        name: defaultData.name,
+        icon: defaultData.icon,
+        color: defaultData.color
+      };
+      chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+      renderPage();
+    } else {
+      window.location.replace('index.html');
+    }
   }
 
-  const progressRef = doc(db, 'users', user.uid, 'progress', 'overall');
+  function renderPage() {
+    if (!subjectConfig || !chapters.length) return;
 
-  unsubscribeProgress = onSnapshot(progressRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      console.log('📊 Progression reçue:', data);
-      
-      if (data.subjects && data.subjects[subjectKey]) {
-        const subjectProgress = data.subjects[subjectKey];
-        if (subjectProgress.chapters && subjectProgress.chapters.progress) {
-          chapterProgress = subjectProgress.chapters.progress || {};
-          console.log('📊 ChapterProgress:', chapterProgress);
-        }
-      }
-      if (subjectConfig && chapters.length) {
-        renderPage();
-      }
-    }
-  }, (error) => {
-    console.warn('⚠️ Erreur progression:', error);
-  });
-}
+    // Titre
+    document.querySelector('#pageTitle span').textContent = subjectConfig.name;
+    document.title = 'ARVEXA - ' + subjectConfig.name;
 
-// ================================================================
-// RENDU
-// ================================================================
-
-function renderPage() {
-  console.log('🔧 renderPage() appelé');
-  console.log('📚 subjectConfig:', subjectConfig);
-  console.log('📚 chapters:', chapters);
-  
-  if (!subjectConfig) {
-    console.warn('⚠️ subjectConfig est null');
-    return;
-  }
-  
-  if (!chapters || chapters.length === 0) {
-    console.warn('⚠️ chapters est vide ou null');
-    const list = document.getElementById('chapterList');
-    if (list) {
-      list.innerHTML = `
-        <div style="text-align:center;padding:40px 20px;color:var(--text-muted);">
-          <div style="font-size:32px;margin-bottom:8px;">📭</div>
-          <p>Aucun chapitre disponible pour cette matière.</p>
-        </div>
-      `;
-    }
-    return;
-  }
-
-  // Titre
-  const titleSpan = document.querySelector('#pageTitle span');
-  if (titleSpan) titleSpan.textContent = subjectConfig.name;
-  document.title = 'ARVEXA - ' + subjectConfig.name;
-
-  // Hero
-  const iconWrap = document.getElementById('subjectIconWrap');
-  if (iconWrap) {
+    // Hero
+    const iconWrap = document.getElementById('subjectIconWrap');
     iconWrap.innerHTML = '<i class="fas ' + subjectConfig.icon + '"></i>';
     iconWrap.style.background = subjectConfig.color + '12';
     iconWrap.style.color = subjectConfig.color;
-  }
-  
-  const titleEl = document.getElementById('subjectTitle');
-  if (titleEl) titleEl.textContent = subjectConfig.name;
-  
-  const subtitleEl = document.getElementById('subjectSubtitle');
-  if (subtitleEl) subtitleEl.textContent = chapters.length + ' chapitres disponibles';
+    document.getElementById('subjectTitle').textContent = subjectConfig.name;
+    document.getElementById('subjectSubtitle').textContent = chapters.length + ' chapitres disponibles';
 
-  // Liste des chapitres
-  renderChapters();
-}
-
-function renderChapters() {
-  const list = document.getElementById('chapterList');
-  if (!list) {
-    console.warn('⚠️ chapterList introuvable');
-    return;
+    // Liste des chapitres
+    renderChapters();
   }
 
-  console.log('🔧 renderChapters() - Nombre de chapitres:', chapters.length);
+  function renderChapters() {
+    const list = document.getElementById('chapterList');
+    if (!list) return;
 
-  if (!chapters || chapters.length === 0) {
-    list.innerHTML = `
-      <div style="text-align:center;padding:40px 20px;color:var(--text-muted);">
-        <div style="font-size:32px;margin-bottom:8px;">📭</div>
-        <p>Aucun chapitre disponible pour cette matière.</p>
-      </div>
-    `;
-    return;
-  }
+    let html = '';
 
-  let html = '';
+    chapters.forEach((chap, index) => {
+      const title = typeof chap === 'string' ? chap : (chap.title || 'Chapitre ' + (index + 1));
+      const isFree = typeof chap === 'object' ? (chap.isFree === true) : (index === 0);
+      const isLocked = !isPremium && !isFree;
 
-  chapters.forEach((chap, index) => {
-    // Gérer le cas où chap est une string ou un objet
-    let title = typeof chap === 'string' ? chap : (chap.title || 'Chapitre ' + (index + 1));
-    let isFree = typeof chap === 'object' ? (chap.isFree === true) : (index === 0);
-    
-    const isLocked = !isPremium && !isFree;
-    const prog = chapterProgress[index] || 0;
-    const isCompleted = prog >= 100;
-    const isInProgress = prog > 0 && prog < 100;
+      let badge = '';
+      if (isLocked) badge = '<span class="badge-premium">🔒 Premium</span>';
+      else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
 
-    let numClass = '';
-    if (isCompleted) numClass = 'completed';
-    else if (isInProgress) numClass = 'in-progress';
+      const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
 
-    let badge = '';
-    if (isCompleted) badge = '<span class="badge-completed">✅ Terminé</span>';
-    else if (isInProgress) badge = `<span class="badge-progress">⏳ ${Math.round(prog)}%</span>`;
-    else if (isLocked) badge = '<span class="badge-locked">🔒 Premium</span>';
-    else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
-
-    let progressBar = '';
-    if (isInProgress || isCompleted) {
-      const color = isCompleted ? 'var(--success)' : 'var(--warning)';
-      progressBar = `
-        <div class="cc-progress">
-          <div class="cc-progress-bar">
-            <div class="fill" style="width:${Math.min(prog, 100)}%;background:${color};"></div>
+      html += `
+        <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
+          <div class="cc-top">
+            <div class="cc-left">
+              <div class="cc-num">${index + 1}</div>
+              <div class="cc-info">
+                <div class="cc-title">
+                  ${escapeHtml(title)}
+                  ${badge}
+                </div>
+                <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
+              </div>
+            </div>
+            <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
           </div>
-          <span class="cc-progress-text">${Math.round(prog)}%</span>
         </div>
       `;
-    }
+    });
 
-    const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
+    list.innerHTML = html;
+  }
 
-    html += `
-      <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
-        <div class="cc-top">
-          <div class="cc-left">
-            <div class="cc-num ${numClass}">${index + 1}</div>
-            <div class="cc-info">
-              <div class="cc-title">
-                ${escapeHtml(title)}
-                ${badge}
-              </div>
-              <div class="cc-chapter-label">${subjectConfig.name} — Chapitre ${index + 1}</div>
-              ${progressBar}
-            </div>
-          </div>
-          <div class="cc-arrow"><i class="fas fa-chevron-right"></i></div>
-        </div>
-      </div>
-    `;
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ================================================================
+  // RAFRAÎCHISSEMENT
+  // ================================================================
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    showToast('🔄 Rafraîchissement...', 'info');
+    loadSubjectData();
   });
 
-  list.innerHTML = html;
-  console.log('✅ Chapitres rendus:', chapters.length);
-}
-
-// ================================================================
-// RAFRAÎCHISSEMENT
-// ================================================================
-
-document.getElementById('refreshBtn').addEventListener('click', () => {
-  showToast('🔄 Rafraîchissement...', 'info');
-  // Les listeners sont déjà en place
-});
-
-// ================================================================
-// ⭐ VÉRIFICATION D'AUTH - VERSION RENFORCÉE (SANS BOUCLE)
-// ================================================================
-let authChecked = false;
-let isRedirecting = false;
-let redirectCooldown = 0;
-
-onAuthStateChanged(auth, async (user) => {
-  if (authChecked) {
-    console.log('⏳ Auth déjà vérifié, skip');
-    return;
-  }
-
-  const now = Date.now();
-  if (now - redirectCooldown < 3000) {
-    console.log('⏳ Cooldown actif, skip');
-    return;
-  }
-
-  authChecked = true;
-
-  if (user) {
-    console.log('✅ Utilisateur connecté:', user.uid);
-
-    try {
-      await getIdToken(user, true);
-      console.log('🔄 Token rafraîchi');
-    } catch (e) {
-      console.warn('⚠️ Erreur rafraîchissement token:', e);
-    }
-
-    saveSession(user);
-
-    // Charger les données utilisateur
-    try {
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      if (userDoc.exists()) {
-        userData = userDoc.data();
-        isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-        console.log('👑 Premium:', isPremium);
-      }
-    } catch (e) {
-      console.warn('⚠️ Erreur chargement user:', e);
-    }
-
-    loadSubjectData(user);
-
-  } else {
-    if (isRedirecting) return;
-    isRedirecting = true;
-    redirectCooldown = now;
-    clearSession();
-    console.log('🔒 Non connecté, redirection vers login');
-    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-    setTimeout(() => {
+  // ================================================================
+  // AUTH
+  // ================================================================
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
       window.location.href = 'login.html';
-    }, 300);
-  }
-});
+      return;
+    }
 
-// ================================================================
-// RÉSEAU : GESTION HORS-LIGNE
-// ================================================================
-window.addEventListener('online', () => {
-  showToast('📶 Connexion rétablie', 'success');
-});
-window.addEventListener('offline', () => {
-  showToast('📶 Connexion perdue', 'error');
-});
+    // Vérifier Premium (depuis localStorage ou Firestore)
+    try {
+      const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+    } catch (e) {}
 
-console.log('📚 ARVEXA - Matière (version corrigée)');
+    loadSubjectData();
+  });
+
+  console.log('📚 ARVEXA - Matière (version simplifiée)');
   </script>
 </body>
-</html>
 </html>

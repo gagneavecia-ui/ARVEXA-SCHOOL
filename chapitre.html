@@ -95,16 +95,7 @@
     .chap-nav-btn:disabled { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
 
     /* ===== CONTAINER ===== */
-    .container { 
-  max-width: 100%; 
-  margin: 0; 
-  padding: 12px 16px 32px; 
-  width: 100%; 
-  display: flex; 
-  flex-direction: column; 
-  gap: 12px; 
-  flex: 1; 
-}
+    .container { max-width: 640px; margin: 0 auto; padding: 12px 12px 32px; width: 100%; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 
     /* ===== CHAPTER INFO ===== */
     .chapter-info {
@@ -123,7 +114,6 @@
       background: rgba(184,134,11,0.1); color: var(--accent-bright);
       border: 1px solid rgba(184,134,11,0.12);
     }
-    .ci-num.completed { background: rgba(45,125,90,0.15); border-color: rgba(45,125,90,0.2); color: var(--success); }
     .ci-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .ci-title { font-size: 15px; font-weight: 600; color: var(--text-light); line-height: 1.3; }
     .ci-sub { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -133,8 +123,6 @@
     .ci-sub .ci-status.premium { background: rgba(184,134,11,0.1); color: var(--accent-bright); }
     .ci-sub .ci-status.free { background: rgba(45,125,90,0.1); color: var(--success); }
     .ci-sub .ci-status.locked { background: rgba(184,92,58,0.1); color: var(--danger); }
-    .ci-sub .ci-status.completed { background: rgba(45,125,90,0.1); color: var(--success); }
-    .ci-progress { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--accent-bright); font-family: 'Playfair Display', serif; }
 
     /* ===== TABS ===== */
     .tabs {
@@ -145,7 +133,7 @@
       flex: 1; padding: 10px 8px; border: none; border-radius: 10px; background: transparent;
       color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
       transition: var(--transition); font-family: 'Inter', sans-serif;
-      display: flex; align-items: center; justify-content: center; gap: 6px; position: relative;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .tab-btn i { font-size: 12px; }
     .tab-btn.active {
@@ -154,13 +142,6 @@
     }
     .tab-btn:not(.active) { border: 1px solid transparent; }
     .tab-btn:hover:not(.active) { color: var(--text-dim); }
-    .tab-btn .tab-badge {
-      position: absolute; top: -4px; right: -4px; font-size: 8px;
-      background: var(--success); color: #fff; border-radius: 50%; width: 16px; height: 16px;
-      display: flex; align-items: center; justify-content: center; font-weight: 700;
-      display: none;
-    }
-    .tab-btn .tab-badge.show { display: flex; }
 
     /* ===== CARDS VIEW ===== */
     .cards-view { display: flex; flex-direction: column; gap: 8px; flex: 1; }
@@ -179,10 +160,26 @@
     .part-card:hover { border-color: rgba(184,134,11,0.15); transform: translateY(-1px); }
     .part-card:hover::before { opacity: 1; }
     .part-card:active { transform: scale(0.98); }
-    .part-card.locked { opacity: 0.7; }
-    .part-card.locked:hover { opacity: 0.9; }
-    .part-card.completed { border-color: rgba(45,125,90,0.15); }
-    .part-card.completed::before { background: linear-gradient(90deg, transparent, var(--success), transparent); opacity: 1; }
+
+    /* ===== PARTIE LUE ===== */
+    .part-card.read {
+      border-color: rgba(45, 125, 90, 0.25);
+      background: rgba(45, 125, 90, 0.04);
+    }
+    .part-card.read::before {
+      background: linear-gradient(90deg, transparent, var(--success), transparent);
+      opacity: 1;
+    }
+    .part-card.read .pc-icon {
+      background: rgba(45, 125, 90, 0.12);
+      color: var(--success);
+      border-color: rgba(45, 125, 90, 0.2);
+    }
+    .part-card.read .pc-title::after {
+      content: ' ✅';
+      color: var(--success);
+      font-size: 12px;
+    }
 
     .pc-icon {
       width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center;
@@ -192,7 +189,6 @@
     }
     .pc-icon.exo { background: rgba(45,125,90,0.06); color: var(--success); border-color: rgba(45,125,90,0.08); }
     .pc-icon.corr { background: rgba(74,175,224,0.06); color: #4AAFE0; border-color: rgba(74,175,224,0.08); }
-    .pc-icon.completed { background: rgba(45,125,90,0.12); color: var(--success); border-color: rgba(45,125,90,0.2); }
     .pc-info { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
     .pc-title { font-size: 14px; font-weight: 600; color: var(--text-light); line-height: 1.4; }
     .pc-sub { font-size: 11px; color: var(--text-muted); }
@@ -202,137 +198,6 @@
       flex-shrink: 0; transition: var(--transition); font-size: 11px;
     }
     .part-card:hover .pc-arrow { color: var(--accent-bright); background: rgba(184,134,11,0.08); }
-
-    /* ===== CONTENT VIEW ===== */
-    .content-view { display: none; flex-direction: column; gap: 10px; flex: 1; }
-    .content-view.active { display: flex; }
-    .cards-view.hidden { display: none; }
-
-    .content-back {
-      display: flex; align-items: center; gap: 8px; padding: 8px 0;
-      color: var(--accent-bright); font-size: 13px; font-weight: 600;
-      cursor: pointer; transition: var(--transition); border: none; background: none;
-      font-family: 'Inter', sans-serif; width: fit-content;
-    }
-    .content-back:hover { opacity: 0.7; }
-    .content-back i { font-size: 12px; }
-
-    .content-card {
-      background: var(--bg-card); backdrop-filter: blur(10px);
-      border: 1px solid var(--card-border); border-radius: var(--radius);
-      overflow: hidden; flex: 1;
-    }
-    .content-card-header {
-  padding: 12px 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  background: rgba(255,255,255,0.02);
-}
-    .cch-left { display: flex; align-items: center; gap: 12px; }
-    .cch-title { font-size: 14px; font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
-    .cch-status {
-      font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
-    }
-    .cch-status.completed { background: rgba(45,125,90,0.1); color: var(--success); }
-    .cch-status.in-progress { background: rgba(212,160,23,0.1); color: var(--warning); }
-    .cch-status.not-started { background: rgba(255,255,255,0.04); color: var(--text-muted); }
-    .cch-nav { display: flex; gap: 6px; }
-    .cch-nav-btn {
-      display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
-      border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 11px;
-    }
-    .cch-nav-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
-    .cch-nav-btn:disabled { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
-    .cch-actions { display: flex; gap: 6px; }
-    .cch-actions .action-btn {
-      width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
-      background: transparent; color: var(--text-muted); cursor: pointer; transition: var(--transition);
-      font-size: 12px;
-    }
-    .cch-actions .action-btn:hover { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
-    .cch-actions .action-btn.active { color: var(--accent-bright); border-color: rgba(184,134,11,0.2); }
-
-   .content-card-body {
-  padding: 24px 24px;
-  min-height: 400px;
-  max-height: calc(100vh - 280px);
-  overflow-y: auto;
-  font-size: 15px;
-  line-height: 1.8;
-}
-    .content-card-body::-webkit-scrollbar { width: 3px; }
-    .content-card-body::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.2); border-radius: 10px; }
-
-    /* ===== CONTENT STYLING ===== */
-    .content-card-body h1, .content-card-body h2, .content-card-body h3, .content-card-body h4 {
-      color: var(--text-light); font-family: 'Playfair Display', serif; margin: 20px 0 10px;
-    }
-    .content-card-body h1 { font-size: 20px; }
-    .content-card-body h2 { font-size: 18px; padding-bottom: 8px; border-bottom: 1px solid rgba(184,134,11,0.1); }
-    .content-card-body h3 { font-size: 16px; }
-    .content-card-body h4 { font-size: 15px; }
-    .content-card-body p { margin-bottom: 12px; line-height: 1.8; }
-    .content-card-body ul, .content-card-body ol { margin: 8px 0 12px 20px; }
-    .content-card-body li { margin-bottom: 4px; line-height: 1.7; }
-    .content-card-body strong { color: var(--accent-bright); }
-    .content-card-body em { color: var(--text-dim); }
-    .content-card-body code { background: rgba(184,134,11,0.08); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-    .content-card-body pre {
-      background: rgba(10,10,10,0.6); padding: 14px; border-radius: 10px; overflow-x: auto;
-      border: 1px solid rgba(255,255,255,0.04); margin: 12px 0; font-size: 13px;
-    }
-    .content-card-body pre code { background: none; padding: 0; }
-    .content-card-body .formula {
-      background: rgba(184,134,11,0.06); border: 1px solid rgba(184,134,11,0.1);
-      padding: 14px 16px; border-radius: 10px; text-align: center; font-size: 16px;
-      margin: 14px 0; font-family: 'Playfair Display', serif; color: var(--accent-bright);
-    }
-    .content-card-body .note {
-      background: rgba(184,134,11,0.06); border-left: 3px solid var(--accent);
-      padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 13px;
-    }
-    .content-card-body .important {
-      background: rgba(184,92,58,0.06); border-left: 3px solid var(--danger);
-      padding: 12px 16px; border-radius: 0 10px 10px 0; margin: 14px 0; font-size: 13px;
-    }
-
-    /* ===== TIMER ===== */
-    .timer-display {
-      display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted);
-      padding: 2px 8px; border-radius: 8px; background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-    .timer-display i { color: var(--accent-bright); font-size: 10px; }
-    .timer-display .time { font-weight: 600; color: var(--text-light); font-family: 'Inter', monospace; min-width: 50px; }
-
-    /* ===== NOTES ===== */
-    .notes-section {
-      margin-top: 12px; padding: 12px 16px; border-radius: var(--radius);
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
-      display: none;
-    }
-    .notes-section.show { display: block; }
-    .notes-section .notes-label {
-      font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .notes-section .notes-label i { color: var(--accent-bright); }
-    .notes-section textarea {
-      width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.02); color: var(--text-light); font-size: 13px;
-      font-family: 'Inter', sans-serif; resize: vertical; min-height: 60px; transition: var(--transition);
-    }
-    .notes-section textarea:focus { outline: none; border-color: rgba(184,134,11,0.2); }
-    .notes-section textarea::placeholder { color: var(--text-muted); }
-    .notes-section .notes-saved {
-      font-size: 10px; color: var(--success); display: none; margin-top: 2px; text-align: right;
-    }
-    .notes-section .notes-saved.show { display: block; }
 
     /* ===== LOADING & EMPTY ===== */
     .loading-state {
@@ -374,16 +239,127 @@
     .toast.error { border-color: rgba(184,92,58,0.2); }
     .toast.error i { color: var(--danger); }
 
+    /* ============================================================
+       POPUP PREMIUM
+       ============================================================ */
+    .premium-popup-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: all 0.4s ease; padding: 16px;
+    }
+    .premium-popup-overlay.show { opacity: 1; visibility: visible; }
+    .premium-popup-overlay.hide { opacity: 0; visibility: hidden; }
+
+    .premium-popup {
+      background: linear-gradient(145deg, #141414, #0A0A0A);
+      border: 1px solid var(--accent); border-radius: var(--radius);
+      padding: 28px 24px; max-width: 380px; width: 100%;
+      transform: scale(0.9) translateY(30px);
+      transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative; overflow: hidden; max-height: 90vh; overflow-y: auto;
+    }
+    .premium-popup-overlay.show .premium-popup { transform: scale(1) translateY(0); }
+    .premium-popup::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+    }
+    .premium-popup .popup-close {
+      position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(184,134,11,0.06);
+      border-radius: 8px; color: var(--text-dim); cursor: pointer; font-size: 11px;
+      display: flex; align-items: center; justify-content: center;
+      transition: var(--transition);
+    }
+    .premium-popup .popup-close:hover { border-color: rgba(184,134,11,0.15); color: var(--text-light); }
+    .premium-popup .popup-icon { font-size: 40px; display: block; text-align: center; margin-bottom: 4px; }
+    .premium-popup h2 {
+      font-size: 20px; font-weight: 700; font-family: 'Playfair Display', 'Georgia', serif;
+      color: var(--text-light); text-align: center; margin-bottom: 2px;
+    }
+    .premium-popup h2 span { color: var(--accent); font-style: italic; }
+    .premium-popup .popup-subtitle {
+      font-size: 12px; color: var(--text-dim); text-align: center;
+      line-height: 1.5; margin-bottom: 14px;
+    }
+    .premium-popup .popup-subtitle strong { color: var(--accent-bright); }
+    .premium-popup .popup-features {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 14px;
+    }
+    .premium-popup .popup-features .feature {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 8px; padding: 8px 6px; text-align: center;
+      font-size: 10px; color: var(--text-dim);
+    }
+    .premium-popup .popup-features .feature i {
+      color: var(--accent-bright); display: block; font-size: 14px; margin-bottom: 2px;
+    }
+    .offers-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px;
+    }
+    .offer-card {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--card-border);
+      border-radius: 10px; padding: 12px 8px; text-align: center;
+      transition: var(--transition);
+    }
+    .offer-card:hover { border-color: rgba(184,134,11,0.15); }
+    .offer-card.popular {
+      border-color: var(--accent); background: rgba(184,134,11,0.04); position: relative;
+    }
+    .offer-card.popular::before {
+      content: '⭐ Meilleur choix'; position: absolute; top: -8px; left: 50%;
+      transform: translateX(-50%); font-size: 8px; background: var(--accent);
+      color: #0A0A0A; padding: 1px 10px; border-radius: 10px; font-weight: 700;
+      white-space: nowrap;
+    }
+    .offer-card .offer-name { font-size: 10px; font-weight: 600; color: var(--text-light); }
+    .offer-card .offer-price {
+      font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif;
+      color: var(--accent); margin: 1px 0;
+    }
+    .offer-card .offer-price small { font-size: 10px; font-weight: 400; color: var(--text-muted); }
+    .offer-card .offer-save {
+      font-size: 8px; color: var(--success); background: rgba(45,125,90,0.08);
+      padding: 1px 6px; border-radius: 8px; display: inline-block;
+    }
+    .offer-card .offer-desc { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+    .premium-popup .popup-buttons { display: flex; flex-direction: column; gap: 6px; }
+    .premium-popup .popup-buttons .btn-subscribe {
+      padding: 10px; border: none; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: var(--bg-dark); font-weight: 700; font-size: 14px; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      font-family: 'Inter', sans-serif;
+    }
+    .premium-popup .popup-buttons .btn-subscribe:hover {
+      background: #9A7209; box-shadow: 0 0 20px rgba(184,134,11,0.15);
+    }
+    .premium-popup .popup-buttons .btn-subscribe:active { transform: scale(0.96); }
+    .premium-popup .popup-buttons .btn-later {
+      padding: 8px; background: transparent; border: none;
+      color: var(--text-muted); font-size: 11px; cursor: pointer;
+      transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 400;
+    }
+    .premium-popup .popup-buttons .btn-later:hover { color: var(--text-dim); }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 480px) {
       .container { padding: 10px 10px 24px; }
       .page-title { max-width: 140px; font-size: 13px; }
       .ci-title { font-size: 14px; }
       .tab-btn { font-size: 11px; padding: 9px 6px; }
-      .content-card-body { padding: 16px 14px; }
-      .cch-title { font-size: 13px; }
-      .timer-display { font-size: 10px; }
-      .cch-actions .action-btn { width: 26px; height: 26px; font-size: 10px; }
+      .premium-popup { padding: 20px 16px; max-width: 340px; }
+      .premium-popup h2 { font-size: 17px; }
+      .offers-grid { gap: 6px; }
+      .offer-card { padding: 10px 6px; }
+      .offer-card .offer-price { font-size: 16px; }
+      .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 360px) {
+      .offers-grid { grid-template-columns: 1fr; }
+      .premium-popup .popup-features { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -394,117 +370,6 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184,134,11,0.25); border-radius: 10px; }
-    @media (max-width: 480px) {
-  .content-card-body {
-    padding: 16px 16px !important;
-  }
-  
-  .content-card-body p {
-    font-size: 14px;
-  }
-  
-  .content-card-body h1 {
-    font-size: 20px;
-  }
-  
-  .content-card-body h2 {
-    font-size: 18px;
-  }
-  
-  .content-card-body h3 {
-    font-size: 16px;
-  }
-  
-  .content-card-body .formula {
-    font-size: 17px;
-    padding: 14px 16px;
-  }
-}
-/* Supprimer toutes les max-width */
-.container,
-.content-card,
-.cards-view,
-.content-view {
-  max-width: 100% !important;
-}
-
-/* Ajuster les marges pour le header */
-.header {
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.chapter-info {
-  margin: 0 -8px;
-  border-radius: 0;
-  padding: 16px 20px;
-}
-    /* ===== CONTENU PLEIN ÉCRAN ===== */
-.content-card-body {
-  padding: 24px 28px !important;
-}
-
-.content-card-body p {
-  font-size: 15px;
-  line-height: 1.9;
-  margin-bottom: 16px;
-}
-
-.content-card-body h1 {
-  font-size: 24px;
-  margin-top: 28px;
-  margin-bottom: 14px;
-}
-
-.content-card-body h2 {
-  font-size: 20px;
-  margin-top: 24px;
-  margin-bottom: 12px;
-}
-
-.content-card-body h3 {
-  font-size: 18px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-}
-
-.content-card-body h4 {
-  font-size: 16px;
-  margin-top: 16px;
-  margin-bottom: 8px;
-}
-
-.content-card-body .formula {
-  font-size: 20px;
-  padding: 18px 20px;
-}
-
-.content-card-body pre {
-  font-size: 14px;
-  padding: 16px 18px;
-}
-
-.content-card-body li {
-  font-size: 15px;
-  margin-bottom: 6px;
-}
-
-/* Supprimer la max-height pour que tout soit visible */
-.content-card-body {
-  max-height: none !important;
-  min-height: 500px;
-}
-
-/* Ajuster l'en-tête de la carte */
-.content-card {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.content-card-body {
-  flex: 1;
-}
   </style>
 </head>
 <body>
@@ -513,7 +378,7 @@
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
-    <!-- ===== HEADER ===== -->
+  <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header-left">
       <a href="#" class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></a>
@@ -538,22 +403,18 @@
           <span class="ci-status" id="chapStatus">Gratuit</span>
         </div>
       </div>
-      <div class="ci-progress" id="chapProgress">0%</div>
     </div>
 
     <!-- ===== TABS ===== -->
     <div class="tabs">
       <button class="tab-btn active" data-tab="cours" id="tabCours">
         <i class="fas fa-book-open"></i> Chapitre
-        <span class="tab-badge" id="badgeCours"></span>
       </button>
       <button class="tab-btn" data-tab="exercices" id="tabExercices">
         <i class="fas fa-pen-to-square"></i> Exercices
-        <span class="tab-badge" id="badgeExercices"></span>
       </button>
       <button class="tab-btn" data-tab="corrections" id="tabCorrections">
         <i class="fas fa-check-double"></i> Corrections
-        <span class="tab-badge" id="badgeCorrections"></span>
       </button>
     </div>
 
@@ -562,51 +423,49 @@
       <div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>
     </div>
 
-    <!-- ===== CONTENT VIEW ===== -->
-    <div class="content-view" id="contentView">
-      <button class="content-back" id="contentBackBtn">
-        <i class="fas fa-arrow-left"></i> Retour aux parties
-      </button>
-      <div class="content-card">
-        <div class="content-card-header">
-          <div class="cch-left">
-            <span class="cch-title" id="contentTitle"></span>
-            <span class="cch-status" id="contentStatus">Non commencé</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <div class="timer-display">
-              <i class="fas fa-clock"></i>
-              <span class="time" id="timerDisplay">00:00</span>
-            </div>
-            <div class="cch-actions">
-              <button class="action-btn" id="bookmarkBtn" title="Marquer cette section"><i class="fas fa-bookmark"></i></button>
-              <button class="action-btn" id="notesToggleBtn" title="Notes"><i class="fas fa-sticky-note"></i></button>
-            </div>
-            <div class="cch-nav">
-              <button class="cch-nav-btn" id="contentPrevBtn"><i class="fas fa-chevron-left"></i></button>
-              <button class="cch-nav-btn" id="contentNextBtn"><i class="fas fa-chevron-right"></i></button>
-            </div>
-          </div>
+  </main>
+
+  <!-- ===== POPUP PREMIUM ===== -->
+  <div class="premium-popup-overlay" id="premiumPopup">
+    <div class="premium-popup">
+      <button class="popup-close" id="popupCloseBtn"><i class="fas fa-times"></i></button>
+      <span class="popup-icon">🔓</span>
+      <h2>Accès <span>Premium</span></h2>
+      <p class="popup-subtitle">Débloque <strong>tous</strong> les chapitres, exercices et corrections !</p>
+
+      <div class="popup-features">
+        <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
+        <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
+        <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
+        <div class="feature"><i class="fas fa-gear"></i> Outils avancer</div>
+      </div>
+
+      <div class="offers-grid">
+        <div class="offer-card">
+          <div class="offer-name">📱 Mensuel</div>
+          <div class="offer-price">2 000 <small>FCFA</small></div>
+          <div class="offer-desc">Accès total</div>
         </div>
-        <div class="content-card-body" id="contentBody">
-          <div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>
-        </div>
-        <!-- Notes -->
-        <div class="notes-section" id="notesSection">
-          <div class="notes-label"><i class="fas fa-sticky-note"></i> Mes notes</div>
-          <textarea id="notesTextarea" placeholder="Écris tes notes personnelles sur ce chapitre..."></textarea>
-          <div class="notes-saved" id="notesSaved">✅ Sauvegardé</div>
+        <div class="offer-card popular">
+          <div class="offer-name">📅 Annuel</div>
+          <div class="offer-price">18 000 <small>FCFA</small></div>
+          <div class="offer-save">Économisez 6 000 FCFA</div>
+          <div class="offer-desc">2 mois offerts</div>
         </div>
       </div>
-    </div>
 
-  </main>
+      <div class="popup-buttons">
+        <a href="abonnement.html" class="btn-subscribe"><i class="fas fa-crown"></i> S'abonner maintenant</a>
+        <button class="btn-later" id="popupLaterBtn">✕ Plus tard</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== TOAST ===== -->
   <div class="toast" id="toast"><i class="fas fa-info-circle"></i> <span id="toastText"></span></div>
 
   <!-- ============================================================ -->
-  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
+  <!-- SCRIPTS                                                       -->
   <!-- ============================================================ -->
   <script type="importmap">
   {
@@ -620,8 +479,9 @@
 
   <script type="module">
   // ================================================================
-  // CHAPITRE - AUTH INTÉGRÉE (SANS BOUCLE)
+  // CHAPITRE - VERSION SIMPLIFIÉE (AVEC "LU" EN LOCALSTORAGE)
   // ================================================================
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
   import {
     getAuth,
@@ -629,13 +489,6 @@
     setPersistence,
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc,
-    updateDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG
@@ -651,47 +504,10 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
 
   try {
     await setPersistence(auth, browserLocalPersistence);
-    console.log('🔐 Persistance locale activée');
-  } catch (e) { console.warn('⚠️ Persistance:', e); }
-
-  // ================================================================
-  // SESSION CACHE
-  // ================================================================
-  const SESSION_KEY = 'arvexa_session';
-
-  function saveSession(user) {
-    if (!user) return;
-    try {
-      const data = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        emailVerified: user.emailVerified,
-        lastLogin: new Date().toISOString()
-      };
-      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-    } catch (e) {}
-  }
-
-  function clearSession() {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-    } catch (e) {}
-  }
-
-  function getCachedSession() {
-    try {
-      let data = sessionStorage.getItem(SESSION_KEY);
-      if (!data) data = localStorage.getItem(SESSION_KEY);
-      return data ? JSON.parse(data) : null;
-    } catch (e) { return null; }
-  }
+  } catch (e) {}
 
   // ================================================================
   // URL PARAMS
@@ -758,10 +574,6 @@
   // DOM
   // ================================================================
   const cardsView = document.getElementById('cardsView');
-  const contentView = document.getElementById('contentView');
-  const contentBody = document.getElementById('contentBody');
-  const contentTitle = document.getElementById('contentTitle');
-  const contentStatus = document.getElementById('contentStatus');
   const toast = document.getElementById('toast');
   const toastText = document.getElementById('toastText');
 
@@ -777,347 +589,104 @@
   }
 
   // ================================================================
-  // ÉTAT
-  // ================================================================
-  let subjectConfig = null;
-  let chapters = [];
-  let chapterProgress = {};
-  let isPremium = false;
-  let userData = null;
-  let currentTab = 'cours';
-  let currentParts = [];
-  let currentPartIndex = -1;
-
-  // ================================================================
-  // FONCTIONS UTILITAIRES
-  // ================================================================
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  function computeExamCountdown() {
-    const now = new Date();
-    let target = new Date(now.getFullYear(), 5, 17);
-    if (target < now) target = new Date(now.getFullYear() + 1, 5, 17);
-    const diffMs = target - now;
-    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-  }
-
-  function getLevel(completed, total) {
-    if (!total || total === 0) return '🌱 Débutant';
-    const ratio = completed / total;
-    if (ratio === 0) return '🌱 Débutant';
-    if (ratio < 0.25) return '📖 Apprenti';
-    if (ratio < 0.50) return '⚡ En progression';
-    if (ratio < 0.75) return '🔥 Enflammé';
-    if (ratio < 1) return '⭐ Expert';
-    return '👑 Maître ARVEXA';
-  }
-
-  // ================================================================
-  // NAVIGATION ENTRE CHAPITRES
+  // NAVIGATION
   // ================================================================
   function navigateToChapter(newChap) {
     if (newChap < 0 || newChap >= chapters.length) return;
     window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + newChap + '&tab=' + currentTab;
   }
 
-  // ================================================================
-  // TIMER
-  // ================================================================
-  let timerSeconds = 0;
-  let timerInterval = null;
-  let timerStartTime = null;
-
-  function startTimer() {
-    if (timerInterval) return;
-    const savedTime = localStorage.getItem('arvexa_chapter_timer_' + subjectKey + '_' + chapIdx);
-    if (savedTime) timerSeconds = parseInt(savedTime) || 0;
-    timerStartTime = Date.now() - (timerSeconds * 1000);
-    timerInterval = setInterval(() => {
-      timerSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
-      updateTimerDisplay();
-      if (timerSeconds % 30 === 0) {
-        localStorage.setItem('arvexa_chapter_timer_' + subjectKey + '_' + chapIdx, timerSeconds);
-        saveStudyTime(timerSeconds);
-      }
-    }, 1000);
-    updateTimerDisplay();
+  function openPart(index) {
+    window.location.href = `lecture.html?subject=${subjectKey}&chapter=${chapIdx}&tab=${currentTab}&part=${index}`;
   }
 
-  function stopTimer() {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      localStorage.setItem('arvexa_chapter_timer_' + subjectKey + '_' + chapIdx, timerSeconds);
-      saveStudyTime(timerSeconds);
+  function showPremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('hide');
+    document.getElementById('premiumPopup').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hidePremiumPopup() {
+    document.getElementById('premiumPopup').classList.remove('show');
+    document.getElementById('premiumPopup').classList.add('hide');
+    document.body.style.overflow = '';
+  }
+
+  window.navigateToChapter = navigateToChapter;
+  window.openPart = openPart;
+  window.showPremiumPopup = showPremiumPopup;
+  window.hidePremiumPopup = hidePremiumPopup;
+
+  // ================================================================
+  // POPUP ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('popupCloseBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('popupLaterBtn').addEventListener('click', hidePremiumPopup);
+  document.getElementById('premiumPopup').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) hidePremiumPopup();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hidePremiumPopup();
+  });
+
+  // ================================================================
+  // "LU" - LOCALSTORAGE
+  // ================================================================
+  function isPartRead(subject, chapter, tab, partIndex) {
+    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
+    const readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
+    return readParts.includes(key);
+  }
+
+  function markPartAsRead(subject, chapter, tab, partIndex) {
+    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
+    const readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
+    if (!readParts.includes(key)) {
+      readParts.push(key);
+      localStorage.setItem('arvexa_read_parts', JSON.stringify(readParts));
     }
   }
 
-  function updateTimerDisplay() {
-    const display = document.getElementById('timerDisplay');
-    if (display) {
-      const mins = Math.floor(timerSeconds / 60);
-      const secs = timerSeconds % 60;
-      display.textContent = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
-    }
-  }
-
-  async function saveStudyTime(seconds) {
-    // Non bloquant
-  }
+  // ================================================================
+  // ÉTAT
+  // ================================================================
+  let subjectConfig = null;
+  let chapters = [];
+  let isPremium = false;
+  let currentTab = 'cours';
+  let currentParts = [];
 
   // ================================================================
-  // PROGRESSION
+  // RENDU
   // ================================================================
-  function markPartCompleted(tab, index) {
-    // Sauvegarder la progression dans Firestore
-    if (!userData) return;
+  function loadSubjectData() {
+    // Essayer le cache
     try {
-      const progressRef = doc(db, 'users', userData.uid, 'progress', 'overall');
-      updateDoc(progressRef, {
-        [`subjects.${subjectKey}.chapters.progress.${chapIdx}`]: 100
-      }).catch(() => {});
-    } catch (e) {}
-  }
-
-  function isPartCompleted(tab, index) {
-    // Pour simplifier, on utilise le progrès global du chapitre
-    return chapterProgress[chapIdx] >= 100;
-  }
-
-  // ================================================================
-  // CHARGEMENT DU MANIFEST (parties du chapitre)
-  // ================================================================
-  function loadManifest() {
-    const suffix = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exo' : 'corr');
-    const manifestPath = 'cours/' + subjectKey + '/ch' + chapIdx + '_' + suffix + '.json';
-    const container = document.getElementById('cardsView');
-    container.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>';
-
-    fetch(manifestPath)
-      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
-      .then(data => {
-        currentParts = data.parts || [];
-        renderCards();
-      })
-      .catch(() => {
-        currentParts = [];
-        renderEmpty();
-      });
-  }
-
-  function renderCards() {
-    const container = document.getElementById('cardsView');
-    if (currentParts.length === 0) {
-      renderEmpty();
-      return;
-    }
-
-    const tabLabels = { cours: 'Partie', exercices: 'Exercice', corrections: 'Correction' };
-    const tabIcons = { cours: 'fa-book-open', exercices: 'fa-pen-to-square', corrections: 'fa-check-double' };
-    const iconClass = { cours: '', exercices: 'exo', corrections: 'corr' };
-    const label = tabLabels[currentTab] || 'Partie';
-    const icon = tabIcons[currentTab] || 'fa-file';
-    const ic = iconClass[currentTab] || '';
-
-    container.innerHTML = currentParts.map((part, i) => {
-      const filePath = `cours/${subjectKey}/${part.file}`;
-      const completed = isPartCompleted(currentTab, i);
-      const partType = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exercices' : 'correction');
-
-      return `
-        <div class="part-card ${completed ? 'completed' : ''}" onclick="openPart(${i})">
-          <div class="pc-icon ${ic} ${completed ? 'completed' : ''}">
-            <i class="fas ${completed ? 'fa-check-circle' : icon}"></i>
-          </div>
-          <div class="pc-info">
-            <div class="pc-title">${escapeHtml(part.title)} ${completed ? '✅' : ''}</div>
-            <div class="pc-sub">${label} ${i + 1} — ${subjectConfig ? subjectConfig.name : ''}</div>
-          </div>
-          <div class="pc-arrow"><i class="fas fa-chevron-right"></i></div>
-        </div>
-      `;
-    }).join('');
-
-    // Mettre à jour les badges des onglets
-    updateBadges();
-  }
-
-  function renderEmpty() {
-    const container = document.getElementById('cardsView');
-    const tabNames = { cours: 'cours', exercices: 'exercices', corrections: 'corrections' };
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="es-icon"><i class="fas fa-folder-open"></i></div>
-        <h4>Aucun ${tabNames[currentTab] || 'contenu'} disponible</h4>
-        <p>Le contenu sera ajouté prochainement.</p>
-      </div>
-    `;
-  }
-
-  function updateBadges() {
-    ['cours', 'exercices', 'corrections'].forEach(tab => {
-      const badge = document.getElementById('badge' + tab.charAt(0).toUpperCase() + tab.slice(1));
-      if (badge) {
-        // Pour simplifier, on affiche le badge si le chapitre est terminé
-        if (chapterProgress[chapIdx] >= 100) {
-          badge.textContent = '✓';
-          badge.className = 'tab-badge show';
-        } else {
-          badge.className = 'tab-badge';
-        }
+      const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
+      if (cached) {
+        const data = JSON.parse(cached);
+        subjectConfig = data.subjectConfig;
+        chapters = data.chapters;
+        renderPage();
+        return;
       }
-    });
-  }
+    } catch (e) {}
 
-  // ================================================================
-  // OUVERTURE D'UNE PARTIE
-  // ================================================================
-  window.openPart = function(index) {
-  window.location.href = `lecture.html?subject=${subjectKey}&chapter=${chapIdx}&tab=${currentTab}&part=${index}`;
-
-    // Afficher la vue de contenu
-    document.getElementById('cardsView').classList.add('hidden');
-    document.getElementById('contentView').classList.add('active');
-
-    contentTitle.textContent = part.title;
-    contentStatus.textContent = '📖 En cours';
-    contentStatus.className = 'cch-status in-progress';
-
-    // Charger le contenu
-    contentBody.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement du contenu...</p></div>';
-
-    fetch(filePath)
-      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-      .then(html => {
-        contentBody.innerHTML = html;
-        // Marquer comme terminé
-        if (!isPartCompleted(currentTab, index)) {
-          markPartCompleted(currentTab, index);
-          contentStatus.textContent = '✅ Terminé';
-          contentStatus.className = 'cch-status completed';
-          // Recharger les cartes
-          renderCards();
-          showToast('✅ Partie terminée !', 'success');
-        }
-        startTimer();
-      })
-      .catch(() => {
-        contentBody.innerHTML = `
-          <div class="empty-state">
-            <div class="es-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <h4>Contenu non disponible</h4>
-            <p>Le contenu de cette partie n'est pas encore disponible.</p>
-          </div>
-        `;
-      });
-
-    // Navigation entre parties
-    setupContentNavigation();
-    loadNotes();
-  };
-
-  window._backToCards = function() {
-    currentPartIndex = -1;
-    document.getElementById('cardsView').classList.remove('hidden');
-    document.getElementById('contentView').classList.remove('active');
-  };
-
-  window._navContent = function(dir) {
-    let newIdx = currentPartIndex + dir;
-    if (newIdx >= 0 && newIdx < currentParts.length) {
-      window.openPart(newIdx);
-    }
-  };
-
-  function setupContentNavigation() {
-    const prevBtn = document.getElementById('contentPrevBtn');
-    const nextBtn = document.getElementById('contentNextBtn');
-
-    if (prevBtn) {
-      const newPrev = prevBtn.cloneNode(true);
-      prevBtn.parentNode.replaceChild(newPrev, prevBtn);
-      newPrev.disabled = currentPartIndex <= 0;
-      newPrev.addEventListener('click', () => window._navContent(-1));
-    }
-    if (nextBtn) {
-      const newNext = nextBtn.cloneNode(true);
-      nextBtn.parentNode.replaceChild(newNext, nextBtn);
-      newNext.disabled = currentPartIndex >= currentParts.length - 1;
-      newNext.addEventListener('click', () => window._navContent(1));
-    }
-
-    const backBtn = document.getElementById('contentBackBtn');
-    if (backBtn) {
-      const newBack = backBtn.cloneNode(true);
-      backBtn.parentNode.replaceChild(newBack, backBtn);
-      newBack.addEventListener('click', window._backToCards);
+    // Fallback
+    const defaultData = SUBJECTS_CONFIG[subjectKey];
+    if (defaultData) {
+      subjectConfig = {
+        name: defaultData.name,
+        icon: defaultData.icon,
+        color: defaultData.color
+      };
+      chapters = DEFAULT_CHAPTERS[subjectKey] || [];
+      renderPage();
+    } else {
+      window.location.replace('index.html');
     }
   }
 
-  // ================================================================
-  // NOTES
-  // ================================================================
-  function loadNotes() {
-    const notesKey = 'arvexa_notes_' + subjectKey + '_' + chapIdx;
-    const content = localStorage.getItem(notesKey) || '';
-    const textarea = document.getElementById('notesTextarea');
-    if (textarea) textarea.value = content;
-  }
-
-  function setupNotes() {
-    const textarea = document.getElementById('notesTextarea');
-    const savedEl = document.getElementById('notesSaved');
-    if (!textarea) return;
-
-    textarea.addEventListener('input', () => {
-      const content = textarea.value;
-      const notesKey = 'arvexa_notes_' + subjectKey + '_' + chapIdx;
-      if (savedEl) savedEl.classList.remove('show');
-      clearTimeout(textarea._saveTimeout);
-      textarea._saveTimeout = setTimeout(() => {
-        localStorage.setItem(notesKey, content);
-        if (savedEl) {
-          savedEl.classList.add('show');
-          setTimeout(() => savedEl.classList.remove('show'), 2000);
-        }
-      }, 1000);
-    });
-
-    const toggleBtn = document.getElementById('notesToggleBtn');
-    const notesSection = document.getElementById('notesSection');
-    if (toggleBtn && notesSection) {
-      toggleBtn.addEventListener('click', () => {
-        notesSection.classList.toggle('show');
-        toggleBtn.classList.toggle('active');
-      });
-    }
-  }
-
-  // ================================================================
-  // MARQUE-PAGES
-  // ================================================================
-  function setupBookmark() {
-    const btn = document.getElementById('bookmarkBtn');
-    if (!btn) return;
-    const bookmarkKey = 'arvexa_bookmark_' + subjectKey + '_' + chapIdx + '_' + currentTab + '_' + currentPartIndex;
-    const isBookmarked = localStorage.getItem(bookmarkKey) === 'true';
-    if (isBookmarked) btn.classList.add('active');
-
-    btn.addEventListener('click', () => {
-      const newState = !btn.classList.contains('active');
-      btn.classList.toggle('active');
-      localStorage.setItem(bookmarkKey, newState ? 'true' : 'false');
-      showToast(newState ? '📌 Section marquée !' : '🔖 Marque-page retiré', 'info');
-    });
-  }
-
-  // ================================================================
-  // RENDU DE LA PAGE
-  // ================================================================
   function renderPage() {
     if (!subjectConfig || !chapters.length) return;
 
@@ -1128,18 +697,12 @@
 
     const isFree = chapIdx === 0;
     const statusEl = document.getElementById('chapStatus');
-    const completed = chapterProgress[chapIdx] >= 100;
 
     document.getElementById('chapNum').textContent = chapIdx + 1;
-    document.getElementById('chapNum').className = 'ci-num' + (completed ? ' completed' : '');
     document.getElementById('chapTitle').textContent = title;
     document.getElementById('chapSub').textContent = subjectConfig.name + ' — Chapitre ' + (chapIdx + 1) + ' / ' + chapters.length;
-    document.getElementById('chapProgress').textContent = (chapterProgress[chapIdx] || 0) + '%';
 
-    if (completed) {
-      statusEl.textContent = '✅ Terminé';
-      statusEl.className = 'ci-status completed';
-    } else if (isFree) {
+    if (isFree) {
       statusEl.textContent = '🎁 Gratuit';
       statusEl.className = 'ci-status free';
     } else if (isPremium) {
@@ -1175,6 +738,80 @@
     loadManifest();
   }
 
+  function loadManifest() {
+    const suffix = currentTab === 'cours' ? 'cours' : (currentTab === 'exercices' ? 'exo' : 'corr');
+    const manifestPath = 'cours/' + subjectKey + '/ch' + chapIdx + '_' + suffix + '.json';
+    const container = document.getElementById('cardsView');
+    container.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Chargement...</p></div>';
+
+    fetch(manifestPath)
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.json(); })
+      .then(data => {
+        currentParts = data.parts || [];
+        renderCards();
+      })
+      .catch(() => {
+        currentParts = [];
+        renderEmpty();
+      });
+  }
+
+  function renderCards() {
+    const container = document.getElementById('cardsView');
+    if (currentParts.length === 0) {
+      renderEmpty();
+      return;
+    }
+
+    const tabLabels = { cours: 'Partie', exercices: 'Exercice', corrections: 'Correction' };
+    const tabIcons = { cours: 'fa-book-open', exercices: 'fa-pen-to-square', corrections: 'fa-check-double' };
+    const iconClass = { cours: '', exercices: 'exo', corrections: 'corr' };
+    const label = tabLabels[currentTab] || 'Partie';
+    const icon = tabIcons[currentTab] || 'fa-file';
+    const ic = iconClass[currentTab] || '';
+
+    // Vérifier si c'est une correction et si le chapitre est premium
+    const isFree = chapIdx === 0;
+    const isLockedCorrection = currentTab === 'corrections' && !isPremium && !isFree;
+
+    container.innerHTML = currentParts.map((part, i) => {
+      const filePath = `cours/${subjectKey}/${part.file}`;
+      const isRead = isPartRead(subjectKey, chapIdx, currentTab, i);
+      const readClass = isRead ? 'read' : '';
+
+      return `
+        <div class="part-card ${readClass}" onclick="openPart(${i})">
+          <div class="pc-icon ${ic}">
+            <i class="fas ${icon}"></i>
+          </div>
+          <div class="pc-info">
+            <div class="pc-title">${escapeHtml(part.title)}</div>
+            <div class="pc-sub">${label} ${i + 1} — ${subjectConfig.name}</div>
+          </div>
+          <div class="pc-arrow"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderEmpty() {
+    const container = document.getElementById('cardsView');
+    const tabNames = { cours: 'cours', exercices: 'exercices', corrections: 'corrections' };
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon"><i class="fas fa-folder-open"></i></div>
+        <h4>Aucun ${tabNames[currentTab] || 'contenu'} disponible</h4>
+        <p>Le contenu sera ajouté prochainement.</p>
+      </div>
+    `;
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   // ================================================================
   // TABS
   // ================================================================
@@ -1183,7 +820,6 @@
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab;
         if (tab === currentTab) return;
-        if (currentPartIndex >= 0) window._backToCards();
         currentTab = tab;
         const url = new URL(window.location);
         url.searchParams.set('tab', tab);
@@ -1195,95 +831,25 @@
   }
 
   // ================================================================
-  // CHARGEMENT DES DONNÉES
+  // AUTH
   // ================================================================
-  function loadSubjectData() {
-    // Essayer le cache
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Vérifier Premium
     try {
-      const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
-      if (cached) {
-        const data = JSON.parse(cached);
-        subjectConfig = data.subjectConfig;
-        chapters = data.chapters;
-        renderPage();
-        return;
-      }
+      const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
     } catch (e) {}
 
-    // Fallback
-    const defaultData = SUBJECTS_CONFIG[subjectKey];
-    if (defaultData) {
-      subjectConfig = {
-        name: defaultData.name,
-        icon: defaultData.icon,
-        color: defaultData.color
-      };
-      chapters = DEFAULT_CHAPTERS[subjectKey] || [];
-      renderPage();
-    } else {
-      window.location.replace('index.html');
-    }
-  }
-
-  // ================================================================
-  // ⭐ VÉRIFICATION D'AUTH - UNE SEULE FOIS (SANS BOUCLE)
-  // ================================================================
-  let authChecked = false;
-  let isRedirecting = false;
-
-  onAuthStateChanged(auth, (user) => {
-    if (authChecked) return;
-    authChecked = true;
-
-    if (user) {
-      saveSession(user);
-      console.log('📖 Chapitre - Utilisateur:', user.uid);
-      userData = user;
-
-      // Charger les données utilisateur
-      getDoc(doc(db, 'users', user.uid)).then((docSnap) => {
-        if (docSnap.exists()) {
-          userData = docSnap.data();
-          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-        }
-        // Charger la progression
-        getDoc(doc(db, 'users', user.uid, 'progress', 'overall')).then((progressSnap) => {
-          if (progressSnap.exists()) {
-            const data = progressSnap.data();
-            if (data.subjects && data.subjects[subjectKey]) {
-              const subjectProgress = data.subjects[subjectKey];
-              if (subjectProgress.chapters && subjectProgress.chapters.progress) {
-                chapterProgress = subjectProgress.chapters.progress || {};
-              }
-            }
-          }
-          loadSubjectData();
-        }).catch(() => loadSubjectData());
-      }).catch(() => loadSubjectData());
-
-    } else {
-      if (isRedirecting) return;
-      isRedirecting = true;
-      clearSession();
-      console.log('🔒 Non connecté, redirection vers login');
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-      window.location.href = 'login.html';
-    }
+    loadSubjectData();
+    setupTabs();
   });
 
-  // ================================================================
-  // INIT
-  // ================================================================
-  setupTabs();
-  setupNotes();
-  setupBookmark();
-
-  // Nettoyer le timer à la fermeture
-  window.addEventListener('beforeunload', () => {
-    stopTimer();
-  });
-
-  console.log('📖 ARVEXA - Chapitre (auth intégrée, sans boucle)');
+  console.log('📖 ARVEXA - Chapitre (version simplifiée)');
   </script>
 </body>
 </html>
