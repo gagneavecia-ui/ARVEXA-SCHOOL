@@ -13,7 +13,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== ROOT ===== */
+    /* ============================================================
+       ROOT — Design system ARVEXA
+       ============================================================ */
     :root {
       --primary: #1A3A2A;
       --primary-dark: #0A1A12;
@@ -34,7 +36,7 @@
       --shadow: 0 8px 32px rgba(0,0,0,0.4);
       --radius: 16px;
       --sidebar-width: 240px;
-      --header-height: 64px;
+      --header-height: 56px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -116,28 +118,33 @@
 
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
+      justify-content: space-between; padding: 8px 12px; background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
-      gap: 12px; min-height: var(--header-height);
+      gap: 8px; min-height: var(--header-height);
     }
-    .header .header-left { display: flex; align-items: center; gap: 12px; }
+    .header .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .header .menu-toggle {
       display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
       border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
       color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
+      flex-shrink: 0;
     }
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
     .header .greeting {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
-      font-size: 14px; font-weight: 600; color: var(--text-light);
+      display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
+      font-size: 13px; font-weight: 600; color: var(--text-light);
+      min-width: 0;
     }
     .header .greeting #greetingText { color: var(--text-dim); }
-    .header .greeting #userFirstName { color: var(--accent-bright); font-weight: 700; }
+    .header .greeting #userFirstName { 
+      color: var(--accent-bright); font-weight: 700; 
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;
+    }
     .header .greeting #greetingEmoji { font-size: 16px; line-height: 1; }
-    .header .header-actions { display: flex; align-items: center; gap: 6px; }
+    .header .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     .header .header-actions button {
-      width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
+      width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 14px;
       display: flex; align-items: center; justify-content: center; position: relative;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
@@ -147,24 +154,29 @@
       display: none;
     }
     .header .header-actions button .notif-dot.show { display: block; }
+    .header .offline-indicator {
+      font-size: 11px; color: var(--accent-bright); display: none;
+      margin-left: 4px;
+    }
+    .header .offline-indicator.show { display: inline-block; }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
+    .container { max-width: 900px; margin: 0 auto; padding: 12px 12px 16px; width: 100%; }
 
     /* ===== CARTES ===== */
     .card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 18px; transition: var(--transition);
+      border-radius: var(--radius); padding: 16px; transition: var(--transition);
     }
     .card:hover { border-color: rgba(184, 134, 11, 0.14); }
     .section-title {
       display: flex; justify-content: space-between; align-items: baseline;
-      margin: 26px 0 12px;
+      margin: 20px 0 10px;
     }
-    .section-title h3 { font-size: 15px; font-weight: 600; color: var(--text-light); }
+    .section-title h3 { font-size: 14px; font-weight: 600; color: var(--text-light); }
     .section-title:first-of-type { margin-top: 0; }
 
     .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px; padding: 11px 26px; border-radius: 30px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 30px;
       border: none; background: linear-gradient(135deg, var(--accent-bright), var(--accent));
       color: #0A0A0A; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition);
       font-family: 'Inter', sans-serif; text-decoration: none;
@@ -173,11 +185,11 @@
     .btn-primary:active { transform: scale(0.97); }
 
     .premium-badge {
-      display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px;
-      font-size: 10px; font-weight: 600; background: rgba(184, 134, 11, 0.1); color: var(--accent-bright);
-      border: 1px solid rgba(184, 134, 11, 0.14); margin-top: 6px;
+      display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px;
+      font-size: 9px; font-weight: 600; background: rgba(184, 134, 11, 0.1); color: var(--accent-bright);
+      border: 1px solid rgba(184, 134, 11, 0.14); margin-top: 4px;
     }
-    .premium-badge i { font-size: 9px; }
+    .premium-badge i { font-size: 8px; }
 
     /* ===== SKELETON ===== */
     .skeleton {
@@ -195,20 +207,20 @@
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
     }
-    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-    .hero-info .class-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .hero-info .exam-label { font-size: 19px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 0; }
+    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .hero-info .class-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .hero-info .exam-label { font-size: 17px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 2px 0 0; }
     .hero-info .exam-label span { color: var(--accent-bright); }
     .hero-bottom {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; padding-top: 14px;
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
     .hero-pill {
-      display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px;
       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-      font-size: 12px; color: var(--text-dim); font-weight: 500;
+      font-size: 11px; color: var(--text-dim); font-weight: 500;
     }
-    .hero-pill i { color: var(--accent); font-size: 12px; }
+    .hero-pill i { color: var(--accent); font-size: 11px; }
     .hero-pill.streak i { color: #D97A3A; }
     .hero-pill strong { color: var(--text-light); font-weight: 700; }
     .hero-pill.warning { border-color: rgba(184,134,11,0.2); background: rgba(184,134,11,0.05); }
@@ -216,111 +228,229 @@
     .hero-pill.danger { border-color: rgba(184,92,58,0.2); background: rgba(184,92,58,0.05); }
     .hero-pill.danger i { color: var(--danger); }
 
+    /* ===== MINI STATS ===== */
+    .mini-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;
+    }
+    .mini-stat {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 10px; padding: 8px 4px; text-align: center;
+    }
+    .mini-stat .ms-value {
+      font-size: 18px; font-weight: 800; font-family: 'Playfair Display', serif;
+      color: var(--accent-bright); line-height: 1.2;
+    }
+    .mini-stat .ms-label {
+      font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+      font-weight: 600; margin-top: 1px;
+    }
+
     /* ===== PROCHAINE ÉTAPE ===== */
     .next-card {
       background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
-      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius); padding: 18px;
+      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius); padding: 16px;
       position: relative; overflow: hidden;
     }
     .next-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--success)); }
-    .next-card .badge { font-size: 10px; font-weight: 600; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 1px; }
-    .next-card .title { font-size: 17px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 3px 0 4px; }
-    .next-card .subject { font-size: 13px; color: var(--text-dim); }
-    .next-card .message { font-size: 13px; color: var(--text-dim); margin: 6px 0 12px; line-height: 1.5; }
-    .next-card .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+    .next-card .badge { font-size: 9px; font-weight: 600; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 1px; }
+    .next-card .title { font-size: 16px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 2px 0 3px; }
+    .next-card .subject { font-size: 12px; color: var(--text-dim); }
+    .next-card .message { font-size: 12px; color: var(--text-dim); margin: 4px 0 10px; line-height: 1.5; }
+    .next-card .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+
+    /* ===== DERNIÈRE ACTIVITÉ ===== */
+    .last-activity {
+      display: none; background: var(--bg-card); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 4px;
+      transition: var(--transition);
+    }
+    .last-activity.show { display: block; }
+    .last-activity .la-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .last-activity .la-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright);
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .last-activity .la-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .last-activity .la-title { font-size: 14px; font-weight: 600; color: var(--text-light); }
+    .last-activity .la-sub { font-size: 12px; color: var(--text-dim); }
+    .last-activity .la-btn {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+      padding: 6px 16px; border-radius: 20px; border: none;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright);
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition);
+      font-family: 'Inter', sans-serif; text-decoration: none;
+    }
+    .last-activity .la-btn:hover { background: rgba(184,134,11,0.16); }
 
     /* ===== MATIÈRES ===== */
-    .subjects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .subject-chip {
-      background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 14px;
-      padding: 16px 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
-      display: flex; align-items: center; gap: 14px;
-    }
-    .subject-chip:hover { border-color: rgba(184,134,11,0.16); transform: translateY(-2px); }
-    .subject-chip:active { transform: scale(0.97); }
-    .subject-chip .icon-badge {
-      width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 16px; flex-shrink: 0;
-    }
-    .subject-chip .subject-name { font-size: 14px; font-weight: 600; }
-    .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
- /* ===== OUTILS ===== */
-.tools-grid { 
+.subjects-grid { 
   display: grid; 
-  grid-template-columns: repeat(3, 1fr); 
+  grid-template-columns: repeat(2, 1fr); 
   gap: 10px; 
 }
+.subject-chip {
+  background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 12px;
+  padding: 12px 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
+  display: flex; align-items: center; gap: 12px;
+}
+.subject-chip:hover { border-color: rgba(184,134,11,0.16); transform: translateY(-2px); }
+.subject-chip:active { transform: scale(0.97); }
+.subject-chip .icon-badge {
+  width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 16px; flex-shrink: 0;
+}
+.subject-chip .subject-name { font-size: 14px; font-weight: 600; }
+.subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ===== OUTILS ===== */
+    .tools-grid { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 8px; 
+    }
     .tool-card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 16px 8px; text-align: center; transition: var(--transition);
+      border-radius: 12px; padding: 12px 6px; text-align: center; transition: var(--transition);
       text-decoration: none; color: var(--text-light); display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 6px; min-height: 88px;
+      align-items: center; justify-content: center; gap: 4px; min-height: 76px;
     }
-    .tool-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
+    .tool-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
     .tool-card .icon-badge {
-      width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 15px;
+      width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 14px;
     }
-    .tool-card .name { font-size: 12px; font-weight: 600; }
+    .tool-card .name { font-size: 11px; font-weight: 600; }
+
+        /* ===== CONSEIL DU JOUR - VERSION SIMPLE ===== */
+.tip-card {
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+.tip-card:hover {
+  border-color: rgba(184, 134, 11, 0.14);
+}
+.tip-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+  background-size: 200% 100%;
+  animation: shimmerBorder 3s linear infinite;
+}
+@keyframes shimmerBorder {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
+}
+.tip-card .tip-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.tip-card .tip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  background: rgba(184, 134, 11, 0.08);
+  color: var(--accent-bright);
+}
+.tip-card .tip-body {
+  flex: 1;
+  min-width: 0;
+}
+.tip-card .tip-category {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--accent-bright);
+  margin-bottom: 2px;
+}
+.tip-card .tip-title {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+.tip-card .tip-text {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
 
     /* ===== ABONNEMENT ===== */
-    .subscription-reminder { margin-top: 14px; }
+    .subscription-reminder { margin-top: 12px; }
     .sub-card {
       background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
       border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius);
-      padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: var(--transition);
+      padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: var(--transition);
     }
     .sub-card:hover { border-color: rgba(184, 134, 11, 0.25); }
     .sub-card .sub-icon {
-      width: 44px; height: 44px; border-radius: 12px;
+      width: 40px; height: 40px; border-radius: 12px;
       background: rgba(184, 134, 11, 0.1); display: flex; align-items: center; justify-content: center;
-      font-size: 20px; color: var(--accent-bright); flex-shrink: 0;
+      font-size: 18px; color: var(--accent-bright); flex-shrink: 0;
     }
     .sub-card .sub-content { flex: 1; min-width: 0; }
-    .sub-card .sub-title { font-size: 14px; font-weight: 600; color: var(--text-light); }
-    .sub-card .sub-text { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-    .sub-card .sub-expiry { font-size: 11px; color: #D97A3A; font-weight: 600; margin-top: 2px; }
+    .sub-card .sub-title { font-size: 13px; font-weight: 600; color: var(--text-light); }
+    .sub-card .sub-text { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+    .sub-card .sub-expiry { font-size: 10px; color: #D97A3A; font-weight: 600; margin-top: 2px; }
     .sub-card .sub-btn {
-      padding: 8px 18px; border-radius: 20px; border: none;
+      padding: 7px 16px; border-radius: 20px; border: none;
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A; font-size: 12px; font-weight: 700; cursor: pointer;
+      color: #0A0A0A; font-size: 11px; font-weight: 700; cursor: pointer;
       transition: var(--transition); font-family: 'Inter', sans-serif;
       text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
     }
     .sub-card .sub-btn:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(184,134,11,0.2); }
     .sub-card .sub-btn.renew { background: linear-gradient(135deg, #D97A3A, #B85C3A); color: #fff; }
 
-       /* ===== FOOTER ===== */
+    /* ===== FOOTER ===== */
     .footer {
-      margin-top: 40px; padding: 24px 16px 16px;
+      margin-top: 32px; padding: 20px 16px 12px;
       border-top: 1px solid rgba(184, 134, 11, 0.06);
       background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px);
     }
     .footer-content {
       max-width: 900px; margin: 0 auto;
-      display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
     }
     .footer-logo {
-      font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif;
+      font-size: 16px; font-weight: 700; font-family: 'Playfair Display', serif;
       color: var(--text-light); letter-spacing: 1px;
     }
     .footer-logo span { color: var(--accent-bright); font-style: italic; }
     .footer-links {
-      display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
     }
     .footer-links a {
-      color: var(--text-muted); text-decoration: none; font-size: 12px; transition: var(--transition);
+      color: var(--text-muted); text-decoration: none; font-size: 11px; transition: var(--transition);
     }
     .footer-links a:hover { color: var(--text-light); }
-    .footer-copy { font-size: 11px; color: var(--text-muted); opacity: 0.6; }
+    .footer-copy { font-size: 10px; color: var(--text-muted); opacity: 0.6; }
 
     /* ===== TOAST ===== */
     .toast {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 12px 20px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border); color: var(--text-light); font-size: 13px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 10px 16px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border); color: var(--text-light); font-size: 12px; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 92%; text-align: center;
       box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -328,75 +458,107 @@
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
     .toast .toast-icon { flex-shrink: 0; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (min-width: 768px) {
-      .sidebar { left: 0; display: flex; }
-      .sidebar-overlay { display: none !important; }
-      .main-content { margin-left: var(--sidebar-width); }
-      .header .menu-toggle { display: none; }
-    }
-    @media (max-width: 767px) {
-      .sidebar { left: -280px; }
-      .sidebar.open { left: 0; }
-      .header .greeting { font-size: 13px; }
-      .container { padding: 12px 12px 20px; }
-      .card { padding: 15px; }
-      .hero-info .exam-label { font-size: 16px; }
-    }
-    @media (max-width: 480px) {
-      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-      .tool-card { padding: 12px 6px; min-height: 76px; }  
-      .tool-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
-      .tool-card .name { font-size: 11px; }
-      .subjects-grid { gap: 8px; }
-      .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
-      .next-card .actions { flex-direction: column; }
-      .next-card .actions .btn-primary { width: 100%; justify-content: center; }
-      .hero-top { flex-wrap: wrap; }
-      .subject-chip { padding: 12px; }
-      .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 14px; }
-      .subject-chip .subject-name { font-size: 13px; }
-      .sub-card { flex-direction: column; text-align: center; padding: 18px 14px; gap: 10px; }
-      .sub-card .sub-btn { width: 100%; justify-content: center; }
-      .footer-links { gap: 10px; }
-      .footer-links a { font-size: 11px; }
-      .tip-card .tip-header { flex-direction: column; text-align: center; }
-      .tip-card .tip-actions { justify-content: center; }
-    }
-    @media (max-width: 360px) {
-      .header .greeting { font-size: 11px; }
-      .tools-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    }
-    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
-    /* Forcer 3 colonnes pour les outils sur tous les écrans */
-.tools-grid { 
-  grid-template-columns: repeat(3, 1fr) !important; 
+    /* ============================================================
+   RESPONSIVE — ULTRA COMPLET
+   ============================================================ */
+
+/* --- Tablettes et grands écrans (≥ 768px) --- */
+@media (min-width: 768px) {
+  .sidebar { left: 0; display: flex; }
+  .sidebar-overlay { display: none !important; }
+  .main-content { margin-left: var(--sidebar-width); }
+  .header .menu-toggle { display: none; }
+  .header .greeting #userFirstName { max-width: 150px; }
 }
 
-@media (max-width: 480px) {
-  .tools-grid { 
-    grid-template-columns: repeat(3, 1fr) !important; 
-    gap: 6px; 
-  }
-  .tool-card { 
-    padding: 10px 4px; 
-    min-height: 70px; 
-  }
-  .tool-card .icon-badge { 
-    width: 28px; 
-    height: 28px; 
-    font-size: 12px; 
-  }
-  .tool-card .name { 
-    font-size: 10px; 
-  }
+/* --- Téléphones moyens (481px - 767px) --- */
+@media (max-width: 767px) {
+  .sidebar { left: -280px; }
+  .sidebar.open { left: 0; }
+  .header { padding: 6px 10px; min-height: 50px; }
+  .header .greeting { font-size: 12px; }
+  .header .greeting #userFirstName { max-width: 60px; }
+  .header .header-actions button { width: 30px; height: 30px; font-size: 12px; }
+  .container { padding: 10px 10px 16px; }
+  .card { padding: 14px; }
+  .hero-info .exam-label { font-size: 15px; }
+  .mini-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .mini-stat .ms-value { font-size: 16px; }
+  .subjects-grid { gap: 8px; }
+  .subject-chip { padding: 10px 12px; }
+  .subject-chip .icon-badge { width: 34px; height: 34px; font-size: 14px; }
+  .subject-chip .subject-name { font-size: 13px; }
+  .tools-grid { gap: 6px; }
+  .tool-card { padding: 10px 4px; min-height: 68px; }
+  .tool-card .icon-badge { width: 28px; height: 28px; font-size: 12px; }
+  .tool-card .name { font-size: 10px; }
+  .sub-card { padding: 12px 14px; flex-wrap: wrap; }
+  .sub-card .sub-btn { width: 100%; justify-content: center; }
+  .tip-card { padding: 14px; }
+  .tip-card .tip-title { font-size: 12px; }
+  .tip-card .tip-text { font-size: 11px; }
+  .footer { padding: 16px 12px 10px; }
 }
+
+/* --- Très petits téléphones (361px - 480px) --- */
+@media (max-width: 480px) {
+  .header .greeting { font-size: 11px; }
+  .header .greeting #userFirstName { max-width: 50px; }
+  .header .header-actions button { width: 28px; height: 28px; font-size: 11px; }
+  .container { padding: 8px 8px 12px; }
+  .card { padding: 12px; border-radius: 12px; }
+  .hero-top { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .hero-info .exam-label { font-size: 14px; }
+  .hero-bottom { gap: 6px; margin-top: 8px; padding-top: 8px; }
+  .hero-pill { font-size: 10px; padding: 4px 10px; }
+  .mini-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+  .mini-stat { padding: 6px 2px; border-radius: 8px; }
+  .mini-stat .ms-value { font-size: 14px; }
+  .mini-stat .ms-label { font-size: 7px; }
+  .subjects-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .subject-chip { padding: 10px 10px; border-radius: 10px; gap: 10px; }
+  .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 13px; }
+  .subject-chip .subject-name { font-size: 12px; }
+  .subject-chip .subject-chapters { font-size: 10px; }
+  .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .tool-card { padding: 8px 4px; min-height: 60px; border-radius: 10px; }
+  .tool-card .icon-badge { width: 24px; height: 24px; font-size: 11px; border-radius: 6px; }
+  .tool-card .name { font-size: 9px; }
+  .section-title { margin: 14px 0 8px; }
+  .section-title h3 { font-size: 12px; }
+  .section-title .sub { font-size: 10px; }
+  .btn-primary { font-size: 11px; padding: 8px 16px; }
+  .next-card { padding: 14px; }
+  .next-card .title { font-size: 14px; }
+  .next-card .message { font-size: 11px; }
+  .last-activity { padding: 12px; }
+  .last-activity .la-title { font-size: 13px; }
+  .last-activity .la-sub { font-size: 11px; }
+  .sub-card { padding: 10px 12px; gap: 8px; }
+  .sub-card .sub-icon { width: 32px; height: 32px; font-size: 14px; }
+  .sub-card .sub-title { font-size: 12px; }
+  .sub-card .sub-text { font-size: 10px; }
+  .sub-card .sub-btn { font-size: 10px; padding: 6px 12px; }
+  .tip-card { padding: 12px; }
+  .tip-card .tip-icon { width: 30px; height: 30px; font-size: 13px; }
+  .tip-card .tip-title { font-size: 11px; }
+  .tip-card .tip-text { font-size: 10px; }
+  .tip-card .tip-footer { flex-direction: column; align-items: stretch; gap: 6px; }
+  .tip-card .tip-actions { justify-content: center; }
+  .toast { font-size: 11px; padding: 8px 14px; bottom: 16px; }
+  .footer { padding: 14px 10px 8px; margin-top: 24px; }
+  .footer-logo { font-size: 14px; }
+  .footer-links a { font-size: 10px; }
+  .footer-copy { font-size: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
   </style>
 </head>
 <body>
@@ -416,6 +578,7 @@
     <nav class="nav">
       <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
       <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+      <a href="progression.html"><i class="fas fa-chart-line"></i> Progression</a>
       <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
       <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
       <div class="nav-divider"></div>
@@ -438,6 +601,7 @@
           <span id="greetingText">Bonjour</span>
           <span id="userFirstName">Élève</span>
           <span id="greetingEmoji">👋</span>
+          <span class="offline-indicator" id="offlineIndicator"><i class="fas fa-wifi"></i> Hors ligne</span>
         </div>
       </div>
       <div class="header-actions">
@@ -460,9 +624,9 @@
       <!-- ===== SKELETON LOADING ===== -->
       <div id="skeletonLoading">
         <div class="skeleton skeleton-card"></div>
-        <div style="height:12px;"></div>
+        <div style="height:10px;"></div>
         <div class="skeleton skeleton-card-sm"></div>
-        <div style="height:12px;"></div>
+        <div style="height:10px;"></div>
         <div class="skeleton skeleton-card-xs"></div>
       </div>
 
@@ -486,7 +650,42 @@
               <i class="fas fa-fire"></i>
               <strong id="streakCount">0 💀</strong> jour(s) de suite
             </span>
+            <span class="hero-pill" id="levelDisplay">
+              <i class="fas fa-star"></i>
+              <span id="levelText">Débutant</span>
+            </span>
           </div>
+
+          <!-- ===== MINI STATS ===== -->
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="ms-value" id="msChapters">0</div>
+              <div class="ms-label">📚 Chapitres</div>
+            </div>
+            <div class="mini-stat">
+              <div class="ms-value" id="msTime">0h</div>
+              <div class="ms-label">⏱️ Étudiées</div>
+            </div>
+            <div class="mini-stat">
+              <div class="ms-value" id="msStreak">0🔥</div>
+              <div class="ms-label">🔥 Streak</div>
+            </div>
+            <div class="mini-stat">
+              <div class="ms-value" id="msLevel">🌱</div>
+              <div class="ms-label">📈 Niveau</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== DERNIÈRE ACTIVITÉ ===== -->
+        <div class="last-activity" id="lastActivityCard">
+          <div class="la-header">
+            <div class="la-icon"><i class="fas fa-clock"></i></div>
+            <span class="la-label">Dernière activité</span>
+          </div>
+          <div class="la-title" id="laTitle">Chapitre 3 - Nombres complexes</div>
+          <div class="la-sub" id="laSub">Mathématiques • il y a 2h</div>
+          <a href="#" class="la-btn" id="laBtn">Continuer →</a>
         </div>
 
         <!-- ===== PROCHAINE ÉTAPE ===== -->
@@ -497,7 +696,7 @@
         <div class="section-title"><h3>📐 Mes matières</h3></div>
         <div class="subjects-grid" id="subjectsGrid"></div>
 
-        <!-- ===== OUTILS & RESSOURCES ===== -->
+                <!-- ===== OUTILS & RESSOURCES ===== -->
         <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
         <div class="tools-grid">
           <a href="calculatrice.html" class="tool-card">
@@ -528,25 +727,23 @@
 
         <!-- ===== CONSEIL DU JOUR ===== -->
 <div class="section-title"><h3>💡 Conseil du jour</h3></div>
-<div class="card tip-card">
-  <div style="display:flex; gap:12px; align-items:flex-start;">
-    <div class="tip-icon" style="width:38px;height:38px;border-radius:10px;background:rgba(184,134,11,0.1);color:var(--accent-bright);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">
-      <i class="fas fa-lightbulb"></i>
-    </div>
-    <div>
-      <div class="tip-eyebrow" style="font-size:10px;text-transform:uppercase;letter-spacing:0.5px;font-weight:700;color:var(--accent-bright);">Conseil du jour</div>
-      <div class="tip-title" id="tipTitle" style="font-size:13px;font-weight:700;color:var(--text-light);margin:3px 0 4px;">Méthode de travail</div>
-      <div class="tip-text" id="tipText" style="font-size:12px;color:var(--text-dim);line-height:1.55;">Chargement du conseil...</div>
+<div class="card tip-card" id="tipCard">
+  <div class="tip-header">
+    <div class="tip-icon" id="tipIcon"><i class="fas fa-lightbulb"></i></div>
+    <div class="tip-body">
+      <div class="tip-category" id="tipCategory">💪 MOTIVATION</div>
+      <div class="tip-title" id="tipTitle">Le succès est au bout de l'effort</div>
+      <div class="tip-text" id="tipText">Chaque jour de révision te rapproche un peu plus de ton objectif. Continue !</div>
     </div>
   </div>
 </div>
-
         <!-- ===== SECTION ABONNEMENT ===== -->
         <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
           <div class="sub-card" id="subCard">
             <div class="sub-icon"><i class="fas fa-crown"></i></div>
             <div class="sub-content">
               <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
+             
               <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
               <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
             </div>
@@ -564,6 +761,7 @@
         <div class="footer-links">
           <a href="index.html">Accueil</a>
           <a href="profil.html">Profil</a>
+          <a href="progression.html">Progression</a>
           <a href="abonnement.html">Abonnement</a>
         </div>
         <div class="footer-copy">
@@ -594,8 +792,8 @@
   </script>
 
   <script type="module">
-// ================================================================
-// INDEX - AUTH INTÉGRÉE - VERSION RENFORCÉE (SANS BOUCLE)
+  // ================================================================
+// INDEX - VERSION COMPLETE AVEC CONSEILS SIMPLES
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -618,7 +816,6 @@ import {
   query,
   where,
   getDocs,
-  setDoc,
   increment
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
@@ -638,14 +835,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ✅ Persistance
 try {
   await setPersistence(auth, browserLocalPersistence);
   console.log('🔐 Persistance locale activée');
 } catch (e) { console.warn('⚠️ Persistance:', e); }
 
 // ================================================================
-// SESSION CACHE - VERSION RENFORCÉE
+// SESSION CACHE
 // ================================================================
 const SESSION_KEY = 'arvexa_session';
 
@@ -662,16 +858,7 @@ function saveSession(user) {
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(data));
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-    console.log('💾 Session sauvegardée:', user.uid);
   } catch (e) {}
-}
-
-function getSession() {
-  try {
-    let data = sessionStorage.getItem(SESSION_KEY);
-    if (!data) data = localStorage.getItem(SESSION_KEY);
-    return data ? JSON.parse(data) : null;
-  } catch (e) { return null; }
 }
 
 function clearSession() {
@@ -682,7 +869,6 @@ function clearSession() {
     localStorage.removeItem('arvexa_progress_data');
     localStorage.removeItem('arvexa_last_visit');
     localStorage.removeItem('arvexa_reading_streak');
-    console.log('🗑️ Session effacée');
   } catch (e) {}
 }
 
@@ -701,11 +887,22 @@ const nextStepCard = document.getElementById('nextStepCard');
 const subjectsGrid = document.getElementById('subjectsGrid');
 const examCountdown = document.getElementById('examCountdown');
 const streakCount = document.getElementById('streakCount');
+const levelDisplay = document.getElementById('levelDisplay');
+const levelText = document.getElementById('levelText');
 const notifDot = document.getElementById('notifDot');
+const offlineIndicator = document.getElementById('offlineIndicator');
 
-// Conseils DOM
-const tipTitle = document.getElementById('tipTitle');
-const tipText = document.getElementById('tipText');
+// Mini stats
+const msChapters = document.getElementById('msChapters');
+const msTime = document.getElementById('msTime');
+const msStreak = document.getElementById('msStreak');
+const msLevel = document.getElementById('msLevel');
+
+// Dernière activité
+const lastActivityCard = document.getElementById('lastActivityCard');
+const laTitle = document.getElementById('laTitle');
+const laSub = document.getElementById('laSub');
+const laBtn = document.getElementById('laBtn');
 
 // ================================================================
 // TOAST
@@ -734,38 +931,65 @@ const FIXED_SUBJECTS = [
 ];
 
 // ================================================================
-// CONSEIL DU JOUR - VERSION SIMPLE (LOCALE)
+// CONSEILS - VERSION SIMPLE AVEC ROTATION AUTOMATIQUE
 // ================================================================
-const STUDY_TIPS = [
-  { morning: { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." } },
-  { morning: { title: '🌅 Mardi matin', text: "Révise une notion difficile dès le matin. C'est le moment où ton cerveau est le plus frais." } },
-  { morning: { title: '🌅 Mercredi matin', text: "Commence par une matière que tu aimes pour te mettre en confiance." } },
-  { morning: { title: '🌅 Jeudi matin', text: "Réactive tes connaissances : relis le cours d'il y a 3 jours." } },
-  { morning: { title: '🌅 Vendredi matin', text: "Dernière ligne droite ! Concentre-toi sur les chapitres les plus importants." } },
-  { morning: { title: '🌅 Samedi matin', text: "Profite du week-end pour revoir les notions qui t'ont posé problème." } },
-  { morning: { title: '🌅 Dimanche matin', text: "Planifie ta semaine : 1 matière par jour, 1 chapitre par séance." } }
+
+const TIPS = [
+  // ===== MOTIVATION =====
+  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Le succès est au bout de l\'effort', text: 'Chaque jour de révision te rapproche un peu plus de ton objectif. Continue !' },
+  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Tu es plus fort que tu ne le penses', text: 'Les défis sont là pour te faire grandir. Crois en toi et persévère !' },
+  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'La persévérance paie toujours', text: 'Les résultats que tu obtiendras seront à la hauteur des efforts que tu fournis.' },
+  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Ne lâche rien !', text: 'Le moment où tu as envie d\'abandonner est souvent celui où tu es le plus proche du succès.' },
+  // ===== MÉTHODE =====
+  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'La technique Pomodoro', text: 'Travaille 25 minutes en pleine concentration, puis fais une pause de 5 minutes. Répète 4 fois.' },
+  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'Révision active', text: 'Explique le cours à voix haute comme si tu l\'enseignais à quelqu\'un. C\'est très efficace !' },
+  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'La méthode Cornell', text: 'Divise ta page en 3 zones : notes, mots-clés, résumé. Structure ta pensée.' },
+  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'Réviser par séances', text: 'Révise plusieurs fois par jour pendant 20-30 minutes plutôt qu\'une longue session.' },
+  // ===== BAC =====
+  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Objectif BAC', text: 'Révise les sujets des années précédentes. 70% des questions reviennent d\'une année sur l\'autre.' },
+  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Connais tes coefficients', text: 'Priorise les matières à fort coefficient. Une bonne note là-bas fait toute la différence.' },
+  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Entraîne-toi en conditions réelles', text: 'Fais des sujets complets en temps limité pour t\'habituer au stress du jour J.' },
+  // ===== SANTÉ =====
+  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Hydrate-toi !', text: 'Bois de l\'eau régulièrement pendant tes révisions. La déshydratation réduit ta concentration.' },
+  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Dors pour apprendre', text: 'Le sommeil consolide la mémoire. Dors au moins 7h pour que ton cerveau intègre ce que tu as appris.' },
+  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Fais des pauses', text: 'Une pause de 10 minutes toutes les heures permet à ton cerveau de mieux assimiler les informations.' },
+  // ===== ORGANISATION =====
+  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Planifie ta semaine', text: 'Dédie chaque jour à une matière différente pour éviter la surcharge cognitive.' },
+  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Objectif SMART', text: 'Fixe-toi des objectifs Spécifiques, Mesurables, Atteignables, Réalistes et Temporellement définis.' },
+  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Le plus dur est de commencer', text: 'Engage-toi à réviser seulement 5 minutes. Souvent, une fois lancé, tu continues beaucoup plus longtemps.' },
+  // ===== RÉVISION =====
+  { category: '👀 RÉVISION', icon: 'fa-eye', title: 'Révision espacée', text: 'Révise une notion 1 jour, 3 jours, puis 7 jours après l\'avoir apprise pour la mémoriser durablement.' },
+  { category: '👀 RÉVISION', icon: 'fa-eye', title: 'Utilise des flashcards', text: 'Les flashcards sont un excellent moyen de mémoriser les définitions, formules et dates clés.' },
+  // ===== RELAXATION =====
+  { category: '🌿 RELAXATION', icon: 'fa-spa', title: 'Respire profondément', text: 'Prends 3 grandes respirations avant chaque séance de révision. Calme ton esprit et augmente ta concentration.' },
+  { category: '🌿 RELAXATION', icon: 'fa-spa', title: 'Méditation express', text: 'Ferme les yeux, concentre-toi sur ta respiration pendant 2 minutes. Cela réduit le stress et améliore la mémoire.' }
 ];
 
-function getDailyTip() {
-  const dayOfWeek = new Date().getDay();
-  const dayIndex = (dayOfWeek + 6) % 7;
-  return STUDY_TIPS[dayIndex]?.morning || STUDY_TIPS[0].morning;
+function getTipOfTheDay() {
+  const now = new Date();
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  const hourSlot = Math.floor(now.getHours() / 2);
+  const index = (dayOfYear + hourSlot) % TIPS.length;
+  return TIPS[index];
 }
 
-function renderDailyTip() {
-  const tip = getDailyTip();
-  tipTitle.textContent = tip.title;
-  tipText.textContent = tip.text;
-}
+function renderTip() {
+  const tip = getTipOfTheDay();
+  if (!tip) return;
 
-// ================================================================
-// ÉTAT
-// ================================================================
-let userData = null;
-let isPremium = false;
-let unsubscribeUser = null;
-let currentTipIndex = 0;
-let tipsList = [];
+  const tipIcon = document.getElementById('tipIcon');
+  const tipCategory = document.getElementById('tipCategory');
+  const tipTitle = document.getElementById('tipTitle');
+  const tipText = document.getElementById('tipText');
+
+  if (tipIcon) {
+    tipIcon.className = 'tip-icon';
+    tipIcon.innerHTML = `<i class="fas ${tip.icon}"></i>`;
+  }
+  if (tipCategory) tipCategory.textContent = tip.category;
+  if (tipTitle) tipTitle.textContent = tip.title;
+  if (tipText) tipText.textContent = tip.text;
+}
 
 // ================================================================
 // FONCTIONS UTILITAIRES
@@ -802,138 +1026,36 @@ function getFlames(streak) {
   return '🔥🔥🔥🔥🔥 👑';
 }
 
-function getCategoryIcon(category) {
-  const icons = {
-    motivation: 'fa-star',
-    methode: 'fa-clock',
-    sante: 'fa-heart',
-    organisation: 'fa-list-check',
-    bac: 'fa-graduation-cap',
-    revision: 'fa-eye',
-    relaxation: 'fa-spa'
-  };
-  return icons[category] || 'fa-lightbulb';
+function getStreakMessage(streak) {
+  if (streak === 0) return 'Commence aujourd\'hui ! 💪';
+  if (streak < 3) return 'Premier pas, continue ! 🔥';
+  if (streak < 7) return 'Tu prends de l\'élan ! 🔥🔥';
+  if (streak < 14) return 'Une semaine ! Incroyable ! 🔥🔥🔥';
+  if (streak < 30) return 'Tu es un.e warrior ! 🔥🔥🔥🔥';
+  return 'LÉGENDE ! Tu es invincible ! 👑';
 }
 
-function getCategoryIconClass(category) {
-  const classes = {
-    motivation: 'motivation',
-    methode: 'methode',
-    sante: 'sante',
-    organisation: 'organisation',
-    bac: 'bac',
-    revision: 'revision',
-    relaxation: 'relaxation'
-  };
-  return classes[category] || 'motivation';
+function getLevel(completedChapters, totalChapters = 38) {
+  if (!totalChapters || totalChapters === 0) return { emoji: '🌱', text: 'Débutant' };
+  const ratio = completedChapters / totalChapters;
+  if (ratio === 0) return { emoji: '🌱', text: 'Débutant' };
+  if (ratio < 0.25) return { emoji: '📖', text: 'Apprenti' };
+  if (ratio < 0.50) return { emoji: '⚡', text: 'En progression' };
+  if (ratio < 0.75) return { emoji: '🔥', text: 'Enflammé' };
+  if (ratio < 1) return { emoji: '⭐', text: 'Expert' };
+  return { emoji: '👑', text: 'Maître ARVEXA' };
 }
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+function formatTime(seconds) {
+  if (!seconds || seconds < 60) return '0h';
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  if (hours === 0) return `${minutes}m`;
+  return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
 }
 
 // ================================================================
-// CHARGEMENT DES CONSEILS (Firestore + Fallback)
-// ================================================================
-
-async function loadTips() {
-  try {
-    const tipsRef = collection(db, 'tips');
-    const today = new Date().toISOString().split('T')[0];
-    const q = query(tipsRef, where('date', '==', today));
-    const snapshot = await getDocs(q);
-
-    if (!snapshot.empty) {
-      tipsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log('💡 Conseils chargés depuis Firestore:', tipsList.length);
-    } else {
-      tipsList = TIPS_DEFAULT.map((tip, index) => ({
-        ...tip,
-        id: 'default_' + index,
-        date: today
-      }));
-      console.log('💡 Conseils chargés depuis le fallback');
-    }
-
-    tipsList = shuffleArray(tipsList);
-    currentTipIndex = 0;
-    renderTip();
-
-  } catch (error) {
-    console.warn('⚠️ Erreur chargement conseils:', error);
-    tipsList = TIPS_DEFAULT.map((tip, index) => ({
-      ...tip,
-      id: 'default_' + index,
-      date: new Date().toISOString().split('T')[0]
-    }));
-    tipsList = shuffleArray(tipsList);
-    currentTipIndex = 0;
-    renderTip();
-  }
-}
-
-function renderTip() {
-  if (!tipsList.length) return;
-
-  const tip = tipsList[currentTipIndex];
-  if (!tip) return;
-
-  tipIcon.className = 'tip-icon ' + getCategoryIconClass(tip.category);
-  tipIcon.innerHTML = `<i class="fas ${getCategoryIcon(tip.category)}"></i>`;
-  tipCategory.textContent = tip.category ? tip.category.toUpperCase() : 'CONSEIL';
-  tipTitle.textContent = tip.title || 'Conseil du jour';
-  tipText.textContent = tip.text || '...';
-  tipTag.textContent = tip.tag || '📚 Astuce';
-  tipLikes.textContent = tip.likes || 0;
-
-  tipDots.innerHTML = tipsList.map((_, i) =>
-    `<span class="dot ${i === currentTipIndex ? 'active' : ''}" data-index="${i}"></span>`
-  ).join('');
-
-  tipCounter.textContent = `${currentTipIndex + 1} / ${tipsList.length}`;
-
-  document.querySelectorAll('.dot').forEach(dot => {
-    dot.addEventListener('click', () => {
-      currentTipIndex = parseInt(dot.dataset.index);
-      renderTip();
-    });
-  });
-}
-
-function nextTip() {
-  currentTipIndex = (currentTipIndex + 1) % tipsList.length;
-  renderTip();
-}
-
-async function likeTip() {
-  const tip = tipsList[currentTipIndex];
-  if (!tip) return;
-
-  try {
-    if (tip.id && !tip.id.startsWith('default_')) {
-      const tipRef = doc(db, 'tips', tip.id);
-      await updateDoc(tipRef, {
-        likes: increment(1)
-      });
-      tip.likes = (tip.likes || 0) + 1;
-    } else {
-      tip.likes = (tip.likes || 0) + 1;
-    }
-    tipLikes.textContent = tip.likes;
-    showToast('❤️ Merci pour ton retour !', 'success');
-  } catch (error) {
-    console.warn('⚠️ Erreur like:', error);
-    tip.likes = (tip.likes || 0) + 1;
-    tipLikes.textContent = tip.likes;
-  }
-}
-
-// ================================================================
-// STREAK (Firestore)
+// STREAK - VERSION CORRIGÉE
 // ================================================================
 
 async function updateStreak(userId) {
@@ -950,31 +1072,42 @@ async function updateStreak(userId) {
     const lastDate = data.lastStreakDate || null;
     let streak = data.readingStreak || 0;
 
-    if (lastDate === today) {
-      return streak;
+    // Si c'est la première fois aujourd'hui, on met à jour
+    if (lastDate !== today) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      // Si la dernière visite était hier, on incrémente
+      if (lastDate === yesterdayStr) {
+        streak += 1;
+      } else if (lastDate !== today) {
+        // Si la dernière visite n'est ni aujourd'hui ni hier, on réinitialise à 1
+        // (sauf si c'est la première visite)
+        if (lastDate !== null) {
+          streak = 1;
+        } else {
+          streak = 1;
+        }
+      }
+
+      // Mettre à jour dans Firestore
+      await updateDoc(userRef, {
+        readingStreak: streak,
+        lastStreakDate: today,
+        updatedAt: serverTimestamp()
+      });
+
+      console.log(`🔥 Streak mis à jour: ${streak} jours (dernière visite: ${lastDate})`);
     }
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-    if (lastDate === yesterdayStr) {
-      streak += 1;
-    } else {
-      streak = 1;
-    }
-
-    await updateDoc(userRef, {
-      readingStreak: streak,
-      lastStreakDate: today,
-      updatedAt: serverTimestamp()
-    });
 
     return streak;
 
   } catch (error) {
-    console.warn('⚠️ Erreur streak:', error);
-    return 0;
+    console.warn('⚠️ Erreur mise à jour streak:', error);
+    // En cas d'erreur, retourner la valeur en cache
+    const cached = localStorage.getItem('arvexa_reading_streak');
+    return cached ? parseInt(cached) : 0;
   }
 }
 
@@ -995,21 +1128,27 @@ function loadUserData(user) {
   unsubscribeUserData = onSnapshot(userRef,
     async (docSnap) => {
       if (docSnap.exists()) {
-        userData = docSnap.data();
-        isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+        const userData = docSnap.data();
+        const isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
 
         try {
           localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
         } catch (e) {}
 
         const streak = await updateStreak(user.uid);
-
-        renderDashboard(streak);
-        updateSubscriptionDisplay();
-        updateUserGreeting();
+        renderDashboard(userData, streak, isPremium);
+        updateSubscriptionDisplay(userData, isPremium);
+        updateUserGreeting(userData);
+        updateLastActivity();
 
         skeletonLoading.style.display = 'none';
         dynamicContent.style.display = 'block';
+
+        if (!navigator.onLine && isPremium) {
+          offlineIndicator.classList.add('show');
+        } else {
+          offlineIndicator.classList.remove('show');
+        }
 
       } else {
         showToast('⚠️ Profil introuvable.', 'error');
@@ -1020,10 +1159,10 @@ function loadUserData(user) {
       try {
         const cached = localStorage.getItem('arvexa_user_data');
         if (cached) {
-          userData = JSON.parse(cached);
-          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-          renderDashboard(0);
-          updateSubscriptionDisplay();
+          const userData = JSON.parse(cached);
+          const isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+          renderDashboard(userData, 0, isPremium);
+          updateSubscriptionDisplay(userData, isPremium);
           skeletonLoading.style.display = 'none';
           dynamicContent.style.display = 'block';
           showToast('📶 Données chargées depuis le cache', 'info');
@@ -1033,7 +1172,7 @@ function loadUserData(user) {
   );
 }
 
-function updateUserGreeting() {
+function updateUserGreeting(userData) {
   if (userData) {
     const firstName = userData.firstName || 'Élève';
     updateGreeting(firstName);
@@ -1044,7 +1183,7 @@ function updateUserGreeting() {
 // RENDU DU DASHBOARD
 // ================================================================
 
-function renderDashboard(streak) {
+function renderDashboard(userData, streak, isPremium) {
   if (!userData) return;
 
   const firstName = userData.firstName || 'Élève';
@@ -1067,48 +1206,118 @@ function renderDashboard(streak) {
   examCountdown.innerHTML = `<i class="fas fa-hourglass-half"></i> <span>${emoji} ${days} jours avant le BAC</span>`;
 
   const flames = getFlames(streak || 0);
+  const streakMsg = getStreakMessage(streak || 0);
   streakCount.textContent = `${streak || 0} ${flames}`;
+  streakCount.title = streakMsg;
 
-  renderNextStep();
+  const chaptersRead = userData.chaptersRead || 0;
+  const level = getLevel(chaptersRead);
+  levelText.textContent = level.emoji + ' ' + level.text;
+  if (levelDisplay) levelDisplay.title = 'Niveau : ' + level.text;
+
+  // Mini stats
+  if (msChapters) msChapters.textContent = chaptersRead;
+  if (msTime) msTime.textContent = formatTime(userData.totalStudyTime || 0);
+  if (msStreak) msStreak.textContent = `${streak || 0}${flames}`;
+  if (msLevel) { msLevel.textContent = level.emoji; msLevel.title = level.text; }
+
+  renderNextStep(userData, isPremium);
   renderSubjects();
-renderDailyTip();
+  renderTip();
 }
 
 // ================================================================
-// PROCHAINE ÉTAPE - VERSION SIMPLIFIÉE
+// DERNIÈRE ACTIVITÉ
 // ================================================================
 
-function renderNextStep() {
-  nextStepCard.innerHTML = `
-    <div class="next-card">
-      <div class="badge">🚀 Commence ton parcours</div>
-      <div class="title">Choisis une matière</div>
-      <div class="message">Clique sur l'une des matières ci-dessous pour commencer tes révisions.</div>
-      <div class="actions">
-        <a href="matiere.html?subject=mathematiques" class="btn-primary">Commencer</a>
+function updateLastActivity() {
+  try {
+    const lastActivity = JSON.parse(localStorage.getItem('arvexa_last_activity') || 'null');
+    if (lastActivity && lastActivity.chapter !== undefined) {
+      if (lastActivityCard) lastActivityCard.classList.add('show');
+      if (laTitle) laTitle.textContent = lastActivity.title || 'Chapitre ' + (lastActivity.chapter + 1);
+      if (laSub) laSub.textContent = (lastActivity.subject || 'Mathématiques') + ' • ' + (lastActivity.time || 'Récemment');
+      if (laBtn) laBtn.href = `chapitre.html?subject=${lastActivity.subjectKey || 'mathematiques'}&chapter=${lastActivity.chapter || 0}`;
+    } else {
+      if (lastActivityCard) lastActivityCard.classList.remove('show');
+    }
+  } catch (e) {
+    if (lastActivityCard) lastActivityCard.classList.remove('show');
+  }
+}
+
+// ================================================================
+// PROCHAINE ÉTAPE
+// ================================================================
+
+function renderNextStep(userData, isPremium) {
+  const chaptersRead = userData?.chaptersRead || 0;
+
+  let title, message, btnText, btnLink;
+
+  if (isPremium) {
+    const nextChapter = Math.min(chaptersRead, 37);
+    const subjectKeys = ['mathematiques', 'physique', 'chimie', 'svt'];
+    const subjectIdx = Math.floor(nextChapter / 10) % subjectKeys.length;
+    const subjectKey = subjectKeys[subjectIdx] || 'mathematiques';
+    const chapterIdx = nextChapter % 10;
+
+    title = `📖 Chapitre ${nextChapter + 1} à découvrir`;
+    message = `Continue ton apprentissage avec le prochain chapitre de ${FIXED_SUBJECTS[subjectIdx].name}.`;
+    btnText = 'Commencer →';
+    btnLink = `chapitre.html?subject=${subjectKey}&chapter=${chapterIdx}`;
+
+    if (chaptersRead >= 38) {
+      title = '🎉 Tu as tout lu !';
+      message = 'Bravo ! Tu as terminé tous les chapitres. Continue à réviser pour maîtriser parfaitement.';
+      btnText = 'Revoir un chapitre';
+      btnLink = 'matiere.html?subject=mathematiques';
+    }
+  } else {
+    title = '🚀 Commence ton parcours';
+    message = 'Découvre les Mathématiques avec le chapitre 1. Le premier chapitre est gratuit !';
+    btnText = 'Commencer →';
+    btnLink = 'chapitre.html?subject=mathematiques&chapter=0';
+  }
+
+  if (nextStepCard) {
+    nextStepCard.innerHTML = `
+      <div class="next-card">
+        <div class="badge">${isPremium ? '👑 Premium' : '🎯 Objectif'}</div>
+        <div class="title">${title}</div>
+        <div class="message">${message}</div>
+        <div class="actions">
+          <a href="${btnLink}" class="btn-primary">${btnText}</a>
+          ${!isPremium ? '<a href="abonnement.html" class="btn-primary" style="background:rgba(255,255,255,0.04);color:var(--text-dim);">🔓 Voir Premium</a>' : ''}
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  }
 }
+
+// ================================================================
+// MATIÈRES
+// ================================================================
 
 function renderSubjects() {
-  subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
-    <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-      <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-      <div>
-        <div class="subject-name">${subject.name}</div>
-        <div class="subject-chapters">${subject.chapters} chapitres</div>
-      </div>
-    </a>
-  `).join('');
+  if (subjectsGrid) {
+    subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
+      <a href="matiere.html?subject=${subject.key}" class="subject-chip">
+        <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+        <div>
+          <div class="subject-name">${subject.name}</div>
+          <div class="subject-chapters">${subject.chapters} chapitres</div>
+        </div>
+      </a>
+    `).join('');
+  }
 }
-
 
 // ================================================================
 // ABONNEMENT
 // ================================================================
 
-function updateSubscriptionDisplay() {
+function updateSubscriptionDisplay(userData, isPremium) {
   const reminder = document.getElementById('subscriptionReminder');
   const subTitle = document.getElementById('subTitle');
   const subText = document.getElementById('subText');
@@ -1181,20 +1390,18 @@ async function refreshDashboard() {
 }
 
 // ================================================================
-// ⭐ VÉRIFICATION D'AUTH - VERSION RENFORCÉE (SANS BOUCLE)
+// AUTH - VERSION RENFORCÉE
 // ================================================================
 let authChecked = false;
 let isRedirecting = false;
 let redirectCooldown = 0;
 
 onAuthStateChanged(auth, async (user) => {
-  // Éviter les appels multiples
   if (authChecked) {
     console.log('⏳ Auth déjà vérifié, skip');
     return;
   }
 
-  // Éviter les redirections en boucle (cooldown)
   const now = Date.now();
   if (now - redirectCooldown < 3000) {
     console.log('⏳ Cooldown actif, skip');
@@ -1204,10 +1411,8 @@ onAuthStateChanged(auth, async (user) => {
   authChecked = true;
 
   if (user) {
-    // ✅ Connecté
     console.log('✅ Index - Utilisateur connecté:', user.uid);
 
-    // Rafraîchir le token
     try {
       await getIdToken(user, true);
       console.log('🔄 Token rafraîchi');
@@ -1219,7 +1424,6 @@ onAuthStateChanged(auth, async (user) => {
     loadUserData(user);
 
   } else {
-    // ❌ Non connecté - REDIRECTION UNIQUE
     if (isRedirecting) return;
     isRedirecting = true;
     redirectCooldown = now;
@@ -1237,7 +1441,8 @@ onAuthStateChanged(auth, async (user) => {
 // ÉVÉNEMENTS
 // ================================================================
 
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+// Déconnexion
+document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
   e.preventDefault();
   try {
     if (unsubscribeUserData) unsubscribeUserData();
@@ -1249,35 +1454,66 @@ document.getElementById('logoutBtn').addEventListener('click', async (e) => {
   }
 });
 
-document.getElementById('menuToggle').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
+// Menu
+document.getElementById('menuToggle')?.addEventListener('click', () => {
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('sidebarOverlay')?.classList.toggle('active');
 });
 
-document.getElementById('sidebarOverlay').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('active');
+document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+  document.getElementById('sidebar')?.classList.remove('open');
+  document.getElementById('sidebarOverlay')?.classList.remove('active');
 });
 
-document.getElementById('notifBtn').addEventListener('click', () => {
+// Navigation
+document.getElementById('notifBtn')?.addEventListener('click', () => {
   window.location.href = 'notifications.html';
 });
 
-document.getElementById('profileBtn').addEventListener('click', () => {
+document.getElementById('profileBtn')?.addEventListener('click', () => {
   window.location.href = 'profil.html';
 });
 
-document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+document.getElementById('refreshBtn')?.addEventListener('click', refreshDashboard);
 
-// Gestion des dots (event delegation)
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('dot')) {
-    currentTipIndex = parseInt(e.target.dataset.index);
-    renderTip();
+// ================================================================
+// CONSEIL - ROTATION AUTOMATIQUE
+// ================================================================
+
+// Appeler au chargement
+renderTip();
+
+// Mettre à jour toutes les 2 heures (7200000 ms)
+setInterval(renderTip, 7200000);
+
+// ================================================================
+// CONNECTIVITÉ
+// ================================================================
+
+window.addEventListener('online', () => {
+  const isPremium = localStorage.getItem('arvexa_user_data') 
+    ? JSON.parse(localStorage.getItem('arvexa_user_data'))?.premium === true 
+    : false;
+  if (isPremium) {
+    if (offlineIndicator) offlineIndicator.classList.remove('show');
+    showToast('📶 Connexion rétablie', 'success');
   }
 });
 
-console.log('🚀 ARVEXA School — Index (version renforcée)');
+window.addEventListener('offline', () => {
+  const isPremium = localStorage.getItem('arvexa_user_data') 
+    ? JSON.parse(localStorage.getItem('arvexa_user_data'))?.premium === true 
+    : false;
+  if (isPremium) {
+    if (offlineIndicator) offlineIndicator.classList.add('show');
+    showToast('📶 Mode hors ligne activé pour les Premium', 'info');
+  } else {
+    showToast('📶 Mode hors ligne disponible avec Premium', 'info');
+  }
+});
+
+console.log('🚀 ARVEXA School — Index version complète et responsive');
+
   </script>
 </body>
 </html>

@@ -117,12 +117,34 @@
     .ci-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .ci-title { font-size: 15px; font-weight: 600; color: var(--text-light); line-height: 1.3; }
     .ci-sub { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .ci-sub .ci-status {
+    .ci-status {
       font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
     }
-    .ci-sub .ci-status.premium { background: rgba(184,134,11,0.1); color: var(--accent-bright); }
-    .ci-sub .ci-status.free { background: rgba(45,125,90,0.1); color: var(--success); }
-    .ci-sub .ci-status.locked { background: rgba(184,92,58,0.1); color: var(--danger); }
+    .ci-status.premium { background: rgba(184,134,11,0.1); color: var(--accent-bright); }
+    .ci-status.free { background: rgba(45,125,90,0.1); color: var(--success); }
+    .ci-status.locked { background: rgba(184,92,58,0.1); color: var(--danger); }
+
+    /* ===== PROGRESS BAR CHAPTER ===== */
+    .chapter-progress {
+      background: var(--bg-card); backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      padding: 10px 16px;
+    }
+    .chapter-progress .cp-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--text-dim);
+    }
+    .chapter-progress .cp-header strong { color: var(--text-light); }
+    .chapter-progress .cp-track {
+      width: 100%; height: 4px; border-radius: 4px;
+      background: rgba(255,255,255,0.06); overflow: hidden; margin-top: 4px;
+    }
+    .chapter-progress .cp-track .cp-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      transition: width 0.6s ease;
+      width: 0%;
+    }
 
     /* ===== TABS ===== */
     .tabs {
@@ -134,6 +156,7 @@
       color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
       transition: var(--transition); font-family: 'Inter', sans-serif;
       display: flex; align-items: center; justify-content: center; gap: 6px;
+      position: relative;
     }
     .tab-btn i { font-size: 12px; }
     .tab-btn.active {
@@ -142,6 +165,11 @@
     }
     .tab-btn:not(.active) { border: 1px solid transparent; }
     .tab-btn:hover:not(.active) { color: var(--text-dim); }
+    .tab-btn .tab-badge {
+      position: absolute; top: -4px; right: -4px;
+      font-size: 8px; background: var(--success); color: #fff;
+      padding: 1px 6px; border-radius: 10px; font-weight: 700;
+    }
 
     /* ===== CARDS VIEW ===== */
     .cards-view { display: flex; flex-direction: column; gap: 8px; flex: 1; }
@@ -161,7 +189,6 @@
     .part-card:hover::before { opacity: 1; }
     .part-card:active { transform: scale(0.98); }
 
-    /* ===== PARTIE LUE ===== */
     .part-card.read {
       border-color: rgba(45, 125, 90, 0.25);
       background: rgba(45, 125, 90, 0.04);
@@ -180,6 +207,8 @@
       color: var(--success);
       font-size: 12px;
     }
+    .part-card.locked { opacity: 0.7; }
+    .part-card.locked:hover { opacity: 0.9; }
 
     .pc-icon {
       width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center;
@@ -239,9 +268,7 @@
     .toast.error { border-color: rgba(184,92,58,0.2); }
     .toast.error i { color: var(--danger); }
 
-    /* ============================================================
-       POPUP PREMIUM
-       ============================================================ */
+    /* ===== POPUP PREMIUM ===== */
     .premium-popup-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); z-index: 9999;
@@ -336,7 +363,6 @@
     .premium-popup .popup-buttons .btn-subscribe:hover {
       background: #9A7209; box-shadow: 0 0 20px rgba(184,134,11,0.15);
     }
-    .premium-popup .popup-buttons .btn-subscribe:active { transform: scale(0.96); }
     .premium-popup .popup-buttons .btn-later {
       padding: 8px; background: transparent; border: none;
       color: var(--text-muted); font-size: 11px; cursor: pointer;
@@ -344,7 +370,9 @@
     }
     .premium-popup .popup-buttons .btn-later:hover { color: var(--text-dim); }
 
-    /* ===== RESPONSIVE ===== */
+        /* ============================================================
+       RESPONSIVE
+       ============================================================ */
     @media (max-width: 480px) {
       .container { padding: 10px 10px 24px; }
       .page-title { max-width: 140px; font-size: 13px; }
@@ -356,11 +384,24 @@
       .offer-card { padding: 10px 6px; }
       .offer-card .offer-price { font-size: 16px; }
       .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
+      .pc-icon { width: 36px; height: 36px; font-size: 15px; }
+      .pc-title { font-size: 13px; }
+      .part-card { padding: 12px 14px; }
     }
+
     @media (max-width: 360px) {
       .offers-grid { grid-template-columns: 1fr; }
       .premium-popup .popup-features { grid-template-columns: 1fr; }
+      .page-title { max-width: 100px; font-size: 12px; }
+      .ci-num { width: 32px; height: 32px; font-size: 13px; }
+      .ci-title { font-size: 13px; }
+      .pc-icon { width: 30px; height: 30px; font-size: 13px; }
+      .pc-title { font-size: 12px; }
+      .part-card { padding: 10px 12px; gap: 10px; }
+      .tab-btn { font-size: 10px; padding: 7px 4px; }
+      .tab-btn i { font-size: 10px; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
@@ -384,10 +425,6 @@
       <a href="#" class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></a>
       <h1 class="page-title" id="pageTitle">Chapitre</h1>
     </div>
-    <div class="header-right" id="headerNav">
-      <button class="chap-nav-btn" id="prevChapBtn" title="Chapitre précédent"><i class="fas fa-chevron-left"></i></button>
-      <button class="chap-nav-btn" id="nextChapBtn" title="Chapitre suivant"><i class="fas fa-chevron-right"></i></button>
-    </div>
   </header>
 
   <!-- ===== CONTAINER ===== -->
@@ -402,6 +439,17 @@
           <span id="chapSub"></span>
           <span class="ci-status" id="chapStatus">Gratuit</span>
         </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER PROGRESS ===== -->
+    <div class="chapter-progress" id="chapterProgress">
+      <div class="cp-header">
+        <span>📖 Progression du chapitre</span>
+        <span><strong id="cpRead">0</strong> / <span id="cpTotal">0</span> parties</span>
+      </div>
+      <div class="cp-track">
+        <div class="cp-fill" id="cpFill" style="width:0%"></div>
       </div>
     </div>
 
@@ -437,7 +485,7 @@
         <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
         <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
         <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
-        <div class="feature"><i class="fas fa-gear"></i> Outils avancer</div>
+        <div class="feature"><i class="fas fa-gear"></i> Outils avancés</div>
       </div>
 
       <div class="offers-grid">
@@ -479,7 +527,7 @@
 
   <script type="module">
   // ================================================================
-  // CHAPITRE - VERSION SIMPLIFIÉE (AVEC "LU" EN LOCALSTORAGE)
+  // CHAPITRE - VERSION COMPLETE AVEC PROGRESSION PAR PARTIE
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -515,6 +563,7 @@
   const params = new URLSearchParams(window.location.search);
   const subjectKey = params.get('subject') || 'mathematiques';
   const chapIdx = parseInt(params.get('chapter')) || 0;
+  const tabParam = params.get('tab') || 'cours';
 
   // ================================================================
   // CONFIG MATIÈRES (fallback)
@@ -576,6 +625,9 @@
   const cardsView = document.getElementById('cardsView');
   const toast = document.getElementById('toast');
   const toastText = document.getElementById('toastText');
+  const cpRead = document.getElementById('cpRead');
+  const cpTotal = document.getElementById('cpTotal');
+  const cpFill = document.getElementById('cpFill');
 
   // ================================================================
   // TOAST
@@ -589,6 +641,40 @@
   }
 
   // ================================================================
+  // GESTION DES PARTIES LUES
+  // ================================================================
+  const READ_KEY = 'arvexa_read_parts';
+
+  function getReadParts() {
+    try {
+      return JSON.parse(localStorage.getItem(READ_KEY) || '[]');
+    } catch (e) { return []; }
+  }
+
+  function isPartRead(subject, chapter, tab, partIndex) {
+    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
+    const readParts = getReadParts();
+    return readParts.includes(key);
+  }
+
+  function markPartAsRead(subject, chapter, tab, partIndex) {
+    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
+    const readParts = getReadParts();
+    if (!readParts.includes(key)) {
+      readParts.push(key);
+      localStorage.setItem(READ_KEY, JSON.stringify(readParts));
+    }
+  }
+
+  function getPartsReadForChapter(subject, chapter, tab, totalParts) {
+    let count = 0;
+    for (let i = 0; i < totalParts; i++) {
+      if (isPartRead(subject, chapter, tab, i)) count++;
+    }
+    return count;
+  }
+
+  // ================================================================
   // NAVIGATION
   // ================================================================
   function navigateToChapter(newChap) {
@@ -597,6 +683,8 @@
   }
 
   function openPart(index) {
+    // Marquer comme lu avant de naviguer
+    markPartAsRead(subjectKey, chapIdx, currentTab, index);
     window.location.href = `lecture.html?subject=${subjectKey}&chapter=${chapIdx}&tab=${currentTab}&part=${index}`;
   }
 
@@ -630,37 +718,18 @@
   });
 
   // ================================================================
-  // "LU" - LOCALSTORAGE
-  // ================================================================
-  function isPartRead(subject, chapter, tab, partIndex) {
-    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
-    const readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
-    return readParts.includes(key);
-  }
-
-  function markPartAsRead(subject, chapter, tab, partIndex) {
-    const key = `${subject}_${chapter}_${tab}_${partIndex}`;
-    const readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
-    if (!readParts.includes(key)) {
-      readParts.push(key);
-      localStorage.setItem('arvexa_read_parts', JSON.stringify(readParts));
-    }
-  }
-
-  // ================================================================
   // ÉTAT
   // ================================================================
   let subjectConfig = null;
   let chapters = [];
   let isPremium = false;
-  let currentTab = 'cours';
+  let currentTab = tabParam || 'cours';
   let currentParts = [];
 
   // ================================================================
   // RENDU
   // ================================================================
   function loadSubjectData() {
-    // Essayer le cache
     try {
       const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
       if (cached) {
@@ -672,7 +741,6 @@
       }
     } catch (e) {}
 
-    // Fallback
     const defaultData = SUBJECTS_CONFIG[subjectKey];
     if (defaultData) {
       subjectConfig = {
@@ -711,22 +779,6 @@
     } else {
       statusEl.textContent = '🔒 Verrouillé';
       statusEl.className = 'ci-status locked';
-    }
-
-    // Navigation entre chapitres
-    const prevBtn = document.getElementById('prevChapBtn');
-    const nextBtn = document.getElementById('nextChapBtn');
-    if (prevBtn) {
-      const newPrev = prevBtn.cloneNode(true);
-      prevBtn.parentNode.replaceChild(newPrev, prevBtn);
-      newPrev.disabled = chapIdx <= 0;
-      newPrev.addEventListener('click', () => navigateToChapter(chapIdx - 1));
-    }
-    if (nextBtn) {
-      const newNext = nextBtn.cloneNode(true);
-      nextBtn.parentNode.replaceChild(newNext, nextBtn);
-      newNext.disabled = chapIdx >= chapters.length - 1;
-      newNext.addEventListener('click', () => navigateToChapter(chapIdx + 1));
     }
 
     // Tabs
@@ -774,18 +826,31 @@
     const isFree = chapIdx === 0;
     const isLockedCorrection = currentTab === 'corrections' && !isPremium && !isFree;
 
+    // Compter les parties lues
+    const totalParts = currentParts.length;
+    const readCount = getPartsReadForChapter(subjectKey, chapIdx, currentTab, totalParts);
+    cpTotal.textContent = totalParts;
+    cpRead.textContent = readCount;
+    const percent = totalParts > 0 ? Math.round((readCount / totalParts) * 100) : 0;
+    cpFill.style.width = percent + '%';
+
     container.innerHTML = currentParts.map((part, i) => {
       const filePath = `cours/${subjectKey}/${part.file}`;
       const isRead = isPartRead(subjectKey, chapIdx, currentTab, i);
       const readClass = isRead ? 'read' : '';
+      const isLocked = isLockedCorrection;
+
+      let badge = '';
+      if (isRead && !isLocked) badge = ' ✅ Lu';
+      if (isLocked) badge = ' 🔒 Premium';
 
       return `
-        <div class="part-card ${readClass}" onclick="openPart(${i})">
+        <div class="part-card ${readClass} ${isLocked ? 'locked' : ''}" onclick="${isLocked ? 'showPremiumPopup()' : `openPart(${i})`}">
           <div class="pc-icon ${ic}">
             <i class="fas ${icon}"></i>
           </div>
           <div class="pc-info">
-            <div class="pc-title">${escapeHtml(part.title)}</div>
+            <div class="pc-title">${escapeHtml(part.title)}${badge}</div>
             <div class="pc-sub">${label} ${i + 1} — ${subjectConfig.name}</div>
           </div>
           <div class="pc-arrow"><i class="fas fa-chevron-right"></i></div>
@@ -804,6 +869,9 @@
         <p>Le contenu sera ajouté prochainement.</p>
       </div>
     `;
+    cpTotal.textContent = '0';
+    cpRead.textContent = '0';
+    cpFill.style.width = '0%';
   }
 
   function escapeHtml(text) {
@@ -839,17 +907,17 @@
       return;
     }
 
-    // Vérifier Premium
     try {
       const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
       isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+      console.log('👑 Premium:', isPremium);
     } catch (e) {}
 
     loadSubjectData();
     setupTabs();
   });
 
-  console.log('📖 ARVEXA - Chapitre (version simplifiée)');
+  console.log('📖 ARVEXA - Chapitre (version complète avec progression)');
   </script>
 </body>
 </html>

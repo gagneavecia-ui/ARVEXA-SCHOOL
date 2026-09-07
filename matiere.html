@@ -121,6 +121,32 @@
     }
     .subject-hero .subject-subtitle { font-size: 12px; color: var(--text-dim); }
 
+    /* ===== PROGRESSION BAR ===== */
+    .progress-bar-wrap {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .progress-bar-wrap .pb-header {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .progress-bar-wrap .pb-header strong { color: var(--text-light); }
+    .progress-bar-wrap .pb-track {
+      width: 100%; height: 6px; border-radius: 4px;
+      background: rgba(255,255,255,0.06); overflow: hidden;
+    }
+    .progress-bar-wrap .pb-track .pb-fill {
+      height: 100%; border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      transition: width 0.6s ease;
+      width: 0%;
+    }
+
     /* ===== SECTION LABEL ===== */
     .section-label {
       font-size: 11px; font-weight: 700; color: var(--accent-bright);
@@ -143,6 +169,16 @@
     .chapter-card:active { transform: scale(0.98); }
     .chapter-card.locked { opacity: 0.7; }
     .chapter-card.locked:hover { opacity: 0.9; }
+    .chapter-card.read { border-color: rgba(45,125,90,0.2); background: rgba(45,125,90,0.03); }
+    .chapter-card.read::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--success), #34d399);
+    }
+    .chapter-card.current { border-color: var(--accent); }
+    .chapter-card.current::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    }
 
     .cc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .cc-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
@@ -154,12 +190,23 @@
       background: rgba(184,134,11,0.08); color: var(--accent-bright);
       border: 1px solid rgba(184,134,11,0.08);
     }
+    .chapter-card.read .cc-num {
+      background: rgba(45,125,90,0.12); color: var(--success);
+      border-color: rgba(45,125,90,0.15);
+    }
+    .chapter-card.current .cc-num {
+      background: rgba(184,134,11,0.15); color: var(--accent-bright);
+      border-color: rgba(184,134,11,0.2);
+    }
     .cc-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
     .cc-title {
       font-size: 14px; font-weight: 600; color: var(--text-light); line-height: 1.3;
       display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
     }
     .cc-chapter-label { font-size: 11px; color: var(--text-muted); }
+    .cc-check {
+      color: var(--success); font-size: 12px; margin-left: 4px;
+    }
     .cc-arrow {
       display: flex; align-items: center; justify-content: center;
       width: 26px; height: 26px; border-radius: 8px;
@@ -175,6 +222,16 @@
       border: 1px solid rgba(45,125,90,0.12);
     }
     .badge-premium {
+      display: inline-block; font-size: 9px; color: var(--accent-bright);
+      background: rgba(184,134,11,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(184,134,11,0.12);
+    }
+    .badge-read {
+      display: inline-block; font-size: 9px; color: var(--success);
+      background: rgba(45,125,90,0.1); padding: 0 6px; border-radius: 10px;
+      border: 1px solid rgba(45,125,90,0.12);
+    }
+    .badge-current {
       display: inline-block; font-size: 9px; color: var(--accent-bright);
       background: rgba(184,134,11,0.1); padding: 0 6px; border-radius: 10px;
       border: 1px solid rgba(184,134,11,0.12);
@@ -309,7 +366,9 @@
     }
     .premium-popup .popup-buttons .btn-later:hover { color: var(--text-dim); }
 
-    /* ===== RESPONSIVE ===== */
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
     @media (max-width: 480px) {
       .container { padding: 10px 10px 24px; }
       .subject-hero h2 { font-size: 18px; }
@@ -322,12 +381,17 @@
       .offer-card { padding: 10px 6px; }
       .offer-card .offer-price { font-size: 16px; }
       .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
+      .progress-bar-wrap { padding: 12px 14px; }
     }
+
     @media (max-width: 360px) {
       .cc-title { font-size: 12px; }
       .offers-grid { grid-template-columns: 1fr; }
       .premium-popup .popup-features { grid-template-columns: 1fr; }
+      .subject-hero h2 { font-size: 16px; }
+      .subject-icon-wrap { width: 48px; height: 48px; font-size: 18px; }
     }
+
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
@@ -366,7 +430,18 @@
       <p class="subject-subtitle" id="subjectSubtitle">Chargement des chapitres...</p>
     </div>
 
-    <!-- ===== CHAPTER LIST ===== -->
+    <!-- ===== PROGRESSION BAR ===== -->
+    <div class="progress-bar-wrap" id="progressBarWrap">
+      <div class="pb-header">
+        <span>📚 Progression</span>
+        <span><strong id="progressRead">0</strong> / <span id="progressTotal">0</span> chapitres</span>
+      </div>
+      <div class="pb-track">
+        <div class="pb-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+        <!-- ===== CHAPTER LIST ===== -->
     <div class="section-label">📚 Chapitres</div>
     <div class="chapter-list" id="chapterList">
       <div class="skeleton skeleton-card"></div>
@@ -389,7 +464,7 @@
         <div class="feature"><i class="fas fa-book-open"></i> Tous les chapitres</div>
         <div class="feature"><i class="fas fa-pen-to-square"></i> Exercices corrigés</div>
         <div class="feature"><i class="fas fa-graduation-cap"></i> Programme complet</div>
-        <div class="feature"><i class="fas fa-gear"></i> Outils avancer</div>
+        <div class="feature"><i class="fas fa-gear"></i> Outils avancés</div>
       </div>
 
       <div class="offers-grid">
@@ -431,7 +506,7 @@
 
   <script type="module">
   // ================================================================
-  // MATIERE - VERSION SIMPLIFIÉE (SANS PROGRESSION)
+  // MATIERE - VERSION COMPLETE AVEC PROGRESSION
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -527,6 +602,9 @@
   const chapterList = document.getElementById('chapterList');
   const toast = document.getElementById('toast');
   const toastText = document.getElementById('toastText');
+  const progressRead = document.getElementById('progressRead');
+  const progressTotal = document.getElementById('progressTotal');
+  const progressFill = document.getElementById('progressFill');
 
   // ================================================================
   // TOAST
@@ -537,6 +615,41 @@
     toast.classList.add('show');
     clearTimeout(toast._timeout);
     toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ================================================================
+  // GESTION DES CHAPITRES LUS
+  // ================================================================
+  const READ_KEY = 'arvexa_read_parts';
+
+  function getReadParts() {
+    try {
+      return JSON.parse(localStorage.getItem(READ_KEY) || '[]');
+    } catch (e) { return []; }
+  }
+
+  function isChapterRead(subject, chapterIndex) {
+    const readParts = getReadParts();
+    // Vérifier si au moins une partie du chapitre a été lue
+    return readParts.some(key => {
+      const parts = key.split('_');
+      return parts[0] === subject && parseInt(parts[1]) === chapterIndex;
+    });
+  }
+
+  function getChaptersRead(subject, totalChapters) {
+    let count = 0;
+    for (let i = 0; i < totalChapters; i++) {
+      if (isChapterRead(subject, i)) count++;
+    }
+    return count;
+  }
+
+  function getLastReadChapter(subject, totalChapters) {
+    for (let i = totalChapters - 1; i >= 0; i--) {
+      if (isChapterRead(subject, i)) return i;
+    }
+    return -1;
   }
 
   // ================================================================
@@ -580,6 +693,8 @@
   let subjectConfig = null;
   let chapters = [];
   let isPremium = false;
+  let chaptersRead = 0;
+  let lastReadChapter = -1;
 
   function loadSubjectData() {
     // Essayer le cache
@@ -624,6 +739,16 @@
     document.getElementById('subjectTitle').textContent = subjectConfig.name;
     document.getElementById('subjectSubtitle').textContent = chapters.length + ' chapitres disponibles';
 
+    // Calculer la progression
+    chaptersRead = getChaptersRead(subjectKey, chapters.length);
+    lastReadChapter = getLastReadChapter(subjectKey, chapters.length);
+
+    // Mettre à jour la barre de progression
+    progressTotal.textContent = chapters.length;
+    progressRead.textContent = chaptersRead;
+    const percent = chapters.length > 0 ? Math.round((chaptersRead / chapters.length) * 100) : 0;
+    progressFill.style.width = percent + '%';
+
     // Liste des chapitres
     renderChapters();
   }
@@ -638,15 +763,33 @@
       const title = typeof chap === 'string' ? chap : (chap.title || 'Chapitre ' + (index + 1));
       const isFree = typeof chap === 'object' ? (chap.isFree === true) : (index === 0);
       const isLocked = !isPremium && !isFree;
+      const isRead = isChapterRead(subjectKey, index);
+      const isCurrent = lastReadChapter === index && isRead;
 
       let badge = '';
-      if (isLocked) badge = '<span class="badge-premium">🔒 Premium</span>';
-      else if (isFree) badge = '<span class="badge-free">🎁 Gratuit</span>';
+      let extraClass = '';
+
+      if (isLocked) {
+        badge = '<span class="badge-premium">🔒 Premium</span>';
+        extraClass = 'locked';
+      } else if (isFree) {
+        badge = '<span class="badge-free">🎁 Gratuit</span>';
+      }
+
+      if (isRead && !isLocked) {
+        extraClass += ' read';
+        badge = '<span class="badge-read">✅ Lu</span>';
+      }
+
+      if (isCurrent && !isLocked) {
+        extraClass += ' current';
+        badge = '<span class="badge-current">📌 En cours</span>';
+      }
 
       const onclick = isLocked ? "showPremiumPopup()" : `navigateToChapter(${index})`;
 
       html += `
-        <div class="chapter-card ${isLocked ? 'locked' : ''}" onclick="${onclick}">
+        <div class="chapter-card ${extraClass}" onclick="${onclick}">
           <div class="cc-top">
             <div class="cc-left">
               <div class="cc-num">${index + 1}</div>
@@ -678,6 +821,8 @@
   // ================================================================
   document.getElementById('refreshBtn').addEventListener('click', () => {
     showToast('🔄 Rafraîchissement...', 'info');
+    // Vider le cache pour recharger
+    localStorage.removeItem('arvexa_subject_' + subjectKey);
     loadSubjectData();
   });
 
@@ -694,12 +839,13 @@
     try {
       const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
       isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+      console.log('👑 Premium:', isPremium);
     } catch (e) {}
 
     loadSubjectData();
   });
 
-  console.log('📚 ARVEXA - Matière (version simplifiée)');
+  console.log('📚 ARVEXA - Matière (version complète avec progression)');
   </script>
 </body>
 </html>

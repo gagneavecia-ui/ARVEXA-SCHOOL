@@ -2,21 +2,19 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="description" content="ARVEXA School - Mon profil">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
     /* ============================================================
-       ROOT — Design system ARVEXA
+       ROOT
        ============================================================ */
     :root {
       --primary: #1A3A2A;
@@ -27,6 +25,7 @@
       --accent-dim: rgba(184, 134, 11, 0.08);
       --success: #2D7D5A;
       --danger: #B85C3A;
+      --warning: #D4A017;
       --bg-dark: #0A0A0A;
       --bg-surface: #141414;
       --bg-card: rgba(20, 20, 20, 0.7);
@@ -38,13 +37,11 @@
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --radius: 16px;
       --sidebar-width: 240px;
-      --header-height: 64px;
+      --header-height: 56px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
     html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
-
     body {
       font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
       background: var(--bg-dark);
@@ -58,7 +55,6 @@
       display: flex;
     }
 
-    /* ===== BACKGROUND ===== */
     .gradient-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
@@ -80,9 +76,7 @@
     }
     .sidebar-overlay.active { display: block; opacity: 1; }
 
-    /* ============================================================
-       SIDEBAR
-       ============================================================ */
+    /* ===== SIDEBAR ===== */
     .sidebar {
       position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
       background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
@@ -118,18 +112,16 @@
     .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
     .sidebar .nav-bottom a:hover { color: var(--text-dim); }
 
-    /* ============================================================
-       MAIN CONTENT
-       ============================================================ */
+    /* ===== MAIN CONTENT ===== */
     .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
 
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
+      justify-content: space-between; padding: 8px 12px; background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
-      gap: 12px; min-height: var(--header-height);
+      gap: 8px; min-height: var(--header-height);
     }
-    .header .header-left { display: flex; align-items: center; gap: 12px; }
+    .header .header-left { display: flex; align-items: center; gap: 8px; }
     .header .menu-toggle {
       display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
       border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
@@ -138,19 +130,17 @@
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
     .header .page-title { font-size: 15px; font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
     .header .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
-    .header .header-actions { display: flex; align-items: center; gap: 6px; }
+    .header .header-actions { display: flex; align-items: center; gap: 4px; }
     .header .header-actions button {
-      width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
+      width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 14px;
       display: flex; align-items: center; justify-content: center;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
 
-    .container { max-width: 700px; margin: 0 auto; padding: 16px 16px 20px; }
+    .container { max-width: 700px; margin: 0 auto; padding: 12px 12px 16px; }
 
-    /* ============================================================
-       PROFIL CARD
-       ============================================================ */
+    /* ===== PROFIL CARD ===== */
     .profile-card {
       background: var(--bg-card);
       backdrop-filter: blur(10px);
@@ -178,7 +168,7 @@
 
     /* === COVER === */
     .profile-cover {
-      height: 120px;
+      height: 80px;
       background: linear-gradient(135deg, rgba(26,58,42,0.4), rgba(184,134,11,0.2));
       position: relative;
     }
@@ -187,28 +177,14 @@
       inset: 0;
       background: radial-gradient(ellipse at 30% 50%, rgba(184,134,11,0.1), transparent 70%);
     }
-    .profile-cover .cover-status {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 14px;
-      border-radius: 20px;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .profile-cover .cover-status.online { color: var(--success); }
-    .profile-cover .cover-status.offline { color: var(--text-muted); }
 
     /* === AVATAR === */
     .profile-avatar-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: -50px;
-      padding: 0 20px 16px;
+      margin-top: -40px;
+      padding: 0 20px 10px;
       position: relative;
       z-index: 2;
     }
@@ -217,14 +193,14 @@
       display: inline-block;
     }
     .avatar-wrapper .avatar {
-      width: 100px;
-      height: 100px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent-bright));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
+      font-size: 34px;
       font-weight: 700;
       font-family: 'Playfair Display', serif;
       color: var(--bg-dark);
@@ -242,16 +218,16 @@
     }
     .avatar-wrapper .avatar-upload-btn {
       position: absolute;
-      bottom: 4px;
-      right: 4px;
-      width: 32px;
-      height: 32px;
+      bottom: 2px;
+      right: 2px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       border: 2px solid var(--bg-dark);
       background: var(--accent);
       color: var(--bg-dark);
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -262,18 +238,18 @@
       transform: scale(1.1);
       background: var(--accent-bright);
     }
-    .avatar-wrapper .avatar-upload-btn i { font-size: 13px; }
+    .avatar-wrapper .avatar-upload-btn i { font-size: 12px; }
 
     .profile-name {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
       font-family: 'Playfair Display', serif;
       color: var(--text-light);
-      margin-top: 10px;
+      margin-top: 6px;
       line-height: 1.2;
     }
     .profile-email {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-dim);
       margin-top: 2px;
     }
@@ -281,11 +257,11 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 14px;
+      padding: 3px 12px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      margin-top: 6px;
+      margin-top: 4px;
     }
     .profile-badge.premium {
       background: rgba(184, 134, 11, 0.12);
@@ -303,18 +279,55 @@
       border: 1px solid rgba(184, 92, 58, 0.2);
     }
 
+    /* === EDIT TOGGLE === */
+    .edit-toggle {
+      display: flex;
+      justify-content: flex-end;
+      padding: 4px 20px 0;
+    }
+    .edit-toggle button {
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(184,134,11,0.12);
+      background: rgba(184,134,11,0.06);
+      color: var(--accent-bright);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .edit-toggle button:hover {
+      background: rgba(184,134,11,0.12);
+    }
+    .edit-toggle button.cancel {
+      background: rgba(239,68,68,0.06);
+      border-color: rgba(239,68,68,0.12);
+      color: #ef4444;
+    }
+    .edit-toggle button.cancel:hover {
+      background: rgba(239,68,68,0.12);
+    }
+    .edit-toggle button.saving {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
     /* === STATS GRID === */
     .profile-stats {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      padding: 0 20px 16px;
+      gap: 6px;
+      padding: 0 20px 10px;
     }
     .stat-item {
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 12px;
-      padding: 12px 6px;
+      border-radius: 10px;
+      padding: 8px 4px;
       text-align: center;
       transition: var(--transition);
     }
@@ -323,33 +336,73 @@
       border-color: rgba(184,134,11,0.08);
     }
     .stat-item .stat-number {
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 800;
       font-family: 'Playfair Display', serif;
       color: var(--accent-bright);
       line-height: 1.2;
     }
     .stat-item .stat-label {
-      font-size: 9px;
+      font-size: 8px;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       font-weight: 600;
       margin-top: 2px;
     }
 
+    /* === BADGES === */
+    .badges-section {
+      padding: 0 20px 10px;
+    }
+    .badges-section .badges-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+    .badges-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-dim);
+    }
+    .badge-item.unlocked {
+      background: rgba(184, 134, 11, 0.06);
+      border-color: rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright);
+    }
+    .badge-item.unlocked i { color: var(--accent-bright); }
+    .badge-item.locked {
+      opacity: 0.4;
+    }
+    .badge-item i { font-size: 11px; }
+
     /* === INFO LIST === */
     .profile-info {
-      padding: 0 20px 16px;
+      padding: 0 20px 10px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
     .info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
+      padding: 8px 12px;
       background: rgba(255,255,255,0.02);
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.04);
@@ -360,7 +413,7 @@
       border-color: rgba(184,134,11,0.06);
     }
     .info-row .label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       font-weight: 500;
       display: flex;
@@ -368,24 +421,49 @@
       gap: 6px;
     }
     .info-row .label i {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--accent-bright);
-      width: 18px;
+      width: 16px;
     }
     .info-row .value {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-light);
       font-weight: 600;
     }
+    .info-row .value-input {
+      background: transparent;
+      border: 1px solid rgba(184,134,11,0.12);
+      border-radius: 8px;
+      padding: 4px 10px;
+      color: var(--text-light);
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: var(--transition);
+      width: 160px;
+      text-align: right;
+    }
+    .info-row .value-input:focus {
+      border-color: rgba(184,134,11,0.3);
+    }
+    .info-row .value-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .info-row .value-input:disabled {
+      border-color: transparent;
+      opacity: 0.7;
+    }
 
-    /* === BADGE STATUT === */
+    /* === STATUS BADGE === */
     .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 2px 10px;
       border-radius: 12px;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
     }
     .status-badge.active {
@@ -403,16 +481,16 @@
 
     /* === ACTIONS === */
     .profile-actions {
-      padding: 0 20px 20px;
+      padding: 0 20px 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 6px;
     }
     .btn-profile {
-      padding: 13px 20px;
+      padding: 10px 20px;
       border-radius: 30px;
       border: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
@@ -420,7 +498,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       text-decoration: none;
     }
     .btn-profile:active { transform: scale(0.97); }
@@ -452,141 +530,52 @@
     .btn-profile.danger:hover {
       background: rgba(184, 92, 58, 0.15);
     }
-    .btn-profile.danger:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+
+    .btn-profile.success {
+      background: rgba(45, 125, 90, 0.08);
+      color: var(--success);
+      border: 1px solid rgba(45, 125, 90, 0.12);
     }
-    .btn-profile.danger .spinner {
-      display: none;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(184,92,58,0.15);
-      border-top-color: var(--danger);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+    .btn-profile.success:hover {
+      background: rgba(45, 125, 90, 0.15);
     }
-    .btn-profile.danger.loading .spinner { display: block; }
-    .btn-profile.danger.loading .btn-text { display: none; }
-    .btn-profile.danger.loading .btn-icon { display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-profile.premium {
+      background: linear-gradient(135deg, #D4A017, #B8860B);
+      color: #0A0A0A;
+    }
+    .btn-profile.premium:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(184,134,11,0.25);
+    }
 
     /* ===== SKELETON ===== */
     .skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
-    }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    .skeleton-avatar { width: 100px; height: 100px; border-radius: 50%; }
-    .skeleton-text { height: 16px; border-radius: 6px; margin: 4px 0; }
-    .skeleton-row { height: 44px; border-radius: 10px; }
-
-    /* ===== CONFIRMATION MODAL ===== */
-    .confirm-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(16px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .confirm-overlay.show { display: flex; }
-    .confirm-modal {
-      background: linear-gradient(145deg, #141414, #0A0A0A);
-      border: 1px solid var(--danger);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      max-width: 380px;
-      width: 100%;
-      text-align: center;
-      animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes modalPop {
-      from { transform: scale(0.8) translateY(30px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-    .confirm-modal .modal-icon {
-      font-size: 44px;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .confirm-modal h3 {
-      font-size: 18px;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
-      margin-bottom: 4px;
-    }
-    .confirm-modal p {
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .confirm-modal .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
-    .confirm-modal .modal-actions button {
-      padding: 10px 24px;
-      border-radius: 30px;
-      border: none;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-    }
-    .confirm-modal .modal-actions .btn-cancel {
       background: rgba(255,255,255,0.04);
-      color: var(--text-dim);
-      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      animation: pulse 1.5s ease-in-out infinite;
     }
-    .confirm-modal .modal-actions .btn-cancel:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--text-light);
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.85; }
     }
-    .confirm-modal .modal-actions .btn-confirm {
-      background: var(--danger);
-      color: #fff;
-    }
-    .confirm-modal .modal-actions .btn-confirm:hover {
-      background: #A0402A;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(184,92,58,0.3);
-    }
-    .confirm-modal .modal-actions .btn-confirm:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .confirm-modal .modal-actions .btn-confirm .spinner {
-      display: none;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.2);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-    .confirm-modal .modal-actions .btn-confirm.loading .spinner { display: block; }
-    .confirm-modal .modal-actions .btn-confirm.loading .btn-text { display: none; }
+    .skeleton-avatar { width: 80px; height: 80px; border-radius: 50%; }
+    .skeleton-text { height: 14px; border-radius: 6px; margin: 4px 0; }
+    .skeleton-row { height: 40px; border-radius: 10px; }
 
     /* ===== TOAST ===== */
     .toast {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 12px 20px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border); color: var(--text-light); font-size: 13px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center;
-      box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 10px 16px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border); color: var(--text-light); font-size: 12px; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center; box-shadow: var(--shadow);
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { flex-shrink: 0; }
+    .toast .toast-icon { margin-right: 6px; }
 
-    /* ============================================================
+        /* ============================================================
        RESPONSIVE
        ============================================================ */
     @media (min-width: 768px) {
@@ -599,26 +588,60 @@
     @media (max-width: 767px) {
       .sidebar { left: -280px; }
       .sidebar.open { left: 0; }
-      .container { padding: 12px 12px 20px; }
-      .profile-stats { grid-template-columns: repeat(2, 1fr); }
-      .profile-cover { height: 80px; }
+      .container { padding: 10px 10px 14px; }
+      .profile-cover { height: 60px; }
+      .avatar-wrapper .avatar { width: 70px; height: 70px; font-size: 28px; }
+      .profile-avatar-section { margin-top: -35px; }
+      .profile-stats { grid-template-columns: repeat(2, 2fr); gap: 4px; }
+      .stat-item .stat-number { font-size: 14px; }
+      .info-row { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 10px; }
+      .info-row .value-input { width: 100%; text-align: left; }
     }
 
     @media (max-width: 480px) {
-      .avatar-wrapper .avatar { width: 80px; height: 80px; font-size: 32px; }
-      .profile-name { font-size: 18px; }
-      .profile-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-      .stat-item .stat-number { font-size: 16px; }
-      .info-row { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 12px; }
-      .info-row .value { font-size: 14px; }
-      .profile-cover { height: 60px; }
-      .profile-avatar-section { margin-top: -36px; }
-      .avatar-wrapper .avatar-upload-btn { width: 28px; height: 28px; font-size: 11px; }
-      .profile-cover .cover-status { font-size: 10px; padding: 2px 10px; bottom: 8px; right: 10px; }
+      .header { padding: 6px 10px; }
+      .header .page-title { font-size: 13px; }
+      .header .header-actions button { width: 30px; height: 30px; font-size: 12px; }
+      .profile-cover { height: 50px; }
+      .avatar-wrapper .avatar { width: 60px; height: 60px; font-size: 24px; border-width: 3px; }
+      .avatar-wrapper .avatar-upload-btn { width: 24px; height: 24px; font-size: 10px; }
+      .profile-avatar-section { margin-top: -30px; padding: 0 14px 8px; }
+      .profile-name { font-size: 16px; }
+      .profile-email { font-size: 11px; }
+      .profile-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 0 14px 8px; }
+      .stat-item { padding: 6px 2px; }
+      .stat-item .stat-number { font-size: 13px; }
+      .stat-item .stat-label { font-size: 7px; }
+      .badges-section { padding: 0 14px 8px; }
+      .badge-item { font-size: 9px; padding: 2px 8px; }
+      .profile-info { padding: 0 14px 8px; gap: 3px; }
+      .info-row { padding: 5px 8px; }
+      .info-row .label { font-size: 10px; }
+      .info-row .value { font-size: 11px; }
+      .profile-actions { padding: 0 14px 12px; gap: 4px; }
+      .btn-profile { padding: 8px 16px; font-size: 11px; }
+      .edit-toggle { padding: 2px 14px 0; }
+      .edit-toggle button { font-size: 10px; padding: 4px 12px; }
     }
 
-    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+    @media (max-width: 360px) {
+      .header .page-title { font-size: 12px; }
+      .header .header-actions button { width: 26px; height: 26px; font-size: 10px; }
+      .avatar-wrapper .avatar { width: 50px; height: 50px; font-size: 20px; }
+      .profile-avatar-section { margin-top: -25px; }
+      .profile-name { font-size: 14px; }
+      .profile-stats { grid-template-columns: repeat(2, 1fr); gap: 3px; }
+      .stat-item .stat-number { font-size: 12px; }
+      .info-row .label { font-size: 9px; }
+      .info-row .value { font-size: 10px; }
+      .btn-profile { font-size: 10px; padding: 6px 12px; }
+      .badge-item { font-size: 8px; padding: 2px 6px; }
+    }
 
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
@@ -626,772 +649,915 @@
 </head>
 <body>
 
-<!-- ===== BACKGROUND ===== -->
-<div class="gradient-bg"></div>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
-<div class="glow glow-3"></div>
+  <!-- ===== BACKGROUND ===== -->
+  <div class="gradient-bg"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
 
-<!-- ===== OVERLAY ===== -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <!-- ===== OVERLAY ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- ===== SIDEBAR ===== -->
-<aside class="sidebar" id="sidebar">
-  <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
-  <nav class="nav">
-    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
-    <a href="profil.html" class="active"><i class="fas fa-user"></i> Mon profil</a>
-    <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
-    <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
-    <div class="nav-divider"></div>
-    <div class="nav-bottom">
-      <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-    </div>
-  </nav>
-</aside>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
+    <nav class="nav">
+      <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+      <a href="profil.html" class="active"><i class="fas fa-user"></i> Mon profil</a>
+      <a href="progression.html"><i class="fas fa-chart-line"></i> Progression</a>
+      <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
+      <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+      <div class="nav-divider"></div>
+      <div class="nav-bottom">
+        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+      </div>
+    </nav>
+  </aside>
 
-<!-- ===== MAIN ===== -->
-<div class="main-content">
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
 
-  <!-- ===== HEADER ===== -->
-  <header class="header">
-    <div class="header-left">
-      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <h1 class="page-title"><i class="fas fa-user"></i> Mon profil</h1>
-    </div>
-    <div class="header-actions">
-      <button id="notifBtn" aria-label="Notifications">
-        <i class="fas fa-bell"></i>
-      </button>
-      <button id="refreshBtn" aria-label="Rafraîchir" title="Rafraîchir">
-        <i class="fas fa-sync-alt"></i>
-      </button>
-    </div>
-  </header>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title"><i class="fas fa-user"></i> Mon profil</h1>
+      </div>
+      <div class="header-actions">
+        <button id="notifBtn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+        </button>
+        <button id="refreshBtn" aria-label="Rafraîchir">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </header>
 
-  <!-- ===== CONTAINER ===== -->
-  <div class="container">
+    <!-- ===== CONTAINER ===== -->
+    <div class="container">
 
-    <!-- ===== SKELETON ===== -->
-    <div id="skeletonLoading">
-      <div class="profile-card">
-        <div class="profile-cover" style="background:rgba(255,255,255,0.02);"></div>
-        <div class="profile-avatar-section">
-          <div class="skeleton skeleton-avatar"></div>
-          <div class="skeleton skeleton-text" style="width:150px;margin-top:10px;"></div>
-          <div class="skeleton skeleton-text" style="width:200px;"></div>
-        </div>
-        <div style="padding:0 20px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
-        </div>
-        <div style="padding:0 20px 16px;display:flex;flex-direction:column;gap:6px;">
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
-          <div class="skeleton skeleton-row"></div>
+      <!-- ===== SKELETON ===== -->
+      <div id="skeletonLoading">
+        <div class="profile-card">
+          <div class="profile-cover" style="background:rgba(255,255,255,0.02);"></div>
+          <div class="profile-avatar-section">
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="skeleton skeleton-text" style="width:150px;margin-top:8px;"></div>
+            <div class="skeleton skeleton-text" style="width:180px;"></div>
+          </div>
+          <div style="padding:0 20px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+          </div>
+          <div style="padding:0 20px 12px;display:flex;flex-direction:column;gap:4px;">
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- ===== CONTENU DYNAMIQUE ===== -->
-    <div id="dynamicContent" style="display:none;">
+      <!-- ===== CONTENU DYNAMIQUE ===== -->
+      <div id="dynamicContent" style="display:none;">
 
-      <div class="profile-card">
+        <div class="profile-card">
 
-        <!-- COVER -->
-        <div class="profile-cover">
-          <div class="cover-glow"></div>
-          <span class="cover-status online" id="connectionStatus">
-            <i class="fas fa-wifi"></i> En ligne
-          </span>
-        </div>
+          <!-- COVER -->
+          <div class="profile-cover">
+            <div class="cover-glow"></div>
+          </div>
 
-        <!-- AVATAR -->
-        <div class="profile-avatar-section">
-          <div class="avatar-wrapper">
-            <div class="avatar" id="userAvatar">👤</div>
-            <button class="avatar-upload-btn" id="avatarUploadBtn" title="Changer la photo">
-              <i class="fas fa-camera"></i>
+          <!-- AVATAR -->
+          <div class="profile-avatar-section">
+            <div class="avatar-wrapper">
+              <div class="avatar" id="userAvatar">👤</div>
+              <button class="avatar-upload-btn" id="avatarUploadBtn" title="Changer la photo">
+                <i class="fas fa-camera"></i>
+              </button>
+              <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="profile-name" id="userFullName">Chargement...</div>
+            <div class="profile-email" id="userEmail">email@exemple.com</div>
+            <div class="profile-badge" id="userBadge">Chargement...</div>
+          </div>
+
+          <!-- EDIT TOGGLE -->
+          <div class="edit-toggle">
+            <button id="editToggleBtn"><i class="fas fa-pen"></i> Modifier</button>
+          </div>
+
+          <!-- STATS -->
+          <div class="profile-stats">
+            <div class="stat-item">
+              <div class="stat-number" id="statStreak">0</div>
+              <div class="stat-label">🔥 Jours</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="statChapters">0</div>
+              <div class="stat-label">📚 Chapitres</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="statTime">0h</div>
+              <div class="stat-label">⏱️ Étude</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="statLevel">🌱</div>
+              <div class="stat-label">📈 Niveau</div>
+            </div>
+          </div>
+
+          <!-- BADGES -->
+          <div class="badges-section">
+            <div class="badges-title">🏆 Mes réalisations</div>
+            <div class="badges-grid" id="badgesGrid">
+              <span class="badge-item locked"><i class="fas fa-lock"></i> Premier chapitre</span>
+              <span class="badge-item locked"><i class="fas fa-lock"></i> Streak 7 jours</span>
+              <span class="badge-item locked"><i class="fas fa-lock"></i> Expert</span>
+            </div>
+          </div>
+
+          <!-- INFO -->
+          <div class="profile-info" id="profileInfo">
+            <div class="info-row">
+              <span class="label"><i class="fas fa-user"></i> Nom</span>
+              <span class="value" id="userNameDisplay">--</span>
+              <input class="value-input" id="userNameInput" type="text" style="display:none;" placeholder="Ton nom">
+            </div>
+            <div class="info-row">
+              <span class="label"><i class="fas fa-school"></i> Établissement</span>
+              <span class="value" id="userEstablishmentDisplay">--</span>
+              <input class="value-input" id="userEstablishmentInput" type="text" style="display:none;" placeholder="Ton établissement">
+            </div>
+            <div class="info-row">
+              <span class="label"><i class="fas fa-graduation-cap"></i> Classe</span>
+              <span class="value" id="userClassDisplay">--</span>
+              <input class="value-input" id="userClassInput" type="text" style="display:none;" placeholder="Ex: Terminale D">
+            </div>
+            <div class="info-row">
+              <span class="label"><i class="fas fa-calendar-plus"></i> Membre depuis</span>
+              <span class="value" id="userSince">--</span>
+            </div>
+            <div class="info-row">
+              <span class="label"><i class="fas fa-crown"></i> Statut</span>
+              <span class="value" id="userStatus">--</span>
+            </div>
+            <div class="info-row">
+              <span class="label"><i class="fas fa-clock"></i> Dernière visite</span>
+              <span class="value" id="userLastVisit">--</span>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="profile-actions">
+            <a href="abonnement.html" class="btn-profile premium" id="premiumBtn">
+              <i class="fas fa-crown"></i> Voir les offres Premium
+            </a>
+            <button class="btn-profile secondary" id="changePasswordBtn">
+              <i class="fas fa-key"></i> Changer le mot de passe
             </button>
-            <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+            <button class="btn-profile danger" id="logoutProfileBtn">
+              <i class="fas fa-sign-out-alt"></i> Se déconnecter
+            </button>
           </div>
 
-          <div class="profile-name" id="userFullName">Chargement...</div>
-          <div class="profile-email" id="userEmail">email@exemple.com</div>
-          <div class="profile-badge" id="userBadge">Chargement...</div>
-        </div>
-
-        <!-- STATS -->
-        <div class="profile-stats">
-          <div class="stat-item">
-            <div class="stat-number" id="statStreak">0</div>
-            <div class="stat-label">🔥 Jours de suite</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="statChapters">0</div>
-            <div class="stat-label">📚 Chapitres vus</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="statExercises">0</div>
-            <div class="stat-label">✏️ Exercices</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number" id="statLevel">🌱</div>
-            <div class="stat-label">📈 Niveau</div>
-          </div>
-        </div>
-
-        <!-- INFO -->
-        <div class="profile-info">
-          <div class="info-row">
-            <span class="label"><i class="fas fa-school"></i> Établissement</span>
-            <span class="value" id="userEstablishment">Chargement...</span>
-          </div>
-          <div class="info-row">
-            <span class="label"><i class="fas fa-graduation-cap"></i> Classe</span>
-            <span class="value" id="userClass">Terminale D</span>
-          </div>
-          <div class="info-row">
-            <span class="label"><i class="fas fa-calendar-plus"></i> Membre depuis</span>
-            <span class="value" id="userSince">Chargement...</span>
-          </div>
-          <div class="info-row">
-            <span class="label"><i class="fas fa-crown"></i> Statut</span>
-            <span class="value" id="userStatus">Chargement...</span>
-          </div>
-        </div>
-
-        <!-- ACTIONS -->
-        <div class="profile-actions">
-          <a href="abonnement.html" class="btn-profile primary" id="premiumBtn">
-            <i class="fas fa-crown"></i> Voir les offres Premium
-          </a>
-          <a href="index.html" class="btn-profile secondary">
-            <i class="fas fa-home"></i> Retour à l'accueil
-          </a>
-          <button class="btn-profile danger" id="logoutProfileBtn">
-            <span class="btn-icon"><i class="fas fa-sign-out-alt"></i></span>
-            <span class="btn-text">Se déconnecter</span>
-            <span class="spinner"></span>
-          </button>
         </div>
 
       </div>
-
-    </div>
-
-  </div>
-</div>
-
-<!-- ===== CONFIRMATION MODAL ===== -->
-<div class="confirm-overlay" id="logoutConfirm">
-  <div class="confirm-modal">
-    <span class="modal-icon">🚪</span>
-    <h3>Se déconnecter ?</h3>
-    <p>Tu seras redirigé vers la page de connexion. Tes données seront sauvegardées.</p>
-    <div class="modal-actions">
-      <button class="btn-cancel" id="cancelLogout">Annuler</button>
-      <button class="btn-confirm" id="confirmLogout">
-        <span class="spinner"></span>
-        <span class="btn-text">Se déconnecter</span>
-      </button>
     </div>
   </div>
-</div>
 
-<!-- ===== TOAST ===== -->
-<div class="toast" id="toast">
-  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
-  <span class="toast-message"></span>
-</div>
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+    <span class="toast-message"></span>
+  </div>
 
-<!-- ============================================================ -->
-<!-- SCRIPTS -->
-<!-- ============================================================ -->
-<script type="importmap">
-{
-  "imports": {
-    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
-    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
-    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  <!-- ============================================================ -->
+  <!-- SCRIPTS                                                       -->
+  <!-- ============================================================ -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    }
   }
-}
-</script>
+  </script>
 
-<script type="module">
-// ================================================================
-// IMPORTS
-// ================================================================
-import { 
-  initializeApp 
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  updateDoc, 
-  onSnapshot,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { 
-  protectPage, 
-  getAuthInstance, 
-  getFirestoreInstance,
-  getFirebaseErrorMessage,
-  logout,
-  forceLogout,
-  saveSession
-} from './auth.js';
+  <script type="module">
+  // ================================================================
+  // PROFIL - VERSION COMPLETE AVEC MODIFICATION DES INFOS
+  // ================================================================
 
-// ================================================================
-// FIREBASE
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence,
+    signOut,
+    getIdToken,
+    updatePassword,
+    reauthenticateWithCredential,
+    EmailAuthProvider
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    onSnapshot,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuthInstance();
-
-// ================================================================
-// DOM
-// ================================================================
-const skeletonLoading = document.getElementById('skeletonLoading');
-const dynamicContent = document.getElementById('dynamicContent');
-
-const userAvatar = document.getElementById('userAvatar');
-const userFullName = document.getElementById('userFullName');
-const userEmail = document.getElementById('userEmail');
-const userBadge = document.getElementById('userBadge');
-const userClass = document.getElementById('userClass');
-const userEstablishment = document.getElementById('userEstablishment');
-const userStatus = document.getElementById('userStatus');
-const userSince = document.getElementById('userSince');
-const premiumBtn = document.getElementById('premiumBtn');
-
-const statStreak = document.getElementById('statStreak');
-const statChapters = document.getElementById('statChapters');
-const statExercises = document.getElementById('statExercises');
-const statLevel = document.getElementById('statLevel');
-const connectionStatus = document.getElementById('connectionStatus');
-
-const toast = document.getElementById('toast');
-const toastMessage = document.querySelector('.toast-message');
-const toastIcon = document.querySelector('.toast-icon i');
-
-let userData = null;
-let user = null;
-let unsubscribeUser = null;
-
-// ================================================================
-// FONCTIONS
-// ================================================================
-
-function showToast(message, type = 'success') {
-  toastMessage.textContent = message;
-  toast.className = `toast ${type}`;
-  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-  toast.classList.add('show');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-function getInitials(firstName, lastName) {
-  if (!firstName) return '👤';
-  if (!lastName) return firstName.charAt(0).toUpperCase();
-  return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-}
-
-function formatDate(dateString) {
-  if (!dateString) return 'Inconnue';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
-}
-
-function getLevel(completedChapters, totalChapters) {
-  if (!totalChapters || totalChapters === 0) return '🌱 Débutant';
-  const ratio = completedChapters / totalChapters;
-  if (ratio === 0) return '🌱 Débutant';
-  if (ratio < 0.25) return '📖 Apprenti';
-  if (ratio < 0.50) return '⚡ En progression';
-  if (ratio < 0.75) return '🔥 Enflammé';
-  if (ratio < 1) return '⭐ Expert';
-  return '👑 Maître ARVEXA';
-}
-
-function compressImage(file, maxWidth = 400, maxHeight = 400, quality = 0.7) {
-  return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('image/')) {
-      reject('Le fichier n\'est pas une image');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      reject('L\'image est trop lourde (max 10MB)');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        let width = img.width;
-        let height = img.height;
-
-        if (width > maxWidth || height > maxHeight) {
-          const ratio = Math.min(maxWidth / width, maxHeight / height);
-          width = Math.round(width * ratio);
-          height = Math.round(height * ratio);
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const base64 = canvas.toDataURL('image/jpeg', quality);
-        resolve(base64);
-      };
-      img.onerror = () => reject('Erreur de chargement de l\'image');
-      img.src = event.target.result;
-    };
-    reader.onerror = () => reject('Erreur de lecture du fichier');
-    reader.readAsDataURL(file);
-  });
-}
-
-async function saveProfilePicture(base64, userId) {
-  if (!userId) throw new Error('Utilisateur non connecté');
-  const userRef = doc(db, 'users', userId);
-  await updateDoc(userRef, {
-    profilePicture: base64,
-    updatedAt: serverTimestamp()
-  });
-}
-
-function updateAvatarDisplay(base64, initials) {
-  if (!userAvatar) return;
-  if (base64 && base64.startsWith('data:image')) {
-    userAvatar.innerHTML = `<img src="${base64}" alt="Photo de profil">`;
-  } else {
-    userAvatar.textContent = initials || '👤';
-    userAvatar.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-bright))';
-  }
-}
-
-// ================================================================
-// RENDER PROFIL
-// ================================================================
-
-async function renderProfile(data, progressData) {
-  if (!data) return;
-
-  userData = data;
-
-  const firstName = data.firstName || 'Utilisateur';
-  const lastName = data.lastName || '';
-  const email = data.email || 'email@exemple.com';
-  const establishment = data.establishment || 'Non renseigné';
-  const className = data.classId || 'Terminale D';
-  const createdAt = data.createdAt?.toDate?.() || data.createdAt || null;
-  const isPremium = data.premium === true || data.isUnlocked === true || data.hasDeposited === true;
-
-  // Avatar
-  const userId = data.uid || auth.currentUser?.uid;
-  let profilePicture = data.profilePicture || null;
-  if (profilePicture && !profilePicture.startsWith('data:image')) {
-    // Si c'est une URL, on la garde
-  }
-  const initials = getInitials(firstName, lastName);
-  updateAvatarDisplay(profilePicture, initials);
-
-  // Nom + Email
-  userFullName.textContent = lastName ? `${firstName} ${lastName}` : firstName;
-  userEmail.textContent = email;
-
-  // Badge
-  userBadge.className = 'profile-badge';
-  if (isPremium) {
-    const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
-    if (expiryDate) {
-      const now = new Date();
-      const expiry = new Date(expiryDate);
-      const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-      if (daysLeft > 0) {
-        userBadge.textContent = `👑 Premium · ${daysLeft}j restants`;
-        userBadge.classList.add('premium');
-      } else {
-        userBadge.textContent = '⏳ Expiré';
-        userBadge.classList.add('expired');
-      }
-    } else {
-      userBadge.textContent = '👑 Premium';
-      userBadge.classList.add('premium');
-    }
-    premiumBtn.textContent = '🔑 Gérer mon abonnement';
-    premiumBtn.href = 'abonnement.html';
-  } else {
-    userBadge.textContent = '🔓 Compte gratuit';
-    userBadge.classList.add('free');
-    premiumBtn.textContent = '🔓 Débloquer Premium';
-    premiumBtn.href = 'abonnement.html';
-  }
-
-  // Infos
-  userEstablishment.textContent = establishment || 'Non renseigné';
-  userClass.textContent = className;
-  userSince.textContent = createdAt ? formatDate(createdAt) : 'Inconnue';
-
-  // Statut Premium
-  if (isPremium) {
-    const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
-    if (expiryDate) {
-      const now = new Date();
-      const expiry = new Date(expiryDate);
-      const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-      if (daysLeft > 0) {
-        userStatus.innerHTML = `<span class="status-badge active">✅ Actif (${daysLeft}j)</span>`;
-      } else {
-        userStatus.innerHTML = `<span class="status-badge expired">⏳ Expiré</span>`;
-      }
-    } else {
-      userStatus.innerHTML = `<span class="status-badge active">✅ Actif</span>`;
-    }
-  } else {
-    userStatus.innerHTML = `<span class="status-badge free">🔓 Gratuit</span>`;
-  }
-
-  // Stats
-  const streak = parseInt(localStorage.getItem('arvexa_reading_streak')) || 0;
-  statStreak.textContent = streak;
-
-  // Progression
-  const subjects = progressData?.subjects || {};
-  let totalChapters = 0;
-  let completedChapters = 0;
-  let exercisesDone = 0;
-
-  const subjectKeys = ['mathematiques', 'physique', 'chimie', 'svt'];
-  subjectKeys.forEach(key => {
-    const subject = subjects[key];
-    if (subject?.chapters?.progress) {
-      const values = Object.values(subject.chapters.progress);
-      totalChapters += values.length;
-      completedChapters += values.filter(v => v >= 100).length;
-      exercisesDone += values.filter(v => v > 0 && v < 100).length;
-    }
-  });
-
-  statChapters.textContent = `${completedChapters}/${totalChapters}`;
-  statExercises.textContent = exercisesDone;
-  statLevel.textContent = getLevel(completedChapters, totalChapters || 1);
-
-  // Afficher
-  skeletonLoading.style.display = 'none';
-  dynamicContent.style.display = 'block';
-}
-
-// ================================================================
-// CHARGEMENT DES DONNÉES EN TEMPS RÉEL
-// ================================================================
-
-function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
-  }
-
-  const userRef = doc(db, 'users', user.uid);
-
-  unsubscribeUser = onSnapshot(userRef, 
-    async (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        userData = data;
-        
-        // Mettre en cache
-        try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-        } catch (e) { /* ignore */ }
-        
-        // Charger la progression
-        try {
-          const progressDoc = await getDoc(doc(db, 'users', user.uid, 'progress', 'overall'));
-          let progressData = null;
-          if (progressDoc.exists()) {
-            progressData = progressDoc.data();
-            try {
-              localStorage.setItem('arvexa_progress_data', JSON.stringify(progressData));
-            } catch (e) { /* ignore */ }
-          }
-          await renderProfile(data, progressData);
-        } catch (e) {
-          console.warn('Pas de progression trouvée');
-          await renderProfile(data, null);
-        }
-      } else {
-        showToast('⚠️ Profil utilisateur introuvable.', 'error');
-      }
-    },
-    (error) => {
-      console.error('❌ Erreur chargement:', error);
-      // Essayer le cache
-      try {
-        const cachedUser = localStorage.getItem('arvexa_user_data');
-        const cachedProgress = localStorage.getItem('arvexa_progress_data');
-        if (cachedUser) {
-          const data = JSON.parse(cachedUser);
-          const progressData = cachedProgress ? JSON.parse(cachedProgress) : null;
-          renderProfile(data, progressData);
-          showToast('📶 Données chargées depuis le cache', 'info');
-          return;
-        }
-      } catch (e) { /* ignore */ }
-      showToast('📶 Impossible de charger les données.', 'error');
-    }
-  );
-}
-
-// ================================================================
-// GESTION PHOTO DE PROFIL
-// ================================================================
-
-const avatarUploadBtn = document.getElementById('avatarUploadBtn');
-const avatarInput = document.getElementById('avatarInput');
-
-if (avatarUploadBtn && avatarInput) {
-  avatarUploadBtn.addEventListener('click', () => avatarInput.click());
-}
-
-if (avatarInput) {
-  avatarInput.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    showToast('📤 Compression de l\'image...', 'info');
-
-    try {
-      const base64 = await compressImage(file, 400, 400, 0.7);
-      const sizeInKB = Math.round(base64.length / 1024);
-      if (sizeInKB > 900) {
-        showToast('⚠️ Image trop lourde après compression', 'error');
-        return;
-      }
-
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        showToast('⚠️ Vous devez être connecté', 'error');
-        return;
-      }
-
-      await saveProfilePicture(base64, currentUser.uid);
-
-      const firstName = userData?.firstName || 'Utilisateur';
-      const lastName = userData?.lastName || '';
-      const initials = getInitials(firstName, lastName);
-      updateAvatarDisplay(base64, initials);
-
-      showToast('✅ Photo de profil mise à jour !', 'success');
-
-    } catch (error) {
-      console.error('❌ Erreur upload:', error);
-      showToast('❌ ' + (error.message || 'Erreur lors de l\'upload'), 'error');
-    }
-
-    avatarInput.value = '';
-  });
-}
-
-// ================================================================
-// DÉCONNEXION
-// ================================================================
-
-let isLoggingOut = false;
-
-async function handleLogout() {
-  if (isLoggingOut) return;
-  isLoggingOut = true;
-
-  const confirmModal = document.getElementById('logoutConfirm');
-  const confirmBtn = document.getElementById('confirmLogout');
-  const cancelBtn = document.getElementById('cancelLogout');
-  const logoutBtn = document.getElementById('logoutProfileBtn');
-
-  // Afficher le modal
-  confirmModal.classList.add('show');
-
-  // Gestion du bouton Annuler
-  const handleCancel = () => {
-    confirmModal.classList.remove('show');
-    isLoggingOut = false;
-    if (logoutBtn) {
-      logoutBtn.disabled = false;
-      logoutBtn.classList.remove('loading');
-    }
+  // ================================================================
+  // CONFIG
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
-  // Gestion du bouton Confirmer
-  const handleConfirm = async () => {
-    if (confirmBtn.disabled) return;
-    
-    confirmBtn.disabled = true;
-    confirmBtn.classList.add('loading');
-
-    try {
-      // Déconnexion
-      await logout();
-      // La redirection est gérée par auth.js
-    } catch (error) {
-      console.error('❌ Erreur déconnexion:', error);
-      showToast('Erreur de déconnexion.', 'error');
-      confirmBtn.disabled = false;
-      confirmBtn.classList.remove('loading');
-      isLoggingOut = false;
-      confirmModal.classList.remove('show');
-    }
-  };
-
-  // Nettoyer les anciens événements
-  const newCancel = cancelBtn.cloneNode(true);
-  const newConfirm = confirmBtn.cloneNode(true);
-  cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
-  confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
-
-  newCancel.addEventListener('click', handleCancel);
-  newConfirm.addEventListener('click', handleConfirm);
-
-  // Fermer en cliquant à l'extérieur
-  confirmModal.addEventListener('click', (e) => {
-    if (e.target === confirmModal) handleCancel();
-  });
-
-  // Touche Echap
-  const handleEscape = (e) => {
-    if (e.key === 'Escape') handleCancel();
-  };
-  document.addEventListener('keydown', handleEscape);
-
-  // Nettoyer les événements lorsque le modal se ferme
-  const cleanup = () => {
-    document.removeEventListener('keydown', handleEscape);
-    confirmModal.removeEventListener('click', handleCancel);
-  };
-
-  // Sauvegarder la référence pour nettoyage
-  window._logoutCleanup = cleanup;
-}
-
-// ================================================================
-// RAFRAÎCHISSEMENT
-// ================================================================
-
-async function refreshProfile() {
-  const refreshBtn = document.getElementById('refreshBtn');
-  if (refreshBtn) refreshBtn.querySelector('i').classList.add('fa-spin');
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
   try {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return;
+    await setPersistence(auth, browserLocalPersistence);
+    console.log('🔐 Persistance locale activée');
+  } catch (e) { console.warn('⚠️ Persistance:', e); }
 
+  // ================================================================
+  // SESSION CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        emailVerified: user.emailVerified,
+        lastLogin: new Date().toISOString(),
+        token: user.accessToken
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem('arvexa_user_data');
+    } catch (e) {}
+  }
+
+  // ================================================================
+  // DOM
+  // ================================================================
+  const skeletonLoading = document.getElementById('skeletonLoading');
+  const dynamicContent = document.getElementById('dynamicContent');
+
+  const userAvatar = document.getElementById('userAvatar');
+  const userFullName = document.getElementById('userFullName');
+  const userEmail = document.getElementById('userEmail');
+  const userBadge = document.getElementById('userBadge');
+  const userClassDisplay = document.getElementById('userClassDisplay');
+  const userClassInput = document.getElementById('userClassInput');
+  const userEstablishmentDisplay = document.getElementById('userEstablishmentDisplay');
+  const userEstablishmentInput = document.getElementById('userEstablishmentInput');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  const userNameInput = document.getElementById('userNameInput');
+  const userStatus = document.getElementById('userStatus');
+  const userSince = document.getElementById('userSince');
+  const userLastVisit = document.getElementById('userLastVisit');
+  const premiumBtn = document.getElementById('premiumBtn');
+  const statStreak = document.getElementById('statStreak');
+  const statChapters = document.getElementById('statChapters');
+  const statTime = document.getElementById('statTime');
+  const statLevel = document.getElementById('statLevel');
+  const badgesGrid = document.getElementById('badgesGrid');
+  const editToggleBtn = document.getElementById('editToggleBtn');
+
+  const toast = document.getElementById('toast');
+  const toastMessage = document.querySelector('.toast-message');
+  const toastIcon = document.querySelector('.toast-icon i');
+
+  let userData = null;
+  let unsubscribeUser = null;
+  let isEditMode = false;
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'success') {
+    toastMessage.textContent = message;
+    toast.className = `toast ${type}`;
+    toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ================================================================
+  // FONCTIONS
+  // ================================================================
+  function getInitials(firstName, lastName) {
+    if (!firstName) return '👤';
+    if (!lastName) return firstName.charAt(0).toUpperCase();
+    return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+  }
+
+  function formatDate(dateString) {
+    if (!dateString) return 'Inconnue';
+    const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function formatTime(seconds) {
+    if (!seconds || seconds < 60) return '0h';
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours === 0) return `${minutes}m`;
+    return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
+  }
+
+  function getFlames(streak) {
+    if (streak === 0) return '💀';
+    if (streak < 3) return '🔥';
+    if (streak < 7) return '🔥🔥';
+    if (streak < 14) return '🔥🔥🔥';
+    if (streak < 30) return '🔥🔥🔥🔥';
+    return '🔥🔥🔥🔥🔥 👑';
+  }
+
+  function getLevel(completedChapters, totalChapters = 38) {
+    if (!totalChapters || totalChapters === 0) return { emoji: '🌱', text: 'Débutant' };
+    const ratio = completedChapters / totalChapters;
+    if (ratio === 0) return { emoji: '🌱', text: 'Débutant' };
+    if (ratio < 0.25) return { emoji: '📖', text: 'Apprenti' };
+    if (ratio < 0.50) return { emoji: '⚡', text: 'En progression' };
+    if (ratio < 0.75) return { emoji: '🔥', text: 'Enflammé' };
+    if (ratio < 1) return { emoji: '⭐', text: 'Expert' };
+    return { emoji: '👑', text: 'Maître ARVEXA' };
+  }
+
+  function updateAvatarDisplay(base64, initials) {
+    if (!userAvatar) return;
+    if (base64 && base64.startsWith('data:image')) {
+      userAvatar.innerHTML = `<img src="${base64}" alt="Photo de profil">`;
+    } else {
+      userAvatar.textContent = initials || '👤';
+      userAvatar.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-bright))';
+    }
+  }
+
+  // ================================================================
+  // BADGES
+  // ================================================================
+  function renderBadges(streak, chaptersRead, isPremium) {
+    const badges = [
+      { id: 'first_chapter', label: '📖 Premier chapitre', unlocked: chaptersRead > 0 },
+      { id: 'streak_7', label: '🔥 Streak 7 jours', unlocked: streak >= 7 },
+      { id: 'streak_30', label: '🔥 Streak 30 jours', unlocked: streak >= 30 },
+      { id: 'expert', label: '⭐ Expert', unlocked: chaptersRead >= 30 },
+      { id: 'premium', label: '👑 Premium', unlocked: isPremium }
+    ];
+
+    badgesGrid.innerHTML = badges.map(b => `
+      <span class="badge-item ${b.unlocked ? 'unlocked' : 'locked'}">
+        ${b.unlocked ? `<i class="fas fa-check-circle"></i>` : `<i class="fas fa-lock"></i>`}
+        ${b.label}
+      </span>
+    `).join('');
+  }
+
+  // ================================================================
+  // COMPRESSION D'IMAGE
+  // ================================================================
+  function compressImage(file, maxWidth = 400, maxHeight = 400, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        reject('Le fichier n\'est pas une image');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        reject('L\'image est trop lourde (max 10MB)');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const base64 = canvas.toDataURL('image/jpeg', quality);
+          resolve(base64);
+        };
+        img.onerror = () => reject('Erreur de chargement de l\'image');
+        img.src = event.target.result;
+      };
+      reader.onerror = () => reject('Erreur de lecture du fichier');
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function saveProfilePicture(base64, userId) {
+    if (!userId) throw new Error('Utilisateur non connecté');
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      profilePicture: base64,
+      updatedAt: serverTimestamp()
+    });
+  }
+
+  // ================================================================
+  // MODE ÉDITION
+  // ================================================================
+  function toggleEditMode() {
+    isEditMode = !isEditMode;
+
+    if (isEditMode) {
+      // Passer en mode édition
+      userNameDisplay.style.display = 'none';
+      userNameInput.style.display = 'inline-block';
+      userNameInput.value = userData?.firstName || '';
+
+      userEstablishmentDisplay.style.display = 'none';
+      userEstablishmentInput.style.display = 'inline-block';
+      userEstablishmentInput.value = userData?.establishment || '';
+
+      userClassDisplay.style.display = 'none';
+      userClassInput.style.display = 'inline-block';
+      userClassInput.value = userData?.classId || '';
+
+      editToggleBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+      editToggleBtn.className = '';
+
+      // Activer les inputs
+      userNameInput.disabled = false;
+      userEstablishmentInput.disabled = false;
+      userClassInput.disabled = false;
+    } else {
+      // Sauvegarder ou annuler
+      saveProfileChanges();
+    }
+  }
+
+  async function saveProfileChanges() {
+    const user = auth.currentUser;
+    if (!user) {
+      showToast('⚠️ Vous devez être connecté', 'error');
+      return;
+    }
+
+    const newName = userNameInput.value.trim();
+    const newEstablishment = userEstablishmentInput.value.trim();
+    const newClass = userClassInput.value.trim();
+
+    if (!newName) {
+      showToast('⚠️ Le nom ne peut pas être vide', 'error');
+      return;
+    }
+
+    editToggleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
+    editToggleBtn.disabled = true;
+
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      await updateDoc(userRef, {
+        firstName: newName,
+        establishment: newEstablishment || '',
+        classId: newClass || '',
+        updatedAt: serverTimestamp()
+      });
+
+      // Mettre à jour l'affichage
+      userData.firstName = newName;
+      userData.establishment = newEstablishment || '';
+      userData.classId = newClass || '';
+
+      // Mettre à jour l'affichage
+      userNameDisplay.textContent = newName;
+      userFullName.textContent = newName + (userData.lastName ? ` ${userData.lastName}` : '');
+      userEstablishmentDisplay.textContent = newEstablishment || 'Non renseigné';
+      userClassDisplay.textContent = newClass || 'Terminale D';
+
+      // Mettre à jour le cache
+      try {
+        localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
+      } catch (e) {}
+
+      showToast('✅ Informations mises à jour !', 'success');
+
+      // Quitter le mode édition
+      isEditMode = false;
+      editToggleBtn.innerHTML = '<i class="fas fa-pen"></i> Modifier';
+      editToggleBtn.disabled = false;
+
+      userNameDisplay.style.display = 'inline';
+      userNameInput.style.display = 'none';
+
+      userEstablishmentDisplay.style.display = 'inline';
+      userEstablishmentInput.style.display = 'none';
+
+      userClassDisplay.style.display = 'inline';
+      userClassInput.style.display = 'none';
+
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde:', error);
+      showToast('❌ Erreur lors de la sauvegarde', 'error');
+      editToggleBtn.innerHTML = '<i class="fas fa-pen"></i> Modifier';
+      editToggleBtn.disabled = false;
+    }
+  }
+
+  // ================================================================
+  // CHANGER LE MOT DE PASSE
+  // ================================================================
+  async function handleChangePassword() {
+    const user = auth.currentUser;
+    if (!user) {
+      showToast('⚠️ Vous devez être connecté', 'error');
+      return;
+    }
+
+    // Demander le mot de passe actuel
+    const currentPassword = prompt('🔑 Entrez votre mot de passe actuel :');
+    if (currentPassword === null) return;
+
+    // Demander le nouveau mot de passe
+    const newPassword = prompt('🔑 Entrez votre nouveau mot de passe (6 caractères minimum) :');
+    if (newPassword === null) return;
+
+    if (newPassword.length < 6) {
+      showToast('⚠️ Le mot de passe doit faire au moins 6 caractères', 'error');
+      return;
+    }
+
+    const confirmPassword = prompt('🔑 Confirmez votre nouveau mot de passe :');
+    if (confirmPassword === null) return;
+
+    if (newPassword !== confirmPassword) {
+      showToast('⚠️ Les mots de passe ne correspondent pas', 'error');
+      return;
+    }
+
+    try {
+      // Réauthentifier l'utilisateur
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      await reauthenticateWithCredential(user, credential);
+
+      // Changer le mot de passe
+      await updatePassword(user, newPassword);
+
+      showToast('✅ Mot de passe changé avec succès !', 'success');
+
+    } catch (error) {
+      console.error('❌ Erreur changement mot de passe:', error);
+      switch (error.code) {
+        case 'auth/wrong-password':
+          showToast('❌ Mot de passe actuel incorrect', 'error');
+          break;
+        case 'auth/too-many-requests':
+          showToast('⏳ Trop de tentatives. Réessaie plus tard.', 'error');
+          break;
+        default:
+          showToast('❌ Erreur : ' + error.message, 'error');
+      }
+    }
+  }
+
+  // ================================================================
+  // RENDER PROFIL
+  // ================================================================
+  function renderProfile(data) {
+    if (!data) return;
+
+    userData = data;
+
+    const firstName = data.firstName || 'Utilisateur';
+    const lastName = data.lastName || '';
+    const email = data.email || 'email@exemple.com';
+    const establishment = data.establishment || 'Non renseigné';
+    const className = data.classId || 'Terminale D';
+    const createdAt = data.createdAt?.toDate?.() || data.createdAt || null;
+    const lastVisit = data.lastVisit?.toDate?.() || data.lastVisit || null;
+    const isPremium = data.premium === true || data.isUnlocked === true || data.hasDeposited === true;
+    const streak = data.readingStreak || 0;
+    const chaptersRead = data.chaptersRead || 0;
+    const totalTime = data.totalStudyTime || 0;
+
+    // Avatar
+    const profilePicture = data.profilePicture || null;
+    const initials = getInitials(firstName, lastName);
+    updateAvatarDisplay(profilePicture, initials);
+
+    // Nom + Email
+    userFullName.textContent = lastName ? `${firstName} ${lastName}` : firstName;
+    userEmail.textContent = email;
+    userNameDisplay.textContent = firstName;
+
+    // Badge
+    userBadge.className = 'profile-badge';
+    if (isPremium) {
+      const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
+      if (expiryDate) {
+        const now = new Date();
+        const expiry = new Date(expiryDate);
+        const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+        if (daysLeft > 0) {
+          userBadge.textContent = `👑 Premium · ${daysLeft}j restants`;
+          userBadge.classList.add('premium');
+        } else {
+          userBadge.textContent = '⏳ Expiré';
+          userBadge.classList.add('expired');
+        }
+      } else {
+        userBadge.textContent = '👑 Premium';
+        userBadge.classList.add('premium');
+      }
+      premiumBtn.textContent = '🔑 Gérer mon abonnement';
+      premiumBtn.href = 'abonnement.html';
+    } else {
+      userBadge.textContent = '🔓 Compte gratuit';
+      userBadge.classList.add('free');
+      premiumBtn.textContent = '🔓 Débloquer Premium';
+      premiumBtn.href = 'abonnement.html';
+    }
+
+    // Infos
+    userEstablishmentDisplay.textContent = establishment;
+    userClassDisplay.textContent = className;
+    userSince.textContent = createdAt ? formatDate(createdAt) : 'Inconnue';
+    userLastVisit.textContent = lastVisit ? formatDate(lastVisit) : '--';
+
+    // Statut
+    if (isPremium) {
+      const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
+      if (expiryDate) {
+        const now = new Date();
+        const expiry = new Date(expiryDate);
+        const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+        if (daysLeft > 0) {
+          userStatus.innerHTML = `<span class="status-badge active">✅ Actif (${daysLeft}j)</span>`;
+        } else {
+          userStatus.innerHTML = `<span class="status-badge expired">⏳ Expiré</span>`;
+        }
+      } else {
+        userStatus.innerHTML = `<span class="status-badge active">✅ Actif</span>`;
+      }
+    } else {
+      userStatus.innerHTML = `<span class="status-badge free">🔓 Gratuit</span>`;
+    }
+
+    // Stats
+    const flames = getFlames(streak);
+    statStreak.textContent = `${streak} ${flames}`;
+    statChapters.textContent = chaptersRead;
+    statTime.textContent = formatTime(totalTime);
+
+    const level = getLevel(chaptersRead);
+    statLevel.textContent = level.emoji;
+    statLevel.title = level.text;
+
+    // Badges
+    renderBadges(streak, chaptersRead, isPremium);
+
+    // Afficher
+    skeletonLoading.style.display = 'none';
+    dynamicContent.style.display = 'block';
+  }
+
+  // ================================================================
+  // CHARGEMENT DES DONNÉES (Temps réel)
+  // ================================================================
+  function loadUserData(user) {
     if (unsubscribeUser) {
       unsubscribeUser();
       unsubscribeUser = null;
     }
-    loadUserData(currentUser);
-    showToast('✅ Données actualisées', 'success');
-  } catch (error) {
-    showToast('📶 Erreur lors du rafraîchissement', 'error');
+
+    const userRef = doc(db, 'users', user.uid);
+
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          try {
+            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+          } catch (e) {}
+          renderProfile(data);
+        } else {
+          showToast('⚠️ Profil introuvable.', 'error');
+        }
+      },
+      (error) => {
+        console.error('❌ Erreur Firestore:', error);
+        try {
+          const cached = localStorage.getItem('arvexa_user_data');
+          if (cached) {
+            const data = JSON.parse(cached);
+            renderProfile(data);
+            showToast('📶 Données chargées depuis le cache', 'info');
+          }
+        } catch (e) {}
+      }
+    );
   }
 
-  if (refreshBtn) refreshBtn.querySelector('i').classList.remove('fa-spin');
-}
+  // ================================================================
+  // GESTION PHOTO DE PROFIL
+  // ================================================================
+  const avatarUploadBtn = document.getElementById('avatarUploadBtn');
+  const avatarInput = document.getElementById('avatarInput');
 
-// ================================================================
-// GESTION DE LA CONNEXION RÉSEAU
-// ================================================================
-
-function updateConnectionStatus() {
-  if (navigator.onLine) {
-    connectionStatus.className = 'cover-status online';
-    connectionStatus.innerHTML = '<i class="fas fa-wifi"></i> En ligne';
-  } else {
-    connectionStatus.className = 'cover-status offline';
-    connectionStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Hors ligne';
+  if (avatarUploadBtn && avatarInput) {
+    avatarUploadBtn.addEventListener('click', () => avatarInput.click());
   }
-}
 
-window.addEventListener('online', () => {
-  updateConnectionStatus();
-  showToast('📶 Connexion rétablie', 'success');
-  refreshProfile();
-});
+  if (avatarInput) {
+    avatarInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-window.addEventListener('offline', () => {
-  updateConnectionStatus();
-  showToast('📶 Connexion perdue', 'error');
-});
+      showToast('📤 Compression de l\'image...', 'info');
 
-// ================================================================
-// PROTECTION + CHARGEMENT
-// ================================================================
+      try {
+        const base64 = await compressImage(file, 400, 400, 0.7);
+        const sizeInKB = Math.round(base64.length / 1024);
+        if (sizeInKB > 900) {
+          showToast('⚠️ Image trop lourde après compression', 'error');
+          return;
+        }
 
-protectPage(async (authUser) => {
-  console.log('👤 Profil - Utilisateur connecté:', authUser.uid);
-  user = authUser;
+        const user = auth.currentUser;
+        if (!user) {
+          showToast('⚠️ Vous devez être connecté', 'error');
+          return;
+        }
 
-  // Mettre à jour le statut de connexion
-  updateConnectionStatus();
+        await saveProfilePicture(base64, user.uid);
 
-  // Charger les données
-  loadUserData(authUser);
+        const firstName = userData?.firstName || 'Utilisateur';
+        const lastName = userData?.lastName || '';
+        const initials = getInitials(firstName, lastName);
+        updateAvatarDisplay(base64, initials);
 
-  console.log('👤 Profil chargé');
-});
+        showToast('✅ Photo de profil mise à jour !', 'success');
 
-// ================================================================
-// ÉVÉNEMENTS
-// ================================================================
+      } catch (error) {
+        console.error('❌ Erreur upload:', error);
+        showToast('❌ ' + (error.message || 'Erreur lors de l\'upload'), 'error');
+      }
 
-// Déconnexion depuis la sidebar
-document.getElementById('logoutBtn').addEventListener('click', (e) => {
-  e.preventDefault();
-  handleLogout();
-});
+      avatarInput.value = '';
+    });
+  }
 
-// Déconnexion depuis le profil
-document.getElementById('logoutProfileBtn').addEventListener('click', () => {
-  handleLogout();
-});
+  // ================================================================
+  // DÉCONNEXION
+  // ================================================================
+  async function handleLogout() {
+    try {
+      if (unsubscribeUser) {
+        unsubscribeUser();
+        unsubscribeUser = null;
+      }
+      clearSession();
+      await signOut(auth);
+      window.location.href = 'login.html';
+    } catch (error) {
+      showToast('Erreur de déconnexion.', 'error');
+    }
+  }
 
-document.getElementById('menuToggle').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
-});
+  // ================================================================
+  // AUTH
+  // ================================================================
+  let authChecked = false;
+  let isRedirecting = false;
+  let redirectCooldown = 0;
 
-document.getElementById('sidebarOverlay').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('active');
-});
+  onAuthStateChanged(auth, async (user) => {
+    if (authChecked) {
+      console.log('⏳ Auth déjà vérifié, skip');
+      return;
+    }
 
-document.getElementById('notifBtn').addEventListener('click', () => {
-  window.location.href = 'notifications.html';
-});
+    const now = Date.now();
+    if (now - redirectCooldown < 3000) {
+      console.log('⏳ Cooldown actif, skip');
+      return;
+    }
 
-document.getElementById('refreshBtn').addEventListener('click', refreshProfile);
+    authChecked = true;
 
-console.log('👤 ARVEXA School — Page Profil renforcée');
-</script>
+    if (user) {
+      console.log('✅ Profil - Utilisateur:', user.uid);
 
+      try {
+        await getIdToken(user, true);
+        console.log('🔄 Token rafraîchi');
+      } catch (e) {
+        console.warn('⚠️ Erreur rafraîchissement token:', e);
+      }
+
+      saveSession(user);
+      loadUserData(user);
+
+    } else {
+      if (isRedirecting) return;
+      isRedirecting = true;
+      redirectCooldown = now;
+      clearSession();
+      console.log('🔒 Non connecté, redirection vers login');
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 300);
+    }
+  });
+
+  // ================================================================
+  // ÉVÉNEMENTS
+  // ================================================================
+
+  // Déconnexion
+  document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleLogout();
+  });
+
+  document.getElementById('logoutProfileBtn')?.addEventListener('click', () => {
+    handleLogout();
+  });
+
+  // Menu
+  document.getElementById('menuToggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar')?.classList.toggle('open');
+    document.getElementById('sidebarOverlay')?.classList.toggle('active');
+  });
+
+  document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+    document.getElementById('sidebar')?.classList.remove('open');
+    document.getElementById('sidebarOverlay')?.classList.remove('active');
+  });
+
+  // Notifications
+  document.getElementById('notifBtn')?.addEventListener('click', () => {
+    window.location.href = 'notifications.html';
+  });
+
+  // Rafraîchir
+  document.getElementById('refreshBtn')?.addEventListener('click', () => {
+    showToast('🔄 Rafraîchissement...', 'info');
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    const user = auth.currentUser;
+    if (user) {
+      loadUserData(user);
+    }
+  });
+
+  // Mode édition
+  editToggleBtn?.addEventListener('click', toggleEditMode);
+
+  // Changer le mot de passe
+  document.getElementById('changePasswordBtn')?.addEventListener('click', handleChangePassword);
+
+  console.log('👤 ARVEXA School — Profil (version complète)');
+  </script>
 </body>
 </html>
