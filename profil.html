@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="description" content="ARVEXA School - Mon profil">
   <link rel="manifest" href="manifest.json">
@@ -14,7 +14,7 @@
 
   <style>
     /* ============================================================
-       ROOT
+       ROOT — Design system ARVEXA
        ============================================================ */
     :root {
       --primary: #1A3A2A;
@@ -37,7 +37,7 @@
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --radius: 16px;
       --sidebar-width: 240px;
-      --header-height: 56px;
+      --header-height: 64px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -76,7 +76,9 @@
     }
     .sidebar-overlay.active { display: block; opacity: 1; }
 
-    /* ===== SIDEBAR ===== */
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
     .sidebar {
       position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
       background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
@@ -112,35 +114,45 @@
     .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
     .sidebar .nav-bottom a:hover { color: var(--text-dim); }
 
-    /* ===== MAIN CONTENT ===== */
+    /* ============================================================
+       MAIN CONTENT
+       ============================================================ */
     .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
 
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 8px 12px; background: rgba(10, 10, 10, 0.92);
+      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
-      gap: 8px; min-height: var(--header-height);
+      gap: 12px; min-height: var(--header-height);
     }
-    .header .header-left { display: flex; align-items: center; gap: 8px; }
+    .header .header-left { display: flex; align-items: center; gap: 12px; }
     .header .menu-toggle {
       display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
       border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
       color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
     }
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
-    .header .page-title { font-size: 15px; font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
+    .header .page-title {
+      font-size: clamp(13px, 1.6vw, 15px);
+      font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif;
+    }
     .header .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
-    .header .header-actions { display: flex; align-items: center; gap: 4px; }
+    .header .header-actions { display: flex; align-items: center; gap: 6px; }
     .header .header-actions button {
-      width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 14px;
+      width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
       display: flex; align-items: center; justify-content: center;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
 
-    .container { max-width: 700px; margin: 0 auto; padding: 12px 12px 16px; }
+    /* ============================================================
+       CONTAINER
+       ============================================================ */
+    .container { max-width: 700px; margin: 0 auto; padding: 16px 16px 20px; }
 
-    /* ===== PROFIL CARD ===== */
+    /* ============================================================
+       PROFIL CARD
+       ============================================================ */
     .profile-card {
       background: var(--bg-card);
       backdrop-filter: blur(10px);
@@ -166,9 +178,9 @@
       100% { background-position: 300% 0%; }
     }
 
-    /* === COVER === */
+    /* ===== COVER ===== */
     .profile-cover {
-      height: 80px;
+      height: clamp(70px, 10vw, 100px);
       background: linear-gradient(135deg, rgba(26,58,42,0.4), rgba(184,134,11,0.2));
       position: relative;
     }
@@ -178,29 +190,26 @@
       background: radial-gradient(ellipse at 30% 50%, rgba(184,134,11,0.1), transparent 70%);
     }
 
-    /* === AVATAR === */
+    /* ===== AVATAR ===== */
     .profile-avatar-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: -40px;
+      display: flex; flex-direction: column; align-items: center;
+      margin-top: clamp(-36px, -5vw, -50px);
       padding: 0 20px 10px;
-      position: relative;
-      z-index: 2;
+      position: relative; z-index: 2;
     }
     .avatar-wrapper {
       position: relative;
       display: inline-block;
     }
     .avatar-wrapper .avatar {
-      width: 80px;
-      height: 80px;
+      width: clamp(80px, 12vw, 100px);
+      height: clamp(80px, 12vw, 100px);
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent-bright));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 34px;
+      font-size: clamp(32px, 4.5vw, 40px);
       font-weight: 700;
       font-family: 'Playfair Display', serif;
       color: var(--bg-dark);
@@ -218,16 +227,16 @@
     }
     .avatar-wrapper .avatar-upload-btn {
       position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 28px;
-      height: 28px;
+      bottom: 4px;
+      right: 4px;
+      width: clamp(28px, 4vw, 32px);
+      height: clamp(28px, 4vw, 32px);
       border-radius: 50%;
       border: 2px solid var(--bg-dark);
       background: var(--accent);
       color: var(--bg-dark);
       cursor: pointer;
-      font-size: 12px;
+      font-size: clamp(11px, 1.5vw, 13px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -238,28 +247,28 @@
       transform: scale(1.1);
       background: var(--accent-bright);
     }
-    .avatar-wrapper .avatar-upload-btn i { font-size: 12px; }
 
     .profile-name {
-      font-size: 18px;
+      font-size: clamp(18px, 2.5vw, 22px);
       font-weight: 700;
       font-family: 'Playfair Display', serif;
       color: var(--text-light);
-      margin-top: 6px;
+      margin-top: 8px;
       line-height: 1.2;
     }
     .profile-email {
-      font-size: 12px;
+      font-size: clamp(12px, 1.2vw, 14px);
       color: var(--text-dim);
       margin-top: 2px;
+      word-break: break-all;
     }
     .profile-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 3px 12px;
+      padding: 4px 14px;
       border-radius: 20px;
-      font-size: 10px;
+      font-size: clamp(10px, 1vw, 12px);
       font-weight: 600;
       margin-top: 4px;
     }
@@ -279,55 +288,18 @@
       border: 1px solid rgba(184, 92, 58, 0.2);
     }
 
-    /* === EDIT TOGGLE === */
-    .edit-toggle {
-      display: flex;
-      justify-content: flex-end;
-      padding: 4px 20px 0;
-    }
-    .edit-toggle button {
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(184,134,11,0.12);
-      background: rgba(184,134,11,0.06);
-      color: var(--accent-bright);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .edit-toggle button:hover {
-      background: rgba(184,134,11,0.12);
-    }
-    .edit-toggle button.cancel {
-      background: rgba(239,68,68,0.06);
-      border-color: rgba(239,68,68,0.12);
-      color: #ef4444;
-    }
-    .edit-toggle button.cancel:hover {
-      background: rgba(239,68,68,0.12);
-    }
-    .edit-toggle button.saving {
-      opacity: 0.5;
-      pointer-events: none;
-    }
-
-    /* === STATS GRID === */
+    /* ===== STATS GRID (3 colonnes) ===== */
     .profile-stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      padding: 0 20px 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0 20px 12px;
     }
     .stat-item {
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.04);
       border-radius: 10px;
-      padding: 8px 4px;
+      padding: clamp(8px, 1vw, 12px) 4px;
       text-align: center;
       transition: var(--transition);
     }
@@ -336,14 +308,14 @@
       border-color: rgba(184,134,11,0.08);
     }
     .stat-item .stat-number {
-      font-size: 16px;
+      font-size: clamp(16px, 2.5vw, 20px);
       font-weight: 800;
       font-family: 'Playfair Display', serif;
       color: var(--accent-bright);
       line-height: 1.2;
     }
     .stat-item .stat-label {
-      font-size: 8px;
+      font-size: clamp(8px, 0.9vw, 10px);
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.3px;
@@ -351,17 +323,17 @@
       margin-top: 2px;
     }
 
-    /* === BADGES === */
+    /* ===== BADGES ===== */
     .badges-section {
-      padding: 0 20px 10px;
+      padding: 0 20px 12px;
     }
     .badges-section .badges-title {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .badges-grid {
       display: flex;
@@ -372,13 +344,14 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 10px;
+      padding: 3px 12px;
       border-radius: 20px;
-      font-size: 10px;
+      font-size: clamp(10px, 1vw, 12px);
       font-weight: 600;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.04);
       color: var(--text-dim);
+      transition: var(--transition);
     }
     .badge-item.unlocked {
       background: rgba(184, 134, 11, 0.06);
@@ -389,31 +362,33 @@
     .badge-item.locked {
       opacity: 0.4;
     }
-    .badge-item i { font-size: 11px; }
+    .badge-item i { font-size: clamp(11px, 1.2vw, 14px); }
 
-    /* === INFO LIST === */
+    /* ===== INFO LIST ===== */
     .profile-info {
-      padding: 0 20px 10px;
+      padding: 0 20px 12px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
     .info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 12px;
+      padding: clamp(8px, 1vw, 12px) clamp(12px, 1.4vw, 16px);
       background: rgba(255,255,255,0.02);
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.04);
       transition: var(--transition);
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .info-row:hover {
       background: rgba(255,255,255,0.04);
       border-color: rgba(184,134,11,0.06);
     }
     .info-row .label {
-      font-size: 11px;
+      font-size: clamp(11px, 1.1vw, 13px);
       color: var(--text-muted);
       font-weight: 500;
       display: flex;
@@ -421,49 +396,26 @@
       gap: 6px;
     }
     .info-row .label i {
-      font-size: 12px;
+      font-size: clamp(12px, 1.2vw, 14px);
       color: var(--accent-bright);
-      width: 16px;
+      width: 18px;
     }
     .info-row .value {
-      font-size: 12px;
+      font-size: clamp(12px, 1.2vw, 14px);
       color: var(--text-light);
       font-weight: 600;
-    }
-    .info-row .value-input {
-      background: transparent;
-      border: 1px solid rgba(184,134,11,0.12);
-      border-radius: 8px;
-      padding: 4px 10px;
-      color: var(--text-light);
-      font-size: 12px;
-      font-weight: 600;
-      font-family: 'Inter', sans-serif;
-      outline: none;
-      transition: var(--transition);
-      width: 160px;
       text-align: right;
-    }
-    .info-row .value-input:focus {
-      border-color: rgba(184,134,11,0.3);
-    }
-    .info-row .value-input::placeholder {
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-    .info-row .value-input:disabled {
-      border-color: transparent;
-      opacity: 0.7;
+      word-break: break-all;
     }
 
-    /* === STATUS BADGE === */
+    /* ===== STATUS BADGE ===== */
     .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 2px 10px;
       border-radius: 12px;
-      font-size: 10px;
+      font-size: clamp(10px, 1vw, 12px);
       font-weight: 600;
     }
     .status-badge.active {
@@ -479,18 +431,18 @@
       color: var(--text-muted);
     }
 
-    /* === ACTIONS === */
+    /* ===== ACTIONS ===== */
     .profile-actions {
       padding: 0 20px 16px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .btn-profile {
-      padding: 10px 20px;
+      padding: clamp(10px, 1.2vw, 14px) 20px;
       border-radius: 30px;
       border: none;
-      font-size: 12px;
+      font-size: clamp(12px, 1.2vw, 14px);
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
@@ -498,7 +450,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       text-decoration: none;
     }
     .btn-profile:active { transform: scale(0.97); }
@@ -531,25 +483,9 @@
       background: rgba(184, 92, 58, 0.15);
     }
 
-    .btn-profile.success {
-      background: rgba(45, 125, 90, 0.08);
-      color: var(--success);
-      border: 1px solid rgba(45, 125, 90, 0.12);
-    }
-    .btn-profile.success:hover {
-      background: rgba(45, 125, 90, 0.15);
-    }
-
-    .btn-profile.premium {
-      background: linear-gradient(135deg, #D4A017, #B8860B);
-      color: #0A0A0A;
-    }
-    .btn-profile.premium:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(184,134,11,0.25);
-    }
-
-    /* ===== SKELETON ===== */
+    /* ============================================================
+       SKELETON
+       ============================================================ */
     .skeleton {
       background: rgba(255,255,255,0.04);
       border-radius: 8px;
@@ -559,21 +495,29 @@
       0%, 100% { opacity: 0.4; }
       50% { opacity: 0.85; }
     }
-    .skeleton-avatar { width: 80px; height: 80px; border-radius: 50%; }
-    .skeleton-text { height: 14px; border-radius: 6px; margin: 4px 0; }
-    .skeleton-row { height: 40px; border-radius: 10px; }
+    .skeleton-avatar { width: 100px; height: 100px; border-radius: 50%; }
+    .skeleton-text { height: 16px; border-radius: 6px; margin: 4px 0; }
+    .skeleton-row { height: 44px; border-radius: 10px; }
+    .skeleton-badge { height: 28px; width: 80px; border-radius: 20px; }
 
-    /* ===== TOAST ===== */
+    /* ============================================================
+       TOAST
+       ============================================================ */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 10px 16px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border); color: var(--text-light); font-size: 12px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 90%; text-align: center; box-shadow: var(--shadow);
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border); color: var(--text-light); font-size: clamp(12px, 1.2vw, 14px);
+      font-weight: 500; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      max-width: 90%; text-align: center; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 8px; justify-content: center;
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.25); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { margin-right: 6px; }
+    .toast .toast-icon { font-size: 16px; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
 
         /* ============================================================
        RESPONSIVE
@@ -588,63 +532,90 @@
     @media (max-width: 767px) {
       .sidebar { left: -280px; }
       .sidebar.open { left: 0; }
-      .container { padding: 10px 10px 14px; }
-      .profile-cover { height: 60px; }
-      .avatar-wrapper .avatar { width: 70px; height: 70px; font-size: 28px; }
-      .profile-avatar-section { margin-top: -35px; }
-      .profile-stats { grid-template-columns: repeat(2, 2fr); gap: 4px; }
-      .stat-item .stat-number { font-size: 14px; }
-      .info-row { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 10px; }
-      .info-row .value-input { width: 100%; text-align: left; }
+      .container { padding: 12px 12px 20px; }
     }
 
     @media (max-width: 480px) {
-      .header { padding: 6px 10px; }
+      .header { padding: 8px 12px; min-height: 48px; }
+      .header .menu-toggle { width: 32px; height: 32px; font-size: 14px; }
       .header .page-title { font-size: 13px; }
-      .header .header-actions button { width: 30px; height: 30px; font-size: 12px; }
-      .profile-cover { height: 50px; }
-      .avatar-wrapper .avatar { width: 60px; height: 60px; font-size: 24px; border-width: 3px; }
-      .avatar-wrapper .avatar-upload-btn { width: 24px; height: 24px; font-size: 10px; }
-      .profile-avatar-section { margin-top: -30px; padding: 0 14px 8px; }
-      .profile-name { font-size: 16px; }
-      .profile-email { font-size: 11px; }
-      .profile-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 0 14px 8px; }
-      .stat-item { padding: 6px 2px; }
-      .stat-item .stat-number { font-size: 13px; }
-      .stat-item .stat-label { font-size: 7px; }
-      .badges-section { padding: 0 14px 8px; }
-      .badge-item { font-size: 9px; padding: 2px 8px; }
-      .profile-info { padding: 0 14px 8px; gap: 3px; }
-      .info-row { padding: 5px 8px; }
-      .info-row .label { font-size: 10px; }
-      .info-row .value { font-size: 11px; }
-      .profile-actions { padding: 0 14px 12px; gap: 4px; }
-      .btn-profile { padding: 8px 16px; font-size: 11px; }
-      .edit-toggle { padding: 2px 14px 0; }
-      .edit-toggle button { font-size: 10px; padding: 4px 12px; }
+      .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
+
+      .container { padding: 10px 10px 16px; }
+      .profile-cover { height: 60px; }
+      .profile-avatar-section { margin-top: -30px; padding: 0 16px 8px; }
+      .avatar-wrapper .avatar { width: 72px; height: 72px; font-size: 28px; }
+      .avatar-wrapper .avatar-upload-btn { width: 26px; height: 26px; font-size: 11px; bottom: 2px; right: 2px; }
+      .profile-name { font-size: 18px; }
+      .profile-email { font-size: 12px; }
+
+      .profile-stats { gap: 6px; padding: 0 16px 10px; }
+      .stat-item { padding: 8px 4px; }
+      .stat-item .stat-number { font-size: 16px; }
+      .stat-item .stat-label { font-size: 8px; }
+
+      .badges-section { padding: 0 16px 10px; }
+      .badges-grid { gap: 4px; }
+      .badge-item { font-size: 10px; padding: 2px 10px; }
+
+      .profile-info { padding: 0 16px 10px; gap: 4px; }
+      .info-row { padding: 8px 12px; flex-direction: column; align-items: flex-start; gap: 2px; }
+      .info-row .value { text-align: left; width: 100%; font-size: 13px; }
+      .info-row .label { font-size: 11px; }
+
+      .profile-actions { padding: 0 16px 14px; gap: 6px; }
+      .btn-profile { padding: 10px 16px; font-size: 13px; }
     }
 
     @media (max-width: 360px) {
-      .header .page-title { font-size: 12px; }
-      .header .header-actions button { width: 26px; height: 26px; font-size: 10px; }
-      .avatar-wrapper .avatar { width: 50px; height: 50px; font-size: 20px; }
-      .profile-avatar-section { margin-top: -25px; }
-      .profile-name { font-size: 14px; }
-      .profile-stats { grid-template-columns: repeat(2, 1fr); gap: 3px; }
-      .stat-item .stat-number { font-size: 12px; }
-      .info-row .label { font-size: 9px; }
-      .info-row .value { font-size: 10px; }
-      .btn-profile { font-size: 10px; padding: 6px 12px; }
-      .badge-item { font-size: 8px; padding: 2px 6px; }
+      .header { padding: 6px 8px; min-height: 42px; }
+      .header .menu-toggle { width: 28px; height: 28px; font-size: 12px; }
+      .header .page-title { font-size: 11px; }
+      .header .header-actions button { width: 28px; height: 28px; font-size: 11px; }
+
+      .container { padding: 6px 6px 12px; }
+      .profile-cover { height: 50px; }
+      .profile-avatar-section { margin-top: -24px; padding: 0 12px 6px; }
+      .avatar-wrapper .avatar { width: 60px; height: 60px; font-size: 24px; border-width: 3px; }
+      .avatar-wrapper .avatar-upload-btn { width: 22px; height: 22px; font-size: 9px; }
+
+      .profile-name { font-size: 15px; }
+      .profile-email { font-size: 11px; }
+      .profile-badge { font-size: 9px; padding: 2px 10px; }
+
+      .profile-stats { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 0 12px 8px; }
+      .stat-item { padding: 6px 2px; border-radius: 8px; }
+      .stat-item .stat-number { font-size: 14px; }
+      .stat-item .stat-label { font-size: 7px; }
+
+      .badges-section { padding: 0 12px 8px; }
+      .badge-item { font-size: 9px; padding: 2px 8px; gap: 2px; }
+
+      .profile-info { padding: 0 12px 8px; gap: 3px; }
+      .info-row { padding: 6px 10px; border-radius: 8px; }
+      .info-row .value { font-size: 12px; }
+      .info-row .label { font-size: 10px; }
+      .info-row .label i { font-size: 11px; width: 16px; }
+
+      .profile-actions { padding: 0 12px 12px; gap: 4px; }
+      .btn-profile { padding: 8px 12px; font-size: 12px; border-radius: 20px; }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .container { max-width: 600px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
-    a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+    }
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
   </style>
 </head>
 <body>
@@ -664,7 +635,6 @@
     <nav class="nav">
       <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
       <a href="profil.html" class="active"><i class="fas fa-user"></i> Mon profil</a>
-      <a href="progression.html"><i class="fas fa-chart-line"></i> Progression</a>
       <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
       <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
       <div class="nav-divider"></div>
@@ -689,9 +659,6 @@
         <button id="notifBtn" aria-label="Notifications">
           <i class="fas fa-bell"></i>
         </button>
-        <button id="refreshBtn" aria-label="Rafraîchir">
-          <i class="fas fa-sync-alt"></i>
-        </button>
       </div>
     </header>
 
@@ -704,16 +671,20 @@
           <div class="profile-cover" style="background:rgba(255,255,255,0.02);"></div>
           <div class="profile-avatar-section">
             <div class="skeleton skeleton-avatar"></div>
-            <div class="skeleton skeleton-text" style="width:150px;margin-top:8px;"></div>
-            <div class="skeleton skeleton-text" style="width:180px;"></div>
+            <div class="skeleton skeleton-text" style="width:150px;margin-top:10px;"></div>
+            <div class="skeleton skeleton-text" style="width:200px;"></div>
           </div>
-          <div style="padding:0 20px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">
-            <div class="skeleton skeleton-row"></div>
+          <div style="padding:0 20px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
             <div class="skeleton skeleton-row"></div>
             <div class="skeleton skeleton-row"></div>
             <div class="skeleton skeleton-row"></div>
           </div>
-          <div style="padding:0 20px 12px;display:flex;flex-direction:column;gap:4px;">
+          <div style="padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap;">
+            <div class="skeleton skeleton-badge"></div>
+            <div class="skeleton skeleton-badge"></div>
+            <div class="skeleton skeleton-badge"></div>
+          </div>
+          <div style="padding:0 20px 16px;display:flex;flex-direction:column;gap:6px;">
             <div class="skeleton skeleton-row"></div>
             <div class="skeleton skeleton-row"></div>
             <div class="skeleton skeleton-row"></div>
@@ -747,24 +718,15 @@
             <div class="profile-badge" id="userBadge">Chargement...</div>
           </div>
 
-          <!-- EDIT TOGGLE -->
-          <div class="edit-toggle">
-            <button id="editToggleBtn"><i class="fas fa-pen"></i> Modifier</button>
-          </div>
-
-          <!-- STATS -->
+          <!-- STATS (3 colonnes) -->
           <div class="profile-stats">
             <div class="stat-item">
-              <div class="stat-number" id="statStreak">0</div>
-              <div class="stat-label">🔥 Jours</div>
-            </div>
-            <div class="stat-item">
               <div class="stat-number" id="statChapters">0</div>
-              <div class="stat-label">📚 Chapitres</div>
+              <div class="stat-label">📚 Chapitres lus</div>
             </div>
             <div class="stat-item">
               <div class="stat-number" id="statTime">0h</div>
-              <div class="stat-label">⏱️ Étude</div>
+              <div class="stat-label">⏱️ Temps d'étude</div>
             </div>
             <div class="stat-item">
               <div class="stat-number" id="statLevel">🌱</div>
@@ -777,50 +739,39 @@
             <div class="badges-title">🏆 Mes réalisations</div>
             <div class="badges-grid" id="badgesGrid">
               <span class="badge-item locked"><i class="fas fa-lock"></i> Premier chapitre</span>
-              <span class="badge-item locked"><i class="fas fa-lock"></i> Streak 7 jours</span>
               <span class="badge-item locked"><i class="fas fa-lock"></i> Expert</span>
+              <span class="badge-item locked"><i class="fas fa-lock"></i> Premium</span>
             </div>
           </div>
 
           <!-- INFO -->
-          <div class="profile-info" id="profileInfo">
-            <div class="info-row">
-              <span class="label"><i class="fas fa-user"></i> Nom</span>
-              <span class="value" id="userNameDisplay">--</span>
-              <input class="value-input" id="userNameInput" type="text" style="display:none;" placeholder="Ton nom">
-            </div>
+          <div class="profile-info">
             <div class="info-row">
               <span class="label"><i class="fas fa-school"></i> Établissement</span>
-              <span class="value" id="userEstablishmentDisplay">--</span>
-              <input class="value-input" id="userEstablishmentInput" type="text" style="display:none;" placeholder="Ton établissement">
+              <span class="value" id="userEstablishment">Chargement...</span>
             </div>
             <div class="info-row">
               <span class="label"><i class="fas fa-graduation-cap"></i> Classe</span>
-              <span class="value" id="userClassDisplay">--</span>
-              <input class="value-input" id="userClassInput" type="text" style="display:none;" placeholder="Ex: Terminale D">
+              <span class="value" id="userClass">Terminale D</span>
             </div>
             <div class="info-row">
               <span class="label"><i class="fas fa-calendar-plus"></i> Membre depuis</span>
-              <span class="value" id="userSince">--</span>
+              <span class="value" id="userSince">Chargement...</span>
             </div>
             <div class="info-row">
               <span class="label"><i class="fas fa-crown"></i> Statut</span>
-              <span class="value" id="userStatus">--</span>
-            </div>
-            <div class="info-row">
-              <span class="label"><i class="fas fa-clock"></i> Dernière visite</span>
-              <span class="value" id="userLastVisit">--</span>
+              <span class="value" id="userStatus">Chargement...</span>
             </div>
           </div>
 
           <!-- ACTIONS -->
           <div class="profile-actions">
-            <a href="abonnement.html" class="btn-profile premium" id="premiumBtn">
+            <a href="abonnement.html" class="btn-profile primary" id="premiumBtn">
               <i class="fas fa-crown"></i> Voir les offres Premium
             </a>
-            <button class="btn-profile secondary" id="changePasswordBtn">
-              <i class="fas fa-key"></i> Changer le mot de passe
-            </button>
+            <a href="index.html" class="btn-profile secondary">
+              <i class="fas fa-home"></i> Retour à l'accueil
+            </a>
             <button class="btn-profile danger" id="logoutProfileBtn">
               <i class="fas fa-sign-out-alt"></i> Se déconnecter
             </button>
@@ -853,7 +804,7 @@
 
   <script type="module">
   // ================================================================
-  // PROFIL - VERSION COMPLETE AVEC MODIFICATION DES INFOS
+  // PROFIL - VERSION OPTIMISÉE (SANS STREAK)
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -863,10 +814,7 @@
     setPersistence,
     browserLocalPersistence,
     signOut,
-    getIdToken,
-    updatePassword,
-    reauthenticateWithCredential,
-    EmailAuthProvider
+    getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
     getFirestore,
@@ -899,7 +847,7 @@
   } catch (e) { console.warn('⚠️ Persistance:', e); }
 
   // ================================================================
-  // SESSION CACHE
+  // SESSION
   // ================================================================
   const SESSION_KEY = 'arvexa_session';
 
@@ -937,22 +885,15 @@
   const userFullName = document.getElementById('userFullName');
   const userEmail = document.getElementById('userEmail');
   const userBadge = document.getElementById('userBadge');
-  const userClassDisplay = document.getElementById('userClassDisplay');
-  const userClassInput = document.getElementById('userClassInput');
-  const userEstablishmentDisplay = document.getElementById('userEstablishmentDisplay');
-  const userEstablishmentInput = document.getElementById('userEstablishmentInput');
-  const userNameDisplay = document.getElementById('userNameDisplay');
-  const userNameInput = document.getElementById('userNameInput');
+  const userClass = document.getElementById('userClass');
+  const userEstablishment = document.getElementById('userEstablishment');
   const userStatus = document.getElementById('userStatus');
   const userSince = document.getElementById('userSince');
-  const userLastVisit = document.getElementById('userLastVisit');
   const premiumBtn = document.getElementById('premiumBtn');
-  const statStreak = document.getElementById('statStreak');
   const statChapters = document.getElementById('statChapters');
   const statTime = document.getElementById('statTime');
   const statLevel = document.getElementById('statLevel');
   const badgesGrid = document.getElementById('badgesGrid');
-  const editToggleBtn = document.getElementById('editToggleBtn');
 
   const toast = document.getElementById('toast');
   const toastMessage = document.querySelector('.toast-message');
@@ -960,7 +901,6 @@
 
   let userData = null;
   let unsubscribeUser = null;
-  let isEditMode = false;
 
   // ================================================================
   // TOAST
@@ -975,7 +915,7 @@
   }
 
   // ================================================================
-  // FONCTIONS
+  // UTILITAIRES
   // ================================================================
   function getInitials(firstName, lastName) {
     if (!firstName) return '👤';
@@ -985,7 +925,7 @@
 
   function formatDate(dateString) {
     if (!dateString) return 'Inconnue';
-    const date = dateString.toDate ? dateString.toDate() : new Date(dateString);
+    const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
@@ -997,18 +937,9 @@
     return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
   }
 
-  function getFlames(streak) {
-    if (streak === 0) return '💀';
-    if (streak < 3) return '🔥';
-    if (streak < 7) return '🔥🔥';
-    if (streak < 14) return '🔥🔥🔥';
-    if (streak < 30) return '🔥🔥🔥🔥';
-    return '🔥🔥🔥🔥🔥 👑';
-  }
-
-  function getLevel(completedChapters, totalChapters = 38) {
+  function getLevel(chaptersRead, totalChapters = 38) {
     if (!totalChapters || totalChapters === 0) return { emoji: '🌱', text: 'Débutant' };
-    const ratio = completedChapters / totalChapters;
+    const ratio = chaptersRead / totalChapters;
     if (ratio === 0) return { emoji: '🌱', text: 'Débutant' };
     if (ratio < 0.25) return { emoji: '📖', text: 'Apprenti' };
     if (ratio < 0.50) return { emoji: '⚡', text: 'En progression' };
@@ -1030,11 +961,9 @@
   // ================================================================
   // BADGES
   // ================================================================
-  function renderBadges(streak, chaptersRead, isPremium) {
+  function renderBadges(chaptersRead, isPremium) {
     const badges = [
       { id: 'first_chapter', label: '📖 Premier chapitre', unlocked: chaptersRead > 0 },
-      { id: 'streak_7', label: '🔥 Streak 7 jours', unlocked: streak >= 7 },
-      { id: 'streak_30', label: '🔥 Streak 30 jours', unlocked: streak >= 30 },
       { id: 'expert', label: '⭐ Expert', unlocked: chaptersRead >= 30 },
       { id: 'premium', label: '👑 Premium', unlocked: isPremium }
     ];
@@ -1048,7 +977,7 @@
   }
 
   // ================================================================
-  // COMPRESSION D'IMAGE
+  // COMPRESSION IMAGE
   // ================================================================
   function compressImage(file, maxWidth = 400, maxHeight = 400, quality = 0.7) {
     return new Promise((resolve, reject) => {
@@ -1100,164 +1029,7 @@
     });
   }
 
-  // ================================================================
-  // MODE ÉDITION
-  // ================================================================
-  function toggleEditMode() {
-    isEditMode = !isEditMode;
-
-    if (isEditMode) {
-      // Passer en mode édition
-      userNameDisplay.style.display = 'none';
-      userNameInput.style.display = 'inline-block';
-      userNameInput.value = userData?.firstName || '';
-
-      userEstablishmentDisplay.style.display = 'none';
-      userEstablishmentInput.style.display = 'inline-block';
-      userEstablishmentInput.value = userData?.establishment || '';
-
-      userClassDisplay.style.display = 'none';
-      userClassInput.style.display = 'inline-block';
-      userClassInput.value = userData?.classId || '';
-
-      editToggleBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
-      editToggleBtn.className = '';
-
-      // Activer les inputs
-      userNameInput.disabled = false;
-      userEstablishmentInput.disabled = false;
-      userClassInput.disabled = false;
-    } else {
-      // Sauvegarder ou annuler
-      saveProfileChanges();
-    }
-  }
-
-  async function saveProfileChanges() {
-    const user = auth.currentUser;
-    if (!user) {
-      showToast('⚠️ Vous devez être connecté', 'error');
-      return;
-    }
-
-    const newName = userNameInput.value.trim();
-    const newEstablishment = userEstablishmentInput.value.trim();
-    const newClass = userClassInput.value.trim();
-
-    if (!newName) {
-      showToast('⚠️ Le nom ne peut pas être vide', 'error');
-      return;
-    }
-
-    editToggleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sauvegarde...';
-    editToggleBtn.disabled = true;
-
-    try {
-      const userRef = doc(db, 'users', user.uid);
-      await updateDoc(userRef, {
-        firstName: newName,
-        establishment: newEstablishment || '',
-        classId: newClass || '',
-        updatedAt: serverTimestamp()
-      });
-
-      // Mettre à jour l'affichage
-      userData.firstName = newName;
-      userData.establishment = newEstablishment || '';
-      userData.classId = newClass || '';
-
-      // Mettre à jour l'affichage
-      userNameDisplay.textContent = newName;
-      userFullName.textContent = newName + (userData.lastName ? ` ${userData.lastName}` : '');
-      userEstablishmentDisplay.textContent = newEstablishment || 'Non renseigné';
-      userClassDisplay.textContent = newClass || 'Terminale D';
-
-      // Mettre à jour le cache
-      try {
-        localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
-      } catch (e) {}
-
-      showToast('✅ Informations mises à jour !', 'success');
-
-      // Quitter le mode édition
-      isEditMode = false;
-      editToggleBtn.innerHTML = '<i class="fas fa-pen"></i> Modifier';
-      editToggleBtn.disabled = false;
-
-      userNameDisplay.style.display = 'inline';
-      userNameInput.style.display = 'none';
-
-      userEstablishmentDisplay.style.display = 'inline';
-      userEstablishmentInput.style.display = 'none';
-
-      userClassDisplay.style.display = 'inline';
-      userClassInput.style.display = 'none';
-
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde:', error);
-      showToast('❌ Erreur lors de la sauvegarde', 'error');
-      editToggleBtn.innerHTML = '<i class="fas fa-pen"></i> Modifier';
-      editToggleBtn.disabled = false;
-    }
-  }
-
-  // ================================================================
-  // CHANGER LE MOT DE PASSE
-  // ================================================================
-  async function handleChangePassword() {
-    const user = auth.currentUser;
-    if (!user) {
-      showToast('⚠️ Vous devez être connecté', 'error');
-      return;
-    }
-
-    // Demander le mot de passe actuel
-    const currentPassword = prompt('🔑 Entrez votre mot de passe actuel :');
-    if (currentPassword === null) return;
-
-    // Demander le nouveau mot de passe
-    const newPassword = prompt('🔑 Entrez votre nouveau mot de passe (6 caractères minimum) :');
-    if (newPassword === null) return;
-
-    if (newPassword.length < 6) {
-      showToast('⚠️ Le mot de passe doit faire au moins 6 caractères', 'error');
-      return;
-    }
-
-    const confirmPassword = prompt('🔑 Confirmez votre nouveau mot de passe :');
-    if (confirmPassword === null) return;
-
-    if (newPassword !== confirmPassword) {
-      showToast('⚠️ Les mots de passe ne correspondent pas', 'error');
-      return;
-    }
-
-    try {
-      // Réauthentifier l'utilisateur
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential);
-
-      // Changer le mot de passe
-      await updatePassword(user, newPassword);
-
-      showToast('✅ Mot de passe changé avec succès !', 'success');
-
-    } catch (error) {
-      console.error('❌ Erreur changement mot de passe:', error);
-      switch (error.code) {
-        case 'auth/wrong-password':
-          showToast('❌ Mot de passe actuel incorrect', 'error');
-          break;
-        case 'auth/too-many-requests':
-          showToast('⏳ Trop de tentatives. Réessaie plus tard.', 'error');
-          break;
-        default:
-          showToast('❌ Erreur : ' + error.message, 'error');
-      }
-    }
-  }
-
-  // ================================================================
+    // ================================================================
   // RENDER PROFIL
   // ================================================================
   function renderProfile(data) {
@@ -1271,9 +1043,7 @@
     const establishment = data.establishment || 'Non renseigné';
     const className = data.classId || 'Terminale D';
     const createdAt = data.createdAt?.toDate?.() || data.createdAt || null;
-    const lastVisit = data.lastVisit?.toDate?.() || data.lastVisit || null;
     const isPremium = data.premium === true || data.isUnlocked === true || data.hasDeposited === true;
-    const streak = data.readingStreak || 0;
     const chaptersRead = data.chaptersRead || 0;
     const totalTime = data.totalStudyTime || 0;
 
@@ -1285,9 +1055,8 @@
     // Nom + Email
     userFullName.textContent = lastName ? `${firstName} ${lastName}` : firstName;
     userEmail.textContent = email;
-    userNameDisplay.textContent = firstName;
 
-    // Badge
+    // Badge Premium
     userBadge.className = 'profile-badge';
     if (isPremium) {
       const expiryDate = data.subscriptionEndDate?.toDate?.() || data.subscriptionEndDate;
@@ -1316,10 +1085,9 @@
     }
 
     // Infos
-    userEstablishmentDisplay.textContent = establishment;
-    userClassDisplay.textContent = className;
+    userEstablishment.textContent = establishment || 'Non renseigné';
+    userClass.textContent = className;
     userSince.textContent = createdAt ? formatDate(createdAt) : 'Inconnue';
-    userLastVisit.textContent = lastVisit ? formatDate(lastVisit) : '--';
 
     // Statut
     if (isPremium) {
@@ -1341,17 +1109,14 @@
     }
 
     // Stats
-    const flames = getFlames(streak);
-    statStreak.textContent = `${streak} ${flames}`;
     statChapters.textContent = chaptersRead;
     statTime.textContent = formatTime(totalTime);
-
     const level = getLevel(chaptersRead);
     statLevel.textContent = level.emoji;
     statLevel.title = level.text;
 
     // Badges
-    renderBadges(streak, chaptersRead, isPremium);
+    renderBadges(chaptersRead, isPremium);
 
     // Afficher
     skeletonLoading.style.display = 'none';
@@ -1359,7 +1124,7 @@
   }
 
   // ================================================================
-  // CHARGEMENT DES DONNÉES (Temps réel)
+  // LOAD USER DATA (temps réel)
   // ================================================================
   function loadUserData(user) {
     if (unsubscribeUser) {
@@ -1396,7 +1161,7 @@
   }
 
   // ================================================================
-  // GESTION PHOTO DE PROFIL
+  // PHOTO DE PROFIL
   // ================================================================
   const avatarUploadBtn = document.getElementById('avatarUploadBtn');
   const avatarInput = document.getElementById('avatarInput');
@@ -1511,53 +1276,30 @@
   // ================================================================
   // ÉVÉNEMENTS
   // ================================================================
-
-  // Déconnexion
-  document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
     e.preventDefault();
     handleLogout();
   });
 
-  document.getElementById('logoutProfileBtn')?.addEventListener('click', () => {
+  document.getElementById('logoutProfileBtn').addEventListener('click', () => {
     handleLogout();
   });
 
-  // Menu
-  document.getElementById('menuToggle')?.addEventListener('click', () => {
-    document.getElementById('sidebar')?.classList.toggle('open');
-    document.getElementById('sidebarOverlay')?.classList.toggle('active');
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
   });
 
-  document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
-    document.getElementById('sidebar')?.classList.remove('open');
-    document.getElementById('sidebarOverlay')?.classList.remove('active');
+  document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
   });
 
-  // Notifications
-  document.getElementById('notifBtn')?.addEventListener('click', () => {
+  document.getElementById('notifBtn').addEventListener('click', () => {
     window.location.href = 'notifications.html';
   });
 
-  // Rafraîchir
-  document.getElementById('refreshBtn')?.addEventListener('click', () => {
-    showToast('🔄 Rafraîchissement...', 'info');
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
-    const user = auth.currentUser;
-    if (user) {
-      loadUserData(user);
-    }
-  });
-
-  // Mode édition
-  editToggleBtn?.addEventListener('click', toggleEditMode);
-
-  // Changer le mot de passe
-  document.getElementById('changePasswordBtn')?.addEventListener('click', handleChangePassword);
-
-  console.log('👤 ARVEXA School — Profil (version complète)');
+  console.log('👤 ARVEXA School — Profil (version optimisée, sans streak)');
   </script>
 </body>
 </html>
