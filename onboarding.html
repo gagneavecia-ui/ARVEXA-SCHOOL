@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXA School - Onboarding">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="ARVEXA School - Bienvenue">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
@@ -20,21 +18,17 @@
        ============================================================ */
     :root {
       --primary: #1A3A2A;
-      --primary-dark: #0A1A12;
-      --primary-light: #2A5A3A;
       --accent: #B8860B;
       --accent-bright: #E0B84A;
-      --accent-dim: rgba(184, 134, 11, 0.08);
       --success: #2D7D5A;
       --danger: #B85C3A;
       --bg-dark: #0A0A0A;
-      --bg-surface: #141414;
       --bg-card: rgba(20, 20, 20, 0.7);
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
       --text-muted: #5A5A4A;
       --card-border: rgba(184, 134, 11, 0.06);
-      --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --radius: 16px;
     }
@@ -69,8 +63,10 @@
        ============================================================ */
     .gradient-bg {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 20%, rgba(26, 58, 42, 0.12) 0%, transparent 70%),
                   radial-gradient(ellipse 30% 20% at 70% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 60%),
@@ -94,53 +90,11 @@
     }
 
     /* ============================================================
-       HEADER
-       ============================================================ */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      max-width: 560px;
-      padding: 12px 0 20px;
-      margin-bottom: 8px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: var(--text-light);
-      font-size: clamp(18px, 2.5vw, 22px);
-      font-weight: 700;
-      font-family: 'Playfair Display', 'Georgia', serif;
-      letter-spacing: 2px;
-    }
-    .logo span {
-      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-style: italic;
-      animation: shimmerText 4s linear infinite;
-    }
-    @keyframes shimmerText {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
-    }
-
-    .header-actions {
-      font-size: 13px;
-      color: var(--text-dim);
-    }
-
-    /* ============================================================
        CONTAINER
        ============================================================ */
     .onboarding-container {
       width: 100%;
-      max-width: 560px;
+      max-width: 480px;
       margin: 0 auto;
       animation: fadeInUp 0.6s ease-out;
     }
@@ -161,46 +115,58 @@
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+      text-align: center;
     }
     .onboarding-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
 
     /* ============================================================
-       CARD HEADER
+       HEADER
        ============================================================ */
-    .card-header {
-      text-align: center;
-      margin-bottom: 28px;
+    .header {
+      margin-bottom: 20px;
     }
-    .card-header .icon-big {
-      font-size: 48px;
+    .header .icon-big {
+      font-size: clamp(48px, 8vw, 64px);
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
       animation: iconBounce 2s ease-in-out infinite;
     }
     @keyframes iconBounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-6px); }
     }
-    .card-header h2 {
-      font-size: clamp(22px, 4vw, 30px);
+    .header .logo {
+      font-size: clamp(20px, 3vw, 26px);
       font-weight: 700;
       font-family: 'Playfair Display', 'Georgia', serif;
       color: var(--text-light);
+      letter-spacing: 1px;
     }
-    .card-header h2 span {
-      color: var(--accent-bright);
+    .header .logo span {
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
       font-style: italic;
+      animation: shimmerText 4s linear infinite;
     }
-    .card-header p {
-      font-size: 14px;
+    @keyframes shimmerText {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .header .subtitle {
+      font-size: clamp(13px, 1.6vw, 14px);
       color: var(--text-dim);
-      margin-top: 4px;
+      margin-top: 2px;
       font-weight: 300;
     }
 
@@ -208,193 +174,89 @@
        USER INFO
        ============================================================ */
     .user-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 18px;
-      background: rgba(255,255,255,0.02);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.03);
-      margin-bottom: 16px;
+      padding: 16px 20px;
+      margin: 16px 0 14px;
+      transition: var(--transition);
     }
-    .user-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #9A7209);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--bg-dark);
-      flex-shrink: 0;
-    }
-    .user-details .name {
-      font-size: 16px;
+    .user-info .user-name {
+      font-size: clamp(17px, 2.2vw, 20px);
       font-weight: 600;
       color: var(--text-light);
     }
-    .user-details .email {
-      font-size: 12px;
-      color: var(--text-muted);
+    .user-info .user-email {
+      font-size: clamp(12px, 1.4vw, 13px);
+      color: var(--text-dim);
+      margin-top: 2px;
+      word-break: break-all;
     }
 
     /* ============================================================
-       INFO GRID (classe + objectif)
+       STATS GRID
        ============================================================ */
-    .info-grid {
+    .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 8px;
+      margin: 12px 0 18px;
     }
-    .info-item {
-      padding: 14px 16px;
+    .stat-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
       border-radius: 10px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.03);
+      padding: 12px 8px;
+      transition: var(--transition);
     }
-    .info-item .label {
-      font-size: 10px;
+    .stat-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(184, 134, 11, 0.06);
+    }
+    .stat-item .si-icon {
+      font-size: clamp(18px, 2.5vw, 22px);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .stat-item .si-label {
+      font-size: clamp(9px, 1vw, 10px);
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      font-weight: 500;
     }
-    .info-item .value {
-      font-size: 15px;
+    .stat-item .si-value {
+      font-size: clamp(13px, 1.6vw, 15px);
       font-weight: 600;
       color: var(--text-light);
       margin-top: 2px;
     }
-    .info-item.accent {
-      border-color: rgba(184, 134, 11, 0.08);
-      background: rgba(184, 134, 11, 0.02);
-    }
 
     /* ============================================================
-       ESTABLISHMENT
+       SUBJECTS TAGS
        ============================================================ */
-    .establishment-info {
+    .subjects-tags {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 10px;
-      background: rgba(184, 134, 11, 0.02);
-      border: 1px solid rgba(184, 134, 11, 0.04);
-      margin-bottom: 16px;
-    }
-    .establishment-info .est-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: rgba(184, 134, 11, 0.08);
-      color: var(--accent-bright);
-      display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-    }
-    .establishment-info .est-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .establishment-info .est-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-light);
-      margin-top: 1px;
-    }
-
-    /* ============================================================
-       SUBJECTS
-       ============================================================ */
-    .subjects-section {
-      margin: 16px 0;
-    }
-    .subjects-section .subjects-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-dim);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .subjects-section .subjects-label i { color: var(--accent); }
-    .subjects-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-    .subject-tag {
-      display: flex;
-      align-items: center;
       gap: 6px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      font-size: 12px;
-      color: var(--text-dim);
-      transition: var(--transition);
+      margin: 10px 0 18px;
     }
-    .subject-tag i { color: var(--accent); font-size: 11px; }
-    .subject-tag:hover {
-      background: rgba(184, 134, 11, 0.03);
-      border-color: rgba(184, 134, 11, 0.06);
-      color: var(--text-light);
-    }
-
-    /* ============================================================
-       NEXT STEPS
-       ============================================================ */
-    .next-steps {
-      margin: 20px 0 24px;
-      padding: 16px 18px;
-      border-radius: 12px;
-      background: rgba(184, 134, 11, 0.02);
-      border: 1px solid rgba(184, 134, 11, 0.04);
-    }
-    .next-steps .title {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-dim);
-      margin-bottom: 10px;
-    }
-    .next-steps ul {
-      list-style: none;
-      padding: 0;
-    }
-    .next-steps ul li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 0;
-      font-size: 13px;
-      color: var(--text-dim);
-      border-bottom: 1px solid rgba(255,255,255,0.02);
-    }
-    .next-steps ul li:last-child { border-bottom: none; }
-    .next-steps ul li .step-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
+    .subjects-tags .tag {
       background: rgba(184, 134, 11, 0.06);
       border: 1px solid rgba(184, 134, 11, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent);
-      flex-shrink: 0;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: clamp(10px, 1.2vw, 11px);
+      color: var(--accent-bright);
+      font-weight: 500;
+      transition: var(--transition);
+      white-space: nowrap;
     }
-    .next-steps ul li .step-text { flex: 1; }
+    .subjects-tags .tag:hover {
+      background: rgba(184, 134, 11, 0.12);
+      transform: translateY(-1px);
+    }
 
     /* ============================================================
        BUTTON
@@ -402,11 +264,11 @@
     .btn-primary {
       width: 100%;
       padding: 14px;
-      border-radius: 30px;
       border: none;
+      border-radius: 30px;
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: var(--bg-dark);
-      font-size: 16px;
+      color: #0A0A0A;
+      font-size: clamp(15px, 1.8vw, 16px);
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
@@ -414,20 +276,41 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
       box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
+      min-height: 52px;
     }
-    .btn-primary:hover {
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+      transform: rotate(45deg) translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    .btn-primary:hover:not(:disabled)::after {
+      transform: rotate(45deg) translateX(100%);
+    }
+    .btn-primary:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 30px rgba(184, 134, 11, 0.3);
     }
-    .btn-primary:active { transform: scale(0.97); }
+    .btn-primary:active:not(:disabled) { transform: scale(0.97); }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
     .btn-primary .spinner {
       display: none;
       width: 18px;
       height: 18px;
-      border: 2px solid rgba(10,10,10,0.15);
-      border-top-color: var(--bg-dark);
+      border: 2px solid rgba(10, 10, 10, 0.15);
+      border-top-color: #0A0A0A;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
@@ -435,6 +318,35 @@
     .btn-primary.loading .btn-text { display: none; }
     .btn-primary.loading .btn-icon { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ============================================================
+       SECURE BADGE
+       ============================================================ */
+    .secure {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 14px;
+    }
+    .secure i { color: var(--success); margin-right: 4px; }
+
+    /* ============================================================
+       SKELETON LOADING
+       ============================================================ */
+    .skeleton {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    .skeleton-text { height: 16px; margin: 4px 0; }
+    .skeleton-name { height: 24px; width: 60%; margin: 0 auto; }
+    .skeleton-email { height: 14px; width: 70%; margin: 4px auto; }
+    .skeleton-stat { height: 60px; border-radius: 10px; }
+    .skeleton-tag { height: 26px; width: 80px; border-radius: 20px; }
 
     /* ============================================================
        TOAST
@@ -458,6 +370,10 @@
       max-width: 90%;
       text-align: center;
       box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
     }
     .toast.show {
       opacity: 1;
@@ -465,39 +381,66 @@
     }
     .toast.success { border-color: rgba(45, 125, 90, 0.2); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { margin-right: 8px; }
+    .toast .toast-icon { font-size: 16px; }
     .toast.success .toast-icon { color: var(--success); }
     .toast.error .toast-icon { color: var(--danger); }
 
     /* ============================================================
        RESPONSIVE
        ============================================================ */
-    @media (max-width: 480px) {
+    @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
-      .onboarding-card { padding: 24px 16px; }
-      .info-grid { grid-template-columns: 1fr; }
-      .subjects-grid { grid-template-columns: 1fr 1fr; }
-      .header { padding: 8px 0 16px; }
-      .card-header h2 { font-size: 22px; }
-      .user-info { padding: 12px 14px; }
-      .next-steps { padding: 12px 14px; }
+      .onboarding-card { padding: 24px 18px; }
+      .user-info { padding: 14px 16px; margin: 12px 0; }
+      .stats-grid { gap: 6px; }
+      .stat-item { padding: 10px 6px; }
+      .btn-primary { padding: 12px; min-height: 48px; }
+    }
+
+    @media (max-width: 480px) {
+      .onboarding-card { padding: 20px 16px; }
+      .stats-grid { gap: 6px; }
+      .stat-item { padding: 8px 4px; }
+      .stat-item .si-icon { font-size: 18px; }
+      .stat-item .si-value { font-size: 13px; }
+      .subjects-tags { gap: 4px; }
+      .subjects-tags .tag { padding: 3px 10px; font-size: 10px; }
+      .btn-primary { font-size: 14px; padding: 10px; min-height: 44px; }
+      .secure { font-size: 10px; margin-top: 10px; }
     }
 
     @media (max-width: 360px) {
-      .subjects-grid { grid-template-columns: 1fr; }
+      body { padding: 12px 8px 24px; }
+      .onboarding-card { padding: 16px 12px; border-radius: 12px; }
+      .header .icon-big { font-size: 40px; }
+      .header .logo { font-size: 18px; }
+      .header .subtitle { font-size: 12px; }
+      .user-info .user-name { font-size: 15px; }
+      .user-info .user-email { font-size: 11px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+      .stat-item { padding: 6px 4px; }
+      .stat-item .si-icon { font-size: 16px; }
+      .stat-item .si-label { font-size: 8px; }
+      .stat-item .si-value { font-size: 12px; }
+      .subjects-tags .tag { font-size: 9px; padding: 2px 8px; }
+      .btn-primary { font-size: 13px; padding: 8px; min-height: 40px; }
     }
 
     @media (min-width: 768px) {
-      .onboarding-container { max-width: 600px; }
+      .onboarding-container { max-width: 520px; }
       .onboarding-card { padding: 40px 36px; }
-      .subjects-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .onboarding-container { max-width: 560px; }
+      .onboarding-card { padding: 44px 40px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
-    a:focus-visible, button:focus-visible {
+    a:focus-visible, button:focus-visible, input:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
       border-radius: 6px;
@@ -516,95 +459,85 @@
 <div class="glow glow-1"></div>
 <div class="glow glow-2"></div>
 
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <a href="bienvenue.html" class="logo">ARVE<span>XA</span></a>
-  <div class="header-actions">Bienvenue</div>
-</header>
-
-<!-- ===== ONBOARDING ===== -->
+<!-- ===== CONTAINER ===== -->
 <div class="onboarding-container">
+
   <div class="onboarding-card">
 
-    <!-- En-tête -->
-    <div class="card-header">
-      <span class="icon-big">🎓</span>
-      <h2>Bienvenue sur <span>ARVEXA</span></h2>
-      <p>Ton parcours de préparation au BAC est prêt.</p>
+    <!-- ===== SKELETON ===== -->
+    <div id="skeletonLoading">
+      <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.03);margin:0 auto 8px;"></div>
+      <div class="skeleton skeleton-text" style="width:150px;margin:0 auto;"></div>
+      <div class="skeleton skeleton-text" style="width:200px;margin:4px auto;"></div>
+      <div style="height:16px;"></div>
+      <div class="skeleton skeleton-name"></div>
+      <div class="skeleton skeleton-email"></div>
+      <div style="height:12px;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="skeleton skeleton-stat"></div>
+        <div class="skeleton skeleton-stat"></div>
+      </div>
+      <div style="height:12px;"></div>
+      <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;">
+        <div class="skeleton skeleton-tag"></div>
+        <div class="skeleton skeleton-tag"></div>
+        <div class="skeleton skeleton-tag"></div>
+        <div class="skeleton skeleton-tag"></div>
+      </div>
+      <div style="height:16px;"></div>
+      <div class="skeleton skeleton-text" style="height:52px;border-radius:30px;width:100%;"></div>
     </div>
 
-    <!-- Infos utilisateur -->
-    <div class="user-info" id="userInfo">
-      <div class="user-avatar" id="userAvatar">E</div>
-      <div class="user-details">
-        <div class="name" id="userName">Élève</div>
-        <div class="email" id="userEmail">email@exemple.com</div>
-      </div>
-    </div>
+    <!-- ===== CONTENU DYNAMIQUE ===== -->
+    <div id="dynamicContent" style="display:none;">
 
-    <!-- Établissement -->
-    <div class="establishment-info">
-      <div class="est-icon"><i class="fas fa-school"></i></div>
-      <div>
-        <div class="est-label">Établissement</div>
-        <div class="est-name" id="userEstablishment">—</div>
+      <!-- HEADER -->
+      <div class="header">
+        <span class="icon-big">🎓</span>
+        <div class="logo">ARVE<span>XA<span> School</span></div>
+        <p class="subtitle">Prépare-toi pour le BAC en toute sérénité</p>
       </div>
-    </div>
 
-    <!-- Classe et objectif -->
-    <div class="info-grid">
-      <div class="info-item accent">
-        <div class="label">📚 Classe</div>
-        <div class="value">Terminale D</div>
+      <!-- USER INFO -->
+      <div class="user-info">
+        <div class="user-name" id="userName">Chargement...</div>
+        <div class="user-email" id="userEmail">---</div>
       </div>
-      <div class="info-item accent">
-        <div class="label">🎯 Objectif</div>
-        <div class="value">Préparation BAC</div>
-      </div>
-    </div>
 
-    <!-- Matières -->
-    <div class="subjects-section">
-      <div class="subjects-label">
-        <i class="fas fa-book-open"></i> Ton parcours comprendra
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="si-icon">📚</span>
+          <div class="si-label">Classe</div>
+          <div class="si-value">Terminale D</div>
+        </div>
+        <div class="stat-item">
+          <span class="si-icon">🎯</span>
+          <div class="si-label">Objectif</div>
+          <div class="si-value">BAC 2026</div>
+        </div>
       </div>
-      <div class="subjects-grid">
-        <span class="subject-tag"><i class="fas fa-calculator"></i> Mathématiques</span>
-        <span class="subject-tag"><i class="fas fa-bolt"></i> Physique</span>
-        <span class="subject-tag"><i class="fas fa-flask"></i> Chimie</span>
-        <span class="subject-tag"><i class="fas fa-dna"></i> SVT</span>
+
+      <!-- SUBJECTS -->
+      <div class="subjects-tags">
+        <span class="tag">📐 Mathématiques</span>
+        <span class="tag">⚡ Physique</span>
+        <span class="tag">🧪 Chimie</span>
+        <span class="tag">🧬 SVT</span>
       </div>
-    </div>
 
-    <!-- Prochaines étapes -->
-    <div class="next-steps">
-      <div class="title">📋 Prochaines étapes</div>
-      <ul>
-        <li>
-          <span class="step-num">1</span>
-          <span class="step-text">Découvrir ton tableau de bord personnalisé</span>
-        </li>
-        <li>
-          <span class="step-num">2</span>
-          <span class="step-text">Commencer ton premier cours</span>
-        </li>
-        <li>
-          <span class="step-num">3</span>
-          <span class="step-text">Faire tes premiers exercices</span>
-        </li>
-        <li>
-          <span class="step-num">4</span>
-          <span class="step-text">Suivre ta progression au fil des jours</span>
-        </li>
-      </ul>
-    </div>
+      <!-- BUTTON -->
+      <button class="btn-primary" id="startBtn">
+        <span class="btn-icon"><i class="fas fa-rocket"></i></span>
+        <span class="btn-text">Commencer l'aventure</span>
+        <span class="spinner"></span>
+      </button>
 
-    <!-- Bouton -->
-    <button class="btn-primary" id="startBtn">
-      <span class="btn-icon"><i class="fas fa-rocket"></i></span>
-      <span class="btn-text">Commencer mon parcours</span>
-      <span class="spinner"></span>
-    </button>
+      <div class="secure">
+        <i class="fas fa-lock"></i> Rejoins ARVEXA School en toute sécurité
+      </div>
+
+    </div>
 
   </div>
 </div>
@@ -616,7 +549,7 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- SCRIPTS -->
+<!-- SCRIPTS                                                       -->
 <!-- ============================================================ -->
 <script type="importmap">
 {
@@ -632,7 +565,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getAuth,
-  onAuthStateChanged
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
   getFirestore,
@@ -643,7 +578,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 // ================================================================
-// FIREBASE CONFIG
+// CONFIG
 // ================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
@@ -659,84 +594,140 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ================================================================
+// PERSISTANCE
+// ================================================================
+try {
+  await setPersistence(auth, browserLocalPersistence);
+  console.log('🔐 Persistance locale activée');
+} catch (e) {
+  console.warn('⚠️ Erreur persistance:', e);
+}
+
+// ================================================================
 // DOM ELEMENTS
 // ================================================================
+const skeletonLoading = document.getElementById('skeletonLoading');
+const dynamicContent = document.getElementById('dynamicContent');
 const startBtn = document.getElementById('startBtn');
 const userName = document.getElementById('userName');
 const userEmail = document.getElementById('userEmail');
-const userAvatar = document.getElementById('userAvatar');
-const userEstablishment = document.getElementById('userEstablishment');
-const toast = document.getElementById('toast');
-const toastMessage = document.querySelector('.toast-message');
-const toastIcon = document.querySelector('.toast-icon i');
 
 // ================================================================
-// HELPERS
+// TOAST
 // ================================================================
-
 function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const toastMessage = document.querySelector('.toast-message');
+  const toastIcon = document.querySelector('.toast-icon i');
+  
   toastMessage.textContent = message;
   toast.className = `toast ${type}`;
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
+  
   clearTimeout(toast._timeout);
   toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
-function getInitials(firstName, lastName) {
-  const first = firstName ? firstName.charAt(0).toUpperCase() : '';
-  const last = lastName ? lastName.charAt(0).toUpperCase() : '';
-  return first + last || 'E';
+// ================================================================
+// CHARGEMENT DES DONNÉES (Cache + Firestore)
+// ================================================================
+function loadFromCache() {
+  try {
+    const cached = localStorage.getItem('arvexa_user_data');
+    if (cached) {
+      const data = JSON.parse(cached);
+      const firstName = data.firstName || '';
+      const lastName = data.lastName || '';
+      const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
+      
+      userName.textContent = fullName;
+      userEmail.textContent = data.email || '';
+      
+      // Si déjà onboardé, rediriger
+      if (data.onboardingCompleted === true) {
+        window.location.href = 'index.html';
+        return true;
+      }
+      
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+async function loadFromFirestore(user) {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    
+    if (!userDoc.exists()) {
+      showToast('⚠️ Profil introuvable.', 'error');
+      return false;
+    }
+
+    const data = userDoc.data();
+
+    // Mise à jour du cache
+    try {
+      localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+    } catch (e) {}
+
+    // Afficher les infos
+    const firstName = data.firstName || '';
+    const lastName = data.lastName || '';
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
+    
+    userName.textContent = fullName;
+    userEmail.textContent = data.email || '';
+
+    // Si déjà onboardé, rediriger
+    if (data.onboardingCompleted === true) {
+      window.location.href = 'index.html';
+      return false;
+    }
+
+    // Afficher le contenu
+    skeletonLoading.style.display = 'none';
+    dynamicContent.style.display = 'block';
+
+    return true;
+
+  } catch (error) {
+    console.error('❌ Erreur Firestore:', error);
+    showToast('Erreur lors du chargement des données.', 'error');
+    return false;
+  }
 }
 
 // ================================================================
-// AUTH + FIRESTORE
+// AUTH + DATA LOADING
 // ================================================================
-let userData = null;
+let authChecked = false;
 
 onAuthStateChanged(auth, async (user) => {
+  if (authChecked) return;
+  authChecked = true;
+
   if (!user) {
-    window.location.href = 'register.html';
+    window.location.href = 'login.html';
     return;
   }
 
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-
-    if (!userDoc.exists()) {
-      showToast('Profil introuvable. Veuillez réessayer.', 'error');
-      setTimeout(() => window.location.href = 'register.html', 2000);
-      return;
-    }
-
-    userData = userDoc.data();
-
-    // Remplir les infos utilisateur
-    const firstName = userData.firstName || '';
-    const lastName = userData.lastName || '';
-    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
-
-    userName.textContent = fullName;
-    userEmail.textContent = userData.email || '';
-    userAvatar.textContent = getInitials(firstName, lastName);
-    userEstablishment.textContent = userData.establishment || '—';
-
-    // Mettre à jour la dernière connexion
-    await updateDoc(doc(db, 'users', user.uid), {
-      lastLoginAt: serverTimestamp(),
-      onboardingCompleted: false
-    });
-
-    console.log('Utilisateur chargé:', userData);
-
-  } catch (error) {
-    console.error('Erreur chargement profil:', error);
-    showToast('Erreur lors du chargement de ton profil.', 'error');
+  // 1. Tentative de chargement depuis le cache (instantané)
+  const cacheLoaded = loadFromCache();
+  
+  if (cacheLoaded) {
+    // Cache chargé, afficher le contenu
+    skeletonLoading.style.display = 'none';
+    dynamicContent.style.display = 'block';
   }
+
+  // 2. Chargement depuis Firestore (mise à jour)
+  await loadFromFirestore(user);
 });
 
 // ================================================================
-// BUTTON — START
+// BOUTON START
 // ================================================================
 startBtn.addEventListener('click', async () => {
   if (startBtn.classList.contains('loading')) return;
@@ -746,28 +737,37 @@ startBtn.addEventListener('click', async () => {
 
   try {
     const user = auth.currentUser;
-    if (user) {
-      await updateDoc(doc(db, 'users', user.uid), {
-        onboardingCompleted: true,
-        onboardingCompletedAt: serverTimestamp()
-      });
-    }
+    if (!user) throw new Error('Non connecté');
 
-    showToast('Prêt à commencer ! Redirection...', 'success');
+    // Marquer onboarding comme terminé
+    await updateDoc(doc(db, 'users', user.uid), {
+      onboardingCompleted: true,
+      onboardingCompletedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+
+    // Mise à jour cache
+    try {
+      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      cached.onboardingCompleted = true;
+      localStorage.setItem('arvexa_user_data', JSON.stringify(cached));
+    } catch (e) {}
+
+    showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
 
     setTimeout(() => {
       window.location.href = 'index.html';
-    }, 1000);
+    }, 800);
 
   } catch (error) {
-    console.error('Erreur lors du démarrage:', error);
+    console.error('❌ Erreur:', error);
     showToast('Une erreur est survenue. Réessaie.', 'error');
     startBtn.classList.remove('loading');
     startBtn.disabled = false;
   }
 });
 
-console.log('ARVEXA School — Page d\'onboarding');
+console.log('🚀 ARVEXA School — Onboarding (version refactorisée)');
 </script>
 
 </body>

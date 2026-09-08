@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="description" content="ARVEXA School - Inscription">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
@@ -117,10 +115,11 @@
       align-items: center;
       text-decoration: none;
       color: var(--text-light);
-      font-size: clamp(18px, 2.5vw, 22px);
+      font-size: clamp(16px, 2.5vw, 22px);
       font-weight: 700;
       font-family: 'Playfair Display', 'Georgia', serif;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      gap: 0;
     }
     .logo span {
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
@@ -142,6 +141,10 @@
       gap: 8px;
       font-size: 13px;
       color: var(--text-dim);
+      flex-shrink: 0;
+    }
+    .header-actions span {
+      font-size: clamp(11px, 1.5vw, 13px);
     }
     .header-actions a {
       color: var(--text-dim);
@@ -152,12 +155,12 @@
     .header-actions a:hover { color: var(--text-light); }
 
     .btn-login-header {
-      padding: 6px 18px;
+      padding: 6px 16px;
       border-radius: 30px;
       border: 1px solid rgba(184, 134, 11, 0.12);
       background: transparent;
       color: var(--text-dim);
-      font-size: 12px;
+      font-size: clamp(11px, 1.2vw, 12px);
       font-weight: 500;
       cursor: pointer;
       transition: var(--transition);
@@ -193,20 +196,21 @@
        ============================================================ */
     .register-header {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .register-header h1 {
-      font-size: clamp(26px, 4.5vw, 34px);
+      font-size: clamp(24px, 4.5vw, 34px);
       font-weight: 700;
       font-family: 'Playfair Display', 'Georgia', serif;
       color: var(--text-light);
+      line-height: 1.2;
     }
     .register-header h1 span {
       color: var(--accent);
       font-style: italic;
     }
     .register-header p {
-      font-size: 14px;
+      font-size: clamp(13px, 1.8vw, 14px);
       color: var(--text-dim);
       margin-top: 4px;
       font-weight: 300;
@@ -220,7 +224,7 @@
       backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 28px 24px;
+      padding: 24px 20px;
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
@@ -239,7 +243,7 @@
        FORM GROUP
        ============================================================ */
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .form-group label {
       display: block;
@@ -248,6 +252,11 @@
       color: var(--text-dim);
       margin-bottom: 4px;
       letter-spacing: 0.3px;
+    }
+    .form-group label .optional {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 11px;
     }
     .form-group .input-wrap {
       position: relative;
@@ -274,19 +283,21 @@
 
     .form-group .input-wrap input {
       width: 100%;
-      padding: 12px 14px;
+      padding: 11px 14px;
       background: transparent;
       border: none;
       outline: none;
       color: var(--text-light);
-      font-size: 14px;
+      font-size: clamp(14px, 1.6vw, 15px);
       font-family: 'Inter', sans-serif;
       font-weight: 400;
       transition: var(--transition);
+      min-height: 44px;
     }
     .form-group .input-wrap input::placeholder {
       color: var(--text-muted);
       font-weight: 300;
+      font-size: clamp(13px, 1.4vw, 14px);
     }
 
     .form-group .input-wrap .input-icon {
@@ -294,10 +305,17 @@
       color: var(--text-muted);
       font-size: 14px;
       flex-shrink: 0;
-      transition: var(--transition);
     }
-    .form-group .input-wrap .input-icon.success { color: var(--success); }
-    .form-group .input-wrap .input-icon.error { color: var(--error-color); }
+
+    .form-group .input-wrap .input-status {
+      position: absolute;
+      right: 12px;
+      font-size: 14px;
+      transition: var(--transition);
+      pointer-events: none;
+    }
+    .form-group .input-wrap .input-status.success { color: var(--success); }
+    .form-group .input-wrap .input-status.error { color: var(--error-color); }
 
     .form-group .input-wrap .toggle-password {
       position: absolute;
@@ -309,6 +327,7 @@
       font-size: 14px;
       padding: 4px;
       transition: var(--transition);
+      z-index: 2;
     }
     .form-group .input-wrap .toggle-password:hover { color: var(--text-light); }
 
@@ -321,14 +340,40 @@
     }
     .form-group .error-message.visible { display: block; }
 
-    .form-group .success-message {
-      display: none;
-      font-size: 11px;
-      color: var(--success);
-      margin-top: 4px;
-      font-weight: 400;
+    /* ============================================================
+       PASSWORD STRENGTH
+       ============================================================ */
+    .password-strength {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      height: 20px;
     }
-    .form-group .success-message.visible { display: block; }
+    .password-strength.visible { opacity: 1; }
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease, background 0.4s ease;
+      width: 0%;
+    }
+    .strength-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      min-width: 70px;
+      text-align: right;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
 
     /* ============================================================
        NAME ROW
@@ -340,48 +385,13 @@
     }
 
     /* ============================================================
-       PASSWORD STRENGTH
-       ============================================================ */
-    .password-strength {
-      display: none;
-      margin-top: 6px;
-      gap: 4px;
-      align-items: center;
-    }
-    .password-strength.show { display: flex; }
-    .password-strength .strength-bar {
-      flex: 1;
-      height: 4px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.06);
-      overflow: hidden;
-      position: relative;
-    }
-    .password-strength .strength-bar .strength-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.4s ease, background 0.4s ease;
-      width: 0%;
-    }
-    .password-strength .strength-label {
-      font-size: 10px;
-      font-weight: 600;
-      min-width: 40px;
-      text-align: right;
-    }
-    .password-strength .strength-label.weak { color: var(--error-color); }
-    .password-strength .strength-label.medium { color: #F39C12; }
-    .password-strength .strength-label.strong { color: var(--success); }
-    .password-strength .strength-label.very-strong { color: #2ECC71; }
-
-    /* ============================================================
        CONDITIONS
        ============================================================ */
     .form-group-checkbox {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      margin: 16px 0 20px;
+      margin: 14px 0 18px;
       padding: 10px 12px;
       border-radius: 8px;
       background: rgba(255,255,255,0.01);
@@ -400,7 +410,7 @@
       border: 1px solid var(--input-border);
     }
     .form-group-checkbox label {
-      font-size: 12px;
+      font-size: clamp(11px, 1.3vw, 12px);
       color: var(--text-dim);
       cursor: pointer;
       line-height: 1.5;
@@ -428,12 +438,12 @@
        ============================================================ */
     .btn-submit {
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       border-radius: 30px;
       border: none;
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
       color: #0A0A0A;
-      font-size: 16px;
+      font-size: clamp(15px, 1.8vw, 16px);
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
@@ -445,6 +455,7 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
+      min-height: 52px;
     }
     .btn-submit::after {
       content: '';
@@ -490,7 +501,7 @@
       text-align: center;
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 16px;
+      margin-top: 14px;
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
@@ -519,6 +530,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      justify-content: center;
     }
     .toast.show {
       opacity: 1;
@@ -526,106 +538,79 @@
     }
     .toast.success { border-color: rgba(45, 125, 90, 0.2); }
     .toast.error { border-color: rgba(231, 76, 60, 0.2); }
-    .toast .toast-icon { flex-shrink: 0; }
+    .toast .toast-icon { font-size: 16px; }
     .toast.success .toast-icon { color: var(--success); }
     .toast.error .toast-icon { color: var(--error-color); }
 
     /* ============================================================
-       CONFIRMATION MODAL
-       ============================================================ */
-    .confirmation-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(16px);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .confirmation-overlay.show { display: flex; }
-    .confirmation-modal {
-      background: linear-gradient(145deg, #141414, #0A0A0A);
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      padding: 32px 28px;
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-      animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes modalPop {
-      from { transform: scale(0.8) translateY(30px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-    .confirmation-modal .modal-icon {
-      font-size: 48px;
-      display: block;
-      margin-bottom: 8px;
-    }
-    .confirmation-modal h2 {
-      font-size: 20px;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
-      margin-bottom: 4px;
-    }
-    .confirmation-modal h2 span { color: var(--accent); }
-    .confirmation-modal p {
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .confirmation-modal .modal-btn {
-      padding: 10px 24px;
-      border-radius: 30px;
-      border: none;
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-    }
-    .confirmation-modal .modal-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(184,134,11,0.25);
-    }
-
-    /* ============================================================
        RESPONSIVE
        ============================================================ */
-    @media (max-width: 480px) {
+    /* Mobile first — déjà optimisé */
+
+    /* Tablettes et petits écrans */
+    @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
       .register-form { padding: 20px 16px; }
       .name-row { gap: 8px; }
       .header { padding: 8px 0 16px; }
+      .register-header { margin-bottom: 20px; }
       .register-header h1 { font-size: 24px; }
+      .form-group .input-wrap input { padding: 10px 12px; min-height: 40px; }
+      .btn-submit { padding: 12px; min-height: 48px; }
     }
 
+    /* Très petits écrans (≤ 360px) */
     @media (max-width: 360px) {
+      body { padding: 12px 8px 24px; }
+      .register-form { padding: 16px 12px; }
       .name-row { grid-template-columns: 1fr; gap: 0; }
       .header-actions span { display: none; }
-      .header-actions .btn-login-header { font-size: 11px; padding: 4px 12px; }
+      .header-actions .btn-login-header { 
+        font-size: 11px; 
+        padding: 4px 12px;
+      }
+      .logo { font-size: 16px; letter-spacing: 0.5px; }
+      .register-header h1 { font-size: 20px; }
+      .register-header p { font-size: 12px; }
+      .form-group { margin-bottom: 12px; }
+      .form-group .input-wrap input { font-size: 13px; padding: 8px 10px; min-height: 36px; }
+      .btn-submit { font-size: 14px; padding: 10px; min-height: 44px; }
+      .form-group-checkbox { padding: 8px 10px; }
+      .form-group-checkbox label { font-size: 10px; }
+      .strength-label { font-size: 10px; min-width: 60px; }
     }
 
+    /* Grands écrans */
     @media (min-width: 768px) {
       .register-container { max-width: 520px; }
       .register-form { padding: 36px 32px; }
+      .header { max-width: 520px; }
     }
 
+    @media (min-width: 1024px) {
+      .register-container { max-width: 560px; }
+      .register-form { padding: 40px 36px; }
+      .header { max-width: 560px; }
+    }
+
+    @media (min-width: 1200px) {
+      .register-container { max-width: 600px; }
+      .header { max-width: 600px; }
+    }
+
+    /* Réduction des animations */
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
+    /* Accessibilité */
     a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
       border-radius: 6px;
     }
 
+    /* Scrollbar personnalisée */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
@@ -641,7 +626,7 @@
 
 <!-- ===== HEADER ===== -->
 <header class="header">
-  <a href="bienvenue.html" class="logo">ARVE<span>XA<span> School</span></a>
+  <a href="bienvenue.html" class="logo">ARVEX<span>A<span> School</span></a>
   <div class="header-actions">
     <span>Déjà membre ?</span>
     <a href="login.html" class="btn-login-header"><i class="fas fa-sign-in-alt"></i> Connexion</a>
@@ -663,20 +648,20 @@
       <div class="form-group">
         <label for="firstName">Prénom</label>
         <div class="input-wrap" id="firstNameWrap">
-          <span class="input-icon" id="firstNameIcon"><i class="fas fa-user"></i></span>
+          <span class="input-icon"><i class="fas fa-user"></i></span>
           <input type="text" id="firstName" placeholder="Prénom" autocomplete="given-name" required>
+          <span class="input-status" id="firstNameStatus"></span>
         </div>
         <div class="error-message" id="firstNameError">Ce champ est obligatoire.</div>
-        <div class="success-message" id="firstNameSuccess">✅</div>
       </div>
       <div class="form-group">
         <label for="lastName">Nom</label>
         <div class="input-wrap" id="lastNameWrap">
-          <span class="input-icon" id="lastNameIcon"><i class="fas fa-user"></i></span>
+          <span class="input-icon"><i class="fas fa-user"></i></span>
           <input type="text" id="lastName" placeholder="Nom" autocomplete="family-name" required>
+          <span class="input-status" id="lastNameStatus"></span>
         </div>
         <div class="error-message" id="lastNameError">Ce champ est obligatoire.</div>
-        <div class="success-message" id="lastNameSuccess">✅</div>
       </div>
     </div>
 
@@ -684,65 +669,64 @@
     <div class="form-group">
       <label for="email">Adresse e-mail</label>
       <div class="input-wrap" id="emailWrap">
-        <span class="input-icon" id="emailIcon"><i class="fas fa-envelope"></i></span>
+        <span class="input-icon"><i class="fas fa-envelope"></i></span>
         <input type="email" id="email" placeholder="exemple@email.com" autocomplete="email" required>
+        <span class="input-status" id="emailStatus"></span>
       </div>
       <div class="error-message" id="emailError">Adresse e-mail invalide.</div>
-      <div class="success-message" id="emailSuccess">✅ Email valide</div>
     </div>
 
-    <!-- Établissement -->
+    <!-- Établissement (optionnel) -->
     <div class="form-group">
-      <label for="establishment">Établissement</label>
+      <label for="establishment">Établissement <span class="optional">(optionnel)</span></label>
       <div class="input-wrap" id="establishmentWrap">
-        <span class="input-icon" id="establishmentIcon"><i class="fas fa-school"></i></span>
-        <input type="text" id="establishment" placeholder="Nom de ton établissement" autocomplete="organization" required>
+        <span class="input-icon"><i class="fas fa-school"></i></span>
+        <input type="text" id="establishment" placeholder="Nom de ton établissement" autocomplete="organization">
+        <span class="input-status" id="establishmentStatus"></span>
       </div>
-      <div class="error-message" id="establishmentError">Ce champ est obligatoire.</div>
-      <div class="success-message" id="establishmentSuccess">✅</div>
+      <div class="error-message" id="establishmentError"></div>
     </div>
 
     <!-- Mot de passe -->
     <div class="form-group">
       <label for="password">Mot de passe</label>
       <div class="input-wrap" id="passwordWrap">
-        <span class="input-icon" id="passwordIcon"><i class="fas fa-lock"></i></span>
+        <span class="input-icon"><i class="fas fa-lock"></i></span>
         <input type="password" id="password" placeholder="Min. 6 caractères" autocomplete="new-password" required>
         <button type="button" class="toggle-password" id="togglePassword" aria-label="Afficher/masquer le mot de passe">
           <i class="fas fa-eye"></i>
         </button>
+        <span class="input-status" id="passwordStatus"></span>
       </div>
-      <div class="error-message" id="passwordError">Le mot de passe doit contenir au moins 6 caractères.</div>
-      <div class="success-message" id="passwordSuccess">✅</div>
-      <!-- Indicateur de force -->
       <div class="password-strength" id="passwordStrength">
         <div class="strength-bar">
           <div class="strength-fill" id="strengthFill"></div>
         </div>
-        <span class="strength-label" id="strengthLabel">Faible</span>
+        <span class="strength-label" id="strengthLabel">Très faible</span>
       </div>
+      <div class="error-message" id="passwordError">Le mot de passe doit contenir au moins 6 caractères.</div>
     </div>
 
     <!-- Confirmation mot de passe -->
     <div class="form-group">
       <label for="confirmPassword">Confirmation du mot de passe</label>
       <div class="input-wrap" id="confirmWrap">
-        <span class="input-icon" id="confirmIcon"><i class="fas fa-check-circle"></i></span>
+        <span class="input-icon"><i class="fas fa-check-circle"></i></span>
         <input type="password" id="confirmPassword" placeholder="Confirme ton mot de passe" autocomplete="new-password" required>
         <button type="button" class="toggle-password" id="toggleConfirm" aria-label="Afficher/masquer le mot de passe">
           <i class="fas fa-eye"></i>
         </button>
+        <span class="input-status" id="confirmStatus"></span>
       </div>
       <div class="error-message" id="confirmError">Les mots de passe ne correspondent pas.</div>
-      <div class="success-message" id="confirmSuccess">✅ Mots de passe identiques</div>
     </div>
 
     <!-- Conditions -->
     <div class="form-group-checkbox" id="termsWrap">
       <input type="checkbox" id="termsCheckbox">
       <label for="termsCheckbox">
-        J'accepte les <a href="#" onclick="alert('Conditions d\'utilisation à venir')">Conditions d'utilisation</a> et la
-        <a href="#" onclick="alert('Politique de confidentialité à venir')">Politique de confidentialité</a> d'ARVEXA School.
+        J'accepte les <a href="#" target="_blank">Conditions d'utilisation</a> et la
+        <a href="#" target="_blank">Politique de confidentialité</a> d'ARVEXA School.
       </label>
       <div class="error-message" id="termsError">Vous devez accepter les conditions.</div>
     </div>
@@ -761,16 +745,6 @@
   </form>
 </div>
 
-<!-- ===== CONFIRMATION MODAL ===== -->
-<div class="confirmation-overlay" id="confirmationModal">
-  <div class="confirmation-modal">
-    <span class="modal-icon">📧</span>
-    <h2>Vérifie ta <span>boîte mail</span></h2>
-    <p>Un email de vérification a été envoyé à <strong id="confirmationEmail"></strong>.<br>Clique sur le lien pour activer ton compte.</p>
-    <button class="modal-btn" id="confirmationBtn">OK, j'ai compris</button>
-  </div>
-</div>
-
 <!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
@@ -778,7 +752,7 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- SCRIPTS -->
+<!-- SCRIPTS                                                       -->
 <!-- ============================================================ -->
 <script type="importmap">
 {
@@ -791,28 +765,48 @@
 </script>
 
 <script type="module">
-// ================================================================
-// register.html - Page d'inscription renforcée
-// ================================================================
-import { 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import {
+  getAuth,
   createUserWithEmailAndPassword,
-  sendEmailVerification,
-  fetchSignInMethodsForEmail
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import { 
-  doc, 
-  setDoc, 
-  serverTimestamp 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { 
-  protectPage, 
-  getAuthInstance, 
-  getFirestoreInstance,
-  getFirebaseErrorMessage
-} from './auth.js';
 
 // ================================================================
-// DOM
+// FIREBASE CONFIG
+// ================================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+  authDomain: "arvexa-fbf10.firebaseapp.com",
+  projectId: "arvexa-fbf10",
+  storageBucket: "arvexa-fbf10.firebasestorage.app",
+  messagingSenderId: "920108330053",
+  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ================================================================
+// PERSISTANCE
+// ================================================================
+try {
+  await setPersistence(auth, browserLocalPersistence);
+  console.log('🔐 Persistance locale activée');
+} catch (e) {
+  console.warn('⚠️ Erreur persistance:', e);
+}
+
+// ================================================================
+// DOM ELEMENTS
 // ================================================================
 const form = document.getElementById('registerForm');
 const firstName = document.getElementById('firstName');
@@ -823,192 +817,240 @@ const password = document.getElementById('password');
 const confirmPassword = document.getElementById('confirmPassword');
 const termsCheckbox = document.getElementById('termsCheckbox');
 const submitBtn = document.getElementById('submitBtn');
+
 const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
-const confirmationModal = document.getElementById('confirmationModal');
-const confirmationEmail = document.getElementById('confirmationEmail');
-const confirmationBtn = document.getElementById('confirmationBtn');
 
 // ================================================================
-// AUTH
+// FORM STATE
 // ================================================================
-const auth = getAuthInstance();
-const db = getFirestoreInstance();
-let isSubmitting = false;
+const formState = {
+  values: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    establishment: '',
+    password: '',
+    confirmPassword: ''
+  },
+  errors: {},
+  isValid: false,
+  touched: {},
+  isSubmitting: false
+};
 
 // ================================================================
-// FONCTIONS
+// VALIDATORS
 // ================================================================
+const validators = {
+  firstName: (value) => ({
+    isValid: value.trim().length > 0,
+    message: 'Le prénom est obligatoire'
+  }),
+  lastName: (value) => ({
+    isValid: value.trim().length > 0,
+    message: 'Le nom est obligatoire'
+  }),
+  email: (value) => {
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    return {
+      isValid,
+      message: isValid ? '' : 'Adresse e-mail invalide'
+    };
+  },
+  establishment: (value) => ({
+    isValid: true, // Optionnel
+    message: ''
+  }),
+  password: (value) => ({
+    isValid: value.length >= 6,
+    message: 'Le mot de passe doit contenir au moins 6 caractères',
+    strength: getPasswordStrength(value)
+  }),
+  confirmPassword: (value, context) => ({
+    isValid: value === context.password,
+    message: 'Les mots de passe ne correspondent pas'
+  })
+};
 
+// ================================================================
+// PASSWORD STRENGTH
+// ================================================================
+function getPasswordStrength(password) {
+  if (!password) return { score: 0, label: 'Très faible', color: '#E74C3C' };
+  
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
+  
+  const levels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
+  const colors = ['#E74C3C', '#E67E22', '#F1C40F', '#2ECC71', '#27AE60'];
+  
+  return {
+    score,
+    label: levels[score] || 'Très faible',
+    color: colors[score] || '#E74C3C'
+  };
+}
+
+function updatePasswordStrength(strength) {
+  const container = document.getElementById('passwordStrength');
+  const fill = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  
+  if (!password.value) {
+    container.classList.remove('visible');
+    return;
+  }
+  
+  container.classList.add('visible');
+  const width = ((strength.score + 1) / 5) * 100;
+  fill.style.width = width + '%';
+  fill.style.background = strength.color;
+  label.textContent = strength.label;
+  label.style.color = strength.color;
+}
+
+// ================================================================
+// TOAST
+// ================================================================
 function showToast(message, type = 'success') {
   toastMessage.textContent = message;
   toast.className = `toast ${type}`;
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
   clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 5000);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
-function validateEmail(emailValue) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
-}
-
-function validatePasswordStrength(passwordValue) {
-  if (passwordValue.length < 6) return { score: 0, label: 'Trop court', class: '' };
-  let score = 1;
-  if (passwordValue.length >= 8) score++;
-  if (/[A-Z]/.test(passwordValue)) score++;
-  if (/[0-9]/.test(passwordValue)) score++;
-  if (/[^A-Za-z0-9]/.test(passwordValue)) score++;
+// ================================================================
+// FORM VALIDATION
+// ================================================================
+function validateField(fieldId) {
+  const value = formState.values[fieldId] || '';
+  const context = { password: formState.values.password };
+  const validator = validators[fieldId];
   
-  const labels = ['', 'Faible', 'Moyen', 'Fort', 'Très fort'];
-  const classes = ['', 'weak', 'medium', 'strong', 'very-strong'];
-  const colors = ['', '#E74C3C', '#F39C12', '#2ECC71', '#27AE60'];
+  if (!validator) return;
   
-  return {
-    score: Math.min(score, 4),
-    label: labels[Math.min(score, 4)],
-    class: classes[Math.min(score, 4)],
-    color: colors[Math.min(score, 4)],
-    width: (Math.min(score, 4) / 4) * 100
-  };
-}
-
-function validateField(field) {
-  const value = field.value.trim();
-  const id = field.id;
-  let isValid = true;
-  let errorMsg = '';
-  let successMsg = '';
-
-  const wrap = document.getElementById(id + 'Wrap');
-  const icon = document.getElementById(id + 'Icon');
-  const errorEl = document.getElementById(id + 'Error');
-  const successEl = document.getElementById(id + 'Success');
-
-  if (!wrap || !icon) return true;
-
-  switch (id) {
-    case 'firstName':
-      isValid = value.length >= 2;
-      errorMsg = 'Le prénom doit contenir au moins 2 caractères.';
-      successMsg = '✅';
-      break;
-    case 'lastName':
-      isValid = value.length >= 2;
-      errorMsg = 'Le nom doit contenir au moins 2 caractères.';
-      successMsg = '✅';
-      break;
-    case 'email':
-      isValid = value && validateEmail(value);
-      errorMsg = 'Adresse e-mail invalide.';
-      successMsg = '✅ Email valide';
-      break;
-    case 'establishment':
-      isValid = value.length >= 2;
-      errorMsg = 'Ce champ est obligatoire.';
-      successMsg = '✅';
-      break;
-    case 'password':
-      isValid = value.length >= 6;
-      errorMsg = 'Le mot de passe doit contenir au moins 6 caractères.';
-      successMsg = '✅';
-      // Mettre à jour l'indicateur de force
-      updateStrengthIndicator(value);
-      break;
-    case 'confirmPassword':
-      isValid = value === password.value && value.length > 0;
-      errorMsg = 'Les mots de passe ne correspondent pas.';
-      successMsg = '✅ Mots de passe identiques';
-      break;
-    default:
-      return true;
+  const result = validator(value, context);
+  const wrap = document.getElementById(`${fieldId}Wrap`);
+  const errorEl = document.getElementById(`${fieldId}Error`);
+  const statusEl = document.getElementById(`${fieldId}Status`);
+  
+  const isTouched = formState.touched[fieldId];
+  const hasError = !result.isValid && (value.length > 0 || isTouched);
+  
+  // Mise à jour de l'interface
+  if (wrap) {
+    wrap.classList.toggle('error', hasError);
+    wrap.classList.toggle('success', result.isValid && value.length > 0);
   }
-
-  // Gérer le cas où le champ est vide
-  if (value === '') {
-    wrap.classList.remove('success', 'error');
-    icon.className = 'input-icon';
-    if (errorEl) errorEl.classList.remove('visible');
-    if (successEl) successEl.classList.remove('visible');
-    return false;
-  }
-
-  wrap.classList.toggle('success', isValid);
-  wrap.classList.toggle('error', !isValid);
-  icon.className = 'input-icon' + (isValid ? ' success' : ' error');
-  icon.innerHTML = isValid ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>';
   
   if (errorEl) {
-    errorEl.textContent = errorMsg;
-    errorEl.classList.toggle('visible', !isValid);
+    errorEl.classList.toggle('visible', hasError);
+    errorEl.textContent = hasError ? result.message : '';
   }
-  if (successEl) {
-    successEl.textContent = successMsg;
-    successEl.classList.toggle('visible', isValid);
+  
+  if (statusEl) {
+    statusEl.className = 'input-status';
+    if (value.length > 0) {
+      statusEl.classList.add(result.isValid ? 'success' : 'error');
+      statusEl.innerHTML = result.isValid ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
+    } else {
+      statusEl.innerHTML = '';
+    }
   }
-
-  return isValid;
-}
-
-function updateStrengthIndicator(passwordValue) {
-  const strengthEl = document.getElementById('passwordStrength');
-  const fillEl = document.getElementById('strengthFill');
-  const labelEl = document.getElementById('strengthLabel');
-
-  if (passwordValue.length === 0) {
-    strengthEl.classList.remove('show');
-    return;
+  
+  // Mise à jour de la force du mot de passe
+  if (fieldId === 'password' && result.strength) {
+    updatePasswordStrength(result.strength);
   }
-
-  strengthEl.classList.add('show');
-  const result = validatePasswordStrength(passwordValue);
-  fillEl.style.width = result.width + '%';
-  fillEl.style.background = result.color;
-  labelEl.textContent = result.label;
-  labelEl.className = 'strength-label ' + result.class;
+  
+  // Stockage de l'erreur
+  formState.errors[fieldId] = hasError ? result.message : '';
 }
 
 function validateForm() {
-  const fields = ['firstName', 'lastName', 'email', 'establishment', 'password', 'confirmPassword'];
-  const allValid = fields.every(id => {
-    const field = document.getElementById(id);
-    return field ? validateField(field) : true;
+  const allFields = ['firstName', 'lastName', 'email', 'establishment', 'password', 'confirmPassword'];
+  const isValid = allFields.every(field => {
+    const value = formState.values[field] || '';
+    const validator = validators[field];
+    if (!validator) return true;
+    const result = validator(value, { password: formState.values.password });
+    // Pour l'établissement (optionnel), on considère toujours valide
+    if (field === 'establishment') return true;
+    return result.isValid && value.length > 0;
   });
-
-  const termsValid = termsCheckbox.checked;
-  const termsWrap = document.getElementById('termsWrap');
-  const termsError = document.getElementById('termsError');
-  termsWrap.classList.toggle('error', !termsValid);
-  if (termsError) termsError.classList.toggle('visible', !termsValid);
-
-  const isValid = allValid && termsValid;
-  submitBtn.disabled = !isValid || isSubmitting;
-  return isValid;
+  
+  const isTermsValid = termsCheckbox.checked;
+  formState.isValid = isValid && isTermsValid;
+  
+  submitBtn.disabled = !formState.isValid || formState.isSubmitting;
+  return formState.isValid;
 }
 
 // ================================================================
-// ÉVÉNEMENTS
+// SAVE / LOAD FORM PROGRESS
 // ================================================================
+const SAVE_KEY = 'arvexa_register_progress';
 
-[firstName, lastName, email, establishment, password, confirmPassword].forEach(field => {
-  field.addEventListener('input', () => {
-    validateField(field);
-    if (field.id === 'password' && confirmPassword.value) {
-      validateField(confirmPassword);
+function saveFormProgress() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(formState.values));
+  } catch (e) {}
+}
+
+function loadFormProgress() {
+  try {
+    const saved = localStorage.getItem(SAVE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      Object.keys(formState.values).forEach(key => {
+        if (data[key] !== undefined) {
+          formState.values[key] = data[key];
+          const input = document.getElementById(key);
+          if (input) input.value = data[key];
+        }
+      });
+      return true;
     }
-    if (field.id === 'confirmPassword' && password.value) {
-      validateField(confirmPassword);
-    }
+  } catch (e) {}
+  return false;
+}
+
+function clearFormProgress() {
+  try {
+    localStorage.removeItem(SAVE_KEY);
+  } catch (e) {}
+}
+
+// ================================================================
+// FIELD EVENTS
+// ================================================================
+document.querySelectorAll('.input-wrap input').forEach(input => {
+  // Sauvegarde de la valeur
+  input.addEventListener('input', () => {
+    formState.values[input.id] = input.value;
+    validateField(input.id);
     validateForm();
+    saveFormProgress();
   });
-  field.addEventListener('blur', () => {
-    validateField(field);
+  
+  // Marquer comme "touché" au blur
+  input.addEventListener('blur', () => {
+    formState.touched[input.id] = true;
+    validateField(input.id);
     validateForm();
   });
 });
 
+// ================================================================
+// TOGGLE PASSWORD
+// ================================================================
 document.getElementById('togglePassword').addEventListener('click', function() {
   const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
   password.setAttribute('type', type);
@@ -1021,59 +1063,34 @@ document.getElementById('toggleConfirm').addEventListener('click', function() {
   this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 });
 
-termsCheckbox.addEventListener('change', validateForm);
+// ================================================================
+// TERMS
+// ================================================================
+termsCheckbox.addEventListener('change', () => validateForm());
 
 // ================================================================
-// CONFIRMATION MODAL
+// SUBMIT
 // ================================================================
-
-confirmationBtn.addEventListener('click', () => {
-  confirmationModal.classList.remove('show');
-  window.location.href = 'login.html';
-});
-
-// ================================================================
-// SOUMISSION
-// ================================================================
-
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  
-  if (submitBtn.disabled || isSubmitting) return;
+  if (submitBtn.disabled || formState.isSubmitting) return;
+
+  formState.isSubmitting = true;
+  submitBtn.disabled = true;
+  submitBtn.classList.add('loading');
 
   const emailValue = email.value.trim();
   const passwordValue = password.value;
   const firstNameValue = firstName.value.trim();
   const lastNameValue = lastName.value.trim();
-  const establishmentValue = establishment.value.trim();
-
-  isSubmitting = true;
-  submitBtn.disabled = true;
-  submitBtn.classList.add('loading');
+  const establishmentValue = establishment.value.trim() || '';
 
   try {
-    // Vérifier si l'email existe déjà
-    const methods = await fetchSignInMethodsForEmail(auth, emailValue);
-    if (methods.length > 0) {
-      showToast('⚠️ Cette adresse e-mail est déjà utilisée.', 'error');
-      isSubmitting = false;
-      submitBtn.disabled = false;
-      submitBtn.classList.remove('loading');
-      validateForm();
-      return;
-    }
-
-    // Créer le compte
+    // Création du compte Firebase
     const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
     const user = userCredential.user;
 
-    // Envoyer l'email de vérification
-    await sendEmailVerification(user, {
-      url: window.location.origin + '/login.html',
-      handleCodeInApp: false
-    });
-
-    // Créer le document Firestore
+    // Enregistrement du profil dans Firestore
     await setDoc(doc(db, 'users', user.uid), {
       uid: user.uid,
       firstName: firstNameValue,
@@ -1083,65 +1100,72 @@ form.addEventListener('submit', async (e) => {
       classId: 'terminale_d',
       exam: 'bac',
       role: 'student',
-      premium: false,
-      isUnlocked: false,
-      hasDeposited: false,
       onboardingCompleted: false,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
 
-    // Afficher le modal de confirmation
-    confirmationEmail.textContent = emailValue;
-    confirmationModal.classList.add('show');
+    // Nettoyer la sauvegarde
+    clearFormProgress();
 
-    showToast('✅ Compte créé avec succès ! Vérifie ta boîte mail.', 'success');
+    showToast('Compte créé avec succès !', 'success');
+
+    setTimeout(() => {
+      window.location.href = 'onboarding.html';
+    }, 1200);
 
   } catch (error) {
-    console.error('❌ Erreur inscription:', error);
+    console.error('Erreur inscription:', error);
+
     let message = 'Une erreur est survenue. Réessaie.';
-    
     switch (error.code) {
       case 'auth/email-already-in-use':
-        message = '⚠️ Cette adresse e-mail est déjà utilisée.';
+        message = 'Cette adresse e-mail est déjà utilisée. Connecte-toi ou utilise une autre adresse.';
         break;
       case 'auth/invalid-email':
-        message = '❌ Adresse e-mail invalide.';
+        message = 'Adresse e-mail invalide.';
         break;
       case 'auth/weak-password':
-        message = '🔒 Le mot de passe est trop faible (minimum 6 caractères).';
+        message = 'Le mot de passe est trop faible (minimum 6 caractères).';
+        break;
+      case 'auth/operation-not-allowed':
+        message = "L'inscription est temporairement désactivée.";
         break;
       case 'auth/too-many-requests':
-        message = '⏳ Trop de tentatives. Réessaie dans quelques minutes.';
+        message = 'Trop de tentatives. Réessaie dans quelques minutes.';
         break;
       case 'auth/network-request-failed':
-        message = '📶 Problème de connexion internet. Vérifie ta connexion.';
+        message = 'Problème de connexion. Vérifie ta connexion internet.';
         break;
       default:
-        message = '❌ ' + (error.message || 'Une erreur est survenue.');
+        message = error.message || 'Une erreur est survenue. Réessaie.';
     }
-    
+
     showToast(message, 'error');
-    
-    isSubmitting = false;
-    submitBtn.disabled = false;
-    submitBtn.classList.remove('loading');
-    validateForm();
   }
+
+  formState.isSubmitting = false;
+  submitBtn.disabled = false;
+  submitBtn.classList.remove('loading');
+  validateForm();
 });
 
 // ================================================================
-// PROTECTION
+// INIT
 // ================================================================
+// Charger la progression sauvegardée
+loadFormProgress();
 
-// Register est une page publique
-protectPage((user) => {
-  if (user) {
-    window.location.href = 'index.html';
+// Valider tous les champs initialement
+['firstName', 'lastName', 'email', 'establishment', 'password', 'confirmPassword'].forEach(field => {
+  if (formState.values[field]) {
+    validateField(field);
   }
 });
 
-console.log('🚀 ARVEXA — Page Inscription renforcée');
+validateForm();
+
+console.log('🚀 ARVEXA School — Inscription (version refactorisée)');
 </script>
 
 </body>

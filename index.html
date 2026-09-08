@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="description" content="ARVEXA School - Tableau de bord">
   <link rel="manifest" href="manifest.json">
@@ -27,16 +27,16 @@
       --danger: #B85C3A;
       --bg-dark: #0A0A0A;
       --bg-surface: #141414;
-      --bg-card: rgba(20,20,20,0.7);
+      --bg-card: rgba(20, 20, 20, 0.7);
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
       --text-muted: #5A5A4A;
-      --card-border: rgba(184,134,11,0.08);
-      --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
-      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --card-border: rgba(184, 134, 11, 0.06);
+      --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --radius: 16px;
       --sidebar-width: 240px;
-      --header-height: 56px;
+      --header-height: 64px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -54,7 +54,9 @@
       display: flex;
     }
 
-    /* ===== BACKGROUND ===== */
+    /* ============================================================
+       BACKGROUND
+       ============================================================ */
     .gradient-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
@@ -76,7 +78,9 @@
     }
     .sidebar-overlay.active { display: block; opacity: 1; }
 
-    /* ===== SIDEBAR ===== */
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
     .sidebar {
       position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
       background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
@@ -113,38 +117,38 @@
     .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
     .sidebar .nav-bottom a:hover { color: var(--text-dim); }
 
-    /* ===== MAIN CONTENT ===== */
+    /* ============================================================
+       MAIN CONTENT
+       ============================================================ */
     .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
 
+    /* ============================================================
+       HEADER
+       ============================================================ */
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 8px 12px; background: rgba(10, 10, 10, 0.92);
+      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
-      gap: 8px; min-height: var(--header-height);
+      gap: 12px; min-height: var(--header-height);
     }
-    .header .header-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .header .header-left { display: flex; align-items: center; gap: 12px; }
     .header .menu-toggle {
       display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
       border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
       color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
-      flex-shrink: 0;
     }
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
     .header .greeting {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
-      font-size: 13px; font-weight: 600; color: var(--text-light);
-      min-width: 0;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+      font-size: clamp(13px, 1.5vw, 15px); font-weight: 600; color: var(--text-light);
     }
-    .header .greeting #greetingText { color: var(--text-dim); }
-    .header .greeting #userFirstName { 
-      color: var(--accent-bright); font-weight: 700; 
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;
-    }
+    .header .greeting #greetingText { color: var(--text-dim); font-weight: 400; }
+    .header .greeting #userFirstName { color: var(--accent-bright); font-weight: 700; }
     .header .greeting #greetingEmoji { font-size: 16px; line-height: 1; }
-    .header .header-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .header .header-actions { display: flex; align-items: center; gap: 6px; }
     .header .header-actions button {
-      width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 14px;
+      width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
       display: flex; align-items: center; justify-content: center; position: relative;
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
@@ -154,411 +158,431 @@
       display: none;
     }
     .header .header-actions button .notif-dot.show { display: block; }
-    .header .offline-indicator {
-      font-size: 11px; color: var(--accent-bright); display: none;
-      margin-left: 4px;
-    }
-    .header .offline-indicator.show { display: inline-block; }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 12px 12px 16px; width: 100%; }
+    /* ============================================================
+       CONTAINER
+       ============================================================ */
+    .container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
 
-    /* ===== CARTES ===== */
+    /* ============================================================
+       CARD
+       ============================================================ */
     .card {
       background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 16px; transition: var(--transition);
+      border-radius: var(--radius); padding: 18px; transition: var(--transition);
     }
     .card:hover { border-color: rgba(184, 134, 11, 0.14); }
     .section-title {
       display: flex; justify-content: space-between; align-items: baseline;
-      margin: 20px 0 10px;
+      margin: 26px 0 12px;
     }
-    .section-title h3 { font-size: 14px; font-weight: 600; color: var(--text-light); }
+    .section-title h3 { font-size: clamp(15px, 1.6vw, 17px); font-weight: 600; color: var(--text-light); }
     .section-title:first-of-type { margin-top: 0; }
 
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; border-radius: 30px;
-      border: none; background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition);
+    /* ============================================================
+       HERO CARD - COMPTE À REBOURS
+       ============================================================ */
+    .hero-card {
+      position: relative; overflow: hidden; padding: 20px 22px;
+    }
+    .hero-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+    }
+
+    .countdown-header {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px; margin-bottom: 6px;
+    }
+    .countdown-title-wrap {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .countdown-icon { font-size: clamp(20px, 2.5vw, 26px); }
+    .countdown-title {
+      font-size: clamp(16px, 1.8vw, 20px); font-weight: 700;
+      font-family: 'Playfair Display', serif; color: var(--text-light);
+    }
+    .countdown-status {
+      font-size: clamp(12px, 1.2vw, 14px); font-weight: 600;
+      padding: 4px 14px; border-radius: 20px;
+      background: rgba(184, 134, 11, 0.08); color: var(--accent-bright);
+      border: 1px solid rgba(184, 134, 11, 0.1);
+      transition: all 0.5s ease;
+      white-space: nowrap;
+    }
+    .countdown-status.early { background: rgba(46, 204, 113, 0.1); color: #2ECC71; border-color: rgba(46, 204, 113, 0.15); }
+    .countdown-status.mid { background: rgba(241, 196, 15, 0.1); color: #F1C40F; border-color: rgba(241, 196, 15, 0.15); }
+    .countdown-status.late { background: rgba(230, 126, 34, 0.1); color: #E67E22; border-color: rgba(230, 126, 34, 0.15); }
+    .countdown-status.critical { background: rgba(231, 76, 60, 0.1); color: #E74C3C; border-color: rgba(231, 76, 60, 0.15); animation: pulseStatus 1.5s ease-in-out infinite; }
+    @keyframes pulseStatus { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+    /* Barre de progression */
+    .progress-track {
+      width: 100%; height: 3px; background: rgba(255,255,255,0.06);
+      border-radius: 4px; margin: 8px 0 10px; overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 4px; transition: width 1s ease;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      width: 0%;
+    }
+    .progress-fill.early { background: linear-gradient(90deg, #2ECC71, #27AE60); }
+    .progress-fill.mid { background: linear-gradient(90deg, #F1C40F, #F39C12); }
+    .progress-fill.late { background: linear-gradient(90deg, #E67E22, #D35400); }
+    .progress-fill.critical { background: linear-gradient(90deg, #E74C3C, #C0392B); }
+    .progress-percent {
+      position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+      font-size: 10px; color: var(--text-muted); font-weight: 600;
+    }
+
+    /* Affichage Jours / Heures / Minutes */
+    .countdown-display {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px; margin: 4px 0 2px;
+    }
+    .cd-block {
+      display: flex; flex-direction: column; align-items: center;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 10px; padding: 6px 16px; min-width: 60px;
+    }
+    .cd-number {
+      font-size: clamp(26px, 3.5vw, 36px); font-weight: 800;
+      font-family: 'Playfair Display', serif; color: var(--text-light);
+      line-height: 1.1;
+    }
+    .cd-label {
+      font-size: clamp(9px, 0.9vw, 11px); color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+    }
+    .cd-separator {
+      font-size: clamp(20px, 2.5vw, 30px); font-weight: 700;
+      color: var(--text-muted); padding-bottom: 12px;
+    }
+
+    /* ============================================================
+       NEXT CARD - FIXE "Comment choisir une matière"
+       ============================================================ */
+    .next-card {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
+      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius);
+      padding: 18px 20px; position: relative; overflow: hidden;
+    }
+    .next-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    }
+    .next-card .badge {
+      font-size: 10px; font-weight: 600; color: var(--accent-bright);
+      text-transform: uppercase; letter-spacing: 1px;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .next-card .badge i { font-size: 12px; }
+    .next-card .title {
+      font-size: clamp(16px, 1.8vw, 19px); font-weight: 700;
+      font-family: 'Playfair Display', serif; color: var(--text-light);
+      margin: 4px 0 6px;
+    }
+    .next-card .message {
+      font-size: clamp(13px, 1.3vw, 14px); color: var(--text-dim);
+      line-height: 1.7; max-width: 600px;
+    }
+    .next-card .message strong { color: var(--text-light); }
+
+    /* ============================================================
+       SUBJECTS GRID (2 colonnes)
+       ============================================================ */
+    .subjects-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .subject-chip {
+      background: var(--bg-card); border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 16px 14px; transition: var(--transition);
+      text-decoration: none; color: var(--text-light);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .subject-chip:hover {
+      border-color: rgba(184, 134, 11, 0.16); transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .subject-chip:active { transform: scale(0.97); }
+    .subject-chip .icon-badge {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(184, 134, 11, 0.08); color: var(--accent-bright);
+      font-size: 16px; flex-shrink: 0;
+    }
+    .subject-chip .subject-name { font-size: clamp(13px, 1.3vw, 14px); font-weight: 600; }
+    .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ============================================================
+       TOOLS GRID (3 colonnes)
+       ============================================================ */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .tool-card {
+      background: var(--bg-card); backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 16px 8px; text-align: center; transition: var(--transition);
+      text-decoration: none; color: var(--text-light);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 6px; min-height: 88px;
+    }
+    .tool-card:hover {
+      border-color: rgba(184, 134, 11, 0.16); transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+    .tool-card:active { transform: scale(0.95); }
+    .tool-card .icon-badge {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(184, 134, 11, 0.08); color: var(--accent-bright);
+      font-size: 15px; transition: var(--transition);
+    }
+    .tool-card:hover .icon-badge {
+      background: rgba(184, 134, 11, 0.15);
+      transform: scale(1.05);
+    }
+    .tool-card .name { font-size: clamp(11px, 1.1vw, 12px); font-weight: 600; }
+
+    /* ============================================================
+       TIP CARD
+       ============================================================ */
+    .tip-card {
+      background: var(--bg-card); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 16px 18px;
+      transition: var(--transition);
+    }
+    .tip-card:hover { border-color: rgba(184, 134, 11, 0.14); }
+    .tip-card .tip-header {
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .tip-card .tip-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(184, 134, 11, 0.1); color: var(--accent-bright);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .tip-card .tip-content { flex: 1; min-width: 0; }
+    .tip-card .tip-eyebrow {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+      font-weight: 700; color: var(--accent-bright);
+    }
+    .tip-card .tip-title {
+      font-size: clamp(14px, 1.4vw, 15px); font-weight: 700;
+      color: var(--text-light); margin: 2px 0 4px;
+    }
+    .tip-card .tip-text {
+      font-size: clamp(12px, 1.2vw, 13px); color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ============================================================
+       SUBSCRIPTION CARD
+       ============================================================ */
+    .subscription-reminder { margin-top: 14px; }
+    .sub-card {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
+      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius);
+      padding: 16px 18px; display: flex; align-items: center;
+      gap: 14px; transition: var(--transition);
+    }
+    .sub-card:hover { border-color: rgba(184, 134, 11, 0.25); }
+    .sub-card .sub-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(184, 134, 11, 0.1); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 20px; color: var(--accent-bright); flex-shrink: 0;
+    }
+    .sub-card .sub-content { flex: 1; min-width: 0; }
+    .sub-card .sub-title {
+      font-size: clamp(13px, 1.3vw, 14px); font-weight: 600;
+      color: var(--text-light);
+    }
+    .sub-card .sub-text {
+      font-size: clamp(11px, 1.1vw, 12px); color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .sub-card .sub-expiry {
+      font-size: 11px; color: #D97A3A; font-weight: 600;
+      margin-top: 2px;
+    }
+    .sub-card .sub-btn {
+      padding: 8px 18px; border-radius: 20px; border: none;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A; font-size: clamp(11px, 1.1vw, 12px);
+      font-weight: 700; cursor: pointer; transition: var(--transition);
       font-family: 'Inter', sans-serif; text-decoration: none;
+      white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+      flex-shrink: 0;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184,134,11,0.25); }
-    .btn-primary:active { transform: scale(0.97); }
-
-    .premium-badge {
-      display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 20px;
-      font-size: 9px; font-weight: 600; background: rgba(184, 134, 11, 0.1); color: var(--accent-bright);
-      border: 1px solid rgba(184, 134, 11, 0.14); margin-top: 4px;
+    .sub-card .sub-btn:hover {
+      transform: scale(1.02); box-shadow: 0 4px 16px rgba(184,134,11,0.2);
     }
-    .premium-badge i { font-size: 8px; }
+    .sub-card .sub-btn.renew {
+      background: linear-gradient(135deg, #D97A3A, #B85C3A);
+      color: #fff;
+    }
 
-    /* ===== SKELETON ===== */
+    /* ============================================================
+       SKELETON
+       ============================================================ */
     .skeleton {
-      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px;
+      background: rgba(255,255,255,0.03); border-radius: 8px;
+      animation: pulse 1.5s ease-in-out infinite;
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
     .skeleton-card { height: 160px; border-radius: var(--radius); }
     .skeleton-card-sm { height: 100px; border-radius: var(--radius); }
     .skeleton-card-xs { height: 80px; border-radius: var(--radius); }
 
-    /* ===== HERO ===== */
-    .hero-card { position: relative; overflow: hidden; }
-    .hero-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--success), var(--accent));
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 14px 24px; border-radius: 12px;
+      background: var(--bg-card); backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border); color: var(--text-light);
+      font-size: 13px; font-weight: 500; z-index: 300;
+      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      max-width: 90%; text-align: center; box-shadow: var(--shadow);
+      display: flex; align-items: center; gap: 8px; justify-content: center;
     }
-    .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-    .hero-info .class-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .hero-info .exam-label { font-size: 17px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 2px 0 0; }
-    .hero-info .exam-label span { color: var(--accent-bright); }
-    .hero-bottom {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .hero-pill {
-      display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-      font-size: 11px; color: var(--text-dim); font-weight: 500;
-    }
-    .hero-pill i { color: var(--accent); font-size: 11px; }
-    .hero-pill.streak i { color: #D97A3A; }
-    .hero-pill strong { color: var(--text-light); font-weight: 700; }
-    .hero-pill.warning { border-color: rgba(184,134,11,0.2); background: rgba(184,134,11,0.05); }
-    .hero-pill.warning i { color: #D97A3A; }
-    .hero-pill.danger { border-color: rgba(184,92,58,0.2); background: rgba(184,92,58,0.05); }
-    .hero-pill.danger i { color: var(--danger); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { border-color: rgba(45, 125, 90, 0.2); }
+    .toast.error { border-color: rgba(184, 92, 58, 0.3); }
+    .toast .toast-icon { font-size: 16px; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
 
-    /* ===== MINI STATS ===== */
-    .mini-stats {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;
-    }
-    .mini-stat {
-      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 10px; padding: 8px 4px; text-align: center;
-    }
-    .mini-stat .ms-value {
-      font-size: 18px; font-weight: 800; font-family: 'Playfair Display', serif;
-      color: var(--accent-bright); line-height: 1.2;
-    }
-    .mini-stat .ms-label {
-      font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
-      font-weight: 600; margin-top: 1px;
-    }
-
-    /* ===== PROCHAINE ÉTAPE ===== */
-    .next-card {
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
-      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius); padding: 16px;
-      position: relative; overflow: hidden;
-    }
-    .next-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--success)); }
-    .next-card .badge { font-size: 9px; font-weight: 600; color: var(--accent-bright); text-transform: uppercase; letter-spacing: 1px; }
-    .next-card .title { font-size: 16px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--text-light); margin: 2px 0 3px; }
-    .next-card .subject { font-size: 12px; color: var(--text-dim); }
-    .next-card .message { font-size: 12px; color: var(--text-dim); margin: 4px 0 10px; line-height: 1.5; }
-    .next-card .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
-
-    /* ===== DERNIÈRE ACTIVITÉ ===== */
-    .last-activity {
-      display: none; background: var(--bg-card); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 4px;
-      transition: var(--transition);
-    }
-    .last-activity.show { display: block; }
-    .last-activity .la-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-    .last-activity .la-icon {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright);
-      display: flex; align-items: center; justify-content: center; font-size: 14px;
-    }
-    .last-activity .la-label { font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-    .last-activity .la-title { font-size: 14px; font-weight: 600; color: var(--text-light); }
-    .last-activity .la-sub { font-size: 12px; color: var(--text-dim); }
-    .last-activity .la-btn {
-      display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
-      padding: 6px 16px; border-radius: 20px; border: none;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright);
-      font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition);
-      font-family: 'Inter', sans-serif; text-decoration: none;
-    }
-    .last-activity .la-btn:hover { background: rgba(184,134,11,0.16); }
-
-    /* ===== MATIÈRES ===== */
-.subjects-grid { 
-  display: grid; 
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 10px; 
-}
-.subject-chip {
-  background: var(--bg-card); border: 1px solid var(--card-border); border-radius: 12px;
-  padding: 12px 14px; transition: var(--transition); text-decoration: none; color: var(--text-light);
-  display: flex; align-items: center; gap: 12px;
-}
-.subject-chip:hover { border-color: rgba(184,134,11,0.16); transform: translateY(-2px); }
-.subject-chip:active { transform: scale(0.97); }
-.subject-chip .icon-badge {
-  width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 16px; flex-shrink: 0;
-}
-.subject-chip .subject-name { font-size: 14px; font-weight: 600; }
-.subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-    /* ===== OUTILS ===== */
-    .tools-grid { 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 8px; 
-    }
-    .tool-card {
-      background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
-      border-radius: 12px; padding: 12px 6px; text-align: center; transition: var(--transition);
-      text-decoration: none; color: var(--text-light); display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 4px; min-height: 76px;
-    }
-    .tool-card:hover { border-color: rgba(184, 134, 11, 0.16); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.25); }
-    .tool-card .icon-badge {
-      width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-      background: rgba(184,134,11,0.08); color: var(--accent-bright); font-size: 14px;
-    }
-    .tool-card .name { font-size: 11px; font-weight: 600; }
-
-        /* ===== CONSEIL DU JOUR - VERSION SIMPLE ===== */
-.tip-card {
-  padding: 16px 18px;
-  position: relative;
-  overflow: hidden;
-  background: var(--bg-card);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
-  transition: var(--transition);
-}
-.tip-card:hover {
-  border-color: rgba(184, 134, 11, 0.14);
-}
-.tip-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
-  background-size: 200% 100%;
-  animation: shimmerBorder 3s linear infinite;
-}
-@keyframes shimmerBorder {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
-}
-.tip-card .tip-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-.tip-card .tip-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-  background: rgba(184, 134, 11, 0.08);
-  color: var(--accent-bright);
-}
-.tip-card .tip-body {
-  flex: 1;
-  min-width: 0;
-}
-.tip-card .tip-category {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 700;
-  color: var(--accent-bright);
-  margin-bottom: 2px;
-}
-.tip-card .tip-title {
-  font-size: 15px;
-  font-weight: 700;
-  font-family: 'Playfair Display', serif;
-  color: var(--text-light);
-  margin-bottom: 4px;
-}
-.tip-card .tip-text {
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.6;
-}
-
-    /* ===== ABONNEMENT ===== */
-    .subscription-reminder { margin-top: 12px; }
-    .sub-card {
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
-      border: 1px solid rgba(184, 134, 11, 0.12); border-radius: var(--radius);
-      padding: 14px 16px; display: flex; align-items: center; gap: 12px; transition: var(--transition);
-    }
-    .sub-card:hover { border-color: rgba(184, 134, 11, 0.25); }
-    .sub-card .sub-icon {
-      width: 40px; height: 40px; border-radius: 12px;
-      background: rgba(184, 134, 11, 0.1); display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: var(--accent-bright); flex-shrink: 0;
-    }
-    .sub-card .sub-content { flex: 1; min-width: 0; }
-    .sub-card .sub-title { font-size: 13px; font-weight: 600; color: var(--text-light); }
-    .sub-card .sub-text { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
-    .sub-card .sub-expiry { font-size: 10px; color: #D97A3A; font-weight: 600; margin-top: 2px; }
-    .sub-card .sub-btn {
-      padding: 7px 16px; border-radius: 20px; border: none;
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A; font-size: 11px; font-weight: 700; cursor: pointer;
-      transition: var(--transition); font-family: 'Inter', sans-serif;
-      text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
-      flex-shrink: 0;
-    }
-    .sub-card .sub-btn:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(184,134,11,0.2); }
-    .sub-card .sub-btn.renew { background: linear-gradient(135deg, #D97A3A, #B85C3A); color: #fff; }
-
-    /* ===== FOOTER ===== */
+    /* ============================================================
+       FOOTER
+       ============================================================ */
     .footer {
-      margin-top: 32px; padding: 20px 16px 12px;
+      margin-top: 40px; padding: 24px 16px 16px;
       border-top: 1px solid rgba(184, 134, 11, 0.06);
       background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px);
     }
     .footer-content {
       max-width: 900px; margin: 0 auto;
-      display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px; text-align: center;
     }
     .footer-logo {
-      font-size: 16px; font-weight: 700; font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 700; font-family: 'Playfair Display', serif;
       color: var(--text-light); letter-spacing: 1px;
     }
     .footer-logo span { color: var(--accent-bright); font-style: italic; }
     .footer-links {
-      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+      display: flex; flex-wrap: wrap; gap: 16px; justify-content: center;
     }
     .footer-links a {
-      color: var(--text-muted); text-decoration: none; font-size: 11px; transition: var(--transition);
+      color: var(--text-muted); text-decoration: none; font-size: 12px;
+      transition: var(--transition);
     }
     .footer-links a:hover { color: var(--text-light); }
-    .footer-copy { font-size: 10px; color: var(--text-muted); opacity: 0.6; }
-
-    /* ===== TOAST ===== */
-    .toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 10px 16px; border-radius: 12px; background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border); color: var(--text-light); font-size: 12px; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); max-width: 92%; text-align: center;
-      box-shadow: var(--shadow); display: flex; align-items: center; gap: 8px;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { border-color: rgba(45, 125, 90, 0.25); }
-    .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { flex-shrink: 0; }
+    .footer-copy { font-size: 11px; color: var(--text-muted); opacity: 0.6; }
 
     /* ============================================================
-   RESPONSIVE — ULTRA COMPLET
-   ============================================================ */
+       RESPONSIVE
+       ============================================================ */
+    @media (min-width: 768px) {
+      .sidebar { left: 0; display: flex; }
+      .sidebar-overlay { display: none !important; }
+      .main-content { margin-left: var(--sidebar-width); }
+      .header .menu-toggle { display: none; }
+    }
 
-/* --- Tablettes et grands écrans (≥ 768px) --- */
-@media (min-width: 768px) {
-  .sidebar { left: 0; display: flex; }
-  .sidebar-overlay { display: none !important; }
-  .main-content { margin-left: var(--sidebar-width); }
-  .header .menu-toggle { display: none; }
-  .header .greeting #userFirstName { max-width: 150px; }
-}
+    @media (max-width: 767px) {
+      .sidebar { left: -280px; }
+      .sidebar.open { left: 0; }
+      .container { padding: 12px 12px 20px; }
+      .header .greeting { font-size: 13px; }
+    }
 
-/* --- Téléphones moyens (481px - 767px) --- */
-@media (max-width: 767px) {
-  .sidebar { left: -280px; }
-  .sidebar.open { left: 0; }
-  .header { padding: 6px 10px; min-height: 50px; }
-  .header .greeting { font-size: 12px; }
-  .header .greeting #userFirstName { max-width: 60px; }
-  .header .header-actions button { width: 30px; height: 30px; font-size: 12px; }
-  .container { padding: 10px 10px 16px; }
-  .card { padding: 14px; }
-  .hero-info .exam-label { font-size: 15px; }
-  .mini-stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-  .mini-stat .ms-value { font-size: 16px; }
-  .subjects-grid { gap: 8px; }
-  .subject-chip { padding: 10px 12px; }
-  .subject-chip .icon-badge { width: 34px; height: 34px; font-size: 14px; }
-  .subject-chip .subject-name { font-size: 13px; }
-  .tools-grid { gap: 6px; }
-  .tool-card { padding: 10px 4px; min-height: 68px; }
-  .tool-card .icon-badge { width: 28px; height: 28px; font-size: 12px; }
-  .tool-card .name { font-size: 10px; }
-  .sub-card { padding: 12px 14px; flex-wrap: wrap; }
-  .sub-card .sub-btn { width: 100%; justify-content: center; }
-  .tip-card { padding: 14px; }
-  .tip-card .tip-title { font-size: 12px; }
-  .tip-card .tip-text { font-size: 11px; }
-  .footer { padding: 16px 12px 10px; }
-}
+    @media (max-width: 640px) {
+      .hero-card { padding: 16px 16px; }
+      .countdown-display { gap: 8px; }
+      .cd-block { padding: 4px 10px; min-width: 50px; }
+      .cd-number { font-size: 22px; }
+      .cd-separator { font-size: 18px; padding-bottom: 10px; }
+      .countdown-header { flex-direction: column; align-items: flex-start; }
+      .countdown-status { font-size: 12px; padding: 2px 12px; }
+      .sub-card { flex-direction: column; text-align: center; padding: 16px 14px; gap: 10px; }
+      .sub-card .sub-btn { width: 100%; justify-content: center; }
+      .subjects-grid { gap: 8px; }
+      .subject-chip { padding: 12px; }
+      .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 14px; }
+      .subject-chip .subject-name { font-size: 13px; }
+      .tools-grid { gap: 6px; }
+      .tool-card { padding: 12px 6px; min-height: 76px; }
+      .tool-card .icon-badge { width: 30px; height: 30px; font-size: 13px; }
+      .tool-card .name { font-size: 10px; }
+      .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
+      .next-card .title { font-size: 16px; }
+      .next-card .message { font-size: 13px; }
+    }
 
-/* --- Très petits téléphones (361px - 480px) --- */
-@media (max-width: 480px) {
-  .header .greeting { font-size: 11px; }
-  .header .greeting #userFirstName { max-width: 50px; }
-  .header .header-actions button { width: 28px; height: 28px; font-size: 11px; }
-  .container { padding: 8px 8px 12px; }
-  .card { padding: 12px; border-radius: 12px; }
-  .hero-top { flex-direction: column; align-items: flex-start; gap: 4px; }
-  .hero-info .exam-label { font-size: 14px; }
-  .hero-bottom { gap: 6px; margin-top: 8px; padding-top: 8px; }
-  .hero-pill { font-size: 10px; padding: 4px 10px; }
-  .mini-stats { grid-template-columns: repeat(2, 1fr); gap: 4px; }
-  .mini-stat { padding: 6px 2px; border-radius: 8px; }
-  .mini-stat .ms-value { font-size: 14px; }
-  .mini-stat .ms-label { font-size: 7px; }
-  .subjects-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .subject-chip { padding: 10px 10px; border-radius: 10px; gap: 10px; }
-  .subject-chip .icon-badge { width: 32px; height: 32px; font-size: 13px; }
-  .subject-chip .subject-name { font-size: 12px; }
-  .subject-chip .subject-chapters { font-size: 10px; }
-  .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
-  .tool-card { padding: 8px 4px; min-height: 60px; border-radius: 10px; }
-  .tool-card .icon-badge { width: 24px; height: 24px; font-size: 11px; border-radius: 6px; }
-  .tool-card .name { font-size: 9px; }
-  .section-title { margin: 14px 0 8px; }
-  .section-title h3 { font-size: 12px; }
-  .section-title .sub { font-size: 10px; }
-  .btn-primary { font-size: 11px; padding: 8px 16px; }
-  .next-card { padding: 14px; }
-  .next-card .title { font-size: 14px; }
-  .next-card .message { font-size: 11px; }
-  .last-activity { padding: 12px; }
-  .last-activity .la-title { font-size: 13px; }
-  .last-activity .la-sub { font-size: 11px; }
-  .sub-card { padding: 10px 12px; gap: 8px; }
-  .sub-card .sub-icon { width: 32px; height: 32px; font-size: 14px; }
-  .sub-card .sub-title { font-size: 12px; }
-  .sub-card .sub-text { font-size: 10px; }
-  .sub-card .sub-btn { font-size: 10px; padding: 6px 12px; }
-  .tip-card { padding: 12px; }
-  .tip-card .tip-icon { width: 30px; height: 30px; font-size: 13px; }
-  .tip-card .tip-title { font-size: 11px; }
-  .tip-card .tip-text { font-size: 10px; }
-  .tip-card .tip-footer { flex-direction: column; align-items: stretch; gap: 6px; }
-  .tip-card .tip-actions { justify-content: center; }
-  .toast { font-size: 11px; padding: 8px 14px; bottom: 16px; }
-  .footer { padding: 14px 10px 8px; margin-top: 24px; }
-  .footer-logo { font-size: 14px; }
-  .footer-links a { font-size: 10px; }
-  .footer-copy { font-size: 9px; }
-}
+    @media (max-width: 480px) {
+      .container { padding: 10px 10px 16px; }
+      .cd-block { padding: 3px 8px; min-width: 44px; }
+      .cd-number { font-size: 18px; }
+      .cd-separator { font-size: 14px; padding-bottom: 8px; }
+      .cd-label { font-size: 8px; }
+      .countdown-status { font-size: 10px; padding: 2px 10px; }
+      .progress-track { height: 2px; }
+      .subjects-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+      .tool-card { padding: 10px 4px; min-height: 68px; border-radius: 10px; }
+      .tool-card .icon-badge { width: 28px; height: 28px; font-size: 12px; }
+      .tool-card .name { font-size: 9px; }
+      .header .greeting { font-size: 11px; }
+      .header .greeting #greetingEmoji { font-size: 13px; }
+      .card { padding: 14px; }
+      .section-title { margin: 18px 0 8px; }
+      .section-title h3 { font-size: 14px; }
+      .next-card { padding: 14px 16px; }
+      .next-card .title { font-size: 14px; }
+      .next-card .message { font-size: 12px; }
+      .footer-links { gap: 10px; }
+      .footer-links a { font-size: 11px; }
+      .tip-card { padding: 14px; }
+      .tip-card .tip-icon { width: 32px; height: 32px; font-size: 13px; }
+      .tip-card .tip-title { font-size: 13px; }
+      .tip-card .tip-text { font-size: 12px; }
+      .sub-card .sub-icon { width: 36px; height: 36px; font-size: 16px; }
+    }
 
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-}
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    @media (max-width: 360px) {
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+      .tool-card { padding: 8px 2px; min-height: 60px; border-radius: 8px; }
+      .tool-card .icon-badge { width: 24px; height: 24px; font-size: 11px; border-radius: 6px; }
+      .tool-card .name { font-size: 8px; }
+      .cd-block { padding: 2px 6px; min-width: 38px; }
+      .cd-number { font-size: 15px; }
+      .cd-separator { font-size: 12px; padding-bottom: 6px; }
+      .cd-label { font-size: 7px; }
+      .countdown-title { font-size: 15px; }
+      .countdown-icon { font-size: 18px; }
+      .hero-card { padding: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+    }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
   </style>
 </head>
 <body>
@@ -578,7 +602,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     <nav class="nav">
       <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
       <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
-      <a href="progression.html"><i class="fas fa-chart-line"></i> Progression</a>
       <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
       <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
       <div class="nav-divider"></div>
@@ -601,7 +624,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
           <span id="greetingText">Bonjour</span>
           <span id="userFirstName">Élève</span>
           <span id="greetingEmoji">👋</span>
-          <span class="offline-indicator" id="offlineIndicator"><i class="fas fa-wifi"></i> Hors ligne</span>
         </div>
       </div>
       <div class="header-actions">
@@ -624,9 +646,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
       <!-- ===== SKELETON LOADING ===== -->
       <div id="skeletonLoading">
         <div class="skeleton skeleton-card"></div>
-        <div style="height:10px;"></div>
+        <div style="height:12px;"></div>
         <div class="skeleton skeleton-card-sm"></div>
-        <div style="height:10px;"></div>
+        <div style="height:12px;"></div>
         <div class="skeleton skeleton-card-xs"></div>
       </div>
 
@@ -635,115 +657,75 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
         <!-- ===== HERO ===== -->
         <div class="card hero-card">
-          <div class="hero-top">
-            <div class="hero-info">
-              <div class="class-label" id="userClassDisplay">Classe</div>
-              <div class="exam-label" id="userExamDisplay">🎓 Objectif</div>
-              <div id="premiumBadgeContainer"></div>
+          <div class="countdown-header">
+            <div class="countdown-title-wrap">
+              <span class="countdown-icon">📅</span>
+              <span class="countdown-title">BAC 2026</span>
             </div>
-          </div>
-          <div class="hero-bottom">
-            <span class="hero-pill" id="examCountdown">
-              <i class="fas fa-hourglass-half"></i> <span>-- jours avant l'examen</span>
-            </span>
-            <span class="hero-pill streak" id="streakDisplay">
-              <i class="fas fa-fire"></i>
-              <strong id="streakCount">0 💀</strong> jour(s) de suite
-            </span>
-            <span class="hero-pill" id="levelDisplay">
-              <i class="fas fa-star"></i>
-              <span id="levelText">Débutant</span>
-            </span>
+            <span class="countdown-status" id="countdownStatus">🌱 Tu as le temps</span>
           </div>
 
-          <!-- ===== MINI STATS ===== -->
-          <div class="mini-stats">
-            <div class="mini-stat">
-              <div class="ms-value" id="msChapters">0</div>
-              <div class="ms-label">📚 Chapitres</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <div class="countdown-display">
+            <div class="cd-block">
+              <span class="cd-number" id="cdDays">--</span>
+              <span class="cd-label">Jours</span>
             </div>
-            <div class="mini-stat">
-              <div class="ms-value" id="msTime">0h</div>
-              <div class="ms-label">⏱️ Étudiées</div>
+            <span class="cd-separator">:</span>
+            <div class="cd-block">
+              <span class="cd-number" id="cdHours">--</span>
+              <span class="cd-label">Heures</span>
             </div>
-            <div class="mini-stat">
-              <div class="ms-value" id="msStreak">0🔥</div>
-              <div class="ms-label">🔥 Streak</div>
-            </div>
-            <div class="mini-stat">
-              <div class="ms-value" id="msLevel">🌱</div>
-              <div class="ms-label">📈 Niveau</div>
+            <span class="cd-separator">:</span>
+            <div class="cd-block">
+              <span class="cd-number" id="cdMinutes">--</span>
+              <span class="cd-label">Minutes</span>
             </div>
           </div>
         </div>
 
-        <!-- ===== DERNIÈRE ACTIVITÉ ===== -->
-        <div class="last-activity" id="lastActivityCard">
-          <div class="la-header">
-            <div class="la-icon"><i class="fas fa-clock"></i></div>
-            <span class="la-label">Dernière activité</span>
+        <!-- ===== PROCHAINE ÉTAPE (FIXE) ===== -->
+        <div class="section-title"><h3>💡 Conseil</h3></div>
+        <div class="next-card">
+          <div class="badge"><i class="fas fa-lightbulb"></i> Bien démarrer</div>
+          <div class="title">Comment choisir une matière ?</div>
+          <div class="message">
+            Commence par la matière où tu te sens <strong>le moins à l'aise</strong>. 
+            Ensuite, alterne avec celles que tu maîtrises mieux pour garder la <strong>motivation</strong>. 
+            N'oublie pas de faire des pauses régulières et de varier les méthodes de révision.
           </div>
-          <div class="la-title" id="laTitle">Chapitre 3 - Nombres complexes</div>
-          <div class="la-sub" id="laSub">Mathématiques • il y a 2h</div>
-          <a href="#" class="la-btn" id="laBtn">Continuer →</a>
         </div>
-
-        <!-- ===== PROCHAINE ÉTAPE ===== -->
-        <div class="section-title"><h3>🎯 Ta prochaine étape</h3></div>
-        <div id="nextStepCard"></div>
 
         <!-- ===== MES MATIÈRES ===== -->
         <div class="section-title"><h3>📐 Mes matières</h3></div>
         <div class="subjects-grid" id="subjectsGrid"></div>
 
-                <!-- ===== OUTILS & RESSOURCES ===== -->
+        <!-- ===== OUTILS & RESSOURCES ===== -->
         <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
-        <div class="tools-grid">
-          <a href="calculatrice.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-calculator"></i></div>
-            <div class="name">Calculatrice</div>
-          </a>
-          <a href="formulaires.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-flask"></i></div>
-            <div class="name">Formulaires</div>
-          </a>
-          <a href="sujets.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
-            <div class="name">Sujets BAC</div>
-          </a>
-          <a href="mode-examen.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-clock"></i></div>
-            <div class="name">Mode Examen</div>
-          </a>
-          <a href="tableau-periodique.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
-            <div class="name">Table périodique</div>
-          </a>
-          <a href="chat.html" class="tool-card">
-            <div class="icon-badge"><i class="fas fa-robot"></i></div>
-            <div class="name">ARV-ASSISTANT</div>
-          </a>
-        </div>
+        <div class="tools-grid" id="toolsGrid"></div>
 
         <!-- ===== CONSEIL DU JOUR ===== -->
-<div class="section-title"><h3>💡 Conseil du jour</h3></div>
-<div class="card tip-card" id="tipCard">
-  <div class="tip-header">
-    <div class="tip-icon" id="tipIcon"><i class="fas fa-lightbulb"></i></div>
-    <div class="tip-body">
-      <div class="tip-category" id="tipCategory">💪 MOTIVATION</div>
-      <div class="tip-title" id="tipTitle">Le succès est au bout de l'effort</div>
-      <div class="tip-text" id="tipText">Chaque jour de révision te rapproche un peu plus de ton objectif. Continue !</div>
-    </div>
-  </div>
-</div>
+        <div class="section-title"><h3>💡 Conseil du jour</h3></div>
+        <div class="tip-card" id="tipCard">
+          <div class="tip-header">
+            <div class="tip-icon"><i class="fas fa-lightbulb"></i></div>
+            <div class="tip-content">
+              <div class="tip-eyebrow">Conseil du jour</div>
+              <div class="tip-title" id="tipTitle">Méthode de travail</div>
+              <div class="tip-text" id="tipText">Chargement du conseil...</div>
+            </div>
+          </div>
+        </div>
+
         <!-- ===== SECTION ABONNEMENT ===== -->
         <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
           <div class="sub-card" id="subCard">
             <div class="sub-icon"><i class="fas fa-crown"></i></div>
             <div class="sub-content">
               <div class="sub-title" id="subTitle">🔓 Débloque tout ARVEXA School</div>
-             
               <div class="sub-text" id="subText">Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.</div>
               <div class="sub-expiry" id="subExpiry" style="display:none;"></div>
             </div>
@@ -761,7 +743,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         <div class="footer-links">
           <a href="index.html">Accueil</a>
           <a href="profil.html">Profil</a>
-          <a href="progression.html">Progression</a>
           <a href="abonnement.html">Abonnement</a>
         </div>
         <div class="footer-copy">
@@ -779,7 +760,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   </div>
 
   <!-- ============================================================ -->
-  <!-- SCRIPTS AVEC AUTH INTÉGRÉE                                   -->
+  <!-- SCRIPTS                                                       -->
   <!-- ============================================================ -->
   <script type="importmap">
   {
@@ -793,515 +774,236 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
   <script type="module">
   // ================================================================
-// INDEX - VERSION COMPLETE AVEC CONSEILS SIMPLES
-// ================================================================
+  // INDEX - VERSION OPTIMISÉE
+  // ================================================================
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
-  signOut,
-  getIdToken
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  onSnapshot,
-  updateDoc,
-  serverTimestamp,
-  collection,
-  query,
-  where,
-  getDocs,
-  increment
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence,
+    signOut,
+    getIdToken
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    onSnapshot,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-// ================================================================
-// CONFIG
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
+  // ================================================================
+  // CONFIG
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+  };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-try {
-  await setPersistence(auth, browserLocalPersistence);
-  console.log('🔐 Persistance locale activée');
-} catch (e) { console.warn('⚠️ Persistance:', e); }
-
-// ================================================================
-// SESSION CACHE
-// ================================================================
-const SESSION_KEY = 'arvexa_session';
-
-function saveSession(user) {
-  if (!user) return;
   try {
-    const data = {
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      emailVerified: user.emailVerified,
-      lastLogin: new Date().toISOString(),
-      token: user.accessToken
-    };
-    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
-  } catch (e) {}
-}
+    await setPersistence(auth, browserLocalPersistence);
+    console.log('🔐 Persistance locale activée');
+  } catch (e) { console.warn('⚠️ Persistance:', e); }
 
-function clearSession() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem('arvexa_user_data');
-    localStorage.removeItem('arvexa_progress_data');
-    localStorage.removeItem('arvexa_last_visit');
-    localStorage.removeItem('arvexa_reading_streak');
-  } catch (e) {}
-}
+  // ================================================================
+  // SESSION
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
 
-// ================================================================
-// DOM
-// ================================================================
-const skeletonLoading = document.getElementById('skeletonLoading');
-const dynamicContent = document.getElementById('dynamicContent');
-const userFirstName = document.getElementById('userFirstName');
-const greetingText = document.getElementById('greetingText');
-const greetingEmoji = document.getElementById('greetingEmoji');
-const userClassDisplay = document.getElementById('userClassDisplay');
-const userExamDisplay = document.getElementById('userExamDisplay');
-const premiumBadgeContainer = document.getElementById('premiumBadgeContainer');
-const nextStepCard = document.getElementById('nextStepCard');
-const subjectsGrid = document.getElementById('subjectsGrid');
-const examCountdown = document.getElementById('examCountdown');
-const streakCount = document.getElementById('streakCount');
-const levelDisplay = document.getElementById('levelDisplay');
-const levelText = document.getElementById('levelText');
-const notifDot = document.getElementById('notifDot');
-const offlineIndicator = document.getElementById('offlineIndicator');
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        emailVerified: user.emailVerified,
+        lastLogin: new Date().toISOString(),
+        token: user.accessToken
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    } catch (e) {}
+  }
 
-// Mini stats
-const msChapters = document.getElementById('msChapters');
-const msTime = document.getElementById('msTime');
-const msStreak = document.getElementById('msStreak');
-const msLevel = document.getElementById('msLevel');
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem('arvexa_user_data');
+    } catch (e) {}
+  }
 
-// Dernière activité
-const lastActivityCard = document.getElementById('lastActivityCard');
-const laTitle = document.getElementById('laTitle');
-const laSub = document.getElementById('laSub');
-const laBtn = document.getElementById('laBtn');
-
-// ================================================================
-// TOAST
-// ================================================================
-const toast = document.getElementById('toast');
-const toastMessage = document.querySelector('.toast-message');
-const toastIcon = document.querySelector('.toast-icon i');
-
-function showToast(message, type = 'success') {
-  toastMessage.textContent = message;
-  toast.className = `toast ${type}`;
-  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-  toast.classList.add('show');
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-// ================================================================
-// CONSTANTES
-// ================================================================
-const FIXED_SUBJECTS = [
-  { name: 'Mathématiques', icon: 'fa-square-root-variable', key: 'mathematiques', chapters: 8 },
-  { name: 'Physique', icon: 'fa-bolt', key: 'physique', chapters: 17 },
-  { name: 'Chimie', icon: 'fa-flask', key: 'chimie', chapters: 9 },
-  { name: 'SVT', icon: 'fa-dna', key: 'svt', chapters: 4 }
-];
-
-// ================================================================
-// CONSEILS - VERSION SIMPLE AVEC ROTATION AUTOMATIQUE
-// ================================================================
-
-const TIPS = [
-  // ===== MOTIVATION =====
-  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Le succès est au bout de l\'effort', text: 'Chaque jour de révision te rapproche un peu plus de ton objectif. Continue !' },
-  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Tu es plus fort que tu ne le penses', text: 'Les défis sont là pour te faire grandir. Crois en toi et persévère !' },
-  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'La persévérance paie toujours', text: 'Les résultats que tu obtiendras seront à la hauteur des efforts que tu fournis.' },
-  { category: '💪 MOTIVATION', icon: 'fa-star', title: 'Ne lâche rien !', text: 'Le moment où tu as envie d\'abandonner est souvent celui où tu es le plus proche du succès.' },
-  // ===== MÉTHODE =====
-  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'La technique Pomodoro', text: 'Travaille 25 minutes en pleine concentration, puis fais une pause de 5 minutes. Répète 4 fois.' },
-  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'Révision active', text: 'Explique le cours à voix haute comme si tu l\'enseignais à quelqu\'un. C\'est très efficace !' },
-  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'La méthode Cornell', text: 'Divise ta page en 3 zones : notes, mots-clés, résumé. Structure ta pensée.' },
-  { category: '📚 MÉTHODE', icon: 'fa-clock', title: 'Réviser par séances', text: 'Révise plusieurs fois par jour pendant 20-30 minutes plutôt qu\'une longue session.' },
-  // ===== BAC =====
-  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Objectif BAC', text: 'Révise les sujets des années précédentes. 70% des questions reviennent d\'une année sur l\'autre.' },
-  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Connais tes coefficients', text: 'Priorise les matières à fort coefficient. Une bonne note là-bas fait toute la différence.' },
-  { category: '🎯 BAC', icon: 'fa-graduation-cap', title: 'Entraîne-toi en conditions réelles', text: 'Fais des sujets complets en temps limité pour t\'habituer au stress du jour J.' },
-  // ===== SANTÉ =====
-  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Hydrate-toi !', text: 'Bois de l\'eau régulièrement pendant tes révisions. La déshydratation réduit ta concentration.' },
-  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Dors pour apprendre', text: 'Le sommeil consolide la mémoire. Dors au moins 7h pour que ton cerveau intègre ce que tu as appris.' },
-  { category: '🧠 SANTÉ', icon: 'fa-heart', title: 'Fais des pauses', text: 'Une pause de 10 minutes toutes les heures permet à ton cerveau de mieux assimiler les informations.' },
-  // ===== ORGANISATION =====
-  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Planifie ta semaine', text: 'Dédie chaque jour à une matière différente pour éviter la surcharge cognitive.' },
-  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Objectif SMART', text: 'Fixe-toi des objectifs Spécifiques, Mesurables, Atteignables, Réalistes et Temporellement définis.' },
-  { category: '📋 ORGANISATION', icon: 'fa-list-check', title: 'Le plus dur est de commencer', text: 'Engage-toi à réviser seulement 5 minutes. Souvent, une fois lancé, tu continues beaucoup plus longtemps.' },
-  // ===== RÉVISION =====
-  { category: '👀 RÉVISION', icon: 'fa-eye', title: 'Révision espacée', text: 'Révise une notion 1 jour, 3 jours, puis 7 jours après l\'avoir apprise pour la mémoriser durablement.' },
-  { category: '👀 RÉVISION', icon: 'fa-eye', title: 'Utilise des flashcards', text: 'Les flashcards sont un excellent moyen de mémoriser les définitions, formules et dates clés.' },
-  // ===== RELAXATION =====
-  { category: '🌿 RELAXATION', icon: 'fa-spa', title: 'Respire profondément', text: 'Prends 3 grandes respirations avant chaque séance de révision. Calme ton esprit et augmente ta concentration.' },
-  { category: '🌿 RELAXATION', icon: 'fa-spa', title: 'Méditation express', text: 'Ferme les yeux, concentre-toi sur ta respiration pendant 2 minutes. Cela réduit le stress et améliore la mémoire.' }
-];
-
-function getTipOfTheDay() {
-  const now = new Date();
-  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-  const hourSlot = Math.floor(now.getHours() / 2);
-  const index = (dayOfYear + hourSlot) % TIPS.length;
-  return TIPS[index];
-}
-
-function renderTip() {
-  const tip = getTipOfTheDay();
-  if (!tip) return;
-
-  const tipIcon = document.getElementById('tipIcon');
-  const tipCategory = document.getElementById('tipCategory');
+  // ================================================================
+  // DOM
+  // ================================================================
+  const skeletonLoading = document.getElementById('skeletonLoading');
+  const dynamicContent = document.getElementById('dynamicContent');
+  const userFirstName = document.getElementById('userFirstName');
+  const greetingText = document.getElementById('greetingText');
+  const greetingEmoji = document.getElementById('greetingEmoji');
+  const subjectsGrid = document.getElementById('subjectsGrid');
+  const toolsGrid = document.getElementById('toolsGrid');
   const tipTitle = document.getElementById('tipTitle');
   const tipText = document.getElementById('tipText');
 
-  if (tipIcon) {
-    tipIcon.className = 'tip-icon';
-    tipIcon.innerHTML = `<i class="fas ${tip.icon}"></i>`;
+  // Compte à rebours
+  const cdDays = document.getElementById('cdDays');
+  const cdHours = document.getElementById('cdHours');
+  const cdMinutes = document.getElementById('cdMinutes');
+  const progressFill = document.getElementById('progressFill');
+  const countdownStatus = document.getElementById('countdownStatus');
+
+  // Toast
+  const toast = document.getElementById('toast');
+  const toastMessage = document.querySelector('.toast-message');
+  const toastIcon = document.querySelector('.toast-icon i');
+
+  // ================================================================
+  // CONSTANTES
+  // ================================================================
+  const SUBJECTS = [
+    { key: 'mathematiques', name: 'Mathématiques', icon: 'fa-square-root-variable', chapters: 8 },
+    { key: 'physique', name: 'Physique', icon: 'fa-bolt', chapters: 17 },
+    { key: 'chimie', name: 'Chimie', icon: 'fa-flask', chapters: 9 },
+    { key: 'svt', name: 'SVT', icon: 'fa-dna', chapters: 4 }
+  ];
+
+  const TOOLS = [
+    { name: 'Calculatrice', icon: 'fa-calculator', href: 'calculatrice.html' },
+    { name: 'Formulaires', icon: 'fa-flask', href: 'formulaires.html' },
+    { name: 'Planificateur', icon: 'fa-calendar-alt', href: 'planificateur.html' },
+    { name: 'Mode Examen', icon: 'fa-clock', href: 'mode-examen.html' },
+    { name: 'Table périodique', icon: 'fa-table-cells', href: 'tableau-periodique.html' },
+    { name: 'ARV-ASSISTANT', icon: 'fa-robot', href: 'chat.html' }
+  ];
+
+  // Conseils statiques (fallback)
+  const TIPS = [
+    { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
+    { title: '📚 Méthode Pomodoro', text: "25 minutes de travail, 5 minutes de pause. Répète 4 fois, puis fais une pause plus longue." },
+    { title: '🎯 Objectif du jour', text: "Choisis une notion difficile et concentre-toi dessus pendant 30 minutes." },
+    { title: '💪 Motivation', text: "Tu es plus fort que tu ne le penses. Chaque petit pas te rapproche de ton objectif." },
+    { title: '🧠 Cerveau', text: "Le cerveau apprend mieux par répétition espacée. Révise une notion plusieurs fois sur plusieurs jours." },
+    { title: '📝 Prise de notes', text: "Résume tes cours avec tes propres mots. C'est le meilleur moyen de comprendre et de mémoriser." },
+    { title: '🌿 Pause nature', text: "Prends une pause de 10 minutes en extérieur. L'air frais booste la concentration." },
+    { title: '🎵 Concentration', text: "Écoute de la musique instrumentale ou des sons de nature pour rester focus." },
+    { title: '📖 Lecture active', text: "Ne lis pas passivement. Pose-toi des questions, souligne, prends des notes." },
+    { title: '🏆 Petit victoire', text: "Célèbre chaque petite victoire. Chaque exercice réussi est une étape franchie." }
+  ];
+
+  // ================================================================
+  // COMPTE À REBOURS
+  // ================================================================
+  function getExamDate() {
+    const year = new Date().getFullYear();
+    // BAC : début juin (supposé 1er juin)
+    return new Date(year, 5, 1);
   }
-  if (tipCategory) tipCategory.textContent = tip.category;
-  if (tipTitle) tipTitle.textContent = tip.title;
-  if (tipText) tipText.textContent = tip.text;
-}
 
-// ================================================================
-// FONCTIONS UTILITAIRES
-// ================================================================
+  function getCountdownMessages(days) {
+    if (days <= 0) return { emoji: '🎉', message: 'C\'est le jour J ! Bonne chance !', class: 'critical' };
+    if (days < 7) return { emoji: '🏆', message: 'C\'est maintenant ! Dernière ligne droite', class: 'critical' };
+    if (days < 15) return { emoji: '🚀', message: 'Sprint final, donne tout', class: 'critical' };
+    if (days < 30) return { emoji: '🔥', message: 'Concentre-toi, chaque jour compte', class: 'late' };
+    if (days < 60) return { emoji: '⚡', message: 'Accélère, c\'est le moment clé', class: 'mid' };
+    if (days < 90) return { emoji: '📚', message: 'Bon rythme, continue comme ça', class: 'mid' };
+    return { emoji: '🌱', message: 'Tu as le temps, commence tranquillement', class: 'early' };
+  }
 
-function getGreeting() {
-  const hours = new Date().getHours();
-  if (hours >= 5 && hours < 12) return { text: 'Bonjour', emoji: '🌅' };
-  if (hours >= 12 && hours < 18) return { text: 'Bon après-midi', emoji: '☀️' };
-  return { text: 'Bonsoir', emoji: '🌙' };
-}
+  function updateCountdown() {
+    const now = new Date();
+    const exam = getExamDate();
+    const diffMs = exam - now;
 
-function updateGreeting(firstName) {
-  const { text, emoji } = getGreeting();
-  greetingText.textContent = text;
-  userFirstName.textContent = firstName || 'Élève';
-  greetingEmoji.textContent = emoji;
-}
-
-function computeExamCountdown() {
-  const now = new Date();
-  let target = new Date(now.getFullYear(), 5, 17);
-  if (target < now) target = new Date(now.getFullYear() + 1, 5, 17);
-  const diffMs = target - now;
-  return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-}
-
-function getFlames(streak) {
-  if (streak === 0) return '💀';
-  if (streak < 3) return '🔥';
-  if (streak < 7) return '🔥🔥';
-  if (streak < 14) return '🔥🔥🔥';
-  if (streak < 30) return '🔥🔥🔥🔥';
-  return '🔥🔥🔥🔥🔥 👑';
-}
-
-function getStreakMessage(streak) {
-  if (streak === 0) return 'Commence aujourd\'hui ! 💪';
-  if (streak < 3) return 'Premier pas, continue ! 🔥';
-  if (streak < 7) return 'Tu prends de l\'élan ! 🔥🔥';
-  if (streak < 14) return 'Une semaine ! Incroyable ! 🔥🔥🔥';
-  if (streak < 30) return 'Tu es un.e warrior ! 🔥🔥🔥🔥';
-  return 'LÉGENDE ! Tu es invincible ! 👑';
-}
-
-function getLevel(completedChapters, totalChapters = 38) {
-  if (!totalChapters || totalChapters === 0) return { emoji: '🌱', text: 'Débutant' };
-  const ratio = completedChapters / totalChapters;
-  if (ratio === 0) return { emoji: '🌱', text: 'Débutant' };
-  if (ratio < 0.25) return { emoji: '📖', text: 'Apprenti' };
-  if (ratio < 0.50) return { emoji: '⚡', text: 'En progression' };
-  if (ratio < 0.75) return { emoji: '🔥', text: 'Enflammé' };
-  if (ratio < 1) return { emoji: '⭐', text: 'Expert' };
-  return { emoji: '👑', text: 'Maître ARVEXA' };
-}
-
-function formatTime(seconds) {
-  if (!seconds || seconds < 60) return '0h';
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  if (hours === 0) return `${minutes}m`;
-  return `${hours}h${minutes > 0 ? ` ${minutes}m` : ''}`;
-}
-
-// ================================================================
-// STREAK - VERSION CORRIGÉE
-// ================================================================
-
-async function updateStreak(userId) {
-  if (!userId) return 0;
-
-  const today = new Date().toISOString().split('T')[0];
-  const userRef = doc(db, 'users', userId);
-
-  try {
-    const userDoc = await getDoc(userRef);
-    if (!userDoc.exists()) return 0;
-
-    const data = userDoc.data();
-    const lastDate = data.lastStreakDate || null;
-    let streak = data.readingStreak || 0;
-
-    // Si c'est la première fois aujourd'hui, on met à jour
-    if (lastDate !== today) {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-      // Si la dernière visite était hier, on incrémente
-      if (lastDate === yesterdayStr) {
-        streak += 1;
-      } else if (lastDate !== today) {
-        // Si la dernière visite n'est ni aujourd'hui ni hier, on réinitialise à 1
-        // (sauf si c'est la première visite)
-        if (lastDate !== null) {
-          streak = 1;
-        } else {
-          streak = 1;
-        }
-      }
-
-      // Mettre à jour dans Firestore
-      await updateDoc(userRef, {
-        readingStreak: streak,
-        lastStreakDate: today,
-        updatedAt: serverTimestamp()
-      });
-
-      console.log(`🔥 Streak mis à jour: ${streak} jours (dernière visite: ${lastDate})`);
+    if (diffMs <= 0) {
+      cdDays.textContent = '0';
+      cdHours.textContent = '0';
+      cdMinutes.textContent = '0';
+      progressFill.style.width = '100%';
+      progressFill.className = 'progress-fill critical';
+      countdownStatus.textContent = '🎉 C\'est le jour J !';
+      countdownStatus.className = 'countdown-status critical';
+      return;
     }
 
-    return streak;
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
 
-  } catch (error) {
-    console.warn('⚠️ Erreur mise à jour streak:', error);
-    // En cas d'erreur, retourner la valeur en cache
-    const cached = localStorage.getItem('arvexa_reading_streak');
-    return cached ? parseInt(cached) : 0;
-  }
-}
+    cdDays.textContent = days;
+    cdHours.textContent = String(hours).padStart(2, '0');
+    cdMinutes.textContent = String(minutes).padStart(2, '0');
 
-// ================================================================
-// CHARGEMENT DES DONNÉES UTILISATEUR
-// ================================================================
+    // Progression : début d'année scolaire (1er septembre) à 100%
+    const start = new Date(now.getFullYear(), 8, 1);
+    const total = exam - start;
+    const elapsed = now - start;
+    const progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
+    progressFill.style.width = progress + '%';
 
-let unsubscribeUserData = null;
+    // Couleur selon la progression
+    let progressClass = 'early';
+    if (progress > 85) progressClass = 'critical';
+    else if (progress > 70) progressClass = 'late';
+    else if (progress > 50) progressClass = 'mid';
+    progressFill.className = 'progress-fill ' + progressClass;
 
-function loadUserData(user) {
-  if (unsubscribeUserData) {
-    unsubscribeUserData();
-    unsubscribeUserData = null;
-  }
-
-  const userRef = doc(db, 'users', user.uid);
-
-  unsubscribeUserData = onSnapshot(userRef,
-    async (docSnap) => {
-      if (docSnap.exists()) {
-        const userData = docSnap.data();
-        const isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-
-        try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
-        } catch (e) {}
-
-        const streak = await updateStreak(user.uid);
-        renderDashboard(userData, streak, isPremium);
-        updateSubscriptionDisplay(userData, isPremium);
-        updateUserGreeting(userData);
-        updateLastActivity();
-
-        skeletonLoading.style.display = 'none';
-        dynamicContent.style.display = 'block';
-
-        if (!navigator.onLine && isPremium) {
-          offlineIndicator.classList.add('show');
-        } else {
-          offlineIndicator.classList.remove('show');
-        }
-
-      } else {
-        showToast('⚠️ Profil introuvable.', 'error');
-      }
-    },
-    (error) => {
-      console.error('❌ Erreur Firestore:', error);
-      try {
-        const cached = localStorage.getItem('arvexa_user_data');
-        if (cached) {
-          const userData = JSON.parse(cached);
-          const isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-          renderDashboard(userData, 0, isPremium);
-          updateSubscriptionDisplay(userData, isPremium);
-          skeletonLoading.style.display = 'none';
-          dynamicContent.style.display = 'block';
-          showToast('📶 Données chargées depuis le cache', 'info');
-        }
-      } catch (e) {}
-    }
-  );
-}
-
-function updateUserGreeting(userData) {
-  if (userData) {
-    const firstName = userData.firstName || 'Élève';
-    updateGreeting(firstName);
-  }
-}
-
-// ================================================================
-// RENDU DU DASHBOARD
-// ================================================================
-
-function renderDashboard(userData, streak, isPremium) {
-  if (!userData) return;
-
-  const firstName = userData.firstName || 'Élève';
-  updateGreeting(firstName);
-
-  userClassDisplay.textContent = userData.classId || 'Terminale D';
-  userExamDisplay.textContent = '🎓 Préparation BAC';
-
-  premiumBadgeContainer.innerHTML = isPremium
-    ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>'
-    : '';
-
-  const days = computeExamCountdown();
-  let emoji = '⏳';
-  let className = '';
-  if (days < 30) { emoji = '🔥'; className = 'warning'; }
-  if (days < 7) { emoji = '🚨'; className = 'danger'; }
-  if (days === 0) { emoji = '🎯'; }
-  examCountdown.className = 'hero-pill ' + className;
-  examCountdown.innerHTML = `<i class="fas fa-hourglass-half"></i> <span>${emoji} ${days} jours avant le BAC</span>`;
-
-  const flames = getFlames(streak || 0);
-  const streakMsg = getStreakMessage(streak || 0);
-  streakCount.textContent = `${streak || 0} ${flames}`;
-  streakCount.title = streakMsg;
-
-  const chaptersRead = userData.chaptersRead || 0;
-  const level = getLevel(chaptersRead);
-  levelText.textContent = level.emoji + ' ' + level.text;
-  if (levelDisplay) levelDisplay.title = 'Niveau : ' + level.text;
-
-  // Mini stats
-  if (msChapters) msChapters.textContent = chaptersRead;
-  if (msTime) msTime.textContent = formatTime(userData.totalStudyTime || 0);
-  if (msStreak) msStreak.textContent = `${streak || 0}${flames}`;
-  if (msLevel) { msLevel.textContent = level.emoji; msLevel.title = level.text; }
-
-  renderNextStep(userData, isPremium);
-  renderSubjects();
-  renderTip();
-}
-
-// ================================================================
-// DERNIÈRE ACTIVITÉ
-// ================================================================
-
-function updateLastActivity() {
-  try {
-    const lastActivity = JSON.parse(localStorage.getItem('arvexa_last_activity') || 'null');
-    if (lastActivity && lastActivity.chapter !== undefined) {
-      if (lastActivityCard) lastActivityCard.classList.add('show');
-      if (laTitle) laTitle.textContent = lastActivity.title || 'Chapitre ' + (lastActivity.chapter + 1);
-      if (laSub) laSub.textContent = (lastActivity.subject || 'Mathématiques') + ' • ' + (lastActivity.time || 'Récemment');
-      if (laBtn) laBtn.href = `chapitre.html?subject=${lastActivity.subjectKey || 'mathematiques'}&chapter=${lastActivity.chapter || 0}`;
-    } else {
-      if (lastActivityCard) lastActivityCard.classList.remove('show');
-    }
-  } catch (e) {
-    if (lastActivityCard) lastActivityCard.classList.remove('show');
-  }
-}
-
-// ================================================================
-// PROCHAINE ÉTAPE
-// ================================================================
-
-function renderNextStep(userData, isPremium) {
-  const chaptersRead = userData?.chaptersRead || 0;
-
-  let title, message, btnText, btnLink;
-
-  if (isPremium) {
-    const nextChapter = Math.min(chaptersRead, 37);
-    const subjectKeys = ['mathematiques', 'physique', 'chimie', 'svt'];
-    const subjectIdx = Math.floor(nextChapter / 10) % subjectKeys.length;
-    const subjectKey = subjectKeys[subjectIdx] || 'mathematiques';
-    const chapterIdx = nextChapter % 10;
-
-    title = `📖 Chapitre ${nextChapter + 1} à découvrir`;
-    message = `Continue ton apprentissage avec le prochain chapitre de ${FIXED_SUBJECTS[subjectIdx].name}.`;
-    btnText = 'Commencer →';
-    btnLink = `chapitre.html?subject=${subjectKey}&chapter=${chapterIdx}`;
-
-    if (chaptersRead >= 38) {
-      title = '🎉 Tu as tout lu !';
-      message = 'Bravo ! Tu as terminé tous les chapitres. Continue à réviser pour maîtriser parfaitement.';
-      btnText = 'Revoir un chapitre';
-      btnLink = 'matiere.html?subject=mathematiques';
-    }
-  } else {
-    title = '🚀 Commence ton parcours';
-    message = 'Découvre les Mathématiques avec le chapitre 1. Le premier chapitre est gratuit !';
-    btnText = 'Commencer →';
-    btnLink = 'chapitre.html?subject=mathematiques&chapter=0';
+    // Message
+    const msg = getCountdownMessages(days);
+    countdownStatus.textContent = `${msg.emoji} ${msg.message}`;
+    countdownStatus.className = 'countdown-status ' + msg.class;
   }
 
-  if (nextStepCard) {
-    nextStepCard.innerHTML = `
-      <div class="next-card">
-        <div class="badge">${isPremium ? '👑 Premium' : '🎯 Objectif'}</div>
-        <div class="title">${title}</div>
-        <div class="message">${message}</div>
-        <div class="actions">
-          <a href="${btnLink}" class="btn-primary">${btnText}</a>
-          ${!isPremium ? '<a href="abonnement.html" class="btn-primary" style="background:rgba(255,255,255,0.04);color:var(--text-dim);">🔓 Voir Premium</a>' : ''}
-        </div>
-      </div>
-    `;
+  // Mettre à jour toutes les minutes
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+
+  // ================================================================
+  // GREETING
+  // ================================================================
+  function getGreeting() {
+    const hours = new Date().getHours();
+    if (hours >= 5 && hours < 12) return { text: 'Bonjour', emoji: '🌅' };
+    if (hours >= 12 && hours < 18) return { text: 'Bon après-midi', emoji: '☀️' };
+    return { text: 'Bonsoir', emoji: '🌙' };
   }
-}
 
-// ================================================================
-// MATIÈRES
-// ================================================================
+  function updateGreeting(firstName) {
+    const { text, emoji } = getGreeting();
+    greetingText.textContent = text;
+    userFirstName.textContent = firstName || 'Élève';
+    greetingEmoji.textContent = emoji;
+  }
 
-function renderSubjects() {
-  if (subjectsGrid) {
-    subjectsGrid.innerHTML = FIXED_SUBJECTS.map(subject => `
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'success') {
+    toastMessage.textContent = message;
+    toast.className = `toast ${type}`;
+    toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+    toast.classList.add('show');
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // ================================================================
+  // RENDER FUNCTIONS
+  // ================================================================
+  function renderSubjects() {
+    subjectsGrid.innerHTML = SUBJECTS.map(subject => `
       <a href="matiere.html?subject=${subject.key}" class="subject-chip">
         <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
         <div>
@@ -1311,209 +1013,243 @@ function renderSubjects() {
       </a>
     `).join('');
   }
-}
 
-// ================================================================
-// ABONNEMENT
-// ================================================================
-
-function updateSubscriptionDisplay(userData, isPremium) {
-  const reminder = document.getElementById('subscriptionReminder');
-  const subTitle = document.getElementById('subTitle');
-  const subText = document.getElementById('subText');
-  const subExpiry = document.getElementById('subExpiry');
-  const subBtn = document.getElementById('subBtn');
-
-  if (!reminder) return;
-
-  if (!isPremium) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
-    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Voir les offres';
-    subBtn.className = 'sub-btn';
-    subBtn.href = 'abonnement.html';
-    return;
+  function renderTools() {
+    toolsGrid.innerHTML = TOOLS.map(tool => `
+      <a href="${tool.href}" class="tool-card">
+        <div class="icon-badge"><i class="fas ${tool.icon}"></i></div>
+        <div class="name">${tool.name}</div>
+      </a>
+    `).join('');
   }
 
-  const expiryDate = userData?.subscriptionEndDate;
-  if (!expiryDate) {
-    reminder.style.display = 'none';
-    return;
+  function renderTip() {
+    const today = new Date().getDate();
+    const tip = TIPS[today % TIPS.length] || TIPS[0];
+    tipTitle.textContent = tip.title;
+    tipText.textContent = tip.text;
   }
 
-  const now = new Date();
-  const expiry = new Date(expiryDate);
-  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+  // ================================================================
+  // SUBSCRIPTION
+  // ================================================================
+  function updateSubscriptionDisplay(isPremium, userData) {
+    const reminder = document.getElementById('subscriptionReminder');
+    const subTitle = document.getElementById('subTitle');
+    const subText = document.getElementById('subText');
+    const subExpiry = document.getElementById('subExpiry');
+    const subBtn = document.getElementById('subBtn');
 
-  if (daysLeft < 0) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⏳ Abonnement expiré';
-    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
+    if (!reminder) return;
 
-  if (daysLeft <= 7) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
-    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
-    subExpiry.style.display = 'block';
-    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  reminder.style.display = 'none';
-}
-
-// ================================================================
-// RAFRAÎCHISSEMENT
-// ================================================================
-
-async function refreshDashboard() {
-  showToast('🔄 Rafraîchissement...', 'info');
-  if (unsubscribeUserData) {
-    unsubscribeUserData();
-    unsubscribeUserData = null;
-  }
-  const user = auth.currentUser;
-  if (user) {
-    loadUserData(user);
-  }
-}
-
-// ================================================================
-// AUTH - VERSION RENFORCÉE
-// ================================================================
-let authChecked = false;
-let isRedirecting = false;
-let redirectCooldown = 0;
-
-onAuthStateChanged(auth, async (user) => {
-  if (authChecked) {
-    console.log('⏳ Auth déjà vérifié, skip');
-    return;
-  }
-
-  const now = Date.now();
-  if (now - redirectCooldown < 3000) {
-    console.log('⏳ Cooldown actif, skip');
-    return;
-  }
-
-  authChecked = true;
-
-  if (user) {
-    console.log('✅ Index - Utilisateur connecté:', user.uid);
-
-    try {
-      await getIdToken(user, true);
-      console.log('🔄 Token rafraîchi');
-    } catch (e) {
-      console.warn('⚠️ Erreur rafraîchissement token:', e);
+    if (!isPremium) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '🔓 Débloque tout ARVEXA School';
+      subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
+      subExpiry.style.display = 'none';
+      subBtn.textContent = 'Voir les offres';
+      subBtn.className = 'sub-btn';
+      subBtn.href = 'abonnement.html';
+      return;
     }
 
-    saveSession(user);
-    loadUserData(user);
+    const expiryDate = userData?.subscriptionEndDate;
+    if (!expiryDate) {
+      reminder.style.display = 'none';
+      return;
+    }
 
-  } else {
-    if (isRedirecting) return;
-    isRedirecting = true;
-    redirectCooldown = now;
+    const now = new Date();
+    const expiry = new Date(expiryDate);
+    const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
 
-    clearSession();
-    console.log('🔒 Non connecté, redirection vers login');
-    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-    setTimeout(() => {
+    if (daysLeft < 0) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '⏳ Abonnement expiré';
+      subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
+      subExpiry.style.display = 'none';
+      subBtn.textContent = 'Renouveler maintenant';
+      subBtn.className = 'sub-btn renew';
+      subBtn.href = 'abonnement.html';
+      return;
+    }
+
+    if (daysLeft <= 7) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '⚠️ Abonnement bientôt terminé';
+      subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
+      subExpiry.style.display = 'block';
+      subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
+      subBtn.textContent = 'Renouveler maintenant';
+      subBtn.className = 'sub-btn renew';
+      subBtn.href = 'abonnement.html';
+      return;
+    }
+
+    reminder.style.display = 'none';
+  }
+
+  // ================================================================
+  // LOAD USER DATA
+  // ================================================================
+  let userData = null;
+  let isPremium = false;
+  let unsubscribeUser = null;
+
+  function loadUserData(user) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+
+    const userRef = doc(db, 'users', user.uid);
+
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+
+          try {
+            localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
+          } catch (e) {}
+
+          // Mise à jour de l'UI
+          const firstName = userData.firstName || 'Élève';
+          updateGreeting(firstName);
+          updateSubscriptionDisplay(isPremium, userData);
+
+          skeletonLoading.style.display = 'none';
+          dynamicContent.style.display = 'block';
+
+        } else {
+          showToast('⚠️ Profil introuvable.', 'error');
+        }
+      },
+      (error) => {
+        console.error('❌ Erreur Firestore:', error);
+        try {
+          const cached = localStorage.getItem('arvexa_user_data');
+          if (cached) {
+            userData = JSON.parse(cached);
+            isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
+            const firstName = userData.firstName || 'Élève';
+            updateGreeting(firstName);
+            updateSubscriptionDisplay(isPremium, userData);
+            skeletonLoading.style.display = 'none';
+            dynamicContent.style.display = 'block';
+            showToast('📶 Données chargées depuis le cache', 'info');
+          }
+        } catch (e) {}
+      }
+    );
+  }
+
+  // ================================================================
+  // REFRESH
+  // ================================================================
+  async function refreshDashboard() {
+    showToast('🔄 Rafraîchissement...', 'info');
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    const user = auth.currentUser;
+    if (user) {
+      loadUserData(user);
+      updateCountdown();
+      renderTip();
+    }
+  }
+
+  // ================================================================
+  // AUTH
+  // ================================================================
+  let authChecked = false;
+  let isRedirecting = false;
+  let redirectCooldown = 0;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (authChecked) {
+      console.log('⏳ Auth déjà vérifié, skip');
+      return;
+    }
+
+    const now = Date.now();
+    if (now - redirectCooldown < 3000) {
+      console.log('⏳ Cooldown actif, skip');
+      return;
+    }
+
+    authChecked = true;
+
+    if (user) {
+      console.log('✅ Index - Utilisateur connecté:', user.uid);
+
+      try {
+        await getIdToken(user, true);
+        console.log('🔄 Token rafraîchi');
+      } catch (e) {
+        console.warn('⚠️ Erreur rafraîchissement token:', e);
+      }
+
+      saveSession(user);
+      loadUserData(user);
+
+      // Rendu des composants statiques
+      renderSubjects();
+      renderTools();
+      renderTip();
+
+    } else {
+      if (isRedirecting) return;
+      isRedirecting = true;
+      redirectCooldown = now;
+      clearSession();
+      console.log('🔒 Non connecté, redirection vers login');
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 300);
+    }
+  });
+
+  // ================================================================
+  // ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      if (unsubscribeUser) unsubscribeUser();
+      await signOut(auth);
+      clearSession();
       window.location.href = 'login.html';
-    }, 300);
-  }
-});
+    } catch (error) {
+      showToast('Erreur de déconnexion.', 'error');
+    }
+  });
 
-// ================================================================
-// ÉVÉNEMENTS
-// ================================================================
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  });
 
-// Déconnexion
-document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
-  e.preventDefault();
-  try {
-    if (unsubscribeUserData) unsubscribeUserData();
-    await signOut(auth);
-    clearSession();
-    window.location.href = 'login.html';
-  } catch (error) {
-    showToast('Erreur de déconnexion.', 'error');
-  }
-});
+  document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+  });
 
-// Menu
-document.getElementById('menuToggle')?.addEventListener('click', () => {
-  document.getElementById('sidebar')?.classList.toggle('open');
-  document.getElementById('sidebarOverlay')?.classList.toggle('active');
-});
+  document.getElementById('notifBtn').addEventListener('click', () => {
+    window.location.href = 'notifications.html';
+  });
 
-document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
-  document.getElementById('sidebar')?.classList.remove('open');
-  document.getElementById('sidebarOverlay')?.classList.remove('active');
-});
+  document.getElementById('profileBtn').addEventListener('click', () => {
+    window.location.href = 'profil.html';
+  });
 
-// Navigation
-document.getElementById('notifBtn')?.addEventListener('click', () => {
-  window.location.href = 'notifications.html';
-});
+  document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
 
-document.getElementById('profileBtn')?.addEventListener('click', () => {
-  window.location.href = 'profil.html';
-});
-
-document.getElementById('refreshBtn')?.addEventListener('click', refreshDashboard);
-
-// ================================================================
-// CONSEIL - ROTATION AUTOMATIQUE
-// ================================================================
-
-// Appeler au chargement
-renderTip();
-
-// Mettre à jour toutes les 2 heures (7200000 ms)
-setInterval(renderTip, 7200000);
-
-// ================================================================
-// CONNECTIVITÉ
-// ================================================================
-
-window.addEventListener('online', () => {
-  const isPremium = localStorage.getItem('arvexa_user_data') 
-    ? JSON.parse(localStorage.getItem('arvexa_user_data'))?.premium === true 
-    : false;
-  if (isPremium) {
-    if (offlineIndicator) offlineIndicator.classList.remove('show');
-    showToast('📶 Connexion rétablie', 'success');
-  }
-});
-
-window.addEventListener('offline', () => {
-  const isPremium = localStorage.getItem('arvexa_user_data') 
-    ? JSON.parse(localStorage.getItem('arvexa_user_data'))?.premium === true 
-    : false;
-  if (isPremium) {
-    if (offlineIndicator) offlineIndicator.classList.add('show');
-    showToast('📶 Mode hors ligne activé pour les Premium', 'info');
-  } else {
-    showToast('📶 Mode hors ligne disponible avec Premium', 'info');
-  }
-});
-
-console.log('🚀 ARVEXA School — Index version complète et responsive');
-
+  console.log('🚀 ARVEXA School — Tableau de bord (version optimisée)');
   </script>
 </body>
 </html>
