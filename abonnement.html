@@ -241,6 +241,10 @@
       background: rgba(184,92,58,0.1);
       color: var(--danger);
     }
+    .status-section .status-left .status-icon.pending {
+      background: rgba(212,160,23,0.12);
+      color: var(--warning);
+    }
     .status-section .status-text .status-title {
       font-size: 14px;
       font-weight: 600;
@@ -270,6 +274,60 @@
       background: rgba(184,92,58,0.1);
       color: var(--danger);
       border: 1px solid rgba(184,92,58,0.12);
+    }
+    .status-section .status-right .status-badge.pending {
+      background: rgba(212,160,23,0.1);
+      color: var(--warning);
+      border: 1px solid rgba(212,160,23,0.14);
+    }
+    .account-state-panel {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      margin: 0 auto 20px;
+      text-align: center;
+    }
+    .account-state-panel.visible { display: block; }
+    .account-state-panel .state-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(184,134,11,0.1);
+      color: var(--accent-bright);
+    }
+    .account-state-panel.active-state .state-icon {
+      background: rgba(45,125,90,0.12);
+      color: var(--success);
+    }
+    .account-state-panel h2 {
+      color: var(--text-light);
+      font: 700 20px 'Playfair Display', serif;
+      margin-bottom: 6px;
+    }
+    .account-state-panel p { color: var(--text-dim); font-size: 13px; }
+    .premium-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .premium-detail {
+      padding: 10px 8px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .premium-detail strong { display: block; color: var(--text-light); font-size: 13px; }
+    .premium-detail span { color: var(--text-muted); font-size: 10px; }
+    @media (max-width: 480px) {
+      .premium-details { grid-template-columns: 1fr; }
     }
 
     /* ============================================================
@@ -1078,6 +1136,23 @@
       </div>
     </div>
 
+    <div class="account-state-panel" id="pendingPanel" aria-live="polite">
+      <div class="state-icon"><i class="fas fa-hourglass-half fa-spin"></i></div>
+      <h2>Demande en attente de validation</h2>
+      <p>Nous vérifions ton paiement. Tous les contenus Premium resteront masqués jusqu’à la validation.</p>
+    </div>
+
+    <div class="account-state-panel active-state" id="premiumPanel" aria-live="polite">
+      <div class="state-icon"><i class="fas fa-crown"></i></div>
+      <h2>Premium actif</h2>
+      <p>Ton abonnement est validé. Tu as maintenant accès à tous les contenus Premium.</p>
+      <div class="premium-details">
+        <div class="premium-detail"><strong id="premiumPlan">—</strong><span>Forfait</span></div>
+        <div class="premium-detail"><strong id="premiumStartDate">—</strong><span>Date d’activation</span></div>
+        <div class="premium-detail"><strong id="premiumEndDate">—</strong><span>Date de fin</span></div>
+      </div>
+    </div>
+
     <!-- ===== CARTE PRINCIPALE ===== -->
     <div class="sub-card" id="subscriptionCard">
 
@@ -1290,7 +1365,12 @@ import {
   getDoc,
   collection,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
 // ================================================================
@@ -1353,6 +1433,13 @@ const statusIcon = document.getElementById('statusIcon');
 const statusTitle = document.getElementById('statusTitle');
 const statusSub = document.getElementById('statusSub');
 const statusBadge = document.getElementById('statusBadge');
+const heroSection = document.querySelector('.hero-section');
+const subscriptionCard = document.getElementById('subscriptionCard');
+const pendingPanel = document.getElementById('pendingPanel');
+const premiumPanel = document.getElementById('premiumPanel');
+const premiumPlan = document.getElementById('premiumPlan');
+const premiumStartDate = document.getElementById('premiumStartDate');
+const premiumEndDate = document.getElementById('premiumEndDate');
 
 const modal = document.getElementById('paymentModal');
 const closeModalBtn = document.getElementById('closeModal');
@@ -1561,14 +1648,18 @@ async function applyPromoCode(code) {
 function updateStatus(isPremium, subscriptionEndDate) {
   if (isPremium) {
     const now = new Date();
-    const endDate = subscriptionEndDate?.toDate?.() || subscriptionEndDate;
-    const daysLeft = endDate ? Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)) : 0;
+    const endDate = toDate(subscriptionEndDate);
+    const daysLeft = endDate ? Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)) : null;
 
-    if (daysLeft > 0) {
+    if (daysLeft === null || daysLeft > 0) {
       statusIcon.className = 'status-icon premium';
       statusIcon.innerHTML = '<i class="fas fa-crown"></i>';
-      statusTitle.textContent = `👑 Premium actif — ${daysLeft} jour${daysLeft > 1 ? 's' : ''} restant${daysLeft > 1 ? 's' : ''}`;
-      statusSub.textContent = 'Profite de tous les avantages Premium ! 🚀';
+      statusTitle.textContent = daysLeft === null
+        ? '👑 Premium actif'
+        : `👑 Premium actif — ${daysLeft} jour${daysLeft > 1 ? 's' : ''} restant${daysLeft > 1 ? 's' : ''}`;
+      statusSub.textContent = daysLeft === null
+        ? 'Date de fin non précisée. Profite de tous les avantages Premium ! 🚀'
+        : 'Profite de tous les avantages Premium ! 🚀';
       statusBadge.className = 'status-badge premium';
       statusBadge.textContent = 'Premium';
     } else {
@@ -1578,6 +1669,71 @@ function updateStatus(isPremium, subscriptionEndDate) {
       statusSub.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
       statusBadge.className = 'status-badge expired';
       statusBadge.textContent = 'Expiré';
+    }
+
+    function toDate(value) {
+      if (!value) return null;
+      if (typeof value.toDate === 'function') return value.toDate();
+      const date = value instanceof Date ? value : new Date(value);
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function formatDate(value) {
+      const date = toDate(value);
+      return date ? date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Non précisée';
+    }
+
+    function renderAccountState({ pending = false, premium = false, request = null } = {}) {
+      const locked = pending || premium;
+      heroSection.style.display = locked ? 'none' : '';
+      subscriptionCard.style.display = locked ? 'none' : '';
+      pendingPanel.classList.toggle('visible', pending && !premium);
+      premiumPanel.classList.toggle('visible', premium);
+
+      if (pending && !premium) {
+        statusIcon.className = 'status-icon pending';
+        statusIcon.innerHTML = '<i class="fas fa-hourglass-half"></i>';
+        statusTitle.textContent = '⏳ Validation en cours';
+        statusSub.textContent = 'Ta demande a bien été reçue. Le contenu Premium reste verrouillé.';
+        statusBadge.className = 'status-badge pending';
+        statusBadge.textContent = 'En attente';
+      }
+
+      if (premium) {
+        const plan = request?.plan || userData?.subscriptionPlan || userData?.plan;
+        premiumPlan.textContent = plan === 'annual' ? 'Annuel' : plan === 'monthly' ? 'Mensuel' : 'Premium';
+        premiumStartDate.textContent = formatDate(
+          userData?.subscriptionStartDate || request?.validatedAt || request?.approvedAt
+        );
+        premiumEndDate.textContent = formatDate(
+          userData?.subscriptionEndDate || request?.subscriptionEndDate
+        );
+      }
+    }
+
+    async function getPendingRequest() {
+      if (!currentUser) return null;
+      try {
+        const requestsQuery = query(
+          collection(db, 'subscription_requests'),
+          where('userId', '==', currentUser.uid),
+          where('status', '==', 'pending'),
+          orderBy('createdAt', 'desc'),
+          limit(1)
+        );
+        const snapshot = await getDocs(requestsQuery);
+        return snapshot.empty ? null : { id: snapshot.docs[0].id, ...snapshot.docs[0].data() };
+      } catch (error) {
+        // Avoid blocking the account when an optional Firestore index is not ready.
+        console.warn('Impossible de lire la demande en attente:', error);
+        const fallback = await getDocs(query(
+          collection(db, 'subscription_requests'),
+          where('userId', '==', currentUser.uid),
+          where('status', '==', 'pending'),
+          limit(1)
+        ));
+        return fallback.empty ? null : { id: fallback.docs[0].id, ...fallback.docs[0].data() };
+      }
     }
   } else {
     statusIcon.className = 'status-icon free';
@@ -1622,7 +1778,7 @@ function closeModal() {
 // ENVOI VERS WHATSAPP
 // ================================================================
 
-function sendToWhatsApp() {
+async function sendToWhatsApp() {
   const fullName = fullNameInput.value.trim();
   const whatsapp = whatsappInput.value.trim().replace(/\s/g, '');
   const display = getPrice();
@@ -1673,18 +1829,25 @@ function sendToWhatsApp() {
   const encodedMessage = encodeURIComponent(message);
   const waUrl = 'https://wa.me/' + SUPPORT_WHATSAPP + '?text=' + encodedMessage;
 
-  saveSubscriptionRequest(fullName, whatsapp, display);
+  const saved = await saveSubscriptionRequest(fullName, whatsapp, display);
+  if (!saved) {
+    confirmBtn.classList.remove('loading');
+    confirmBtn.disabled = false;
+    showToast('Impossible d’enregistrer la demande. Réessaie.', 'error');
+    return;
+  }
 
   window.open(waUrl, '_blank', 'noopener,noreferrer');
 
   setTimeout(() => {
     closeModal();
+    renderAccountState({ pending: true });
     showToast('✅ Message envoyé ! Envoie la capture d\'écran du paiement.', 'success');
   }, 1000);
 }
 
 async function saveSubscriptionRequest(fullName, whatsapp, display) {
-  if (!currentUser) return;
+  if (!currentUser) return false;
   try {
     await addDoc(collection(db, 'subscription_requests'), {
       userId: currentUser.uid,
@@ -1698,8 +1861,10 @@ async function saveSubscriptionRequest(fullName, whatsapp, display) {
       status: 'pending',
       createdAt: serverTimestamp()
     });
+    return true;
   } catch (error) {
     console.error('❌ Erreur enregistrement:', error);
+    return false;
   }
 }
 
@@ -1781,9 +1946,18 @@ onAuthStateChanged(auth, async (user) => {
 
     userData = userDoc.data();
 
-    const isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
     const endDate = userData.subscriptionEndDate || null;
+    const endDateValue = toDate(endDate);
+    const hasValidEndDate = !endDateValue || endDateValue.getTime() > Date.now();
+    const isPremium = (
+      (userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true) &&
+      userData.subscriptionStatus !== 'pending' &&
+      userData.subscriptionStatus !== 'expired' &&
+      hasValidEndDate
+    );
     updateStatus(isPremium, endDate);
+    const pendingRequest = isPremium ? null : await getPendingRequest();
+    renderAccountState({ pending: Boolean(pendingRequest), premium: isPremium, request: pendingRequest });
 
     if (isPremium && userData.subscriptionStatus !== 'expired') {
       showToast('⭐ Tu es déjà Premium !', 'success');
