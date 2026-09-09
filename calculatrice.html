@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXa School - Calculatrice scientifique">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="ARVEXA School - Calculatrice scientifique">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
@@ -398,550 +396,729 @@
   <span class="toast-message"></span>
 </div>
 
-<script type="importmap">
-{
-  "imports": {
-    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
-    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js"
-  }
-}
-</script>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-onAuthStateChanged(auth, user => { if (!user) window.location.href = 'login.html'; });
-
+<!-- ============================================================ -->
+<!-- SCRIPTS - VERSION FIXE ET COMPLÈTE                         -->
+<!-- ============================================================ -->
+<script>
 // ================================================================
-// TABS
+// CALCULATRICE ARVEXA - VERSION FIXE
 // ================================================================
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabPanels = document.querySelectorAll('.tab-panel');
-tabBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabBtns.forEach(b => b.classList.remove('active'));
-    tabPanels.forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel' + capitalize(btn.dataset.tab)).classList.add('active');
-  });
-});
-function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-// ================================================================
-// CALCULATRICE STATE
-// ================================================================
-const displayExpr = document.getElementById('displayExpr');
-const displayResult = document.getElementById('displayResult');
-const parenCounter = document.getElementById('parenCounter');
-const memIndicator = document.getElementById('memIndicator');
-const historyWrap = document.getElementById('historyWrap');
-const historyList = document.getElementById('historyList');
-const historyToggle = document.getElementById('historyToggle');
-const modeToggle = document.getElementById('modeToggle');
-const modeLabel = document.getElementById('modeLabel');
+(function() {
+  'use strict';
 
-let expr = '';           // affichage
-let calc = '';           // evaluable
-let openP = 0;
-let isDeg = true;
-let done = false;
-let memory = 0;
-let hasMem = false;
-let lastAns = 0;
-let history = [];
+  // ================================================================
+  // DOM
+  // ================================================================
+  const displayExpr = document.getElementById('displayExpr');
+  const displayResult = document.getElementById('displayResult');
+  const parenCounter = document.getElementById('parenCounter');
+  const memIndicator = document.getElementById('memIndicator');
+  const historyWrap = document.getElementById('historyWrap');
+  const historyList = document.getElementById('historyList');
+  const historyToggle = document.getElementById('historyToggle');
+  const modeToggle = document.getElementById('modeToggle');
+  const modeLabel = document.getElementById('modeLabel');
+  const toast = document.getElementById('toast');
+  const toastMsg = document.querySelector('.toast-message');
 
-try { const s = sessionStorage.getItem('arvexa_calc_h'); if (s) history = JSON.parse(s); } catch(e){}
-try { const m = sessionStorage.getItem('arvexa_calc_m'); if (m) { memory = parseFloat(m); hasMem = true; memIndicator.classList.add('visible'); } } catch(e){}
-
-// DEG/RAD
-modeToggle.addEventListener('click', () => {
-  isDeg = !isDeg;
-  modeLabel.textContent = isDeg ? 'DEG' : 'RAD';
-  showToast(isDeg ? 'Mode Degré' : 'Mode Radian');
-});
-
-// ================================================================
-// HISTORY
-// ================================================================
-historyToggle.addEventListener('click', () => {
-  historyWrap.classList.toggle('open');
-  historyToggle.classList.toggle('open');
-});
-
-function saveH() { try { sessionStorage.setItem('arvexa_calc_h', JSON.stringify(history.slice(0,50))); } catch(e){} }
-function saveM() { try { sessionStorage.setItem('arvexa_calc_m', String(memory)); } catch(e){} }
-
-function renderH() {
-  if (!history.length) { historyList.innerHTML = '<div class="history-empty">Aucun calcul</div>'; return; }
-  historyList.innerHTML = history.slice().reverse().map((h,i) =>
-    `<div class="history-item" data-i="${history.length-1-i}"><div class="h-expr">${h.e}</div><div class="h-res">= ${h.r}</div></div>`
-  ).join('');
-  historyList.querySelectorAll('.history-item').forEach(el => {
-    el.addEventListener('click', () => {
- const h = history[parseInt(el.dataset.i)];
-      if (h) { expr = String(h.r); calc = expr; displayExpr.textContent = h.e; displayResult.textContent = h.r; displayResult.classList.remove('error'); done = true; updParen(); }
+  // ================================================================
+  // TABS
+  // ================================================================
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).classList.add('active');
     });
   });
-}
-renderH();
 
-// ================================================================
-// MATH FUNCTIONS
-// ================================================================
-const toRad = d => d * Math.PI / 180;
-const toDeg = r => r * 180 / Math.PI;
-const sinD = x => Math.sin(toRad(x));
-const cosD = x => Math.cos(toRad(x));
-const tanD = x => Math.tan(toRad(x));
-const asinD = x => toDeg(Math.asin(x));
-const acosD = x => toDeg(Math.acos(x));
-const atanD = x => toDeg(Math.atan(x));
+  // ================================================================
+  // STATE
+  // ================================================================
+  let expr = '';
+  let calc = '';
+  let openP = 0;
+  let isDeg = true;
+  let done = false;
+  let memory = 0;
+  let hasMem = false;
+  let lastAns = 0;
+  let history = [];
 
-function factorial(n) {
-  if (n < 0 || !Number.isInteger(n)) return NaN;
-  if (n > 170) return Infinity;
-  let r = 1; for (let i = 2; i <= n; i++) r *= i; return r;
-}
-
-function safeEval(raw) {
-  let e = raw;
-  // Fonctions trigo
-  if (isDeg) {
-    e = e.replace(/sin\(/g, '__sD('); e = e.replace(/cos\(/g, '__cD(');
-    e = e.replace(/tan\(/g, '__tD('); e = e.replace(/asin\(/g, '__asD(');
-    e = e.replace(/acos\(/g, '__acD('); e = e.replace(/atan\(/g, '__atD(');
-  } else {
-    e = e.replace(/sin\(/g, 'Math.sin('); e = e.replace(/cos\(/g, 'Math.cos(');
-    e = e.replace(/tan\(/g, 'Math.tan('); e = e.replace(/asin\(/g, 'Math.asin(');
-    e = e.replace(/acos\(/g, 'Math.acos('); e = e.replace(/atan\(/g, 'Math.atan(');
-  }
-  e = e.replace(/ln\(/g, 'Math.log(');  e = e.replace(/log\(/g, 'Math.log10(');
-  e = e.replace(/sqrt\(/g, 'Math.sqrt('); e = e.replace(/cbrt\(/g, 'Math.cbrt(');
-  e = e.replace(/abs\(/g, 'Math.abs(');  e = e.replace(/exp\(/g, 'Math.exp(');
-  e = e.replace(/π/g, `(${Math.PI})`);
-  // e constant (pas dans un nom de fonction)
-  e = e.replace(/(?<![a-zA-Z_])e(?![a-zA-Z_(\d])/g, `(${Math.E})`);
-  e = e.replace(/×/g,'*'); e = e.replace(/÷/g,'/'); e = e.replace(/−/g,'-');
-  e = e.replace(/mod/g,'%');
-  // Puissances
-  e = e.replace(/\*\*2/g,'**2'); // déjà géré
-  // Multiplicateurs implicites
-  e = e.replace(/(\d)(\()/g,'$1*$2'); e = e.replace(/(\))(\d)/g,'$1*$2'); e = e.replace(/(\))\(/g,'$1*$2');
-  e = e.replace(/(\))(Math\.)/g,'$1*$2'); e = e.replace(/(\))(\_)/g,'$1*$2');
-  e = e.replace(/(\d)(Math\.)/g,'$1*$2'); e = e.replace(/(\d)(\_)/g,'$1*$2');
-
+  // Charger historique et mémoire
   try {
-    const fn = new Function('__sD','__cD','__tD','__asD','__acD','__atD','fact',
-      `'use strict';return(${e});`);
-    return fn(sinD,cosD,tanD,asinD,acosD,atanD,factorial);
-  } catch(err) { return NaN; }
-}
+    const s = sessionStorage.getItem('arvexa_calc_h');
+    if (s) history = JSON.parse(s);
+  } catch(e) {}
+  try {
+    const m = sessionStorage.getItem('arvexa_calc_m');
+    if (m) { memory = parseFloat(m); hasMem = true; memIndicator.classList.add('visible'); }
+  } catch(e) {}
 
-// ================================================================
-// DISPLAY
-// ================================================================
-function updDisp() { displayExpr.textContent = expr; updParen(); }
-function updParen() {
-  parenCounter.textContent = openP > 0 ? `${openP} parenth.` : '';
-}
+  // ================================================================
+  // MATH FUNCTIONS
+  // ================================================================
+  const toRad = d => d * Math.PI / 180;
+  const toDeg = r => r * 180 / Math.PI;
+  const sinD = x => Math.sin(toRad(x));
+  const cosD = x => Math.cos(toRad(x));
+  const tanD = x => Math.tan(toRad(x));
+  const asinD = x => toDeg(Math.asin(Math.min(1, Math.max(-1, x))));
+  const acosD = x => toDeg(Math.acos(Math.min(1, Math.max(-1, x))));
+  const atanD = x => toDeg(Math.atan(x));
 
-// ================================================================
-// INPUT: NUMBERS
-// ================================================================
-document.querySelectorAll('.cb.num[data-n]').forEach(btn => {
-  btn.addEventListener('click', () => {
-  const n = btn.dataset.n;
-  if (done) { expr = n === '.' ? '0.' : n; calc = expr; done = false; }
-  else { expr += n; calc += n; }
-  displayResult.classList.remove('error'); updDisp();
+  function factorial(n) {
+    if (n < 0 || !Number.isInteger(n)) return NaN;
+    if (n > 170) return Infinity;
+    let r = 1;
+    for (let i = 2; i <= n; i++) r *= i;
+    return r;
+  }
+
+  function safeEval(raw) {
+    let e = raw;
+    // Remplacer les symboles d'affichage par des opérateurs JS
+    e = e.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/mod/g, '%');
+    
+    // Gérer les constantes
+    e = e.replace(/π/g, '(' + Math.PI + ')');
+    // e constant (pas dans un nom de fonction)
+    e = e.replace(/(?<![a-zA-Z_])e(?![a-zA-Z_(\d])/g, '(' + Math.E + ')');
+    
+    // Fonctions trigonométriques
+    if (isDeg) {
+      e = e.replace(/sin\(/g, '__sD(');
+      e = e.replace(/cos\(/g, '__cD(');
+      e = e.replace(/tan\(/g, '__tD(');
+      e = e.replace(/asin\(/g, '__asD(');
+      e = e.replace(/acos\(/g, '__acD(');
+      e = e.replace(/atan\(/g, '__atD(');
+    } else {
+      e = e.replace(/sin\(/g, 'Math.sin(');
+      e = e.replace(/cos\(/g, 'Math.cos(');
+      e = e.replace(/tan\(/g, 'Math.tan(');
+      e = e.replace(/asin\(/g, 'Math.asin(');
+      e = e.replace(/acos\(/g, 'Math.acos(');
+      e = e.replace(/atan\(/g, 'Math.atan(');
+    }
+    
+    // Autres fonctions
+    e = e.replace(/ln\(/g, 'Math.log(');
+    e = e.replace(/log\(/g, 'Math.log10(');
+    e = e.replace(/sqrt\(/g, 'Math.sqrt(');
+    e = e.replace(/cbrt\(/g, 'Math.cbrt(');
+    e = e.replace(/abs\(/g, 'Math.abs(');
+    e = e.replace(/exp\(/g, 'Math.exp(');
+    
+    // Multiplicateurs implicites
+    e = e.replace(/(\d)\(/g, '$1*(');
+    e = e.replace(/\)\(/g, ')*(');
+    e = e.replace(/(\))\(/g, '$1*(');
+    e = e.replace(/\)(\d)/g, ')*$1');
+    e = e.replace(/(\d)(Math\.)/g, '$1*$2');
+    e = e.replace(/\)(Math\.)/g, ')*$2');
+    e = e.replace(/\)(__)/g, ')*$2');
+    e = e.replace(/(\d)(__)/g, '$1*$2');
+
+    try {
+      const fn = new Function(
+        '__sD', '__cD', '__tD', '__asD', '__acD', '__atD', 'fact',
+        `'use strict'; return (${e});`
+      );
+      return fn(sinD, cosD, tanD, asinD, acosD, atanD, factorial);
+    } catch(err) {
+      return NaN;
+    }
+  }
+
+  // ================================================================
+  // AFFICHAGE
+  // ================================================================
+  function updDisp() {
+    displayExpr.textContent = expr;
+    updParen();
+  }
+
+  function updParen() {
+    parenCounter.textContent = openP > 0 ? openP + ' parenth.' : '';
+  }
+
+  // ================================================================
+  // HISTORIQUE
+  // ================================================================
+  historyToggle.addEventListener('click', () => {
+    historyWrap.classList.toggle('open');
+    historyToggle.classList.toggle('open');
   });
-});
 
-// INPUT: OPERATORS
-document.getElementById('btnAdd').addEventListener('click', () => pushOp('+'));
-document.getElementById('btnSub').addEventListener('click', () => pushOp('-'));
-document.getElementById('btnMul').addEventListener('click', () => pushOp('*'));
-document.getElementById('btnDiv').addEventListener('click', () => pushOp('/'));
+  function saveH() {
+    try { sessionStorage.setItem('arvexa_calc_h', JSON.stringify(history.slice(0, 50))); } catch(e) {}
+  }
 
-function pushOp(op) {
-  done = false; displayResult.classList.remove('error');
-  const sym = {'+':'+','-':'−','*':'×','/':'÷'}[op];
-  expr += ` ${sym} `; calc += op; updDisp();
-}
+  function saveM() {
+    try { sessionStorage.setItem('arvexa_calc_m', String(memory)); } catch(e) {}
+  }
 
-// INPUT: FUNCTIONS
-document.querySelectorAll('.cb.fn[data-fn]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const fn = btn.dataset.fn; done = false; displayResult.classList.remove('error');
-    switch(fn) {
-      case 'square': if(expr){expr+='²';calc+='**2';} break;
-      case 'cube': if(expr){expr+='³';calc+='**3';} break;
-      case 'power': if(expr){expr+='^';calc+='**';} break;
-      case 'inv':
-        if(expr){expr=`1÷(${expr})`;calc=`1/(${calc})`;}
-        else{expr='1÷(';calc='1/(';openP++;} break;
-      case 'abs': expr+='|';calc+='abs(';openP++;break;
-      case 'fact': if(expr){expr+='!';calc=`fact(${calc})`;} break;
-      case 'mod': expr+=' mod ';calc+='%';break;
-      case 'percent': expr+='%';calc+='/100';break;
-      case 'tenpow': if(expr){expr='10^('+expr+')';calc='Math.pow(10,'+calc+')';}
-        else{expr='10^(';calc='Math.pow(10,';openP++;}break;
-      default: // sin cos tan ln log sqrt cbrt exp asin acos atan
-        expr+=`${fn}(`;calc+=`${fn}(`;openP++;
+  function renderH() {
+    if (!history.length) {
+      historyList.innerHTML = '<div class="history-empty">Aucun calcul</div>';
+      return;
+    }
+    historyList.innerHTML = history.slice().reverse().map((h, i) =>
+      `<div class="history-item" data-i="${history.length - 1 - i}">
+        <div class="h-expr">${h.e}</div>
+        <div class="h-res">= ${h.r}</div>
+      </div>`
+    ).join('');
+    
+    historyList.querySelectorAll('.history-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const h = history[parseInt(el.dataset.i)];
+        if (h) {
+          expr = String(h.r);
+          calc = expr;
+          displayExpr.textContent = h.e;
+          displayResult.textContent = h.r;
+          displayResult.classList.remove('error');
+          done = true;
+          updParen();
+        }
+      });
+    });
+  }
+  renderH();
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(m) {
+    toastMsg.textContent = m;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // ================================================================
+  // MODE DEG/RAD
+  // ================================================================
+  modeToggle.addEventListener('click', () => {
+    isDeg = !isDeg;
+    modeLabel.textContent = isDeg ? 'DEG' : 'RAD';
+    showToast(isDeg ? 'Mode Degré' : 'Mode Radian');
+  });
+
+  // ================================================================
+  // OPÉRATEURS
+  // ================================================================
+  function pushOp(op) {
+    done = false;
+    displayResult.classList.remove('error');
+    const sym = {'+': '+', '-': '−', '*': '×', '/': '÷'}[op];
+    expr += ' ' + sym + ' ';
+    calc += op;
+    updDisp();
+  }
+
+  document.getElementById('btnAdd').addEventListener('click', () => pushOp('+'));
+  document.getElementById('btnSub').addEventListener('click', () => pushOp('-'));
+  document.getElementById('btnMul').addEventListener('click', () => pushOp('*'));
+  document.getElementById('btnDiv').addEventListener('click', () => pushOp('/'));
+
+  // ================================================================
+  // NOMBRES
+  // ================================================================
+  document.querySelectorAll('.cb.num[data-n]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const n = btn.dataset.n;
+      if (done) {
+        expr = n === '.' ? '0.' : n;
+        calc = expr;
+        done = false;
+      } else {
+        expr += n;
+        calc += n;
+      }
+      displayResult.classList.remove('error');
+      updDisp();
+    });
+  });
+
+  // ================================================================
+  // FONCTIONS SCIENTIFIQUES
+  // ================================================================
+  document.querySelectorAll('.cb.fn[data-fn]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fn = btn.dataset.fn;
+      done = false;
+      displayResult.classList.remove('error');
+      
+      switch(fn) {
+        case 'square':
+          if (expr) { expr += '²'; calc += '**2'; }
+          break;
+        case 'cube':
+          if (expr) { expr += '³'; calc += '**3'; }
+          break;
+        case 'power':
+          if (expr) { expr += '^'; calc += '**'; }
+          break;
+        case 'inv':
+          if (expr) { expr = '1÷(' + expr + ')'; calc = '1/(' + calc + ')'; }
+          else { expr = '1÷('; calc = '1/('; openP++; }
+          break;
+        case 'abs':
+          expr += '|'; calc += 'abs('; openP++;
+          break;
+        case 'fact':
+          if (expr) { expr += '!'; calc = 'fact(' + calc + ')'; }
+          break;
+        case 'mod':
+          expr += ' mod '; calc += '%';
+          break;
+        case 'percent':
+          expr += '%'; calc += '/100';
+          break;
+        case 'tenpow':
+          if (expr) { expr = '10^(' + expr + ')'; calc = 'Math.pow(10,' + calc + ')'; }
+          else { expr = '10^('; calc = 'Math.pow(10,'; openP++; }
+          break;
+        default:
+          expr += fn + '(';
+          calc += fn + '(';
+          openP++;
+      }
+      updDisp();
+    });
+  });
+
+  // ================================================================
+  // CONSTANTES (π, e)
+  // ================================================================
+  document.querySelectorAll('.cb[data-const]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      done = false;
+      displayResult.classList.remove('error');
+      const c = btn.dataset.const;
+      if (c === 'pi') { expr += 'π'; calc += 'π'; }
+      else if (c === 'e') { expr += 'e'; calc += 'e'; }
+      updDisp();
+    });
+  });
+
+  // ================================================================
+  // PARENTHÈSES
+  // ================================================================
+  document.getElementById('btnParen').addEventListener('click', () => {
+    done = false;
+    displayResult.classList.remove('error');
+    const last = expr.trim().slice(-1);
+    if (!expr || /[+\-×÷^(\u00d7\u00f7]$/.test(last) || openP === 0) {
+      expr += '('; calc += '('; openP++;
+    } else if (openP > 0) {
+      expr += ')'; calc += ')'; openP--;
+    } else {
+      expr += '('; calc += '('; openP++;
     }
     updDisp();
   });
-});
 
-// INPUT: CONSTANTS
-document.querySelectorAll('.cb[data-const]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    done = false; displayResult.classList.remove('error');
-    const c = btn.dataset.const;
-    if (c === 'pi') { expr += 'π'; calc += 'π'; }
-    else if (c === 'e') { expr += 'e'; calc += 'e'; }
+  // ================================================================
+  // +/−
+  // ================================================================
+  document.getElementById('btnSign').addEventListener('click', () => {
+    if (!expr || done) return;
+    const m = expr.match(/(−?)([\d.]+)$/);
+    if (m) {
+      const pre = expr.slice(0, expr.length - m[0].length);
+      expr = m[1] === '−' ? pre + m[2] : pre + '−' + m[2];
+      // Inverser le signe dans calc
+      if (calc.match(/-?[\d.]+$/)) {
+        calc = calc.replace(/-?([\d.]+)$/, (match, num) => {
+          return calc.includes('-') ? num : '-' + num;
+        });
+      }
+      updDisp();
+    }
+  });
+
+  // ================================================================
+  // Ans
+  // ================================================================
+  document.getElementById('btnAns').addEventListener('click', () => {
+    done = false;
+    displayResult.classList.remove('error');
+    expr += String(lastAns);
+    calc += String(lastAns);
     updDisp();
   });
-});
 
-// INPUT: PARENTHESIS
-document.getElementById('btnParen').addEventListener('click', () => {
-  done = false; displayResult.classList.remove('error');
-  const last = expr.trim().slice(-1);
-  if (!expr || /[+\-×÷^(\u00d7\u00f7]$/.test(last) || openP === 0) {
-    expr += '('; calc += '('; openP++;
-  } else if (openP > 0) {
-    expr += ')'; calc += ')'; openP--;
-  } else { expr += '('; calc += '('; openP++; }
-  updDisp();
-});
+  // ================================================================
+  // AC
+  // ================================================================
+  document.getElementById('btnAC').addEventListener('click', () => {
+    expr = ''; calc = ''; openP = 0; done = false;
+    displayExpr.textContent = '';
+    displayResult.textContent = '0';
+    displayResult.classList.remove('error');
+    updParen();
+  });
 
-// INPUT: +/−
-document.getElementById('btnSign').addEventListener('click', () => {
-  if (!expr || done) return;
-  const m = expr.match(/(−?)([\d.]+)$/);
-  if (m) {
-    const pre = expr.slice(0, expr.length - m[0].length);
-    expr = m[1] === '−' ? pre + m[2] : pre + '−' + m[2];
-    calc = calc.replace(/-([\d.]+)$/, '$1').replace(/^([\d.]+)$/, '-$1');
+  // ================================================================
+  // DEL
+  // ================================================================
+  document.getElementById('btnDel').addEventListener('click', () => {
+    if (done) { document.getElementById('btnAC').click(); return; }
+    if (!expr.length) return;
+    const rem = expr.slice(-1);
+    expr = expr.slice(0, -1);
+    calc = calc.slice(0, -1);
+    if (rem === '(') openP = Math.max(0, openP - 1);
+    if (rem === ')') openP++;
+    if (expr.endsWith(' ')) { expr = expr.slice(0, -1); calc = calc.slice(0, -1); }
+    if (!expr) { displayResult.textContent = '0'; displayResult.classList.remove('error'); }
     updDisp();
-  }
-});
-
-// INPUT: Ans
-document.getElementById('btnAns').addEventListener('click', () => {
-  done = false; displayResult.classList.remove('error');
-  expr += String(lastAns); calc += String(lastAns); updDisp();
-});
-
-// AC
-document.getElementById('btnAC').addEventListener('click', () => {
-  expr='';calc='';openP=0;done=false;
-  displayExpr.textContent='';displayResult.textContent='0';displayResult.classList.remove('error');updParen();
-});
-
-// DEL
-document.getElementById('btnDel').addEventListener('click', () => {
-  if (done) { document.getElementById('btnAC').click(); return; }
-  if (!expr.length) return;
-  const rem = expr.slice(-1); expr = expr.slice(0,-1); calc = calc.slice(0,-1);
-  if (rem==='(') openP=Math.max(0,openP-1);
-  if (rem===')') openP++;
-  if (expr.endsWith(' ')) { expr=expr.slice(0,-1); calc=calc.slice(0,-1); }
-  if (!expr) { displayResult.textContent='0'; displayResult.classList.remove('error'); }
-  updDisp();
-});
-
-// EQUALS
-document.getElementById('btnEq').addEventListener('click', evaluate);
-
-function evaluate() {
-  if (!calc.trim()) return;
-  let fCalc = calc, fExpr = expr;
-  while (openP > 0) { fCalc += ')'; fExpr += ')'; openP = 0; }
-  const r = safeEval(fCalc);
-  if (isNaN(r) || !isFinite(r)) { displayResult.textContent = r===Infinity?'∞':'Erreur'; displayResult.classList.add('error'); return; }
-  let fmt = Number.isInteger(r) ? r.toLocaleString('fr-FR') : parseFloat(r.toPrecision(10)).toLocaleString('fr-FR',{maximumFractionDigits:10});
-  displayExpr.textContent = fExpr + ' =';
-  displayResult.textContent = fmt; displayResult.classList.remove('error');
-  history.push({e:fExpr,r:fmt}); if(history.length>50)history.shift(); saveH(); renderH();
-  lastAns = r; expr = String(r); calc = String(r); done = true; updParen();
-}
-
-// MEMORY
-document.getElementById('btnMC').addEventListener('click', () => { memory=0; hasMem=false; memIndicator.classList.remove('visible'); saveM(); showToast('Mémoire effacée'); });
-document.getElementById('btnMR').addEventListener('click', () => { if(hasMem){ done=false; displayResult.classList.remove('error'); expr+=String(memory); calc+=String(memory); updDisp(); } });
-document.getElementById('btnMPlus').addEventListener('click', () => {
-  if(calc.trim()){const v=safeEval(calc);if(!isNaN(v)){memory+=v;hasMem=true;memIndicator.classList.add('visible');saveM();showToast('M+ : '+memory.toLocaleString('fr-FR'));}}
-});
-document.getElementById('btnMMinus').addEventListener('click', () => {
-  if(calc.trim()){const v=safeEval(calc);if(!isNaN(v)){memory-=v;hasMem=true;memIndicator.classList.add('visible');saveM();showToast('M− : '+memory.toLocaleString('fr-FR'));}}
-});
-
-// KEYBOARD
-document.addEventListener('keydown', e => {
-  const k=e.key;
-  if(k>='0'&&k<='9') document.querySelector(`.cb.num[data-n="${k}"]`)?.click();
-  else if(k==='.') document.querySelector('.cb.num[data-n="."]')?.click();
-  else if(k==='+') pushOp('+');
-  else if(k==='-') pushOp('-');
-  else if(k==='*') pushOp('*');
-  else if(k==='/'){e.preventDefault();pushOp('/');}
-  else if(k==='Enter'||k==='='){e.preventDefault();evaluate();}
-  else if(k==='Backspace') document.getElementById('btnDel')?.click();
-  else if(k==='Escape') document.getElementById('btnAC')?.click();
-  else if(k==='('||k===')') document.getElementById('btnParen')?.click();
-  else if(k==='%') { expr+='%';calc+='/100';updDisp(); }
-  else if(k==='^') { if(expr){expr+='^';calc+='**';updDisp();} }
-});
-
-// TOAST
-const toast=document.getElementById('toast');const toastMsg=document.querySelector('.toast-message');
-function showToast(m){toastMsg.textContent=m;toast.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toast.classList.remove('show'),2000);}
-
-// ================================================================
-// CONSTANTES PHYSIQUES & CHIMIE
-// ================================================================
-const CONSTANTS = [
-  { cat:'Fondamentales', items:[
-    { s:'c', n:'Vitesse de la lumière', v:299792458, u:'m/s', d:'3,00 × 10⁸ m/s' },
-    { s:'G', n:'Constante gravitationnelle', v:6.674e-11, u:'m³·kg⁻¹·s⁻²', d:'6,674 × 10⁻¹¹' },
-    { s:'h', n:'Constante de Planck', v:6.626e-34, u:'J·s', d:'6,626 × 10⁻³⁴ J·s' },
-    { s:'ℏ', n:'Constante de Planck réduite', v:1.055e-34, u:'J·s', d:'1,055 × 10⁻³⁴ J·s' },
-    { s:'k_B', n:'Constante de Boltzmann', v:1.381e-23, u:'J/K', d:'1,381 × 10⁻²³ J/K' },
-    { s:'N_A', n:'Nombre d\'Avogadro', v:6.022e23, u:'mol⁻¹', d:'6,022 × 10²³ mol⁻¹' },
-    { s:'R', n:'Constante des gaz parfaits', v:8.314, u:'J·mol⁻¹·K⁻¹', d:'8,314 J·mol⁻¹·K⁻¹' },
-    { s:'σ', n:'Constante de Stefan-Boltzmann', v:5.670e-8, u:'W·m⁻²·K⁻⁴', d:'5,670 × 10⁻⁸' },
-    { s:'ε₀', n:'Permittivité du vide', v:8.854e-12, u:'F/m', d:'8,854 × 10⁻¹² F/m' },
-    { s:'μ₀', n:'Perméabilité du vide', v:1.257e-6, u:'H/m', d:'1,257 × 10⁻⁶ H/m' },
-    { s:'Z₀', n:'Impédance du vide', v:376.73, u:'Ω', d:'376,73 Ω' },
-  ]},
-  { cat:'Physique', items:[
-    { s:'g', n:'Accélération gravitationnelle', v:9.80665, u:'m/s²', d:'9,807 m/s²' },
-    { s:'atm', n:'Pression atmosphérique', v:101325, u:'Pa', d:'101 325 Pa' },
-    { s:'eV', n:'Électronvolt', v:1.602e-19, u:'J', d:'1,602 × 10⁻¹⁹ J' },
-    { s:'u', n:'Unité de masse atomique', v:1.661e-27, u:'kg', d:'1,661 × 10⁻²⁷ kg' },
-    { s:'m_e', n:'Masse de l\'électron', v:9.109e-31, u:'kg', d:'9,109 × 10⁻³¹ kg' },
-    { s:'m_p', n:'Masse du proton', v:1.673e-27, u:'kg', d:'1,673 × 10⁻²⁷ kg' },
-    { s:'m_n', n:'Masse du neutron', v:1.675e-27, u:'kg', d:'1,675 × 10⁻²⁷ kg' },
-    { s:'q_e', n:'Charge élémentaire', v:1.602e-19, u:'C', d:'1,602 × 10⁻¹⁹ C' },
-    { s:'F', n:'Constante de Faraday', v:96485, u:'C/mol', d:'96 485 C/mol' },
-    { s:'R∞', n:'Constante de Rydberg', v:1.097e7, u:'m⁻¹', d:'1,097 × 10⁷ m⁻¹' },
-    { s:'a₀', n:'Rayon de Bohr', v:5.292e-11, u:'m', d:'5,292 × 10⁻¹¹ m' },
-    { s:'λ_C', n:'Longueur d\'onde de Compton (e⁻)', v:2.426e-12, u:'m', d:'2,426 × 10⁻¹² m' },
-  ]},
-  { cat:'Mathématiques', items:[
-    { s:'π', n:'Pi', v:Math.PI, u:'', d:'3,14159...' },
-    { s:'e', n:'Nombre d\'Euler', v:Math.E, u:'', d:'2,71828...' },
-    { s:'φ', n:'Nombre d\'or', v:1.6180339887, u:'', d:'1,61803...' },
-    { s:'√2', n:'Racine de 2', v:Math.SQRT2, u:'', d:'1,41421...' },
-    { s:'√3', n:'Racine de 3', v:1.7320508076, u:'', d:'1,73205...' },
-    { s:'ln2', n:'Logarithme naturel de 2', v:Math.LN2, u:'', d:'0,69315...' },
-    { s:'ln10', n:'Logarithme naturel de 10', v:Math.LN10, u:'', d:'2,30259...' },
-  ]},
-  { cat:'Chimie', items:[
-    { s:'N_A', n:'Nombre d\'Avogadro', v:6.022e23, u:'mol⁻¹', d:'6,022 × 10²³ mol⁻¹' },
-    { s:'F', n:'Constante de Faraday', v:96485, u:'C/mol', d:'96 485 C/mol' },
-    { s:'R', n:'Constante des gaz parfaits', v:8.314, u:'J·mol⁻¹·K⁻¹', d:'8,314 J·mol⁻¹·K⁻¹' },
-    { s:'V_m', n:'Volume molaire (CNTP)', v:22.414, u:'L/mol', d:'22,414 L/mol' },
-    { s:'P_atm', n:'Pression standard', v:101325, u:'Pa', d:'101 325 Pa (1 atm)' },
-    { s:'T_stp', n:'Température standard', v:273.15, u:'K', d:'273,15 K (0 °C)' },
-  ]}
-];
-
-const constList = document.getElementById('constList');
-const constSearch = document.getElementById('constSearch');
-const constInserted = document.getElementById('constInserted');
-
-function renderConstants(filter = '') {
-  const f = filter.toLowerCase();
-  let html = '';
-  CONSTANTS.forEach(cat => {
-    const filtered = cat.items.filter(it =>
-      !f || it.s.toLowerCase().includes(f) || it.n.toLowerCase().includes(f) || it.u.toLowerCase().includes(f)
-    );
-    if (!filtered.length) return;
-    html += `<div class="const-category">${cat.cat}</div>`;
-    filtered.forEach(it => {
-      html += `<div class="const-item" data-val="${it.v}" data-sym="${it.s}">
-        <div class="ci-left"><span class="ci-symbol">${it.s}</span><span class="ci-name">${it.n}</span></div>
-        <div style="text-align:right"><span class="ci-value">${it.d}</span>${it.u?`<div style="font-size:10px;color:var(--text-muted)">${it.u}</div>`:''}</div>
-      </div>`;
-    });
   });
-  if (!html) html = '<div class="history-empty" style="padding:40px 0">Aucune constante trouvée</div>';
-  constList.innerHTML = html;
 
-  constList.querySelectorAll('.const-item').forEach(el => {
-    el.addEventListener('click', () => {
-      const val = el.dataset.val;
-      expr += val; calc += val;
-      updDisp(); displayResult.classList.remove('error'); done = false;
-      // Switch to calc tab
-      tabBtns.forEach(b=>b.classList.remove('active'));
-      tabPanels.forEach(p=>p.classList.remove('active'));
-      tabBtns[0].classList.add('active');
-      document.getElementById('panelCalc').classList.add('active');
-      constInserted.classList.add('show');
-      setTimeout(()=>constInserted.classList.remove('show'),1500);
-    });
-  });
-}
-renderConstants();
-constSearch.addEventListener('input', () => renderConstants(constSearch.value));
+  // ================================================================
+  // =
+  // ================================================================
+  document.getElementById('btnEq').addEventListener('click', evaluate);
 
-// ================================================================
-// CONVERSIONS D'UNITÉS
-// ================================================================
-const CONVERSIONS = {
-  'Longueur': {
-    units: ['m','km','cm','mm','μm','nm','in','ft','yd','mi','nmi'],
-    labels: ['Mètre (m)','Kilomètre (km)','Centimètre (cm)','Millimètre (mm)','Micromètre (μm)','Nanomètre (nm)','Pouce (in)','Pied (ft)','Yard (yd)','Mile (mi)','Mille nautique'],
-    toBase: [1,1000,0.01,0.001,1e-6,1e-9,0.0254,0.3048,0.9144,1609.344,1852]
-  },
-  'Masse': {
-    units: ['kg','g','mg','t','oz','lb','ct'],
-    labels: ['Kilogramme (kg)','Gramme (g)','Milligramme (mg)','Tonne (t)','Once (oz)','Livre (lb)','Carat (ct)'],
-    toBase: [1,0.001,1e-6,1000,0.0283495,0.453592,0.0002]
-  },
-  'Température': {
-    units: ['°C','°F','K'],
-    labels: ['Celsius (°C)','Fahrenheit (°F)','Kelvin (K)'],
-    special: true
-  },
-  'Pression': {
-    units: ['Pa','kPa','bar','atm','mmHg','hPa','psi'],
-    labels: ['Pascal (Pa)','Kilopascal (kPa)','Bar','Atmosphère (atm)','mmHg (Torr)','Hectopascal (hPa)','PSI'],
-    toBase: [1,1000,100000,101325,133.322,100,6894.76]
-  },
-  'Énergie': {
-    units: ['J','kJ','cal','kcal','eV','kWh','BTU'],
-    labels: ['Joule (J)','Kilojoule (kJ)','Calorie (cal)','Kilocalorie (kcal)','Électronvolt (eV)','Kilowattheure (kWh)','BTU'],
-    toBase: [1,1000,4.184,4184,1.602e-19,3.6e6,1055.06]
-  },
-  'Vitesse': {
-    units: ['m/s','km/h','mph','kn','c'],
-    labels: ['m/s','km/h','mph','Nœud (kn)','Vitesse lumière (c)'],
-    toBase: [1,0.277778,0.44704,0.514444,299792458]
-  },
-  'Volume': {
-    units: ['L','mL','m³','cm³','gal(US)','gal(UK)','fl oz'],
-    labels: ['Litre (L)','Millilitre (mL)','m³','cm³','Gallon US','Gallon UK','Once liquide (fl oz)'],
-    toBase: [1,0.001,1000,0.001,3.78541,4.54609,0.0295735]
-  },
-  'Temps': {
-    units: ['s','min','h','jour','semaine','mois','an'],
-    labels: ['Seconde (s)','Minute (min)','Heure (h)','Jour','Semaine','Mois (30j)','Année (365j)'],
-    toBase: [1,60,3600,86400,604800,2592000,31536000]
-  },
-  'Force': {
-    units: ['N','kN','dyn','kgf','lbf'],
-    labels: ['Newton (N)','Kilonewton (kN)','Dyne (dyn)','Kilogramme-force (kgf)','Livre-force (lbf)'],
-    toBase: [1,1000,1e-5,9.80665,4.44822]
-  },
-  'Puissance': {
-    units: ['W','kW','MW','cv','hp','BTU/h'],
-    labels: ['Watt (W)','Kilowatt (kW)','Mégawatt (MW)','Cheval (cv)','Horsepower (hp)','BTU/h'],
-    toBase: [1,1000,1e6,735.499,745.7,0.293071]
+  function evaluate() {
+    if (!calc.trim()) return;
+    let fCalc = calc, fExpr = expr;
+    while (openP > 0) { fCalc += ')'; fExpr += ')'; openP = 0; }
+    const r = safeEval(fCalc);
+    if (isNaN(r) || !isFinite(r)) {
+      displayResult.textContent = r === Infinity ? '∞' : 'Erreur';
+      displayResult.classList.add('error');
+      return;
+    }
+    let fmt = Number.isInteger(r) ? r.toLocaleString('fr-FR') : parseFloat(r.toPrecision(10)).toLocaleString('fr-FR', { maximumFractionDigits: 10 });
+    displayExpr.textContent = fExpr + ' =';
+    displayResult.textContent = fmt;
+    displayResult.classList.remove('error');
+    history.push({ e: fExpr, r: fmt });
+    if (history.length > 50) history.shift();
+    saveH();
+    renderH();
+    lastAns = r;
+    expr = String(r);
+    calc = String(r);
+    done = true;
+    updParen();
   }
-};
 
-const convCatRow = document.getElementById('convCatRow');
-const convFrom = document.getElementById('convFrom');
-const convTo = document.getElementById('convTo');
-const convFromUnit = document.getElementById('convFromUnit');
-const convToUnit = document.getElementById('convToUnit');
-const convFormula = document.getElementById('convFormula');
-let currentConvCat = 'Longueur';
+  // ================================================================
+  // MÉMOIRE
+  // ================================================================
+  document.getElementById('btnMC').addEventListener('click', () => {
+    memory = 0;
+    hasMem = false;
+    memIndicator.classList.remove('visible');
+    saveM();
+    showToast('Mémoire effacée');
+  });
 
-// Render category buttons
-Object.keys(CONVERSIONS).forEach((cat, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'conv-cat-btn' + (i===0?' active':'');
-  btn.textContent = cat;
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.conv-cat-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    currentConvCat = cat;
-    populateUnits(cat);
+  document.getElementById('btnMR').addEventListener('click', () => {
+    if (hasMem) {
+      done = false;
+      displayResult.classList.remove('error');
+      expr += String(memory);
+      calc += String(memory);
+      updDisp();
+    }
+  });
+
+  document.getElementById('btnMPlus').addEventListener('click', () => {
+    if (calc.trim()) {
+      const v = safeEval(calc);
+      if (!isNaN(v)) {
+        memory += v;
+        hasMem = true;
+        memIndicator.classList.add('visible');
+        saveM();
+        showToast('M+ : ' + memory.toLocaleString('fr-FR'));
+      }
+    }
+  });
+
+  document.getElementById('btnMMinus').addEventListener('click', () => {
+    if (calc.trim()) {
+      const v = safeEval(calc);
+      if (!isNaN(v)) {
+        memory -= v;
+        hasMem = true;
+        memIndicator.classList.add('visible');
+        saveM();
+        showToast('M− : ' + memory.toLocaleString('fr-FR'));
+      }
+    }
+  });
+
+  // ================================================================
+  // CLAVIER
+  // ================================================================
+  document.addEventListener('keydown', e => {
+    const k = e.key;
+    if (k >= '0' && k <= '9') {
+      const btn = document.querySelector('.cb.num[data-n="' + k + '"]');
+      if (btn) btn.click();
+    } else if (k === '.') {
+      document.querySelector('.cb.num[data-n="."]')?.click();
+    } else if (k === '+') { e.preventDefault(); pushOp('+'); }
+    else if (k === '-') { e.preventDefault(); pushOp('-'); }
+    else if (k === '*') { e.preventDefault(); pushOp('*'); }
+    else if (k === '/') { e.preventDefault(); pushOp('/'); }
+    else if (k === 'Enter' || k === '=') { e.preventDefault(); evaluate(); }
+    else if (k === 'Backspace') { e.preventDefault(); document.getElementById('btnDel')?.click(); }
+    else if (k === 'Escape') { document.getElementById('btnAC')?.click(); }
+    else if (k === '(' || k === ')') { document.getElementById('btnParen')?.click(); }
+    else if (k === '%') { expr += '%'; calc += '/100'; updDisp(); }
+    else if (k === '^') { if (expr) { expr += '^'; calc += '**'; updDisp(); } }
+  });
+
+  // ================================================================
+  // CONSTANTES PHYSIQUES & CHIMIE
+  // ================================================================
+  const CONSTANTS = [
+    { cat: 'Fondamentales', items: [
+      { s: 'c', n: 'Vitesse de la lumière', v: 299792458, u: 'm/s', d: '3,00 × 10⁸ m/s' },
+      { s: 'G', n: 'Constante gravitationnelle', v: 6.674e-11, u: 'm³·kg⁻¹·s⁻²', d: '6,674 × 10⁻¹¹' },
+      { s: 'h', n: 'Constante de Planck', v: 6.626e-34, u: 'J·s', d: '6,626 × 10⁻³⁴ J·s' },
+      { s: 'ℏ', n: 'Constante de Planck réduite', v: 1.055e-34, u: 'J·s', d: '1,055 × 10⁻³⁴ J·s' },
+      { s: 'k_B', n: 'Constante de Boltzmann', v: 1.381e-23, u: 'J/K', d: '1,381 × 10⁻²³ J/K' },
+      { s: 'N_A', n: "Nombre d'Avogadro", v: 6.022e23, u: 'mol⁻¹', d: '6,022 × 10²³ mol⁻¹' },
+      { s: 'R', n: 'Constante des gaz parfaits', v: 8.314, u: 'J·mol⁻¹·K⁻¹', d: '8,314 J·mol⁻¹·K⁻¹' },
+      { s: 'σ', n: 'Constante de Stefan-Boltzmann', v: 5.670e-8, u: 'W·m⁻²·K⁻⁴', d: '5,670 × 10⁻⁸' },
+      { s: 'ε₀', n: 'Permittivité du vide', v: 8.854e-12, u: 'F/m', d: '8,854 × 10⁻¹² F/m' },
+      { s: 'μ₀', n: 'Perméabilité du vide', v: 1.257e-6, u: 'H/m', d: '1,257 × 10⁻⁶ H/m' },
+      { s: 'Z₀', n: 'Impédance du vide', v: 376.73, u: 'Ω', d: '376,73 Ω' },
+    ]},
+    { cat: 'Physique', items: [
+      { s: 'g', n: 'Accélération gravitationnelle', v: 9.80665, u: 'm/s²', d: '9,807 m/s²' },
+      { s: 'atm', n: 'Pression atmosphérique', v: 101325, u: 'Pa', d: '101 325 Pa' },
+      { s: 'eV', n: 'Électronvolt', v: 1.602e-19, u: 'J', d: '1,602 × 10⁻¹⁹ J' },
+      { s: 'u', n: 'Unité de masse atomique', v: 1.661e-27, u: 'kg', d: '1,661 × 10⁻²⁷ kg' },
+      { s: 'm_e', n: "Masse de l'électron", v: 9.109e-31, u: 'kg', d: '9,109 × 10⁻³¹ kg' },
+      { s: 'm_p', n: 'Masse du proton', v: 1.673e-27, u: 'kg', d: '1,673 × 10⁻²⁷ kg' },
+      { s: 'm_n', n: 'Masse du neutron', v: 1.675e-27, u: 'kg', d: '1,675 × 10⁻²⁷ kg' },
+      { s: 'q_e', n: 'Charge élémentaire', v: 1.602e-19, u: 'C', d: '1,602 × 10⁻¹⁹ C' },
+      { s: 'F', n: 'Constante de Faraday', v: 96485, u: 'C/mol', d: '96 485 C/mol' },
+      { s: 'R∞', n: 'Constante de Rydberg', v: 1.097e7, u: 'm⁻¹', d: '1,097 × 10⁷ m⁻¹' },
+      { s: 'a₀', n: 'Rayon de Bohr', v: 5.292e-11, u: 'm', d: '5,292 × 10⁻¹¹ m' },
+      { s: 'λ_C', n: "Longueur d'onde de Compton (e⁻)", v: 2.426e-12, u: 'm', d: '2,426 × 10⁻¹² m' },
+    ]},
+    { cat: 'Mathématiques', items: [
+      { s: 'π', n: 'Pi', v: Math.PI, u: '', d: '3,14159...' },
+      { s: 'e', n: "Nombre d'Euler", v: Math.E, u: '', d: '2,71828...' },
+      { s: 'φ', n: "Nombre d'or", v: 1.6180339887, u: '', d: '1,61803...' },
+      { s: '√2', n: 'Racine de 2', v: Math.SQRT2, u: '', d: '1,41421...' },
+      { s: '√3', n: 'Racine de 3', v: 1.7320508076, u: '', d: '1,73205...' },
+      { s: 'ln2', n: 'Logarithme naturel de 2', v: Math.LN2, u: '', d: '0,69315...' },
+      { s: 'ln10', n: 'Logarithme naturel de 10', v: Math.LN10, u: '', d: '2,30259...' },
+    ]},
+    { cat: 'Chimie', items: [
+      { s: 'N_A', n: "Nombre d'Avogadro", v: 6.022e23, u: 'mol⁻¹', d: '6,022 × 10²³ mol⁻¹' },
+      { s: 'F', n: 'Constante de Faraday', v: 96485, u: 'C/mol', d: '96 485 C/mol' },
+      { s: 'R', n: 'Constante des gaz parfaits', v: 8.314, u: 'J·mol⁻¹·K⁻¹', d: '8,314 J·mol⁻¹·K⁻¹' },
+      { s: 'V_m', n: 'Volume molaire (CNTP)', v: 22.414, u: 'L/mol', d: '22,414 L/mol' },
+      { s: 'P_atm', n: 'Pression standard', v: 101325, u: 'Pa', d: '101 325 Pa (1 atm)' },
+      { s: 'T_stp', n: 'Température standard', v: 273.15, u: 'K', d: '273,15 K (0 °C)' },
+    ]}
+  ];
+
+  const constList = document.getElementById('constList');
+  const constSearch = document.getElementById('constSearch');
+  const constInserted = document.getElementById('constInserted');
+
+  function renderConstants(filter = '') {
+    const f = filter.toLowerCase();
+    let html = '';
+    CONSTANTS.forEach(cat => {
+      const filtered = cat.items.filter(it =>
+        !f || it.s.toLowerCase().includes(f) || it.n.toLowerCase().includes(f) || it.u.toLowerCase().includes(f)
+      );
+      if (!filtered.length) return;
+      html += `<div class="const-category">${cat.cat}</div>`;
+      filtered.forEach(it => {
+        html += `<div class="const-item" data-val="${it.v}" data-sym="${it.s}">
+          <div class="ci-left"><span class="ci-symbol">${it.s}</span><span class="ci-name">${it.n}</span></div>
+          <div style="text-align:right"><span class="ci-value">${it.d}</span>${it.u ? `<div style="font-size:10px;color:var(--text-muted)">${it.u}</div>` : ''}</div>
+        </div>`;
+      });
+    });
+    if (!html) html = '<div class="history-empty" style="padding:40px 0">Aucune constante trouvée</div>';
+    constList.innerHTML = html;
+
+    constList.querySelectorAll('.const-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const val = el.dataset.val;
+        expr += val;
+        calc += val;
+        updDisp();
+        displayResult.classList.remove('error');
+        done = false;
+        // Switch to calc tab
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabPanels.forEach(p => p.classList.remove('active'));
+        tabBtns[0].classList.add('active');
+        document.getElementById('panelCalc').classList.add('active');
+        constInserted.classList.add('show');
+        setTimeout(() => constInserted.classList.remove('show'), 1500);
+      });
+    });
+  }
+  renderConstants();
+  constSearch.addEventListener('input', () => renderConstants(constSearch.value));
+
+  // ================================================================
+  // CONVERSIONS D'UNITÉS
+  // ================================================================
+  const CONVERSIONS = {
+    'Longueur': {
+      units: ['m', 'km', 'cm', 'mm', 'μm', 'nm', 'in', 'ft', 'yd', 'mi', 'nmi'],
+      labels: ['Mètre (m)', 'Kilomètre (km)', 'Centimètre (cm)', 'Millimètre (mm)', 'Micromètre (μm)', 'Nanomètre (nm)', 'Pouce (in)', 'Pied (ft)', 'Yard (yd)', 'Mile (mi)', 'Mille nautique'],
+      toBase: [1, 1000, 0.01, 0.001, 1e-6, 1e-9, 0.0254, 0.3048, 0.9144, 1609.344, 1852]
+    },
+    'Masse': {
+      units: ['kg', 'g', 'mg', 't', 'oz', 'lb', 'ct'],
+      labels: ['Kilogramme (kg)', 'Gramme (g)', 'Milligramme (mg)', 'Tonne (t)', 'Once (oz)', 'Livre (lb)', 'Carat (ct)'],
+      toBase: [1, 0.001, 1e-6, 1000, 0.0283495, 0.453592, 0.0002]
+    },
+    'Température': {
+      units: ['°C', '°F', 'K'],
+      labels: ['Celsius (°C)', 'Fahrenheit (°F)', 'Kelvin (K)'],
+      special: true
+    },
+    'Pression': {
+      units: ['Pa', 'kPa', 'bar', 'atm', 'mmHg', 'hPa', 'psi'],
+      labels: ['Pascal (Pa)', 'Kilopascal (kPa)', 'Bar', 'Atmosphère (atm)', 'mmHg (Torr)', 'Hectopascal (hPa)', 'PSI'],
+      toBase: [1, 1000, 100000, 101325, 133.322, 100, 6894.76]
+    },
+    'Énergie': {
+      units: ['J', 'kJ', 'cal', 'kcal', 'eV', 'kWh', 'BTU'],
+      labels: ['Joule (J)', 'Kilojoule (kJ)', 'Calorie (cal)', 'Kilocalorie (kcal)', 'Électronvolt (eV)', 'Kilowattheure (kWh)', 'BTU'],
+      toBase: [1, 1000, 4.184, 4184, 1.602e-19, 3.6e6, 1055.06]
+    },
+    'Vitesse': {
+      units: ['m/s', 'km/h', 'mph', 'kn', 'c'],
+      labels: ['m/s', 'km/h', 'mph', 'Nœud (kn)', 'Vitesse lumière (c)'],
+      toBase: [1, 0.277778, 0.44704, 0.514444, 299792458]
+    },
+    'Volume': {
+      units: ['L', 'mL', 'm³', 'cm³', 'gal(US)', 'gal(UK)', 'fl oz'],
+      labels: ['Litre (L)', 'Millilitre (mL)', 'm³', 'cm³', 'Gallon US', 'Gallon UK', 'Once liquide (fl oz)'],
+      toBase: [1, 0.001, 1000, 0.001, 3.78541, 4.54609, 0.0295735]
+    },
+    'Temps': {
+      units: ['s', 'min', 'h', 'jour', 'semaine', 'mois', 'an'],
+      labels: ['Seconde (s)', 'Minute (min)', 'Heure (h)', 'Jour', 'Semaine', 'Mois (30j)', 'Année (365j)'],
+      toBase: [1, 60, 3600, 86400, 604800, 2592000, 31536000]
+    },
+    'Force': {
+      units: ['N', 'kN', 'dyn', 'kgf', 'lbf'],
+      labels: ['Newton (N)', 'Kilonewton (kN)', 'Dyne (dyn)', 'Kilogramme-force (kgf)', 'Livre-force (lbf)'],
+      toBase: [1, 1000, 1e-5, 9.80665, 4.44822]
+    },
+    'Puissance': {
+      units: ['W', 'kW', 'MW', 'cv', 'hp', 'BTU/h'],
+      labels: ['Watt (W)', 'Kilowatt (kW)', 'Mégawatt (MW)', 'Cheval (cv)', 'Horsepower (hp)', 'BTU/h'],
+      toBase: [1, 1000, 1e6, 735.499, 745.7, 0.293071]
+    }
+  };
+
+  const convCatRow = document.getElementById('convCatRow');
+  const convFrom = document.getElementById('convFrom');
+  const convTo = document.getElementById('convTo');
+  const convFromUnit = document.getElementById('convFromUnit');
+  const convToUnit = document.getElementById('convToUnit');
+  const convFormula = document.getElementById('convFormula');
+  let currentConvCat = 'Longueur';
+
+  // Render category buttons
+  Object.keys(CONVERSIONS).forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'conv-cat-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.conv-cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentConvCat = cat;
+      populateUnits(cat);
+      doConversion();
+    });
+    convCatRow.appendChild(btn);
+  });
+
+  function populateUnits(cat) {
+    const c = CONVERSIONS[cat];
+    convFromUnit.innerHTML = '';
+    convToUnit.innerHTML = '';
+    c.labels.forEach((lbl, i) => {
+      convFromUnit.innerHTML += `<option value="${i}">${lbl}</option>`;
+      convToUnit.innerHTML += `<option value="${i}">${lbl}</option>`;
+    });
+    if (c.labels.length > 1) convToUnit.value = '1';
+  }
+  populateUnits('Longueur');
+
+  function convertTemp(val, from, to) {
+    let c;
+    if (from === 0) c = val;
+    else if (from === 1) c = (val - 32) * 5 / 9;
+    else c = val - 273.15;
+    if (to === 0) return c;
+    else if (to === 1) return c * 9 / 5 + 32;
+    else return c + 273.15;
+  }
+
+  function doConversion() {
+    const c = CONVERSIONS[currentConvCat];
+    const val = parseFloat(convFrom.value);
+    const fi = parseInt(convFromUnit.value);
+    const ti = parseInt(convToUnit.value);
+    if (isNaN(val)) { convTo.value = ''; convFormula.textContent = ''; return; }
+
+    let result;
+    if (c.special) {
+      result = convertTemp(val, fi, ti);
+    } else {
+      const base = val * c.toBase[fi];
+      result = base / c.toBase[ti];
+    }
+
+    let fmt;
+    if (Math.abs(result) >= 1e6 || (Math.abs(result) < 0.001 && result !== 0)) {
+      fmt = result.toExponential(6);
+    } else {
+      fmt = parseFloat(result.toPrecision(10)).toLocaleString('fr-FR', { maximumFractionDigits: 8 });
+    }
+    convTo.value = fmt;
+    convFormula.textContent = `${val} ${c.units[fi]} = ${fmt} ${c.units[ti]}`;
+  }
+
+  convFrom.addEventListener('input', doConversion);
+  convFromUnit.addEventListener('change', doConversion);
+  convToUnit.addEventListener('change', doConversion);
+
+  document.getElementById('convSwap').addEventListener('click', () => {
+    const tmp = convFromUnit.value;
+    convFromUnit.value = convToUnit.value;
+    convToUnit.value = tmp;
+    const tmpVal = convTo.value;
+    convFrom.value = tmpVal.replace(/\s/g, '').replace(/,/g, '.');
     doConversion();
   });
-  convCatRow.appendChild(btn);
-});
 
-function populateUnits(cat) {
-  const c = CONVERSIONS[cat];
-  convFromUnit.innerHTML = '';
-  convToUnit.innerHTML = '';
-  c.labels.forEach((lbl, i) => {
-  convFromUnit.innerHTML += `<option value="${i}">${lbl}</option>`;
-  convToUnit.innerHTML += `<option value="${i}">${lbl}</option>`;
-  });
-  if (c.labels.length > 1) convToUnit.value = '1';
-}
-populateUnits('Longueur');
-
-function convertTemp(val, from, to) {
-  // 0=°C, 1=°F, 2=K
-  let c;
-  if (from===0) c=val; else if (from===1) c=(val-32)*5/9; else c=val-273.15;
-  if (to===0) return c; else if (to===1) return c*9/5+32; else return c+273.15;
-}
-
-function doConversion() {
-  const c = CONVERSIONS[currentConvCat];
-  const val = parseFloat(convFrom.value);
-  const fi = parseInt(convFromUnit.value);
-  const ti = parseInt(convToUnit.value);
-  if (isNaN(val)) { convTo.value = ''; convFormula.textContent = ''; return; }
-
-  let result;
-  if (c.special) {
-    result = convertTemp(val, fi, ti);
-  } else {
-    const base = val * c.toBase[fi];
-    result = base / c.toBase[ti];
-  }
-
-  // Format résultat
-  let fmt;
-  if (Math.abs(result) >= 1e6 || (Math.abs(result) < 0.001 && result !== 0)) {
-    fmt = result.toExponential(6);
-  } else {
-    fmt = parseFloat(result.toPrecision(10)).toLocaleString('fr-FR', {maximumFractionDigits: 8});
-  }
-  convTo.value = fmt;
-  convFormula.textContent = `${val} ${c.units[fi]} = ${fmt} ${c.units[ti]}`;
-}
-
-convFrom.addEventListener('input', doConversion);
-convFromUnit.addEventListener('change', doConversion);
-convToUnit.addEventListener('change', doConversion);
-
-// Swap
-document.getElementById('convSwap').addEventListener('click', () => {
-  const tmp = convFromUnit.value;
-  convFromUnit.value = convToUnit.value;
-  convToUnit.value = tmp;
-  const tmpVal = convTo.value;
-  convFrom.value = tmpVal.replace(/\s/g, '').replace(/,/g, '.');
   doConversion();
-});
 
-doConversion();
-
-console.log('🚀 ARVEXa School — Calculatrice Pro');
+  console.log('🚀 ARVEXA School — Calculatrice (version fixe)');
+})();
 </script>
 </body>
 </html>
