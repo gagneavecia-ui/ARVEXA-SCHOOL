@@ -2626,6 +2626,7 @@ const tts = {
   isSpeaking: false,
   isPaused: false,
   voice: null,
+  voicesLoaded: false,
   lang: 'fr-FR'
 };
 
@@ -2636,33 +2637,54 @@ if (!TTS_SUPPORTED && ttsBtn) {
 }
 
 // ================================================================
-// CHARGEMENT DE LA VOIX
+// CHARGEMENT DE LA VOIX (robuste)
 // ================================================================
 function loadVoice() {
-  if (!TTS_SUPPORTED || !tts.synth) return;
+  if (!TTS_SUPPORTED || !tts.synth) return false;
   try {
     const voices = tts.synth.getVoices();
-    if (!voices || voices.length === 0) return;
+    if (!voices || voices.length === 0) {
+      return false;
+    }
 
     tts.voice = voices.find(v => v.lang === 'fr-FR' && v.localService)
              || voices.find(v => v.lang === 'fr-FR')
              || voices.find(v => v.lang && v.lang.startsWith('fr'))
              || null;
+
+    tts.voicesLoaded = true;
+    console.log('🎙️ Voix TTS chargée :', tts.voice ? tts.voice.name : 'aucune voix FR, utilisation par défaut');
+    console.log('🎙️ Toutes les voix disponibles :', voices.map(v => `${v.name} (${v.lang})`));
+    return true;
   } catch (e) {
     console.warn('Erreur lors du chargement des voix :', e);
+    return false;
   }
 }
 
+// Événement natif : quand les voix deviennent disponibles
+if (TTS_SUPPORTED && tts.synth) {
+  tts.synth.onvoiceschanged = () => {
+    loadVoice();
+  };
+  // Certains navigateurs supportent addEventListener
+  if (tts.synth.addEventListener) {
+    tts.synth.addEventListener('voiceschanged', loadVoice);
+  }
+}
+
+// Tentative immédiate
 loadVoice();
 
-if (TTS_SUPPORTED && tts.synth && typeof tts.synth.onvoiceschanged !== 'undefined') {
-  tts.synth.onvoiceschanged = loadVoice;
-}
-
-if (TTS_SUPPORTED) {
-  setTimeout(loadVoice, 500);
-  setTimeout(loadVoice, 1500);
-}
+// Retry multiple (utile sur mobile / iOS)
+let voiceRetryCount = 0;
+const voiceRetryInterval = setInterval(() => {
+  voiceRetryCount++;
+  const ok = loadVoice();
+  if (ok || voiceRetryCount >= 10) {
+    clearInterval(voiceRetryInterval);
+  }
+}, 300);
 
 // ================================================================
 // NETTOYAGE DU TEXTE
@@ -2729,14 +2751,12 @@ function extractReadableContent() {
 
   const chunks = [];
 
-  // 1. Titre principal uniquement
   const heroTitle = container.querySelector('.lecture-hero-title, .lecture-part-title');
   if (heroTitle) {
     const t = cleanText(heroTitle.textContent);
     if (t) chunks.push(t);
   }
 
-  // 2. Parcourir les sections
   const sections = container.querySelectorAll('.lecture-section');
   sections.forEach(section => {
     const sectionEyebrow = section.querySelector('.lecture-section-eyebrow');
@@ -2749,7 +2769,6 @@ function extractReadableContent() {
     const body = section.querySelector('.lecture-section-body');
     if (!body) return;
 
-    // Récupérer les éléments dans l'ordre du DOM
     const selector = [
       '.lecture-text',
       '.lecture-list li',
@@ -2840,7 +2859,6 @@ function extractReadableContent() {
     });
   });
 
-  // 3. Récap
   const recap = container.querySelector('.lecture-recap');
   if (recap) {
     const title = recap.querySelector('.lecture-recap-title');
@@ -2851,7 +2869,6 @@ function extractReadableContent() {
     });
   }
 
-  // 4. Fin
   const end = container.querySelector('.lecture-end-text');
   if (end) chunks.push(cleanText(end.textContent));
 
@@ -2864,7 +2881,7 @@ function extractReadableContent() {
 function updateProgress() {
   if (tts.chunks.length === 0) return;
   const percent = (tts.currentChunk / tts.chunks.length) * 100;
-  ttsProgressFill.style.width = percent + '%';
+  if (ttsProgressFill) ttsProgressFill.style.width = percent + '%';
 }
 
 function speakChunk(index) {
@@ -2906,47 +2923,67 @@ function startTTS() {
     return;
   }
 
+  // Si les voix ne sont pas chargées, on force un rechargement
+  if (!tts.voicesLoaded) {
+    loadVoice();
+  }
+
   tts.synth.cancel();
 
   tts.chunks = extractReadableContent();
   tts.currentChunk = 0;
 
   if (tts.chunks.length === 0) {
+    console.warn('Aucun contenu à lire.');
     return;
   }
+
+  console.log(`📢 Lecture de ${tts.chunks.length} segments`);
 
   tts.isSpeaking = true;
   tts.isPaused = false;
 
-  ttsBtn.classList.add('speaking');
-  ttsBtn.classList.remove('paused');
-  ttsBtn.querySelector('i').className = 'fas fa-pause';
-  ttsBtn.querySelector('span').textContent = 'Pause';
-  ttsProgress.classList.add('active');
+  if (ttsBtn) {
+    ttsBtn.classList.add('speaking');
+    ttsBtn.classList.remove('paused');
+    const icon = ttsBtn.querySelector('i');
+    const span = ttsBtn.querySelector('span');
+    if (icon) icon.className = 'fas fa-pause';
+    if (span) span.textContent = 'Pause';
+  }
+  if (ttsProgress) ttsProgress.classList.add('active');
 
   speakChunk(0);
 }
 
 function pauseTTS() {
   if (!tts.isSpeaking || tts.isPaused) return;
-  tts.synth.pause();
+  try { tts.synth.pause(); } catch(e) {}
   tts.isPaused = true;
 
-  ttsBtn.classList.remove('speaking');
-  ttsBtn.classList.add('paused');
-  ttsBtn.querySelector('i').className = 'fas fa-play';
-  ttsBtn.querySelector('span').textContent = 'Reprendre';
+  if (ttsBtn) {
+    ttsBtn.classList.remove('speaking');
+    ttsBtn.classList.add('paused');
+    const icon = ttsBtn.querySelector('i');
+    const span = ttsBtn.querySelector('span');
+    if (icon) icon.className = 'fas fa-play';
+    if (span) span.textContent = 'Reprendre';
+  }
 }
 
 function resumeTTS() {
   if (!tts.isSpeaking || !tts.isPaused) return;
-  tts.synth.resume();
+  try { tts.synth.resume(); } catch(e) {}
   tts.isPaused = false;
 
-  ttsBtn.classList.add('speaking');
-  ttsBtn.classList.remove('paused');
-  ttsBtn.querySelector('i').className = 'fas fa-pause';
-  ttsBtn.querySelector('span').textContent = 'Pause';
+  if (ttsBtn) {
+    ttsBtn.classList.add('speaking');
+    ttsBtn.classList.remove('paused');
+    const icon = ttsBtn.querySelector('i');
+    const span = ttsBtn.querySelector('span');
+    if (icon) icon.className = 'fas fa-pause';
+    if (span) span.textContent = 'Pause';
+  }
 }
 
 function stopTTS() {
@@ -2961,8 +2998,10 @@ function stopTTS() {
 
   if (ttsBtn) {
     ttsBtn.classList.remove('speaking', 'paused');
-    ttsBtn.querySelector('i').className = 'fas fa-volume-up';
-    ttsBtn.querySelector('span').textContent = 'Écouter';
+    const icon = ttsBtn.querySelector('i');
+    const span = ttsBtn.querySelector('span');
+    if (icon) icon.className = 'fas fa-volume-up';
+    if (span) span.textContent = 'Écouter';
   }
   if (ttsProgress) ttsProgress.classList.remove('active');
   if (ttsProgressFill) ttsProgressFill.style.width = '0%';
@@ -2982,7 +3021,6 @@ if (ttsBtn) {
     }
   });
 
-  // Long press pour stop
   let longPressTimer = null;
 
   const startLongPress = () => {
@@ -3015,15 +3053,7 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
-// Stop au changement de contenu (via MutationObserver)
-if (contentBody) {
-  const observer = new MutationObserver(() => {
-    if (tts.isSpeaking) {
-      stopTTS();
-    }
-  });
-  observer.observe(contentBody, { childList: true });
-}
+console.log('🎙️ TTS Supporté :', TTS_SUPPORTED);
 
 // ================================================================
 // AUTH
