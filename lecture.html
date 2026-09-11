@@ -3217,73 +3217,52 @@ function startTTS() {
 
 function pauseTTS() {
   if (!TTS_SUPPORTED || !tts.synth) return;
-
   if (!tts.isSpeaking) return;
 
+  console.log(
+    '[ARVEXA TTS] Pause au morceau:',
+    tts.currentChunk
+  );
+
+  // On arrête réellement l'utterance Android
   try {
-    tts.synth.pause();
-
-    // IMPORTANT :
-    // on garde isSpeaking = true
-    // car l'utterance existe toujours.
-    tts.isPaused = true;
-
-    updateTTSButton('paused');
-
-    console.log('[ARVEXA TTS] Lecture en pause');
-
-  } catch (error) {
-    console.error('[ARVEXA TTS] Pause:', error);
+    tts.synth.cancel();
+  } catch (e) {
+    console.warn(e);
   }
+
+  // On conserve le morceau actuel
+  tts.isPaused = true;
+  tts.isSpeaking = false;
+
+  updateTTSButton('paused');
 }
 
 
 function resumeTTS() {
   if (!TTS_SUPPORTED || !tts.synth) return;
-
   if (!tts.isPaused) return;
 
-  try {
-    /*
-     * Android/Chrome peut parfois garder la synthèse
-     * dans un état bloqué.
-     */
-    tts.synth.resume();
+  console.log(
+    '[ARVEXA TTS] Reprise du morceau:',
+    tts.currentChunk
+  );
 
-    tts.isPaused = false;
-    tts.isSpeaking = true;
+  tts.isPaused = false;
+  tts.isSpeaking = true;
 
-    updateTTSButton('speaking');
+  updateTTSButton('speaking');
 
-    console.log('[ARVEXA TTS] Lecture reprise');
+  // Android a besoin d'un petit délai après cancel()
+  setTimeout(() => {
 
-    /*
-     * Petit deuxième resume pour Android.
-     */
-    setTimeout(() => {
-      if (tts.isSpeaking && !tts.isPaused) {
-        try {
-          tts.synth.resume();
-        } catch (e) {}
-      }
-    }, 150);
+    if (!tts.isSpeaking || tts.isPaused) return;
 
-  } catch (error) {
-    console.error('[ARVEXA TTS] Reprise:', error);
+    // Recrée l'utterance du morceau actuel
+    speakChunk(tts.currentChunk);
 
-    /*
-     * Si Android a complètement perdu l'utterance,
-     * on relance le morceau actuel.
-     */
-    tts.isPaused = false;
-    tts.isSpeaking = true;
-
-    setTimeout(() => {
-      speakChunk(tts.currentChunk);
-    }, 100);
-  }
+  }, 150);
 }
-
 
 function stopTTS() {
   if (!TTS_SUPPORTED || !tts.synth) return;
