@@ -2609,451 +2609,772 @@ modalSave.addEventListener('click', () => {
   closeModal();
 });
 
-// ================================================================
-// TEXT-TO-SPEECH (Web Speech API)
-// ================================================================
+/* =========================================================
+   ARVEXA SCHOOL — LECTEUR AUDIO TTS
+   Web Speech API — gratuit, sans API ni clé
+   ========================================================= */
 
-// Détection du support
-const TTS_SUPPORTED = typeof window !== 'undefined'
-  && 'speechSynthesis' in window
-  && typeof window.SpeechSynthesisUtterance === 'function';
+const TTS_SUPPORTED =
+  'speechSynthesis' in window &&
+  'SpeechSynthesisUtterance' in window;
 
 const tts = {
   synth: TTS_SUPPORTED ? window.speechSynthesis : null,
-  utterance: null,
   chunks: [],
   currentChunk: 0,
+  utterance: null,
+  voice: null,
   isSpeaking: false,
   isPaused: false,
-  voice: null,
-  voicesLoaded: false,
-  lang: 'fr-FR'
+  lang: 'fr-FR',
+  rate: 0.92,
+  pitch: 1,
+  volume: 1
 };
 
-// Masquer le bouton si API non supportée
-if (!TTS_SUPPORTED && ttsBtn) {
-  ttsBtn.style.display = 'none';
-  console.warn('⚠️ Web Speech API non supportée sur ce navigateur.');
-}
+/* ---------------------------------------------------------
+   Vérification
+   --------------------------------------------------------- */
 
-// ================================================================
-// CHARGEMENT DE LA VOIX (robuste)
-// ================================================================
-function loadVoice() {
-  if (!TTS_SUPPORTED || !tts.synth) return false;
-  try {
-    const voices = tts.synth.getVoices();
-    if (!voices || voices.length === 0) {
-      return false;
-    }
+function showTTSMessage(message) {
+  console.warn('[ARVEXA TTS]', message);
 
-    tts.voice = voices.find(v => v.lang === 'fr-FR' && v.localService)
-             || voices.find(v => v.lang === 'fr-FR')
-             || voices.find(v => v.lang && v.lang.startsWith('fr'))
-             || null;
+  if (!ttsBtn) return;
 
-    tts.voicesLoaded = true;
-    console.log('🎙️ Voix TTS chargée :', tts.voice ? tts.voice.name : 'aucune voix FR, utilisation par défaut');
-    console.log('🎙️ Toutes les voix disponibles :', voices.map(v => `${v.name} (${v.lang})`));
-    return true;
-  } catch (e) {
-    console.warn('Erreur lors du chargement des voix :', e);
-    return false;
+  const oldText = ttsBtn.querySelector('span');
+
+  if (oldText) {
+    oldText.textContent = message;
+    setTimeout(() => {
+      if (!tts.isSpeaking && !tts.isPaused) {
+        oldText.textContent = 'Écouter';
+      }
+    }, 3000);
   }
 }
 
-// Événement natif : quand les voix deviennent disponibles
-if (TTS_SUPPORTED && tts.synth) {
-  tts.synth.onvoiceschanged = () => {
-    loadVoice();
-  };
-  // Certains navigateurs supportent addEventListener
-  if (tts.synth.addEventListener) {
-    tts.synth.addEventListener('voiceschanged', loadVoice);
+/* ---------------------------------------------------------
+   Chargement des voix
+   --------------------------------------------------------- */
+
+function loadTTSVoices() {
+  if (!TTS_SUPPORTED) return;
+
+  const voices = tts.synth.getVoices();
+
+  if (!voices || voices.length === 0) {
+    return;
   }
+
+  // Priorité aux voix françaises
+  tts.voice =
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase() === 'fr-fr' &&
+      v.localService
+    ) ||
+
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase() === 'fr-fr'
+    ) ||
+
+    voices.find(v =>
+      v.lang &&
+      v.lang.toLowerCase().startsWith('fr')
+    ) ||
+
+    null;
+
+  console.log(
+    '[ARVEXA TTS] Voix sélectionnée:',
+    tts.voice ? tts.voice.name : 'voix système'
+  );
 }
 
-// Tentative immédiate
-loadVoice();
+// Android/Chrome charge parfois les voix après quelques secondes
+loadTTSVoices();
 
-// Retry multiple (utile sur mobile / iOS)
-let voiceRetryCount = 0;
-const voiceRetryInterval = setInterval(() => {
-  voiceRetryCount++;
-  const ok = loadVoice();
-  if (ok || voiceRetryCount >= 10) {
-    clearInterval(voiceRetryInterval);
-  }
-}, 300);
-
-// ================================================================
-// NETTOYAGE DU TEXTE
-// ================================================================
-function stripEmojis(text) {
-  return text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{FE0F}\u{1F000}-\u{1F2FF}]/gu, ' ');
+if (TTS_SUPPORTED && 'onvoiceschanged' in window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = loadTTSVoices;
 }
 
-function replaceMathSymbols(text) {
-  const replacements = [
-    [/\bi²\b/g, 'i au carré'],
-    [/\bi³\b/g, 'i au cube'],
-    [/\bi⁴\b/g, 'i puissance quatre'],
-    [/\biⁿ\b/g, 'i puissance n'],
-    [/\bi\^\(n mod 4\)/gi, 'i puissance n modulo 4'],
-    [/Re\s*\(\s*z\s*\)/g, 'partie réelle de z'],
-    [/Im\s*\(\s*z\s*\)/g, 'partie imaginaire de z'],
-    [/√\s*\(([^)]+)\)/g, 'racine de $1'],
-    [/√(\d+)/g, 'racine de $1'],
-    [/√/g, 'racine de '],
-    [/∈/g, ' appartient à '],
-    [/⊂/g, ' inclus dans '],
-    [/≤/g, ' inférieur ou égal à '],
-    [/≥/g, ' supérieur ou égal à '],
-    [/≠/g, ' différent de '],
-    [/≡/g, ' congru à '],
-    [/⟺/g, ' si et seulement si '],
-    [/⟹/g, ' implique '],
-    [/×/g, ' fois '],
-    [/·/g, ' fois '],
-    [/÷/g, ' divisé par '],
-    [/−/g, ' moins '],
-    [/ℝ/g, ' R '],
-    [/ℂ/g, ' C '],
-    [/ℕ/g, ' N '],
-    [/ℤ/g, ' Z '],
-    [/ℚ/g, ' Q '],
-    [/∞/g, ' infini '],
-    [/\bmod\b/gi, ' modulo '],
-    [/\s*=\s*/g, ' égale '],
-  ];
-  let result = text;
-  for (const [pattern, replacement] of replacements) {
-    result = result.replace(pattern, replacement);
-  }
+/* ---------------------------------------------------------
+   Nettoyage du texte
+   --------------------------------------------------------- */
+
+function cleanTTS(text) {
+  if (!text) return '';
+
+  let result = String(text);
+
+  // Supprimer les emojis
+  result = result.replace(
+    /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,
+    ' '
+  );
+
+  // Flèches
+  result = result.replace(/⟺/g, ' si et seulement si ');
+  result = result.replace(/⟹/g, ' implique ');
+  result = result.replace(/→/g, ' vers ');
+  result = result.replace(/←/g, ' de ');
+  result = result.replace(/↔/g, ' équivalent à ');
+
+  // Ensembles
+  result = result.replace(/∈/g, ' appartient à ');
+  result = result.replace(/∉/g, ' n appartient pas à ');
+  result = result.replace(/⊂/g, ' est inclus dans ');
+  result = result.replace(/⊆/g, ' est inclus dans ');
+  result = result.replace(/∪/g, ' union ');
+  result = result.replace(/∩/g, ' intersection ');
+
+  // Comparaisons
+  result = result.replace(/≤/g, ' inférieur ou égal à ');
+  result = result.replace(/≥/g, ' supérieur ou égal à ');
+  result = result.replace(/≠/g, ' différent de ');
+  result = result.replace(/≈/g, ' environ égal à ');
+  result = result.replace(/≡/g, ' congru à ');
+
+  // Racines
+  result = result.replace(
+    /√\s*\(([^)]+)\)/g,
+    ' racine carrée de $1 '
+  );
+
+  result = result.replace(
+    /√\s*([A-Za-z0-9]+)/g,
+    ' racine carrée de $1 '
+  );
+
+  result = result.replace(/√/g, ' racine carrée de ');
+
+  // Puissances classiques
+  result = result.replace(/([A-Za-z0-9])²/g, '$1 au carré');
+  result = result.replace(/([A-Za-z0-9])³/g, '$1 au cube');
+  result = result.replace(/([A-Za-z0-9])⁴/g, '$1 puissance quatre');
+  result = result.replace(/([A-Za-z0-9])⁵/g, '$1 puissance cinq');
+
+  // Multiplication
+  result = result.replace(/×/g, ' fois ');
+  result = result.replace(/·/g, ' fois ');
+  result = result.replace(/⋅/g, ' fois ');
+
+  // Division
+  result = result.replace(/÷/g, ' divisé par ');
+
+  // Symboles mathématiques
+  result = result.replace(/∞/g, ' infini ');
+  result = result.replace(/π/g, ' pi ');
+  result = result.replace(/∑/g, ' somme ');
+  result = result.replace(/∏/g, ' produit ');
+  result = result.replace(/∂/g, ' dérivée partielle ');
+  result = result.replace(/∫/g, ' intégrale ');
+
+  // Nombres négatifs / moins
+  result = result.replace(/−/g, ' moins ');
+
+  // Nombres complexes
+  result = result.replace(
+    /Re\s*\(\s*z\s*\)/gi,
+    ' partie réelle de z '
+  );
+
+  result = result.replace(
+    /Im\s*\(\s*z\s*\)/gi,
+    ' partie imaginaire de z '
+  );
+
+  // Ensembles numériques
+  result = result.replace(/\bℝ\b/g, ' R ');
+  result = result.replace(/\bℂ\b/g, ' C ');
+  result = result.replace(/\bℕ\b/g, ' N ');
+  result = result.replace(/\bℤ\b/g, ' Z ');
+  result = result.replace(/\bℚ\b/g, ' Q ');
+
+  // Modulo
+  result = result.replace(/\bmod\b/gi, ' modulo ');
+
+  // Symboles divers
+  result = result.replace(/%/g, ' pour cent ');
+  result = result.replace(/°/g, ' degrés ');
+  result = result.replace(/:/g, ' : ');
+  result = result.replace(/;/g, ' ; ');
+
+  // Parenthèses : petites pauses naturelles
+  result = result.replace(/\(/g, ' , ');
+  result = result.replace(/\)/g, ' , ');
+
+  // Espaces multiples
+  result = result.replace(/\s+/g, ' ').trim();
+
   return result;
 }
 
-function cleanText(text) {
-  if (!text) return '';
-  let t = text;
-  t = stripEmojis(t);
-  t = replaceMathSymbols(t);
-  t = t.replace(/\s+/g, ' ').trim();
-  return t;
-}
+/* ---------------------------------------------------------
+   Extraction intelligente du contenu
+   --------------------------------------------------------- */
 
-// ================================================================
-// EXTRACTION DU CONTENU À LIRE
-// ================================================================
 function extractReadableContent() {
-  const container = document.querySelector('#contentBody .lecture-container');
-  if (!container) return [];
+  const container =
+    document.querySelector('#contentBody .lecture-container') ||
+    document.querySelector('.lecture-container') ||
+    document.querySelector('#contentBody');
 
-  const chunks = [];
-
-  const heroTitle = container.querySelector('.lecture-hero-title, .lecture-part-title');
-  if (heroTitle) {
-    const t = cleanText(heroTitle.textContent);
-    if (t) chunks.push(t);
+  if (!container) {
+    console.warn('[ARVEXA TTS] Conteneur de cours introuvable.');
+    return [];
   }
 
-  const sections = container.querySelectorAll('.lecture-section');
-  sections.forEach(section => {
-    const sectionEyebrow = section.querySelector('.lecture-section-eyebrow');
-    const sectionTitle = section.querySelector('.lecture-section-title');
-    let headText = '';
-    if (sectionEyebrow) headText += cleanText(sectionEyebrow.textContent) + '. ';
-    if (sectionTitle) headText += cleanText(sectionTitle.textContent) + '.';
-    if (headText) chunks.push(headText);
+  const parts = [];
 
-    const body = section.querySelector('.lecture-section-body');
-    if (!body) return;
+  /*
+   * On récupère les blocs importants dans leur ordre naturel.
+   * On évite volontairement les boutons et éléments de navigation.
+   */
+  const selectors = [
+    '.lecture-hero h1',
+    '.lecture-hero h2',
+    '.lecture-hero p',
 
-    const selector = [
-      '.lecture-text',
-      '.lecture-list li',
-      '.lecture-callout',
-      '.lecture-card',
-      '.lecture-aside',
-      '.lecture-formula-hero',
-      '.lecture-formula-box',
-      '.lecture-rule',
-      '.lecture-example',
-      '.lecture-step',
-      '.lecture-subtitle',
-      '.lecture-exo-list li',
-      '.lecture-corr-item'
-    ].join(', ');
+    '.lecture-section h2',
+    '.lecture-section h3',
+    '.lecture-section p',
 
-    const allElements = body.querySelectorAll(selector);
-    const seen = new Set();
+    '.lecture-callout',
+    '.lecture-aside',
 
-    allElements.forEach(el => {
-      if (seen.has(el)) return;
-      let isNested = false;
-      seen.forEach(prev => {
-        if (prev.contains(el) || el.contains(prev)) isNested = true;
-      });
-      if (isNested) return;
-      seen.add(el);
+    '.lecture-card h3',
+    '.lecture-card p',
 
-      let text = '';
+    '.lecture-example h3',
+    '.lecture-example p',
 
-      if (el.classList.contains('lecture-formula-hero')) {
-        const label = el.querySelector('.lecture-formula-hero-label');
-        const main = el.querySelector('.lecture-formula-hero-main');
-        const desc = el.querySelector('.lecture-formula-hero-desc');
-        if (label) text += cleanText(label.textContent) + '. ';
-        if (main) text += cleanText(main.textContent) + '. ';
-        if (desc) text += cleanText(desc.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-formula-box')) {
-        const main = el.querySelector('.lecture-formula-main');
-        const desc = el.querySelector('.lecture-formula-desc');
-        if (main) text += cleanText(main.textContent) + '. ';
-        if (desc) text += cleanText(desc.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-rule')) {
-        const label = el.querySelector('.lecture-rule-label');
-        const bodyEl = el.querySelector('.lecture-rule-body');
-        if (label) text += cleanText(label.textContent) + '. ';
-        if (bodyEl) text += cleanText(bodyEl.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-example')) {
-        const label = el.querySelector('.lecture-example-label');
-        const content = el.querySelector('.lecture-example-content');
-        if (label) text += cleanText(label.textContent) + '. ';
-        if (content) text += cleanText(content.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-callout')) {
-        const title = el.querySelector('.lecture-callout-title, .lecture-callout-label');
-        const bodyEl = el.querySelector('.lecture-callout-body, .lecture-callout-content');
-        if (title) text += cleanText(title.textContent) + '. ';
-        if (bodyEl) text += cleanText(bodyEl.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-card')) {
-        const label = el.querySelector('.lecture-card-label');
-        const content = el.querySelector('.lecture-card-content');
-        if (label) text += cleanText(label.textContent) + '. ';
-        if (content) text += cleanText(content.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-aside')) {
-        const label = el.querySelector('.lecture-aside-label');
-        const content = el.querySelector('.lecture-aside-content');
-        if (label) text += cleanText(label.textContent) + '. ';
-        if (content) text += cleanText(content.textContent) + '. ';
-      }
-      else if (el.classList.contains('lecture-corr-item')) {
-        const q = el.querySelector('.lecture-corr-q');
-        const ans = el.querySelector('.lecture-corr-ans');
-        const bodyEl = el.querySelector('.lecture-corr-body');
-        if (q) text += 'Question. ' + cleanText(q.textContent) + '. ';
-        if (ans) text += 'Réponse. ' + cleanText(ans.textContent) + '. ';
-        if (bodyEl) text += cleanText(bodyEl.textContent) + '. ';
-      }
-      else {
-        text = cleanText(el.textContent);
-      }
+    '.lecture-formula',
+    '.lecture-formula-box',
 
-      if (text) chunks.push(text);
-    });
+    '.lecture-step',
+    '.lecture-step h3',
+    '.lecture-step p',
+
+    '.exercise-item',
+    '.question',
+    '.correction-item',
+
+    '.recap',
+    '.lecture-recap',
+
+    '.lecture-container > p',
+    '.lecture-container > h2',
+    '.lecture-container > h3'
+  ];
+
+  const elements = container.querySelectorAll(selectors.join(','));
+
+  const seen = new Set();
+
+  elements.forEach(element => {
+    if (seen.has(element)) return;
+
+    // Ne pas lire les boutons
+    if (
+      element.closest('button') ||
+      element.matches('button') ||
+      element.querySelector('button')
+    ) {
+      return;
+    }
+
+    let text = element.innerText || element.textContent || '';
+
+    text = cleanTTS(text);
+
+    if (!text) return;
+
+    /*
+     * Évite les duplications importantes.
+     */
+    const normalized = text.toLowerCase();
+
+    if (
+      parts.some(existing =>
+        existing.toLowerCase() === normalized
+      )
+    ) {
+      return;
+    }
+
+    seen.add(element);
+    parts.push(text);
   });
 
-  const recap = container.querySelector('.lecture-recap');
-  if (recap) {
-    const title = recap.querySelector('.lecture-recap-title');
-    if (title) chunks.push(cleanText(title.textContent));
-    recap.querySelectorAll('.lecture-recap-list li').forEach(li => {
-      const t = cleanText(li.textContent);
-      if (t) chunks.push(t);
-    });
+  /*
+   * Si aucun bloc n'a été trouvé, on utilise tout le texte.
+   * Cela évite le problème "j'appuie mais rien ne se passe".
+   */
+  if (parts.length === 0) {
+    let fallback =
+      container.innerText ||
+      container.textContent ||
+      '';
+
+    fallback = cleanTTS(fallback);
+
+    if (fallback) {
+      parts.push(fallback);
+    }
   }
 
-  const end = container.querySelector('.lecture-end-text');
-  if (end) chunks.push(cleanText(end.textContent));
+  /*
+   * Transformation en petits morceaux.
+   * Les longs textes peuvent poser problème sur Android.
+   */
+  const chunks = [];
 
-  return chunks.filter(c => c.length > 0);
+  parts.forEach(text => {
+    // Découpage par phrases
+    const sentences = text.match(
+      /[^.!?]+[.!?]+|[^.!?]+$/g
+    ) || [text];
+
+    let current = '';
+
+    sentences.forEach(sentence => {
+      sentence = sentence.trim();
+
+      if (!sentence) return;
+
+      if (
+        (current + ' ' + sentence).length <= 450
+      ) {
+        current +=
+          (current ? ' ' : '') +
+          sentence;
+      } else {
+        if (current) {
+          chunks.push(current.trim());
+        }
+
+        current = sentence;
+      }
+    });
+
+    if (current) {
+      chunks.push(current.trim());
+    }
+  });
+
+  return chunks.filter(
+    chunk => chunk.length > 1
+  );
 }
 
-// ================================================================
-// LECTURE
-// ================================================================
-function updateProgress() {
-  if (tts.chunks.length === 0) return;
-  const percent = (tts.currentChunk / tts.chunks.length) * 100;
-  if (ttsProgressFill) ttsProgressFill.style.width = percent + '%';
+/* ---------------------------------------------------------
+   Mise à jour du bouton
+   --------------------------------------------------------- */
+
+function updateTTSButton(state) {
+  if (!ttsBtn) return;
+
+  const icon = ttsBtn.querySelector('i');
+  const text = ttsBtn.querySelector('span');
+
+  if (state === 'speaking') {
+    ttsBtn.classList.add('speaking');
+    ttsBtn.classList.remove('paused');
+
+    if (icon) {
+      icon.className = 'fas fa-pause';
+    }
+
+    if (text) {
+      text.textContent = 'Pause';
+    }
+
+  } else if (state === 'paused') {
+    ttsBtn.classList.remove('speaking');
+    ttsBtn.classList.add('paused');
+
+    if (icon) {
+      icon.className = 'fas fa-play';
+    }
+
+    if (text) {
+      text.textContent = 'Reprendre';
+    }
+
+  } else {
+    ttsBtn.classList.remove('speaking', 'paused');
+
+    if (icon) {
+      icon.className = 'fas fa-volume-up';
+    }
+
+    if (text) {
+      text.textContent = 'Écouter';
+    }
+  }
 }
+
+/* ---------------------------------------------------------
+   Barre de progression
+   --------------------------------------------------------- */
+
+function updateTTSProgress() {
+  const fill =
+    document.querySelector('.tts-progress-fill');
+
+  if (!fill || !tts.chunks.length) return;
+
+  const percentage =
+    ((tts.currentChunk + 1) / tts.chunks.length) * 100;
+
+  fill.style.width =
+    Math.min(100, percentage) + '%';
+}
+
+function resetTTSProgress() {
+  const fill =
+    document.querySelector('.tts-progress-fill');
+
+  if (fill) {
+    fill.style.width = '0%';
+  }
+}
+
+/* ---------------------------------------------------------
+   Lecture d'un morceau
+   --------------------------------------------------------- */
 
 function speakChunk(index) {
+  if (!TTS_SUPPORTED) {
+    showTTSMessage(
+      'Audio non disponible sur ce navigateur'
+    );
+    return;
+  }
+
   if (index >= tts.chunks.length) {
-    stopTTS();
+    finishTTS();
     return;
   }
 
   tts.currentChunk = index;
+
   const text = tts.chunks[index];
 
-  const utt = new SpeechSynthesisUtterance(text);
-  utt.lang = tts.lang;
-  if (tts.voice) utt.voice = tts.voice;
-  utt.rate = 0.95;
-  utt.pitch = 1;
-  utt.volume = 1;
-
-  utt.onend = () => {
-    if (tts.isSpeaking && !tts.isPaused) {
-      speakChunk(index + 1);
-    }
-  };
-
-  utt.onerror = (e) => {
-    if (e.error !== 'interrupted' && e.error !== 'canceled') {
-      console.warn('TTS error:', e.error);
-    }
-  };
-
-  tts.utterance = utt;
-  updateProgress();
-  tts.synth.speak(utt);
-}
-
-function startTTS() {
-  if (!TTS_SUPPORTED || !tts.synth) {
-    alert('La synthèse vocale n\'est pas disponible sur ce navigateur.');
+  if (!text) {
+    speakChunk(index + 1);
     return;
   }
 
-  // Si les voix ne sont pas chargées, on force un rechargement
-  if (!tts.voicesLoaded) {
-    loadVoice();
-  }
-
+  /*
+   * Sécurité : annuler une ancienne utterance
+   * avant d'en créer une nouvelle.
+   */
   tts.synth.cancel();
 
-  tts.chunks = extractReadableContent();
-  tts.currentChunk = 0;
+  const utterance =
+    new SpeechSynthesisUtterance(text);
 
-  if (tts.chunks.length === 0) {
-    console.warn('Aucun contenu à lire.');
+  tts.utterance = utterance;
+
+  utterance.lang = 'fr-FR';
+  utterance.rate = tts.rate;
+  utterance.pitch = tts.pitch;
+  utterance.volume = tts.volume;
+
+  if (tts.voice) {
+    utterance.voice = tts.voice;
+  }
+
+  utterance.onstart = () => {
+    tts.isSpeaking = true;
+    tts.isPaused = false;
+
+    updateTTSButton('speaking');
+    updateTTSProgress();
+  };
+
+  utterance.onend = () => {
+    /*
+     * Si l'utilisateur a arrêté manuellement,
+     * on ne continue pas.
+     */
+    if (!tts.isSpeaking && !tts.isPaused) {
+      return;
+    }
+
+    const next = index + 1;
+
+    if (next < tts.chunks.length) {
+      setTimeout(() => {
+        if (tts.isSpeaking) {
+          speakChunk(next);
+        }
+      }, 80);
+    } else {
+      finishTTS();
+    }
+  };
+
+  utterance.onerror = event => {
+    console.error(
+      '[ARVEXA TTS] Erreur:',
+      event.error
+    );
+
+    /*
+     * Certaines versions Android déclenchent
+     * "interrupted" lorsqu'une utterance est remplacée.
+     * On ne considère pas cela comme une panne.
+     */
+    if (
+      event.error === 'interrupted' ||
+      event.error === 'canceled'
+    ) {
+      return;
+    }
+
+    finishTTS();
+
+    showTTSMessage(
+      'Erreur audio — vérifie la voix française du téléphone'
+    );
+  };
+
+  tts.synth.speak(utterance);
+
+  /*
+   * Astuce Android Chrome :
+   * relancer resume() après speak() peut débloquer
+   * certains cas où la synthèse reste silencieuse.
+   */
+  setTimeout(() => {
+    if (tts.isSpeaking && !tts.isPaused) {
+      try {
+        tts.synth.resume();
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }, 100);
+}
+
+/* ---------------------------------------------------------
+   Démarrer
+   --------------------------------------------------------- */
+
+function startTTS() {
+  if (!TTS_SUPPORTED) {
+    showTTSMessage(
+      'Ton navigateur ne supporte pas la lecture audio'
+    );
     return;
   }
 
-  console.log(`📢 Lecture de ${tts.chunks.length} segments`);
+  /*
+   * Toujours arrêter une ancienne lecture.
+   */
+  try {
+    tts.synth.cancel();
+  } catch (e) {
+    console.warn(e);
+  }
 
+  tts.chunks = extractReadableContent();
+
+  console.log(
+    '[ARVEXA TTS] Nombre de morceaux:',
+    tts.chunks.length
+  );
+
+  if (!tts.chunks.length) {
+    showTTSMessage(
+      'Aucun texte à lire'
+    );
+    return;
+  }
+
+  /*
+   * Recharger les voix juste avant la lecture.
+   */
+  loadTTSVoices();
+
+  tts.currentChunk = 0;
   tts.isSpeaking = true;
   tts.isPaused = false;
 
-  if (ttsBtn) {
-    ttsBtn.classList.add('speaking');
-    ttsBtn.classList.remove('paused');
-    const icon = ttsBtn.querySelector('i');
-    const span = ttsBtn.querySelector('span');
-    if (icon) icon.className = 'fas fa-pause';
-    if (span) span.textContent = 'Pause';
-  }
-  if (ttsProgress) ttsProgress.classList.add('active');
+  resetTTSProgress();
+  updateTTSButton('speaking');
 
   speakChunk(0);
 }
 
-function pauseTTS() {
-  if (!tts.isSpeaking || tts.isPaused) return;
-  try { tts.synth.pause(); } catch(e) {}
-  tts.isPaused = true;
+/* ---------------------------------------------------------
+   Pause
+   --------------------------------------------------------- */
 
-  if (ttsBtn) {
-    ttsBtn.classList.remove('speaking');
-    ttsBtn.classList.add('paused');
-    const icon = ttsBtn.querySelector('i');
-    const span = ttsBtn.querySelector('span');
-    if (icon) icon.className = 'fas fa-play';
-    if (span) span.textContent = 'Reprendre';
+function pauseTTS() {
+  if (!TTS_SUPPORTED) return;
+
+  if (!tts.isSpeaking) return;
+
+  try {
+    tts.synth.pause();
+
+    tts.isPaused = true;
+    tts.isSpeaking = false;
+
+    updateTTSButton('paused');
+
+  } catch (error) {
+    console.error(
+      '[ARVEXA TTS] Pause:',
+      error
+    );
   }
 }
+
+/* ---------------------------------------------------------
+   Reprendre
+   --------------------------------------------------------- */
 
 function resumeTTS() {
-  if (!tts.isSpeaking || !tts.isPaused) return;
-  try { tts.synth.resume(); } catch(e) {}
-  tts.isPaused = false;
+  if (!TTS_SUPPORTED) return;
 
-  if (ttsBtn) {
-    ttsBtn.classList.add('speaking');
-    ttsBtn.classList.remove('paused');
-    const icon = ttsBtn.querySelector('i');
-    const span = ttsBtn.querySelector('span');
-    if (icon) icon.className = 'fas fa-pause';
-    if (span) span.textContent = 'Pause';
+  try {
+    tts.isPaused = false;
+    tts.isSpeaking = true;
+
+    tts.synth.resume();
+
+    updateTTSButton('speaking');
+
+  } catch (error) {
+    console.error(
+      '[ARVEXA TTS] Reprise:',
+      error
+    );
   }
 }
 
+/* ---------------------------------------------------------
+   Arrêt
+   --------------------------------------------------------- */
+
 function stopTTS() {
-  if (tts.synth) {
-    try { tts.synth.cancel(); } catch(e) {}
+  if (!TTS_SUPPORTED) return;
+
+  try {
+    tts.synth.cancel();
+  } catch (e) {
+    console.warn(e);
   }
+
   tts.isSpeaking = false;
   tts.isPaused = false;
   tts.utterance = null;
-  tts.chunks = [];
   tts.currentChunk = 0;
 
-  if (ttsBtn) {
-    ttsBtn.classList.remove('speaking', 'paused');
-    const icon = ttsBtn.querySelector('i');
-    const span = ttsBtn.querySelector('span');
-    if (icon) icon.className = 'fas fa-volume-up';
-    if (span) span.textContent = 'Écouter';
-  }
-  if (ttsProgress) ttsProgress.classList.remove('active');
-  if (ttsProgressFill) ttsProgressFill.style.width = '0%';
+  updateTTSButton('stopped');
+  resetTTSProgress();
 }
 
-// ================================================================
-// ÉVÉNEMENTS TTS
-// ================================================================
+/* ---------------------------------------------------------
+   Fin normale
+   --------------------------------------------------------- */
+
+function finishTTS() {
+  tts.isSpeaking = false;
+  tts.isPaused = false;
+  tts.utterance = null;
+
+  updateTTSButton('stopped');
+
+  const fill =
+    document.querySelector('.tts-progress-fill');
+
+  if (fill) {
+    fill.style.width = '100%';
+
+    setTimeout(() => {
+      if (!tts.isSpeaking) {
+        fill.style.width = '0%';
+      }
+    }, 1000);
+  }
+}
+
+/* ---------------------------------------------------------
+   Bouton Écouter
+   --------------------------------------------------------- */
+
 if (ttsBtn) {
+
   ttsBtn.addEventListener('click', () => {
-    if (!tts.isSpeaking) {
-      startTTS();
+
+    if (!TTS_SUPPORTED) {
+      showTTSMessage(
+        'Lecture audio non supportée'
+      );
+      return;
+    }
+
+    if (tts.isSpeaking) {
+      pauseTTS();
+
     } else if (tts.isPaused) {
       resumeTTS();
+
     } else {
-      pauseTTS();
+      startTTS();
     }
+
   });
 
-  let longPressTimer = null;
-
-  const startLongPress = () => {
-    longPressTimer = setTimeout(() => {
-      stopTTS();
-      longPressTimer = null;
-    }, 700);
-  };
-
-  const cancelLongPress = () => {
-    if (longPressTimer) {
-      clearTimeout(longPressTimer);
-      longPressTimer = null;
-    }
-  };
-
-  ttsBtn.addEventListener('mousedown', startLongPress);
-  ttsBtn.addEventListener('mouseup', cancelLongPress);
-  ttsBtn.addEventListener('mouseleave', cancelLongPress);
-
-  ttsBtn.addEventListener('touchstart', startLongPress, { passive: true });
-  ttsBtn.addEventListener('touchend', cancelLongPress);
-  ttsBtn.addEventListener('touchcancel', cancelLongPress);
+} else {
+  console.warn(
+    '[ARVEXA TTS] Bouton #ttsBtn introuvable.'
+  );
 }
 
-// Stop au déchargement
-window.addEventListener('beforeunload', () => {
-  if (TTS_SUPPORTED && tts.synth) {
-    try { tts.synth.cancel(); } catch(e) {}
-  }
-});
+/* ---------------------------------------------------------
+   Double sécurité Android :
+   certains navigateurs ont besoin d'une interaction
+   utilisateur avant la première synthèse.
+   --------------------------------------------------------- */
 
-console.log('🎙️ TTS Supporté :', TTS_SUPPORTED);
+document.addEventListener(
+  'visibilitychange',
+  () => {
+
+    if (
+      document.visibilityState === 'hidden' &&
+      tts.isSpeaking
+    ) {
+      try {
+        tts.synth.pause();
+      } catch (e) {}
+    }
+
+  }
+);
+
+/* ---------------------------------------------------------
+   Nettoyage quand on quitte la page
+   --------------------------------------------------------- */
+
+window.addEventListener(
+  'beforeunload',
+  () => {
+    try {
+      if (tts.synth) {
+        tts.synth.cancel();
+      }
+    } catch (e) {}
+  }
+);
 
 // ================================================================
 // AUTH
