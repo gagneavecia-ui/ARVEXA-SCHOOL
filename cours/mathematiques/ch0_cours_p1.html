@@ -1,0 +1,641 @@
+<!-- ============================================================ -->
+<!-- PARTIE 1 : INTRODUCTION & FORME ALGÉBRIQUE                    -->
+<!-- ============================================================ -->
+
+<div class="lecture-container">
+
+  <!-- ===== HERO ===== -->
+  <header class="lecture-hero">
+    <div class="lecture-hero-badge">
+      <span class="lecture-hero-icon">📘</span>
+      <span class="lecture-hero-label">Partie 01 · Introduction</span>
+    </div>
+    <h1 class="lecture-hero-title">
+      Introduction &amp; <em>Forme algébrique</em>
+    </h1>
+    <p class="lecture-hero-intro">
+      Pourquoi inventer des nombres qui n'existent pas ? Comment écrire, comparer et manipuler un nombre complexe ? Cette partie pose les fondations de tout le chapitre.
+    </p>
+    <div class="lecture-hero-meta">
+      <span class="lecture-hero-meta-item"><i class="fas fa-clock"></i> 35 min</span>
+      <span class="lecture-hero-meta-item"><i class="fas fa-layer-group"></i> 6 sections</span>
+      <span class="lecture-hero-meta-item"><i class="fas fa-graduation-cap"></i> Terminale</span>
+    </div>
+  </header>
+
+  <!-- ===== SOMMAIRE ===== -->
+  <nav class="lecture-toc">
+    <div class="lecture-toc-header">
+      <span>Dans cette partie</span>
+      <span class="lecture-toc-count">6 sections</span>
+    </div>
+    <ol class="lecture-toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span><span>Pourquoi les nombres complexes ?</span></a></li>
+      <li><a href="#s2"><span class="toc-num">02</span><span>L'ensemble ℂ des nombres complexes</span></a></li>
+      <li><a href="#s3"><span class="toc-num">03</span><span>Forme algébrique et vocabulaire</span></a></li>
+      <li><a href="#s4"><span class="toc-num">04</span><span>Propriétés de i et puissances</span></a></li>
+      <li><a href="#s5"><span class="toc-num">05</span><span>Le plan complexe</span></a></li>
+      <li><a href="#s6"><span class="toc-num">06</span><span>Opérations et identification</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- ===== SECTION 1 ===== -->
+  <section class="lecture-section" id="s1">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">01</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Motivation</span>
+        <h2 class="lecture-section-title">Pourquoi les nombres complexes ?</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Depuis l'Antiquité, on travaille avec les <strong>nombres réels</strong> : ils mesurent des longueurs, des aires, des températures, des vitesses, des durées. Bref, tout ce qui se trouve sur une droite graduée. Mais les réels ont une limite fondamentale : <strong>aucun nombre réel n'a un carré négatif</strong>.
+      </p>
+
+      <p class="lecture-text">
+        Autrement dit, l'équation <span class="math">x² = -1</span> n'a <strong>aucune solution</strong> dans <span class="math">ℝ</span>. Ce n'est pas un cas isolé : toute équation du type <span class="math">x² = k</span> avec <span class="math">k &lt; 0</span> est insoluble dans <span class="math">ℝ</span>. Pendant des siècles, cela a bloqué les mathématiciens dans la résolution de nombreuses équations, en particulier celles du troisième degré.
+      </p>
+
+      <div class="lecture-callout lecture-callout-gold">
+        <div class="lecture-callout-icon">💡</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">L'idée géniale</div>
+          <p>On <strong>invente</strong> un nouveau nombre, noté <span class="math">i</span>, tel que <span class="math">i² = -1</span>. On l'appelle le <strong>nombre imaginaire</strong>. Ce n'est pas un nombre « réel » au sens habituel : c'est un objet mathématique créé de toutes pièces, qui obéit aux mêmes règles de calcul que les réels (addition, multiplication, distributivité, etc.).</p>
+        </div>
+      </div>
+
+      <p class="lecture-text">
+        Avec ce nombre, l'équation <span class="math">x² = -1</span> admet enfin <strong>deux solutions</strong> : <span class="math">x = i</span> et <span class="math">x = -i</span>. Mieux : on peut désormais résoudre <strong>toutes</strong> les équations polynomiales, quel que soit leur degré. C'est le <em>théorème fondamental de l'algèbre</em>.
+      </p>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-icon">🌍</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Pourquoi c'est utile ?</div>
+          <p>Les nombres complexes ne sont pas une lubie de mathématiciens. On les retrouve partout dans le monde réel :</p>
+          <ul class="lecture-list" style="margin-top:8px;">
+            <li>en <strong>électricité</strong> pour représenter les impédances et les courants alternatifs</li>
+            <li>en <strong>mécanique quantique</strong> pour écrire la fonction d'onde</li>
+            <li>en <strong>traitement du signal</strong> pour l'analyse de Fourier</li>
+            <li>en <strong>aéronautique</strong> et en <strong>automatique</strong> pour les systèmes de contrôle</li>
+            <li>en <strong>imagerie médicale</strong> pour l'IRM</li>
+            <li>en <strong>télécommunications</strong> pour le WiFi, la 4G, la 5G…</li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="lecture-aside">
+        <div class="lecture-aside-icon">📜</div>
+        <div class="lecture-aside-content">
+          <div class="lecture-aside-label">Un peu d'histoire</div>
+          <p>Les nombres complexes apparaissent au <strong>XVI<sup>e</sup> siècle</strong> chez les mathématiciens italiens <strong>Cardan</strong> et <strong>Bombelli</strong>, qui les utilisent pour résoudre des équations du 3<sup>e</sup> degré. À l'époque, on les appelle « nombres impossibles » ou « nombres fictifs » — le terme <em>imaginaire</em> est <strong>péjoratif</strong>. Il faut attendre <strong>Gauss</strong> (XVIII<sup>e</sup>–XIX<sup>e</sup> siècle) pour qu'ils soient pleinement acceptés et représentés géométriquement dans le plan. Aujourd'hui, ils sont <strong>indispensables</strong> dans la plupart des sciences appliquées.</p>
+        </div>
+      </aside>
+
+      <div class="lecture-callout lecture-callout-warning">
+        <div class="lecture-callout-icon">🧭</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Ce qu'il faut retenir</div>
+          <p>Les nombres complexes ont été inventés pour <strong>résoudre des équations insolubles dans ℝ</strong>. Ils ne remplacent pas les réels, ils les <strong>complètent</strong>. Toute la suite du chapitre découle de cette seule idée : <span class="math">i² = -1</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2 ===== -->
+  <section class="lecture-section" id="s2">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">02</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Définition</span>
+        <h2 class="lecture-section-title">L'ensemble ℂ des nombres complexes</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        L'ensemble de tous les nombres complexes se note <span class="math">ℂ</span>. Il englobe tous les ensembles de nombres que tu connais déjà. Chaque étape de la construction a été motivée par la volonté de résoudre un nouveau type d'équation.
+      </p>
+
+      <div class="lecture-chain">
+        <div class="chain-item">ℕ</div>
+        <div class="chain-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="chain-item">ℤ</div>
+        <div class="chain-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="chain-item">ℚ</div>
+        <div class="chain-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="chain-item">ℝ</div>
+        <div class="chain-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="chain-item active">ℂ</div>
+      </div>
+
+      <p class="lecture-text">
+        À chaque flèche, on agrandit l'ensemble pour résoudre un nouveau type d'équation :
+      </p>
+
+      <ul class="lecture-list lecture-list-elegant">
+        <li><strong>ℕ → ℤ</strong><span>pour pouvoir <strong>soustraire</strong> — résoudre <span class="math">x + 3 = 0</span></span></li>
+        <li><strong>ℤ → ℚ</strong><span>pour pouvoir <strong>diviser</strong> — résoudre <span class="math">3x = 2</span></span></li>
+        <li><strong>ℚ → ℝ</strong><span>pour <strong>compléter la droite</strong> — résoudre <span class="math">x² = 2</span></span></li>
+        <li><strong>ℝ → ℂ</strong><span>pour <strong>extraire les racines de négatifs</strong> — résoudre <span class="math">x² = -1</span></span></li>
+      </ul>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-icon">🔑</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">À retenir</div>
+          <p>Tout nombre réel est un nombre complexe (avec partie imaginaire nulle), mais <strong>l'inverse est faux</strong> : <span class="math">i</span> est complexe mais pas réel. Autrement dit : <span class="math">ℝ ⊂ ℂ</span>, mais <span class="math">ℂ ≠ ℝ</span>.</p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-warning">
+        <div class="lecture-callout-icon">⚠️</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">ℂ n'est pas ordonné</div>
+          <p>Contrairement à <span class="math">ℝ</span>, l'ensemble <span class="math">ℂ</span> n'admet <strong>aucune relation d'ordre</strong> compatible avec ses opérations. On ne peut donc <strong>jamais</strong> écrire <span class="math">z₁ &lt; z₂</span> ou <span class="math">z &gt; 0</span>. Seules la <strong>partie réelle</strong> et le <strong>module</strong> peuvent être comparés à des réels.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3 ===== -->
+  <section class="lecture-section" id="s3">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">03</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Notation</span>
+        <h2 class="lecture-section-title">Forme algébrique et vocabulaire</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Tout nombre complexe s'écrit de manière <strong>unique</strong> sous la forme <span class="math">z = a + ib</span>, où <span class="math">a</span> et <span class="math">b</span> sont des réels et <span class="math">i</span> est le nombre imaginaire défini par <span class="math">i² = -1</span>.
+      </p>
+
+      <div class="lecture-formula-hero">
+        <div class="lecture-formula-hero-label">Forme algébrique</div>
+        <div class="lecture-formula-hero-main">z = a + ib</div>
+        <div class="lecture-formula-hero-desc">avec a ∈ ℝ, b ∈ ℝ et i² = -1</div>
+      </div>
+
+      <p class="lecture-text">
+        C'est la <strong>forme algébrique</strong>, aussi appelée forme cartésienne. Le mot « unique » est essentiel : un complexe ne peut pas s'écrire de deux manières différentes. C'est ce qui permet de faire de <strong>l'identification</strong> (voir section 6).
+      </p>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">📖 Vocabulaire</h3>
+        <p class="lecture-text">
+          Dans l'écriture <span class="math">z = a + ib</span>, les deux nombres <span class="math">a</span> et <span class="math">b</span> ont un nom précis :
+        </p>
+
+        <div class="lecture-vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-symbol">a</div>
+            <div class="vocab-name">Partie réelle</div>
+            <div class="vocab-notation">Re(z) = a</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-symbol">b</div>
+            <div class="vocab-name">Partie imaginaire</div>
+            <div class="vocab-notation">Im(z) = b</div>
+          </div>
+          <div class="vocab-card vocab-card-success">
+            <div class="vocab-symbol">ℝ</div>
+            <div class="vocab-name">Réel pur</div>
+            <div class="vocab-notation">Im(z) = 0</div>
+          </div>
+          <div class="vocab-card vocab-card-info">
+            <div class="vocab-symbol">iℝ</div>
+            <div class="vocab-name">Imaginaire pur</div>
+            <div class="vocab-notation">Re(z) = 0</div>
+          </div>
+        </div>
+
+        <div class="lecture-callout lecture-callout-danger">
+          <div class="lecture-callout-icon">🚫</div>
+          <div class="lecture-callout-body">
+            <div class="lecture-callout-title">Piège classique</div>
+            <p>La partie imaginaire de <span class="math">z = 3 + 5i</span> est <span class="math">5</span>, et <strong>non</strong> <span class="math">5i</span>. La partie imaginaire est toujours un <strong>nombre réel</strong>. C'est le coefficient devant <span class="math">i</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">🎯 Cas particuliers</h3>
+
+        <ul class="lecture-list">
+          <li><strong>Réel pur</strong> : <span class="math">z = a + 0i = a</span>. Exemple : <span class="math">z = 5</span>, <span class="math">z = -3</span>, <span class="math">z = √2</span>.</li>
+          <li><strong>Imaginaire pur</strong> : <span class="math">z = 0 + ib = ib</span>. Exemple : <span class="math">z = 3i</span>, <span class="math">z = -i</span>, <span class="math">z = 7i</span>.</li>
+          <li><strong>Le nombre 0</strong> : <span class="math">z = 0</span> est à la fois réel pur et imaginaire pur. C'est le seul dans ce cas.</li>
+        </ul>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">z ∈ ℝ ⟺ Im(z) = 0</div>
+          <div class="lecture-formula-desc">Un complexe est réel si et seulement si sa partie imaginaire est nulle.</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">z ∈ iℝ ⟺ Re(z) = 0</div>
+          <div class="lecture-formula-desc">Un complexe est imaginaire pur si et seulement si sa partie réelle est nulle.</div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">⚖️ Règle fondamentale d'égalité</h3>
+
+        <div class="lecture-rule">
+          <div class="lecture-rule-label">Deux complexes sont égaux si et seulement si…</div>
+          <div class="lecture-rule-body">
+            <span class="math">a + ib = a' + ib'</span>
+            <span class="rule-iff">⟺</span>
+            <span class="math">a = a'</span>
+            <span class="rule-and">ET</span>
+            <span class="math">b = b'</span>
+          </div>
+        </div>
+
+        <p class="lecture-text">
+          Autrement dit : <strong>deux nombres complexes sont égaux si et seulement si leurs parties réelles sont égales et leurs parties imaginaires sont égales</strong>. Cette règle transforme une égalité entre complexes en un <strong>système de deux équations réelles</strong>.
+        </p>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Conséquence immédiate</div>
+          <div class="lecture-example-content">
+            <p><strong>Un complexe est nul</strong> si et seulement si sa partie réelle <strong>et</strong> sa partie imaginaire sont nulles :</p>
+            <p><span class="math">z = 0 ⟺ Re(z) = 0 et Im(z) = 0</span></p>
+            <p>Attention : <span class="math">Re(z) = 0</span> tout seul ne signifie <strong>pas</strong> <span class="math">z = 0</span> — cela signifie seulement que <span class="math">z</span> est imaginaire pur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4 ===== -->
+  <section class="lecture-section" id="s4">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">04</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Propriétés</span>
+        <h2 class="lecture-section-title">Propriétés de i et puissances</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Le nombre <span class="math">i</span> vérifie par définition <span class="math">i² = -1</span>. En multipliant successivement par <span class="math">i</span>, on obtient une <strong>périodicité de période 4</strong>.
+      </p>
+
+      <div class="lecture-powers-cycle">
+        <div class="power-box">
+          <div class="power-expo">i¹</div>
+          <div class="power-value">i</div>
+        </div>
+        <div class="power-box">
+          <div class="power-expo">i²</div>
+          <div class="power-value">-1</div>
+        </div>
+        <div class="power-box">
+          <div class="power-expo">i³</div>
+          <div class="power-value">-i</div>
+        </div>
+        <div class="power-box">
+          <div class="power-expo">i⁴</div>
+          <div class="power-value">1</div>
+        </div>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Démonstration du cycle</div>
+        <div class="lecture-example-content">
+          <p>Partons de <span class="math">i² = -1</span> et multiplions progressivement :</p>
+          <p><span class="math">i³ = i² · i = -1 · i = -i</span></p>
+          <p><span class="math">i⁴ = i³ · i = -i · i = -i² = -(-1) = 1</span></p>
+          <p>Puis <span class="math">i⁵ = i⁴ · i = 1 · i = i</span> : le cycle recommence.</p>
+        </div>
+      </div>
+
+      <p class="lecture-text">
+        Pour calculer n'importe quelle puissance <span class="math">iⁿ</span>, on regarde le <strong>reste de la division de n par 4</strong>. Il y a quatre cas possibles :
+      </p>
+
+      <div class="lecture-formula-box">
+        <div class="lecture-formula-main">iⁿ = i<sup>n mod 4</sup></div>
+        <div class="lecture-formula-desc">Pour tout entier n, on regarde le reste de n dans la division euclidienne par 4.</div>
+      </div>
+
+      <ul class="lecture-list">
+        <li>Si <span class="math">n ≡ 0 (mod 4)</span> alors <span class="math">iⁿ = 1</span></li>
+        <li>Si <span class="math">n ≡ 1 (mod 4)</span> alors <span class="math">iⁿ = i</span></li>
+        <li>Si <span class="math">n ≡ 2 (mod 4)</span> alors <span class="math">iⁿ = -1</span></li>
+        <li>Si <span class="math">n ≡ 3 (mod 4)</span> alors <span class="math">iⁿ = -i</span></li>
+      </ul>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Exemples</div>
+        <div class="lecture-example-content">
+          <p><strong>Exemple 1.</strong> <span class="math">i²⁰²⁵</span> : comme <span class="math">2025 = 4 × 506 + 1</span>, on a <span class="math">2025 ≡ 1 (mod 4)</span>, donc <span class="math">i²⁰²⁵ = i</span>.</p>
+          <p><strong>Exemple 2.</strong> <span class="math">i¹⁰⁰</span> : comme <span class="math">100 = 4 × 25 + 0</span>, on a <span class="math">100 ≡ 0 (mod 4)</span>, donc <span class="math">i¹⁰⁰ = 1</span>.</p>
+          <p><strong>Exemple 3.</strong> <span class="math">i⁴²</span> : comme <span class="math">42 = 4 × 10 + 2</span>, on a <span class="math">42 ≡ 2 (mod 4)</span>, donc <span class="math">i⁴² = -1</span>.</p>
+        </div>
+      </div>
+
+          <div class="lecture-callout lecture-callout-danger">
+        <div class="lecture-callout-icon">🚫</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Erreur classique</div>
+          <p>Ne <strong>jamais</strong> écrire <span class="math">i = √(-1)</span>. Cette écriture est <strong>incorrecte</strong> car la racine carrée n'est définie que sur <span class="math">[0, +∞[</span>. On dit simplement : <em>i est le nombre tel que i² = -1</em>. Cela évite des contradictions du type <span class="math">1 = -1</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5 ===== -->
+  <section class="lecture-section" id="s5">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">05</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Représentation</span>
+        <h2 class="lecture-section-title">Le plan complexe</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        À chaque nombre complexe <span class="math">z = a + ib</span>, on associe <strong>un unique point M</strong> du plan de coordonnées <span class="math">(a, b)</span>. Cette représentation, due à Gauss, permet de <em>voir</em> les complexes.
+      </p>
+
+      <ul class="lecture-list">
+        <li><span class="math">M</span> est le <strong>point image</strong> de <span class="math">z</span></li>
+        <li><span class="math">z</span> est l'<strong>affixe</strong> de <span class="math">M</span> (on note aussi <span class="math">z<sub>M</sub></span>)</li>
+      </ul>
+
+      <div class="lecture-plane-visual">
+        <div class="plane-axis-y">
+          <span class="plane-label">Axe imaginaire</span>
+        </div>
+        <div class="plane-axis-x">
+          <span class="plane-label">Axe réel</span>
+        </div>
+        <div class="plane-point" style="top:30%;left:70%;">M(z)</div>
+        <div class="plane-point plane-point-real" style="top:50%;left:85%;">D(2)</div>
+        <div class="plane-point plane-point-imag" style="top:15%;left:50%;">C(3i)</div>
+      </div>
+
+      <p class="lecture-text">
+        L'axe horizontal est l'<strong>axe des réels</strong> ; l'axe vertical est l'<strong>axe des imaginaires purs</strong>. Tout point de l'axe horizontal représente un réel pur ; tout point de l'axe vertical représente un imaginaire pur.
+      </p>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Placer quelques exemples</div>
+        <div class="lecture-example-content">
+          <p>Voici comment se placent quelques complexes classiques dans le plan :</p>
+          <p><span class="math">z₁ = 3 + 2i</span> → point <span class="math">(3, 2)</span> : quadrant 1</p>
+          <p><span class="math">z₂ = -1 + i</span> → point <span class="math">(-1, 1)</span> : quadrant 2</p>
+          <p><span class="math">z₃ = 2 - 3i</span> → point <span class="math">(2, -3)</span> : quadrant 4</p>
+          <p><span class="math">z₄ = 4i</span> → point <span class="math">(0, 4)</span> : sur l'axe des imaginaires</p>
+          <p><span class="math">z₅ = -2</span> → point <span class="math">(-2, 0)</span> : sur l'axe des réels</p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-gold">
+        <div class="lecture-callout-icon">🎯</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Astuce mnémotechnique</div>
+          <p>La partie <strong>RÉELLE</strong> se lit sur l'axe des <strong>Réels</strong> (horizontal). La partie <strong>IMAGINAIRE</strong> se lit sur l'axe des <strong>Imaginaires</strong> (vertical). Un moyen simple : <em>on écrit d'abord la partie réelle, puis la partie imaginaire</em>, comme on lit de gauche à droite puis de bas en haut.</p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-icon">📐</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Vocabulaire associé</div>
+          <p>À chaque point <span class="math">M(a, b)</span> du plan complexe, on peut associer :</p>
+          <ul class="lecture-list" style="margin-top:8px;">
+            <li>son <strong>affixe</strong> <span class="math">z = a + ib</span></li>
+            <li>son <strong>module</strong> <span class="math">|z| = √(a² + b²)</span> — la distance OM</li>
+            <li>son <strong>argument</strong> <span class="math">θ</span> — l'angle orienté</li>
+          </ul>
+          <p style="margin-top:8px;">Le module et l'argument seront étudiés dans la partie 2.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6 ===== -->
+  <section class="lecture-section" id="s6">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">06</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Calcul</span>
+        <h2 class="lecture-section-title">Opérations et identification</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        On additionne, soustrait et multiplie les complexes comme des expressions algébriques classiques, en utilisant la relation <span class="math">i² = -1</span> pour simplifier.
+      </p>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">➕ Addition</h3>
+        <p class="lecture-text">On additionne les parties réelles ensemble et les parties imaginaires ensemble.</p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">(a + ib) + (c + id) = (a + c) + i(b + d)</div>
+          <div class="lecture-formula-desc">Addition : parties réelles et imaginaires séparément.</div>
+        </div>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Exemple</div>
+          <div class="lecture-example-content">
+            <p><span class="math">(2 + 3i) + (5 - i) = (2 + 5) + i(3 - 1) = 7 + 2i</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">➖ Soustraction</h3>
+        <p class="lecture-text">On soustrait les parties réelles ensemble et les parties imaginaires ensemble.</p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">(a + ib) − (c + id) = (a − c) + i(b − d)</div>
+          <div class="lecture-formula-desc">Soustraction : on distribue le signe − à chaque terme.</div>
+        </div>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Exemple</div>
+          <div class="lecture-example-content">
+            <p><span class="math">(2 + 3i) − (5 - i) = (2 − 5) + i(3 − (−1)) = -3 + 4i</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">🔁 Opposé</h3>
+        <p class="lecture-text">L'opposé d'un complexe <span class="math">z = a + ib</span> s'obtient en changeant le signe des deux parties.</p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">−z = −a − ib</div>
+          <div class="lecture-formula-desc">Opposé d'un complexe.</div>
+        </div>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Exemple</div>
+          <div class="lecture-example-content">
+            <p>L'opposé de <span class="math">z = 3 − 4i</span> est <span class="math">−z = −3 + 4i</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">✖️ Multiplication</h3>
+        <p class="lecture-text">On développe comme un produit de deux binômes, puis on remplace <span class="math">i²</span> par <span class="math">-1</span>.</p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">(a + ib)(c + id) = (ac − bd) + i(ad + bc)</div>
+          <div class="lecture-formula-desc">Formule à connaître par cœur.</div>
+        </div>
+
+        <div class="lecture-example lecture-example-featured">
+          <div class="lecture-example-label">Démonstration pas à pas</div>
+          <div class="lecture-example-content">
+            <p><span class="math">(a + ib)(c + id)</span></p>
+            <p><span class="math">= ac + iad + ibc + i²bd</span> (développement)</p>
+            <p><span class="math">= ac + iad + ibc − bd</span> (car <span class="math">i² = -1</span>)</p>
+            <p><span class="math">= (ac − bd) + i(ad + bc)</span> (regroupement)</p>
+          </div>
+        </div>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Exemple</div>
+          <div class="lecture-example-content">
+            <p><span class="math">(2 + 3i)(1 − i) = 2 − 2i + 3i − 3i² = 2 + i + 3 = 5 + i</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">⬆️ Puissances de z</h3>
+        <p class="lecture-text">Pour calculer <span class="math">z²</span>, <span class="math">z³</span>, etc., on utilise la multiplication répétée.</p>
+
+        <div class="lecture-example">
+          <div class="lecture-example-label">Exemple</div>
+          <div class="lecture-example-content">
+            <p>Soit <span class="math">z = 1 + i</span>. Calculons <span class="math">z²</span> :</p>
+            <p><span class="math">z² = (1 + i)² = 1 + 2i + i² = 1 + 2i − 1 = 2i</span></p>
+            <p>Puis <span class="math">z³ = z² · z = 2i(1 + i) = 2i + 2i² = −2 + 2i</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">🔧 La méthode d'identification</h3>
+        <p class="lecture-text">
+          C'est <strong>LA</strong> méthode la plus utilisée dans les exercices. Elle consiste à écrire que deux complexes sont égaux en égalant leurs parties réelles et imaginaires.
+        </p>
+
+        <div class="lecture-steps">
+          <div class="lecture-step">
+            <span class="lecture-step-number">1</span>
+            <div class="lecture-step-content">
+              <strong>Écrire l'égalité</strong>
+              <p>(2 + 3i)(x + iy) = 5 + i</p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">2</span>
+            <div class="lecture-step-content">
+              <strong>Développer à gauche</strong>
+              <p>(2x − 3y) + i(3x + 2y) = 5 + i</p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">3</span>
+            <div class="lecture-step-content">
+              <strong>Égaler parties réelles et imaginaires</strong>
+              <p>2x − 3y = 5 et 3x + 2y = 1</p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">4</span>
+            <div class="lecture-step-content">
+              <strong>Résoudre le système</strong>
+              <p>x = 1/2 et y = -3/2</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-example lecture-example-featured">
+        <div class="lecture-example-label">🎓 Exemple complet résolu</div>
+        <div class="lecture-example-content">
+          <p><strong>Énoncé :</strong> déterminer les réels x et y tels que <span class="math">(1 + i)(x + iy) = 2 − i</span>.</p>
+          <p><strong>Étape 1 — Développer :</strong></p>
+          <p><span class="math">(1 + i)(x + iy) = x + iy + ix + i²y</span></p>
+          <p><span class="math">= x + iy + ix − y</span></p>
+          <p><span class="math">= (x − y) + i(x + y)</span></p>
+          <p><strong>Étape 2 — Identifier :</strong></p>
+          <p><span class="math">x − y = 2</span> et <span class="math">x + y = −1</span></p>
+          <p><strong>Étape 3 — Résoudre :</strong></p>
+          <p>En additionnant : <span class="math">2x = 1</span>, donc <span class="math">x = 1/2</span></p>
+          <p>En soustrayant : <span class="math">−2y = 3</span>, donc <span class="math">y = −3/2</span></p>
+          <p style="color:#4ade80;margin-top:10px;"><strong>✅ Solution :</strong> x = 1/2 et y = −3/2</p>
+        </div>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">🎓 Deuxième exemple</div>
+        <div class="lecture-example-content">
+          <p><strong>Énoncé :</strong> déterminer les réels x et y tels que <span class="math">(x + iy)(2 − i) = 4 + 3i</span>.</p>
+          <p><strong>Étape 1 — Développer :</strong></p>
+          <p><span class="math">(x + iy)(2 − i) = 2x − ix + 2iy − i²y</span></p>
+          <p><span class="math">= 2x − ix + 2iy + y</span></p>
+          <p><span class="math">= (2x + y) + i(−x + 2y)</span></p>
+          <p><strong>Étape 2 — Identifier :</strong></p>
+          <p><span class="math">2x + y = 4</span> et <span class="math">−x + 2y = 3</span></p>
+          <p><strong>Étape 3 — Résoudre :</strong></p>
+          <p>De la première équation : <span class="math">y = 4 − 2x</span>.</p>
+          <p>En remplaçant dans la seconde : <span class="math">−x + 2(4 − 2x) = 3</span></p>
+          <p><span class="math">−x + 8 − 4x = 3</span>, donc <span class="math">−5x = −5</span>, donc <span class="math">x = 1</span>.</p>
+          <p>Puis <span class="math">y = 4 − 2(1) = 2</span>.</p>
+          <p style="color:#4ade80;margin-top:10px;"><strong>✅ Solution :</strong> x = 1 et y = 2</p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-icon">🎯</div>
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Conseil pratique</div>
+          <p>L'identification est utilisée partout : équations, décomposition en parties réelle/imaginaire, problèmes de géométrie… <strong>Maîtrise-la à fond !</strong> C'est le réflexe numéro 1 face à un exercice sur les complexes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RÉCAPITULATIF ===== -->
+  <div class="lecture-recap">
+    <div class="lecture-recap-title">📌 Ce qu'il faut retenir</div>
+    <ul class="lecture-recap-list">
+      <li>Un nombre complexe s'écrit <span class="math">z = a + ib</span> avec <span class="math">a, b ∈ ℝ</span> et <span class="math">i² = -1</span></li>
+      <li><span class="math">Re(z) = a</span> (partie réelle) et <span class="math">Im(z) = b</span> (partie imaginaire)</li>
+      <li>Deux complexes sont égaux ⟺ même partie réelle et même partie imaginaire</li>
+      <li>Les puissances de <span class="math">i</span> sont périodiques de période 4 : <span class="math">i¹ = i</span>, <span class="math">i² = -1</span>, <span class="math">i³ = -i</span>, <span class="math">i⁴ = 1</span></li>
+      <li>Le plan complexe associe à chaque <span class="math">z</span> un point <span class="math">M(a, b)</span></li>
+      <li>Dans <span class="math">ℂ</span>, les inégalités n'ont pas de sens</li>
+      <li>Addition, soustraction, multiplication : mêmes règles que dans <span class="math">ℝ</span>, avec <span class="math">i² = -1</span></li>
+      <li>La méthode d'identification transforme une égalité complexe en un système réel</li>
+    </ul>
+  </div>
+
+  <!-- ===== FIN ===== -->
+  <div class="lecture-end">
+    <span class="lecture-end-icon">🎯</span>
+    <div class="lecture-end-text">Partie 1 terminée !</div>
+    <div class="lecture-end-sub">Passe à la partie suivante : Module, Argument &amp; Formes</div>
+    <div class="lecture-end-divider"></div>
+  </div>
+
+</div>

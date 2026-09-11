@@ -1,0 +1,549 @@
+<!-- ============================================================ -->
+<!-- PARTIE 2 : MODULE, ARGUMENT & FORMES                          -->
+<!-- ============================================================ -->
+
+<div class="lecture-container">
+
+  <!-- ===== HERO ===== -->
+  <header class="lecture-hero">
+    <div class="lecture-hero-badge">
+      <span class="lecture-hero-icon">📘</span>
+      <span class="lecture-hero-label">Partie 02 · Représentation</span>
+    </div>
+    <h1 class="lecture-hero-title">
+      Module, Argument &amp; <em>Formes</em>
+    </h1>
+    <p class="lecture-hero-intro">
+      Comment mesurer la « taille » d'un complexe et son orientation ? Cette partie introduit le module, l'argument, et les formes trigonométrique et exponentielle — outils essentiels pour les calculs avancés.
+    </p>
+    <div class="lecture-hero-meta">
+      <span class="lecture-hero-meta-item"><i class="fas fa-clock"></i> 40 min</span>
+      <span class="lecture-hero-meta-item"><i class="fas fa-layer-group"></i> 6 sections</span>
+      <span class="lecture-hero-meta-item"><i class="fas fa-graduation-cap"></i> Terminale</span>
+    </div>
+  </header>
+
+  <!-- ===== SOMMAIRE ===== -->
+  <nav class="lecture-toc">
+    <div class="lecture-toc-header">
+      <span>Dans cette partie</span>
+      <span class="lecture-toc-count">6 sections</span>
+    </div>
+    <ol class="lecture-toc-list">
+      <li><a href="#s1"><span class="toc-num">01</span><span>Le module d'un nombre complexe</span></a></li>
+      <li><a href="#s2"><span class="toc-num">02</span><span>L'argument d'un nombre complexe</span></a></li>
+      <li><a href="#s3"><span class="toc-num">03</span><span>Forme trigonométrique</span></a></li>
+      <li><a href="#s4"><span class="toc-num">04</span><span>Forme exponentielle</span></a></li>
+      <li><a href="#s5"><span class="toc-num">05</span><span>Propriétés des modules et arguments</span></a></li>
+      <li><a href="#s6"><span class="toc-num">06</span><span>Applications classiques</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- ===== SECTION 1 ===== -->
+  <section class="lecture-section" id="s1">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">01</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Définition</span>
+        <h2 class="lecture-section-title">Le module d'un nombre complexe</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Dans le plan complexe, un nombre <span class="math">z = a + ib</span> est représenté par un point <span class="math">M(a, b)</span>. On peut naturellement mesurer la <strong>distance</strong> entre l'origine <span class="math">O</span> et ce point <span class="math">M</span>. Cette distance s'appelle le <strong>module</strong> de <span class="math">z</span>.
+      </p>
+
+      <div class="lecture-formula-hero">
+        <div class="lecture-formula-hero-label">Définition du module</div>
+        <div class="lecture-formula-hero-main">|z| = √(a² + b²)</div>
+        <div class="lecture-formula-hero-desc">Le module de z = a + ib est la distance OM dans le plan complexe</div>
+      </div>
+
+      <p class="lecture-text">
+        Le module se note <span class="math">|z|</span> (comme la valeur absolue) ou parfois <span class="math">r</span>. C'est toujours un <strong>réel positif ou nul</strong>. Contrairement aux apparences, ce n'est pas un complexe.
+      </p>
+
+      <div class="lecture-callout lecture-callout-gold">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Interprétation géométrique</div>
+          <p>Le module <span class="math">|z|</span> est la <strong>longueur du segment OM</strong> dans le plan complexe. C'est l'analogue de la valeur absolue <span class="math">|x|</span> sur la droite réelle, qui mesure la distance entre <span class="math">x</span> et <span class="math">0</span>.</p>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Propriétés immédiates</h3>
+
+        <ul class="lecture-list">
+          <li><span class="math">|z| ≥ 0</span> pour tout complexe <span class="math">z</span> — un module est toujours positif ou nul.</li>
+          <li><span class="math">|z| = 0 ⟺ z = 0</span> — seul le complexe nul a un module nul.</li>
+          <li><span class="math">|z| = |-z|</span> — l'opposé a le même module.</li>
+          <li>Si <span class="math">z</span> est réel, alors <span class="math">|z|</span> est la valeur absolue classique.</li>
+        </ul>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Module de quelques cas simples</h3>
+
+        <ul class="lecture-list">
+          <li><strong>Réel pur</strong> : <span class="math">z = a</span>, alors <span class="math">|z| = |a|</span> (valeur absolue classique).</li>
+          <li><strong>Imaginaire pur</strong> : <span class="math">z = ib</span>, alors <span class="math">|z| = |b|</span>.</li>
+          <li><strong>Cas général</strong> : <span class="math">z = a + ib</span>, on applique la formule <span class="math">|z| = √(a² + b²)</span>.</li>
+        </ul>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Exemples de calcul</div>
+        <div class="lecture-example-content">
+          <p><span class="math">z = 3 + 4i</span> : <span class="math">|z| = √(3² + 4²) = √(9 + 16) = √25 = 5</span></p>
+          <p><span class="math">z = -5</span> : <span class="math">|z| = √((-5)² + 0²) = √25 = 5</span></p>
+          <p><span class="math">z = 2i</span> : <span class="math">|z| = √(0² + 2²) = √4 = 2</span></p>
+          <p><span class="math">z = 1 - i</span> : <span class="math">|z| = √(1² + (-1)²) = √2</span></p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-warning">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Attention</div>
+          <p>Le module <strong>n'est pas</strong> la somme des modules des parties. Par exemple, pour <span class="math">z = 3 + 4i</span>, on a <span class="math">|z| = 5</span>, et <strong>non</strong> <span class="math">3 + 4 = 7</span>. Il faut bien élever au carré, additionner, puis prendre la racine.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2 ===== -->
+  <section class="lecture-section" id="s2">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">02</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Définition</span>
+        <h2 class="lecture-section-title">L'argument d'un nombre complexe</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Le module mesure la <strong>distance</strong>. Mais il manque une information : dans quelle <strong>direction</strong> se trouve le point <span class="math">M</span> ? C'est le rôle de l'<strong>argument</strong> : l'angle que fait le vecteur <span class="math">OM</span> avec l'axe des réels.
+      </p>
+
+      <div class="lecture-formula-hero">
+        <div class="lecture-formula-hero-label">Définition de l'argument</div>
+        <div class="lecture-formula-hero-main">θ = arg(z)</div>
+        <div class="lecture-formula-hero-desc">Angle orienté entre l'axe des réels positifs et le vecteur OM</div>
+      </div>
+
+      <p class="lecture-text">
+        L'argument se mesure en <strong>radians</strong>, dans le sens direct (sens inverse des aiguilles d'une montre). Il est défini <strong>modulo 2π</strong> : si <span class="math">θ</span> est un argument de <span class="math">z</span>, alors <span class="math">θ + 2kπ</span> est aussi un argument de <span class="math">z</span>, pour tout entier <span class="math">k</span>.
+      </p>
+
+      <div class="lecture-callout lecture-callout-gold">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Argument principal</div>
+          <p>Pour éviter l'ambiguïté, on choisit souvent l'argument <strong>principal</strong>, noté <span class="math">Arg(z)</span> (avec majuscule), qui est l'unique argument appartenant à l'intervalle <span class="math">]-π, π]</span>. C'est celui qu'on affiche par convention.</p>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Comment calculer l'argument ?</h3>
+
+        <p class="lecture-text">
+          Pour <span class="math">z = a + ib ≠ 0</span>, on utilise les relations suivantes, qui découlent directement de la trigonométrie dans le triangle rectangle :
+        </p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">cos(θ) = a / |z|</div>
+          <div class="lecture-formula-desc">Le cosinus de l'argument est la partie réelle divisée par le module.</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">sin(θ) = b / |z|</div>
+          <div class="lecture-formula-desc">Le sinus de l'argument est la partie imaginaire divisée par le module.</div>
+        </div>
+
+        <p class="lecture-text">
+          Connaissant <span class="math">cos(θ)</span> et <span class="math">sin(θ)</span>, on identifie l'angle <span class="math">θ</span> à l'aide des valeurs remarquables du cercle trigonométrique.
+        </p>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Arguments remarquables</h3>
+
+        <div class="lecture-vocab-grid">
+          <div class="vocab-card">
+            <div class="vocab-symbol">0</div>
+            <div class="vocab-name">arg(1) = 0</div>
+            <div class="vocab-notation">réels positifs</div>
+          </div>
+          <div class="vocab-card">
+            <div class="vocab-symbol">π/2</div>
+            <div class="vocab-name">arg(i) = π/2</div>
+            <div class="vocab-notation">imaginaires purs positifs</div>
+          </div>
+          <div class="vocab-card vocab-card-info">
+            <div class="vocab-symbol">π</div>
+            <div class="vocab-name">arg(-1) = π</div>
+            <div class="vocab-notation">réels négatifs</div>
+          </div>
+          <div class="vocab-card vocab-card-warning">
+            <div class="vocab-symbol">-π/2</div>
+            <div class="vocab-name">arg(-i) = -π/2</div>
+            <div class="vocab-notation">imaginaires purs négatifs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Exemple guidé</div>
+        <div class="lecture-example-content">
+          <p><strong>Calculer le module et l'argument de z = 1 + i.</strong></p>
+          <p><strong>Étape 1 — Module :</strong> <span class="math">|z| = √(1² + 1²) = √2</span></p>
+          <p><strong>Étape 2 — Cos et sin :</strong> <span class="math">cos(θ) = 1/√2 = √2/2</span> et <span class="math">sin(θ) = 1/√2 = √2/2</span></p>
+          <p><strong>Étape 3 — Identification :</strong> l'angle dont le cosinus et le sinus valent <span class="math">√2/2</span> est <span class="math">π/4</span>.</p>
+          <p><strong>Conclusion :</strong> <span class="math">|z| = √2</span> et <span class="math">arg(z) = π/4</span>.</p>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-warning">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Attention</div>
+          <p>L'argument n'est <strong>pas défini</strong> pour <span class="math">z = 0</span> : le point <span class="math">O</span> n'a pas de direction privilégiée. On dit souvent que <span class="math">arg(0)</span> est indéterminé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3 ===== -->
+  <section class="lecture-section" id="s3">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">03</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Écriture</span>
+        <h2 class="lecture-section-title">Forme trigonométrique</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Connaissant le module <span class="math">r = |z|</span> et un argument <span class="math">θ = arg(z)</span>, on peut réécrire <span class="math">z</span> sous une nouvelle forme, dite <strong>trigonométrique</strong>.
+      </p>
+
+      <div class="lecture-formula-hero">
+        <div class="lecture-formula-hero-label">Forme trigonométrique</div>
+        <div class="lecture-formula-hero-main">z = r(cos θ + i sin θ)</div>
+        <div class="lecture-formula-hero-desc">avec r = |z| > 0 et θ = arg(z)</div>
+      </div>
+
+      <p class="lecture-text">
+        Cette écriture met en évidence les deux informations géométriques : <span class="math">r</span> (la distance) et <span class="math">θ</span> (l'angle). Elle est équivalente à la forme algébrique <span class="math">z = a + ib</span>, avec les relations <span class="math">a = r cos θ</span> et <span class="math">b = r sin θ</span>.
+      </p>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Passer de la forme algébrique à la forme trigonométrique</h3>
+
+        <div class="lecture-steps">
+          <div class="lecture-step">
+            <span class="lecture-step-number">1</span>
+            <div class="lecture-step-content">
+              <strong>Calculer le module</strong>
+              <p><span class="math">r = √(a² + b²)</span></p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">2</span>
+            <div class="lecture-step-content">
+              <strong>Factoriser par r</strong>
+              <p><span class="math">z = r(a/r + i·b/r)</span></p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">3</span>
+            <div class="lecture-step-content">
+              <strong>Identifier cos θ et sin θ</strong>
+              <p><span class="math">cos θ = a/r</span> et <span class="math">sin θ = b/r</span></p>
+            </div>
+          </div>
+          <div class="lecture-step">
+            <span class="lecture-step-number">4</span>
+            <div class="lecture-step-content">
+              <strong>Déterminer θ</strong>
+              <p>À l'aide des valeurs remarquables du cercle trigonométrique.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-example lecture-example-featured">
+        <div class="lecture-example-label">🎓 Exemple complet</div>
+        <div class="lecture-example-content">
+          <p><strong>Écrire z = 1 + i sous forme trigonométrique.</strong></p>
+          <p><strong>Étape 1 :</strong> <span class="math">r = |z| = √(1² + 1²) = √2</span></p>
+          <p><strong>Étape 2 :</strong> <span class="math">z = √2(1/√2 + i·1/√2) = √2(√2/2 + i·√2/2)</span></p>
+          <p><strong>Étape 3 :</strong> On identifie <span class="math">cos θ = √2/2</span> et <span class="math">sin θ = √2/2</span>, donc <span class="math">θ = π/4</span>.</p>
+          <p><strong>Résultat :</strong> <span class="math">z = √2(cos(π/4) + i sin(π/4))</span></p>
+        </div>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Deuxième exemple</div>
+        <div class="lecture-example-content">
+          <p><strong>Écrire z = -1 + i√3 sous forme trigonométrique.</strong></p>
+          <p><strong>Étape 1 :</strong> <span class="math">r = √((-1)² + (√3)²) = √(1 + 3) = √4 = 2</span></p>
+          <p><strong>Étape 2 :</strong> <span class="math">z = 2(-1/2 + i·√3/2)</span></p>
+          <p><strong>Étape 3 :</strong> On identifie <span class="math">cos θ = -1/2</span> et <span class="math">sin θ = √3/2</span>, donc <span class="math">θ = 2π/3</span>.</p>
+          <p><strong>Résultat :</strong> <span class="math">z = 2(cos(2π/3) + i sin(2π/3))</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4 ===== -->
+  <section class="lecture-section" id="s4">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">04</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Écriture</span>
+        <h2 class="lecture-section-title">Forme exponentielle</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Il existe une troisième forme, encore plus compacte : la <strong>forme exponentielle</strong>. Elle repose sur la <strong>formule d'Euler</strong>, qui relie l'exponentielle complexe aux fonctions trigonométriques.
+      </p>
+
+      <div class="lecture-formula-hero">
+        <div class="lecture-formula-hero-label">Formule d'Euler</div>
+        <div class="lecture-formula-hero-main">e^(iθ) = cos θ + i sin θ</div>
+        <div class="lecture-formula-hero-desc">pour tout réel θ</div>
+      </div>
+
+      <p class="lecture-text">
+        En combinant cette formule avec l'écriture trigonométrique <span class="math">z = r(cos θ + i sin θ)</span>, on obtient la <strong>forme exponentielle</strong> :
+      </p>
+
+      <div class="lecture-formula-box">
+        <div class="lecture-formula-main">z = r · e^(iθ)</div>
+        <div class="lecture-formula-desc">avec r = |z| et θ = arg(z)</div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Valeurs remarquables</h3>
+
+        <ul class="lecture-list">
+          <li><span class="math">e^(i·0) = 1</span></li>
+          <li><span class="math">e^(iπ/2) = i</span></li>
+          <li><span class="math">e^(iπ) = -1</span></li>
+          <li><span class="math">e^(-iπ/2) = -i</span></li>
+          <li><span class="math">e^(2iπ) = 1</span></li>
+        </ul>
+      </div>
+
+      <div class="lecture-callout lecture-callout-gold">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">L'identité d'Euler</div>
+          <p>En prenant <span class="math">θ = π</span> dans la formule d'Euler, on obtient <span class="math">e^(iπ) = -1</span>, soit l'identité célèbre :</p>
+          <p style="text-align:center; margin-top:10px;"><span class="math">e^(iπ) + 1 = 0</span></p>
+          <p>Cette formule relie cinq constantes fondamentales des mathématiques : <span class="math">e</span>, <span class="math">i</span>, <span class="math">π</span>, <span class="math">1</span> et <span class="math">0</span>.</p>
+        </div>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Exemples d'écriture</div>
+        <div class="lecture-example-content">
+          <p>Reprenons <span class="math">z = 1 + i</span> : module <span class="math">√2</span>, argument <span class="math">π/4</span>.</p>
+          <p>Forme trigonométrique : <span class="math">z = √2(cos(π/4) + i sin(π/4))</span></p>
+          <p>Forme exponentielle : <span class="math">z = √2 · e^(iπ/4)</span></p>
+          <p>Autre exemple : <span class="math">z = -1</span> a pour module <span class="math">1</span> et argument <span class="math">π</span>, donc <span class="math">z = e^(iπ)</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <!-- ===== SECTION 5 ===== -->
+  <section class="lecture-section" id="s5">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">05</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Propriétés</span>
+        <h2 class="lecture-section-title">Propriétés des modules et arguments</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Les formes trigonométrique et exponentielle rendent les <strong>multiplications et divisions</strong> beaucoup plus simples. C'est leur grand avantage.
+      </p>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Modules</h3>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">|z · z'| = |z| · |z'|</div>
+          <div class="lecture-formula-desc">Le module d'un produit est le produit des modules.</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">|z / z'| = |z| / |z'|</div>
+          <div class="lecture-formula-desc">Le module d'un quotient est le quotient des modules (z' ≠ 0).</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">|zⁿ| = |z|ⁿ</div>
+          <div class="lecture-formula-desc">Pour tout entier n.</div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Arguments</h3>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">arg(z · z') = arg(z) + arg(z')</div>
+          <div class="lecture-formula-desc">Modulo 2π.</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">arg(z / z') = arg(z) - arg(z')</div>
+          <div class="lecture-formula-desc">Modulo 2π (z' ≠ 0).</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">arg(zⁿ) = n · arg(z)</div>
+          <div class="lecture-formula-desc">Modulo 2π, pour tout entier n.</div>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">Pourquoi ces règles ?</div>
+          <p>En écriture exponentielle, une multiplication devient une addition dans l'exposant : <span class="math">r·e^(iθ) × r'·e^(iθ') = (r·r')·e^(i(θ+θ'))</span>. Les modules se multiplient et les arguments s'additionnent. C'est toute la puissance de cette écriture.</p>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Formule de Moivre</h3>
+
+        <p class="lecture-text">
+          Une conséquence directe des propriétés d'argument :
+        </p>
+
+        <div class="lecture-formula-hero">
+          <div class="lecture-formula-hero-label">Formule de Moivre</div>
+          <div class="lecture-formula-hero-main">(cos θ + i sin θ)ⁿ = cos(nθ) + i sin(nθ)</div>
+          <div class="lecture-formula-hero-desc">pour tout entier n et tout réel θ</div>
+        </div>
+
+        <p class="lecture-text">
+          Sous forme exponentielle, cette formule devient triviale : <span class="math">(e^(iθ))ⁿ = e^(inθ)</span>. C'est cette simplicité qui fait la force de l'écriture exponentielle.
+        </p>
+      </div>
+
+      <div class="lecture-example">
+        <div class="lecture-example-label">Application</div>
+        <div class="lecture-example-content">
+          <p><strong>Calculer (1 + i)⁸.</strong></p>
+          <p><strong>Étape 1 —</strong> Forme exponentielle : <span class="math">1 + i = √2 · e^(iπ/4)</span></p>
+          <p><strong>Étape 2 —</strong> Puissance : <span class="math">(1 + i)⁸ = (√2)⁸ · e^(i·8π/4) = 16 · e^(i·2π)</span></p>
+          <p><strong>Étape 3 —</strong> Or <span class="math">e^(i·2π) = 1</span>, donc <span class="math">(1 + i)⁸ = 16</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6 ===== -->
+  <section class="lecture-section" id="s6">
+    <div class="lecture-section-header">
+      <div class="lecture-section-num">06</div>
+      <div class="lecture-section-heading">
+        <span class="lecture-section-eyebrow">Applications</span>
+        <h2 class="lecture-section-title">Applications classiques</h2>
+      </div>
+    </div>
+
+    <div class="lecture-section-body">
+      <p class="lecture-text">
+        Voici les trois applications les plus fréquentes des formes trigonométriques et exponentielles en Terminale.
+      </p>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Application 1 — Écrire un complexe sous forme exponentielle</h3>
+
+        <div class="lecture-example lecture-example-featured">
+          <div class="lecture-example-label">Méthode complète</div>
+          <div class="lecture-example-content">
+            <p><strong>Exemple :</strong> écrire <span class="math">z = -√3 + i</span> sous forme exponentielle.</p>
+            <p><strong>1. Module :</strong> <span class="math">r = √(( -√3)² + 1²) = √(3 + 1) = 2</span></p>
+            <p><strong>2. Cos et sin :</strong> <span class="math">cos θ = -√3/2</span> et <span class="math">sin θ = 1/2</span></p>
+            <p><strong>3. Identification :</strong> ces valeurs correspondent à <span class="math">θ = 5π/6</span>.</p>
+            <p><strong>4. Résultat :</strong> <span class="math">z = 2 · e^(i·5π/6)</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Application 2 — Calculer une puissance élevée</h3>
+
+        <div class="lecture-example lecture-example-featured">
+          <div class="lecture-example-label">Méthode complète</div>
+          <div class="lecture-example-content">
+            <p><strong>Exemple :</strong> calculer <span class="math">(1 + i)¹⁰</span>.</p>
+            <p><strong>1. Forme exponentielle :</strong> <span class="math">1 + i = √2 · e^(iπ/4)</span></p>
+            <p><strong>2. Élever à la puissance :</strong> <span class="math">(1 + i)¹⁰ = (√2)¹⁰ · e^(i·10π/4)</span></p>
+            <p><strong>3. Simplifier :</strong> <span class="math">(√2)¹⁰ = 2⁵ = 32</span>, et <span class="math">10π/4 = 5π/2</span>.</p>
+            <p><strong>4. Réduire l'angle modulo 2π :</strong> <span class="math">5π/2 = 2π + π/2</span>, donc <span class="math">e^(i·5π/2) = e^(iπ/2) = i</span>.</p>
+            <p><strong>5. Résultat :</strong> <span class="math">(1 + i)¹⁰ = 32i</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lecture-section-sub">
+        <h3 class="lecture-subtitle">Application 3 — Linéariser une puissance de cos ou sin</h3>
+
+        <p class="lecture-text">
+          Les formules d'Euler permettent d'exprimer les puissances de <span class="math">cos θ</span> et <span class="math">sin θ</span> en sommes de cosinus et sinus de multiples angles. Cette technique, appelée <strong>linéarisation</strong>, sera détaillée dans la Partie 8. Retenons simplement les formules de base :
+        </p>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">cos θ = (e^(iθ) + e^(-iθ)) / 2</div>
+          <div class="lecture-formula-desc">Formule d'Euler inverse pour le cosinus.</div>
+        </div>
+
+        <div class="lecture-formula-box">
+          <div class="lecture-formula-main">sin θ = (e^(iθ) - e^(-iθ)) / (2i)</div>
+          <div class="lecture-formula-desc">Formule d'Euler inverse pour le sinus.</div>
+        </div>
+      </div>
+
+      <div class="lecture-callout lecture-callout-key">
+        <div class="lecture-callout-body">
+          <div class="lecture-callout-title">À retenir</div>
+          <p>La forme exponentielle transforme les multiplications en additions d'arguments et les puissances en multiplications d'arguments. C'est l'outil de calcul par excellence dès que les exposants deviennent grands.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RÉCAPITULATIF ===== -->
+  <div class="lecture-recap">
+    <div class="lecture-recap-title">📌 Ce qu'il faut retenir</div>
+    <ul class="lecture-recap-list">
+      <li>Le module <span class="math">|z| = √(a² + b²)</span> mesure la distance OM dans le plan complexe.</li>
+      <li>L'argument <span class="math">θ = arg(z)</span> est l'angle orienté entre l'axe des réels et le vecteur OM.</li>
+      <li>Forme trigonométrique : <span class="math">z = r(cos θ + i sin θ)</span> avec <span class="math">r = |z|</span></li>
+      <li>Formule d'Euler : <span class="math">e^(iθ) = cos θ + i sin θ</span></li>
+      <li>Forme exponentielle : <span class="math">z = r · e^(iθ)</span></li>
+      <li><span class="math">|z · z'| = |z| · |z'|</span> et <span class="math">arg(z · z') = arg(z) + arg(z')</span></li>
+      <li>Formule de Moivre : <span class="math">(cos θ + i sin θ)ⁿ = cos(nθ) + i sin(nθ)</span></li>
+      <li>Applications : écrire sous forme exponentielle, calculer des puissances élevées, linéariser.</li>
+    </ul>
+  </div>
+
+  <!-- ===== FIN ===== -->
+  <div class="lecture-end">
+    <span class="lecture-end-icon">🎯</span>
+    <div class="lecture-end-text">Partie 2 terminée !</div>
+    <div class="lecture-end-sub">Passe à la partie suivante : Conjugué &amp; Propriétés</div>
+    <div class="lecture-end-divider"></div>
+  </div>
+
+</div>

@@ -1,36 +1,19 @@
 {
   "parts": [
-    {
-      "title": "Intro + Forme algébrique",
-      "file": "chapitre_1.html#part1"
+    { 
+      "title": "Introduction aux nombres complexes", 
+      "file": "ch0_cours_p1.html",
+      "duration": 25
     },
-    {
-      "title": "Module, Argument & Formes",
-      "file": "chapitre_1.html#part2"
+    { 
+      "title": "Forme algébrique", 
+      "file": "ch0_cours_p2.html",
+      "duration": 20
     },
-    {
-      "title": "Conjugué & Propriétés",
-      "file": "chapitre_1.html#part3"
-    },
-    {
-      "title": "Équations & Réels purs",
-      "file": "chapitre_1.html#part4"
-    },
-    {
-      "title": "Géométrie complexe",
-      "file": "chapitre_1.html#part5"
-    },
-    {
-      "title": "Formules & Transformations",
-      "file": "chapitre_1.html#part6"
-    },
-    {
-      "title": "Racines",
-      "file": "chapitre_1.html#part7"
-    },
-    {
-      "title": "Linearisation & Méthodes",
-      "file": "chapitre_1.html#part8"
+    { 
+      "title": "Module et argument", 
+      "file": "ch0_cours_p3.html",
+      "duration": 20
     }
   ]
 }
