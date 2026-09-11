@@ -3216,61 +3216,81 @@ function startTTS() {
    --------------------------------------------------------- */
 
 function pauseTTS() {
-  if (!TTS_SUPPORTED) return;
+  if (!TTS_SUPPORTED || !tts.synth) return;
 
   if (!tts.isSpeaking) return;
 
   try {
     tts.synth.pause();
 
+    // IMPORTANT :
+    // on garde isSpeaking = true
+    // car l'utterance existe toujours.
     tts.isPaused = true;
-    tts.isSpeaking = false;
 
     updateTTSButton('paused');
 
+    console.log('[ARVEXA TTS] Lecture en pause');
+
   } catch (error) {
-    console.error(
-      '[ARVEXA TTS] Pause:',
-      error
-    );
+    console.error('[ARVEXA TTS] Pause:', error);
   }
 }
 
-/* ---------------------------------------------------------
-   Reprendre
-   --------------------------------------------------------- */
 
 function resumeTTS() {
-  if (!TTS_SUPPORTED) return;
+  if (!TTS_SUPPORTED || !tts.synth) return;
+
+  if (!tts.isPaused) return;
 
   try {
+    /*
+     * Android/Chrome peut parfois garder la synthèse
+     * dans un état bloqué.
+     */
+    tts.synth.resume();
+
     tts.isPaused = false;
     tts.isSpeaking = true;
 
-    tts.synth.resume();
-
     updateTTSButton('speaking');
 
+    console.log('[ARVEXA TTS] Lecture reprise');
+
+    /*
+     * Petit deuxième resume pour Android.
+     */
+    setTimeout(() => {
+      if (tts.isSpeaking && !tts.isPaused) {
+        try {
+          tts.synth.resume();
+        } catch (e) {}
+      }
+    }, 150);
+
   } catch (error) {
-    console.error(
-      '[ARVEXA TTS] Reprise:',
-      error
-    );
+    console.error('[ARVEXA TTS] Reprise:', error);
+
+    /*
+     * Si Android a complètement perdu l'utterance,
+     * on relance le morceau actuel.
+     */
+    tts.isPaused = false;
+    tts.isSpeaking = true;
+
+    setTimeout(() => {
+      speakChunk(tts.currentChunk);
+    }, 100);
   }
 }
 
-/* ---------------------------------------------------------
-   Arrêt
-   --------------------------------------------------------- */
 
 function stopTTS() {
-  if (!TTS_SUPPORTED) return;
+  if (!TTS_SUPPORTED || !tts.synth) return;
 
   try {
     tts.synth.cancel();
-  } catch (e) {
-    console.warn(e);
-  }
+  } catch (e) {}
 
   tts.isSpeaking = false;
   tts.isPaused = false;
@@ -3279,6 +3299,8 @@ function stopTTS() {
 
   updateTTSButton('stopped');
   resetTTSProgress();
+
+  console.log('[ARVEXA TTS] Lecture arrêtée');
 }
 
 /* ---------------------------------------------------------
