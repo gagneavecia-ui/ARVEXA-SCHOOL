@@ -696,25 +696,30 @@ async function initFCM() {
   });
 }
 
-  function setPushStatus(type, message) {
-  const statusEl = document.getElementById('pushStatus');
-  const textEl = document.getElementById('pushStatusText');
+  function setPushStatus(status, text) {
+  pushStatus.className = 'push-status ' + status;
+  pushStatusText.textContent = text;
+}
 
-  if (!statusEl || !textEl) {
-    console.warn('⚠️ Élément de statut FCM introuvable');
-    return;
+// Enable push button
+document.getElementById('enablePushBtn').addEventListener('click', async () => {
+  if (!messaging) return;
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      await registerToken();
+      permBanner.classList.remove('show');
+      showToast('Notifications push activées !', 'success');
+    } else if (permission === 'denied') {
+      setPushStatus('inactive', 'Notifications refusées');
+      permBanner.classList.remove('show');
+      showToast('Notifications bloquées', 'error');
+    }
+  } catch (err) {
+    showToast('Erreur d\'activation', 'error');
   }
-
-  statusEl.classList.remove(
-    'active',
-    'inactive',
-    'pending'
-  );
-
-  statusEl.classList.add(type);
-  textEl.textContent = message;
-  }
-
+});
+  
     // =====================================================
     // SERVICE WORKER
     // =====================================================
