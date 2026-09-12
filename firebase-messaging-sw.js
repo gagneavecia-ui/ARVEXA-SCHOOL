@@ -1,7 +1,13 @@
-// firebase-messaging-sw.js
-importScripts('https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging-compat.js');
+/* =========================================================
+   firebase-messaging-sw.js
+   Service Worker pour Firebase Cloud Messaging — ARVEXa School
+   Gère les notifications push quand l'app est en arrière-plan
+   ========================================================= */
 
+importScripts("https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js");
+
+// Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -12,75 +18,85 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const messaging = firebase.messaging();
 
-// ✅ Utiliser self.Notification au lieu de Notification directement
-if (typeof self.Notification !== 'undefined') {
-  console.log('🔔 Notifications supportées dans ce navigateur');
-}
-
+// =========================================================
+// Background message handler
+// Quand l'app n'est pas au premier plan, ce handler affiche
+// la notification dans la barre de notifications du navigateur
+// =========================================================
 messaging.onBackgroundMessage((payload) => {
-  console.log('📩 Message FCM en arrière-plan:', payload);
+  console.log('[firebase-messaging-sw.js] Message reçu en arrière-plan:', payload);
 
-  // Extraire les données
-  const { title, body, icon, link, type } = payload.data || {};
-  const notificationTitle = title || 'ARVEXA School';
-  const notificationBody = body || 'Nouvelle notification disponible.';
-  const notificationIcon = icon || '/icon.png';
+  const notification = payload.notification || {};
+  const data = payload.data || {};
 
-  // ✅ Utiliser self.registration.showNotification
-  self.registration.showNotification(notificationTitle, {
-    body: notificationBody,
-    icon: notificationIcon,
-    badge: notificationIcon,
+  const title = notification.title || data.title || 'ARVEXa School';
+  const body = notification.body || data.body || 'Nouvelle notification';
+  const icon = notification.icon || data.icon || '/icon.png';
+  const badge = '/icon.png';
+
+  // Type-based styling
+  const type = data.type || 'info';
+  const tag = `arvexa-${type}-${Date.now()}`;
+
+  const options = {
+    body: body,
+    icon: icon,
+    badge: badge,
+    tag: tag,
     data: {
-      link: link || '/',
-      type: type || 'info'
+      ...data,
+      clickAction: data.clickAction || '/',
+      timestamp: Date.now()
     },
-    vibrate: [200, 100, 200],
-    requireInteraction: true
-  });
+    actions: [
+      { action: 'open', title: 'Ouvrir' },
+      { action: 'dismiss', title: 'Ignorer' }
+    ],
+    requireInteraction: type === 'warning' || type === 'danger',
+    silent: false,
+    vibrate: type === 'danger' ? [200, 100, 200, 100, 200] : [100, 50, 100]
+  };
+
+  self.registration.showNotification(title, options);
 });
 
-// ✅ Gestion du clic sur la notification
+// =========================================================
+// Notification click handler
+// Quand l'utilisateur clique sur la notification, on ouvre
+// ou on focus l'app sur la page notifications
+// =========================================================
 self.addEventListener('notificationclick', (event) => {
-  console.log('🖱️ Clic sur notification:', event.notification);
   event.notification.close();
 
-  const link = event.notification.data?.link || '/';
-  const type = event.notification.data?.type || 'info';
+  const action = event.action;
+  if (action === 'dismiss') return;
+
+  const clickAction = event.notification.data?.clickAction || '/notifications.html';
+  const url = new URL(clickAction, self.location.origin).href;
 
   event.waitUntil(
-    clients.matchAll({
-      type: 'window',
-      includeUncontrolled: true
-    }).then((clientList) => {
-      // Si une fenêtre est déjà ouverte, on la focalise
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      // If app is already open, focus it and navigate
       for (const client of clientList) {
-        if (client.url.includes(link) && 'focus' in client) {
-          return client.focus();
-        }
-        // Si la page d'accueil est ouverte, on la focalise
-        if (client.url.includes('index.html') && 'focus' in client) {
-          client.postMessage({
-            type: 'notification_click',
-            data: event.notification.data
-          });
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          client.navigate(url);
           return client.focus();
         }
       }
-      // Sinon on ouvre une nouvelle fenêtre
-      if (clients.openWindow) {
-        return clients.openWindow(link);
-      }
+      // Otherwise open a new window
+      return self.clients.openWindow(url);
     })
   );
 });
 
-// ✅ Gestion de la fermeture de la notification
-self.addEventListener('notificationclose', (event) => {
-  console.log('❌ Notification fermée:', event.notification);
+// =========================================================
+// Push subscription change handler
+// Quand le navigateur renouvelle le token d'abonnement
+// =========================================================
+self.addEventListener('pushsubscriptionchange', (event) => {
+  console.log('[firebase-messaging-sw.js] Push subscription changed');
+  // The FCM SDK handles re-subscription automatically
 });
-
-// ✅ Vérification du support
-console.log('🔔 Service Worker FCM prêt');
