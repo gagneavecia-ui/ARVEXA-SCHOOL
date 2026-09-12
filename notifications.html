@@ -524,10 +524,15 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported,
   getFirestore,
   collection,
   doc,
   addDoc,
+  setDoc,
   getDoc,
   getDocs,
   updateDoc,
@@ -696,59 +701,117 @@ async function initFCM() {
 }
 
 async function registerToken() {
-  if (!messaging) return;
-  try {
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-    if (token) {
-      fcmToken = token;
-      pushEnabled = true;
-      setPushStatus('active', 'Notifications push activées');
 
-      // Save token to Firestore for this user
-      if (currentUser) {
-        try {
-          await updateDoc(doc(db, 'users', currentUser.uid), {
-            fcmToken: token,
-            fcmTokenUpdatedAt: serverTimestamp()
-          });
-        } catch (err) {
-          console.warn('Erreur sauvegarde token FCM:', err);
-        }
+  if (!messaging) {
+    setPushStatus(
+      'inactive',
+      'Firebase Messaging non supporté'
+    );
+    return;
+  }
+
+  try {
+
+    // =====================================================
+    // SERVICE WORKER
+    // =====================================================
+
+    const registration =
+      await navigator.serviceWorker.register(
+        '/firebase-messaging-sw.js'
+      );
+
+    console.log(
+      '✅ Service Worker FCM enregistré :',
+      registration.scope
+    );
+
+    // =====================================================
+    // TOKEN FCM
+    // =====================================================
+
+    const token = await getToken(
+      messaging,
+      {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: registration
       }
+    );
 
-      console.log('✅ Token FCM:', token.substring(0, 20) + '...');
-    } else {
-      setPushStatus('inactive', 'Impossible d\'obtenir le token');
+    if (!token) {
+      throw new Error(
+        'Firebase n’a retourné aucun token FCM'
+      );
     }
+
+    console.log(
+      '✅ Token FCM obtenu :',
+      token
+    );
+
+    fcmToken = token;
+    pushEnabled = true;
+
+    setPushStatus(
+      'active',
+      'Notifications push activées'
+    );
+
+    // =====================================================
+    // FIRESTORE
+    // =====================================================
+
+    if (currentUser) {
+
+      await setDoc(
+        doc(
+          db,
+          'users',
+          currentUser.uid
+        ),
+        {
+          fcmToken: token,
+          fcmTokenUpdatedAt:
+            serverTimestamp()
+        },
+        {
+          merge: true
+        }
+      );
+
+      console.log(
+        '✅ Token FCM enregistré dans Firestore'
+      );
+    }
+
   } catch (err) {
-    console.error('Erreur getToken FCM:', err);
-    setPushStatus('inactive', 'Erreur d\'enregistrement FCM');
+
+    console.error(
+      '❌ ERREUR FCM :',
+      err
+    );
+
+    console.error(
+      'Code :',
+      err?.code
+    );
+
+    console.error(
+      'Message :',
+      err?.message
+    );
+
+    setPushStatus(
+      'inactive',
+      `Erreur FCM : ${
+        err?.code ||
+        err?.message ||
+        'Erreur inconnue'
+      }`
+    );
+
   }
 }
-
-function setPushStatus(status, text) {
-  pushStatus.className = 'push-status ' + status;
-  pushStatusText.textContent = text;
-}
-
-// Enable push button
-document.getElementById('enablePushBtn').addEventListener('click', async () => {
-  if (!messaging) return;
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      await registerToken();
-      permBanner.classList.remove('show');
-      showToast('Notifications push activées !', 'success');
-    } else if (permission === 'denied') {
-      setPushStatus('inactive', 'Notifications refusées');
-      permBanner.classList.remove('show');
-      showToast('Notifications bloquées', 'error');
-    }
-  } catch (err) {
-    showToast('Erreur d\'activation', 'error');
-  }
-});
 
 // ================================================================
 // LOAD NOTIFICATIONS (realtime)
