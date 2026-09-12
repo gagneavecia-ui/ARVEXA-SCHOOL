@@ -696,34 +696,24 @@ async function initFCM() {
   });
 }
 
-function setPushStatus(type, message) {
+  function setPushStatus(type, message) {
   const statusEl = document.getElementById('pushStatus');
+  const textEl = document.getElementById('pushStatusText');
 
-  if (!statusEl) {
-    console.warn('⚠️ Élément #pushStatus introuvable');
+  if (!statusEl || !textEl) {
+    console.warn('⚠️ Élément de statut FCM introuvable');
     return;
   }
 
-  statusEl.textContent = message;
+  statusEl.classList.remove(
+    'active',
+    'inactive',
+    'pending'
+  );
 
-  // Nettoyer les anciennes classes
-  statusEl.classList.remove('active', 'inactive', 'loading', 'error');
-
-  // Ajouter la nouvelle
   statusEl.classList.add(type);
-}
-
-async function registerToken() {
-
-  if (!messaging) {
-    setPushStatus(
-      'inactive',
-      'Firebase Messaging non supporté'
-    );
-    return;
+  textEl.textContent = message;
   }
-
-  try {
 
     // =====================================================
     // SERVICE WORKER
