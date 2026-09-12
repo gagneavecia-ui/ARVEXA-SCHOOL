@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Test Notifications | ARVEXA School</title>
+  <title>Administration Notifications | ARVEXA School</title>
 
   <style>
     * {
@@ -13,44 +13,81 @@
       padding: 0;
     }
 
+    :root {
+      --bg: #080909;
+      --card: #111412;
+      --border: #26382e;
+      --border2: #304238;
+      --green: #1A3A2A;
+      --gold: #B8860B;
+      --gold2: #E0B84A;
+      --text: #fff;
+      --muted: #999;
+      --success: #6ee7a8;
+      --danger: #ff7777;
+    }
+
     body {
       min-height: 100vh;
-      background: #080909;
-      color: #fff;
+      background: var(--bg);
+      color: var(--text);
       font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      padding: 25px;
     }
 
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 900px;
+      margin: auto;
     }
 
-    .logo {
-      text-align: center;
+    .header {
       margin-bottom: 25px;
     }
 
-    .logo h1 {
-      color: #E0B84A;
-      font-size: 28px;
-      margin-bottom: 6px;
+    .brand {
+      color: var(--gold2);
+      font-size: 27px;
+      font-weight: bold;
     }
 
-    .logo p {
-      color: #999;
+    .subtitle {
+      color: var(--muted);
+      margin-top: 6px;
       font-size: 14px;
     }
 
+    .security {
+      margin-top: 15px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(26,58,42,.35);
+      border: 1px solid var(--border);
+      color: #b9d7c5;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.4fr .8fr;
+      gap: 20px;
+    }
+
     .card {
-      background: #111412;
-      border: 1px solid #26382e;
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 18px;
       padding: 22px;
       box-shadow: 0 15px 40px rgba(0,0,0,.35);
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .field {
+      margin-bottom: 18px;
     }
 
     label {
@@ -61,103 +98,384 @@
     }
 
     input,
-    textarea {
+    textarea,
+    select {
       width: 100%;
       background: #080909;
       color: #fff;
-      border: 1px solid #304238;
+      border: 1px solid var(--border2);
       border-radius: 10px;
       padding: 13px;
       outline: none;
-      margin-bottom: 18px;
       font-size: 15px;
     }
 
     input:focus,
-    textarea:focus {
-      border-color: #B8860B;
+    textarea:focus,
+    select:focus {
+      border-color: var(--gold);
     }
 
     textarea {
-      min-height: 120px;
+      min-height: 140px;
       resize: vertical;
+      line-height: 1.5;
     }
 
-    button {
+    select {
+      cursor: pointer;
+    }
+
+    .counter {
+      text-align: right;
+      color: #777;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .send-btn,
+    .test-btn {
       width: 100%;
       border: none;
       border-radius: 11px;
       padding: 14px;
-      background: #B8860B;
-      color: #080909;
       font-weight: bold;
       font-size: 15px;
       cursor: pointer;
+      transition: .2s;
+    }
+
+    .send-btn {
+      background: var(--gold);
+      color: #080909;
       margin-top: 5px;
     }
 
-    button:active {
-      transform: scale(.98);
+    .test-btn {
+      background: var(--green);
+      color: white;
+      border: 1px solid #31553f;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      filter: brightness(1.1);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .warning {
+      padding: 12px;
+      background: rgba(184,134,11,.08);
+      border: 1px solid rgba(184,134,11,.3);
+      border-radius: 10px;
+      color: #d9c27b;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: #080909;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--gold2);
     }
 
     .status {
-      margin-top: 18px;
-      padding: 12px;
+      margin-top: 20px;
+      padding: 14px;
       border-radius: 10px;
       background: #080909;
-      border: 1px solid #26382e;
+      border: 1px solid var(--border);
       color: #aaa;
       font-size: 13px;
       line-height: 1.5;
+      white-space: pre-line;
     }
 
     .success {
-      color: #6ee7a8;
+      color: var(--success);
     }
 
     .error {
-      color: #ff7777;
+      color: var(--danger);
     }
 
     .info {
-      color: #E0B84A;
+      color: var(--gold2);
+    }
+
+    .preview {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 13px;
+      background: #080909;
+      border: 1px solid var(--border);
+    }
+
+    .preview-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .preview-body {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .history {
+      margin-top: 20px;
+    }
+
+    .history-item {
+      padding: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-title {
+      font-weight: bold;
+    }
+
+    .history-body {
+      color: #999;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .history-date {
+      color: #666;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 750px) {
+      body {
+        padding: 15px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="logo">
-      <h1>ARVEXA School</h1>
-      <p>Test du système de notifications</p>
+  <div class="header">
+    <div class="brand">ARVEXA School</div>
+    <div class="subtitle">Administration · Notifications push</div>
+
+    <div class="security">
+      🔐 Panneau administrateur — les envois réels passent par le serveur sécurisé.
     </div>
+  </div>
+
+
+  <div class="grid">
+
+    <!-- =========================
+         FORMULAIRE
+    ========================== -->
 
     <div class="card">
 
-      <label for="title">Titre de la notification</label>
+      <h2>🔔 Nouvelle notification</h2>
 
-      <input
-        id="title"
-        type="text"
-        value="ARVEXA School"
-        placeholder="Ex : Nouveau cours disponible"
+      <div class="warning">
+        ⚠️ Cette notification sera envoyée à tous les appareils
+        disposant d'un token FCM valide.
+      </div>
+
+
+      <div class="field">
+
+        <label for="title">
+          Titre
+        </label>
+
+        <input
+          id="title"
+          type="text"
+          maxlength="80"
+          value="ARVEXA School"
+          placeholder="Ex : Nouveau cours disponible"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="message">
+          Message
+        </label>
+
+        <textarea
+          id="message"
+          maxlength="300"
+          placeholder="Écris ton message..."
+        ></textarea>
+
+        <div class="counter">
+          <span id="messageCount">0</span>/300
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="type">
+          Type
+        </label>
+
+        <select id="type">
+          <option value="info">ℹ️ Information</option>
+          <option value="success">✅ Succès</option>
+          <option value="warning">⚠️ Avertissement</option>
+          <option value="danger">🚨 Important</option>
+        </select>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="url">
+          Page à ouvrir après le clic
+        </label>
+
+        <input
+          id="url"
+          type="text"
+          value="./notifications.html"
+          placeholder="./notifications.html"
+        >
+
+      </div>
+
+
+      <button
+        id="sendBtn"
+        class="send-btn"
       >
-
-      <label for="message">Message</label>
-
-      <textarea
-        id="message"
-        placeholder="Écris ton message ici..."
-      >Ceci est une notification de test 🚀</textarea>
-
-      <button id="testBtn">
-        🔔 Tester la notification
+        📢 Envoyer à tout le monde
       </button>
 
-      <div id="status" class="status">
-        Vérification du système...
+
+      <button
+        id="testBtn"
+        class="test-btn"
+      >
+        🧪 Tester sur cet ordinateur
+      </button>
+
+
+      <div
+        id="status"
+        class="status info"
+      >
+        Initialisation...
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTIQUES
+    ========================== -->
+
+    <div class="card">
+
+      <h2>📊 Statistiques</h2>
+
+      <div class="stat">
+        <div class="stat-label">
+          Appareils ciblés
+        </div>
+
+        <div
+          id="targetCount"
+          class="stat-value"
+        >
+          —
+        </div>
+      </div>
+
+
+      <div class="stat">
+        <div class="stat-label">
+          Dernier envoi réussi
+        </div>
+
+        <div
+          id="successCount"
+          class="stat-value"
+        >
+          —
+        </div>
+      </div>
+
+
+      <div class="stat">
+        <div class="stat-label">
+          Dernier échec
+        </div>
+
+        <div
+          id="failedCount"
+          class="stat-value"
+        >
+          —
+        </div>
+      </div>
+
+
+      <div class="preview">
+
+        <div class="preview-title">
+          Aperçu
+        </div>
+
+        <div
+          id="previewTitle"
+          class="preview-title"
+        >
+          ARVEXA School
+        </div>
+
+        <div
+          id="previewBody"
+          class="preview-body"
+        >
+          Ton message apparaîtra ici.
+        </div>
+
       </div>
 
     </div>
@@ -165,59 +483,141 @@
   </div>
 
 
+  <!-- =========================
+       HISTORIQUE
+  ========================== -->
+
+  <div class="card history">
+
+    <h2>🕘 Dernier envoi</h2>
+
+    <div id="history">
+      Aucun envoi effectué depuis cette page.
+    </div>
+
+  </div>
+
+</div>
+
+
 <script>
 
-const statusEl = document.getElementById("status");
+const titleInput = document.getElementById("title");
+const messageInput = document.getElementById("message");
+const typeInput = document.getElementById("type");
+const urlInput = document.getElementById("url");
+
+const sendBtn = document.getElementById("sendBtn");
 const testBtn = document.getElementById("testBtn");
 
+const statusEl = document.getElementById("status");
 
-function status(message, type = "info") {
+const messageCount = document.getElementById("messageCount");
+
+const previewTitle = document.getElementById("previewTitle");
+const previewBody = document.getElementById("previewBody");
+
+const targetCount = document.getElementById("targetCount");
+const successCount = document.getElementById("successCount");
+const failedCount = document.getElementById("failedCount");
+
+const historyEl = document.getElementById("history");
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+function setStatus(message, type = "info") {
 
   statusEl.textContent = message;
 
   statusEl.className = "status " + type;
+
 }
 
 
 /* =========================================
-   VÉRIFICATION DU NAVIGATEUR
+   APERÇU
 ========================================= */
 
-async function init() {
+function updatePreview() {
 
-  if (!("Notification" in window)) {
+  const title =
+    titleInput.value.trim() ||
+    "ARVEXA School";
 
-    status(
-      "❌ Ce navigateur ne supporte pas les notifications.",
-      "error"
-    );
+  const message =
+    messageInput.value.trim() ||
+    "Ton message apparaîtra ici.";
 
-    return;
-  }
+  previewTitle.textContent = title;
+  previewBody.textContent = message;
 
+  messageCount.textContent =
+    messageInput.value.length;
 
-  if (!("serviceWorker" in navigator)) {
-
-    status(
-      "❌ Les Service Workers ne sont pas supportés.",
-      "error"
-    );
-
-    return;
-  }
+}
 
 
-  status("⚙️ Enregistrement du Service Worker...", "info");
+titleInput.addEventListener(
+  "input",
+  updatePreview
+);
 
+messageInput.addEventListener(
+  "input",
+  updatePreview
+);
+
+
+/* =========================================
+   TEST LOCAL
+   Cette fonction NE FAIT PAS un envoi FCM.
+========================================= */
+
+async function testLocalNotification() {
 
   try {
 
-    /*
-      Important pour GitHub Pages :
+    if (!("Notification" in window)) {
 
-      ./ signifie que le fichier est recherché
-      dans le même dossier que cette page.
-    */
+      throw new Error(
+        "Ce navigateur ne supporte pas les notifications."
+      );
+
+    }
+
+
+    let permission =
+      Notification.permission;
+
+
+    if (permission !== "granted") {
+
+      permission =
+        await Notification.requestPermission();
+
+    }
+
+
+    if (permission !== "granted") {
+
+      throw new Error(
+        "Permission de notification refusée."
+      );
+
+    }
+
+
+    if (!("serviceWorker" in navigator)) {
+
+      throw new Error(
+        "Les Service Workers ne sont pas disponibles."
+      );
+
+    }
+
 
     const registration =
       await navigator.serviceWorker.register(
@@ -225,85 +625,18 @@ async function init() {
       );
 
 
-    console.log(
-      "Service Worker enregistré :",
-      registration.scope
-    );
-
-
     await navigator.serviceWorker.ready;
 
 
-    status(
-      "✅ Service Worker enregistré. Tu peux tester la notification.",
-      "success"
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    status(
-      "❌ Erreur Service Worker : " + error.message,
-      "error"
-    );
-  }
-}
-
-
-/* =========================================
-   TEST NOTIFICATION
-========================================= */
-
-testBtn.addEventListener("click", async () => {
-
-  try {
-
-    /* Demander la permission */
-
-    let permission = Notification.permission;
-
-
-    if (permission !== "granted") {
-
-      permission =
-        await Notification.requestPermission();
-    }
-
-
-    if (permission !== "granted") {
-
-      status(
-        "❌ Permission de notification refusée.",
-        "error"
-      );
-
-      return;
-    }
-
-
-    /* Récupérer les textes */
-
     const title =
-      document.getElementById("title").value.trim()
-      || "ARVEXA School";
+      titleInput.value.trim() ||
+      "ARVEXA School";
 
 
     const message =
-      document.getElementById("message").value.trim()
-      || "Nouvelle notification";
+      messageInput.value.trim() ||
+      "Nouvelle notification";
 
-
-    /* Récupérer le Service Worker */
-
-    const registration =
-      await navigator.serviceWorker.ready;
-
-
-    /*
-      Afficher une vraie notification
-      via le Service Worker.
-    */
 
     await registration.showNotification(
       title,
@@ -314,42 +647,368 @@ testBtn.addEventListener("click", async () => {
 
         badge: "./icon.png",
 
-        tag: "arvexa-test-notification",
+        tag:
+          "arvexa-local-" +
+          Date.now(),
 
         data: {
-          url: "./notifications.html"
+          url:
+            urlInput.value.trim() ||
+            "./notifications.html"
         }
       }
     );
 
 
-    status(
-      "✅ Notification envoyée ! Vérifie les notifications de ton téléphone.",
+    setStatus(
+      "✅ Notification locale affichée sur cet ordinateur.",
       "success"
     );
+
+  } catch (error) {
+
+    console.error(error);
+
+    setStatus(
+      "❌ Test local impossible : " +
+      error.message,
+      "error"
+    );
+
+  }
+
+}
+
+
+testBtn.addEventListener(
+  "click",
+  testLocalNotification
+);
+
+
+/* =========================================
+   ENVOI GLOBAL
+========================================= */
+
+async function sendToEveryone() {
+
+  const title =
+    titleInput.value.trim() ||
+    "ARVEXA School";
+
+
+  const message =
+    messageInput.value.trim();
+
+
+  const type =
+    typeInput.value;
+
+
+  const clickAction =
+    urlInput.value.trim() ||
+    "./notifications.html";
+
+
+  if (!message) {
+
+    setStatus(
+      "❌ Écris un message avant l'envoi.",
+      "error"
+    );
+
+    messageInput.focus();
+
+    return;
+
+  }
+
+
+  if (message.length > 300) {
+
+    setStatus(
+      "❌ Le message est trop long.",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const confirmation =
+    confirm(
+      "⚠️ Envoyer cette notification à TOUS les utilisateurs disposant d'un appareil enregistré ?\n\n" +
+      "Titre : " + title +
+      "\nMessage : " + message
+    );
+
+
+  if (!confirmation) {
+
+    setStatus(
+      "Envoi annulé.",
+      "info"
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    sendBtn.disabled = true;
+
+    testBtn.disabled = true;
+
+
+    sendBtn.textContent =
+      "⏳ Envoi en cours...";
+
+
+    setStatus(
+      "📡 Connexion au serveur d'envoi...",
+      "info"
+    );
+
+
+    /*
+      IMPORTANT :
+
+      Cet endpoint doit être installé
+      côté serveur.
+
+      Il ne faut JAMAIS mettre la
+      clé privée Firebase ici.
+    */
+
+    const response =
+      await fetch(
+        "/api/send-notification",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+
+            title,
+
+            message,
+
+            type,
+
+            clickAction
+
+          })
+
+        }
+      );
+
+
+    let result = null;
+
+
+    try {
+
+      result =
+        await response.json();
+
+    } catch {
+
+      result = null;
+
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        result?.error ||
+        "Erreur serveur HTTP " +
+        response.status
+      );
+
+    }
+
+
+    const sent =
+      Number(result?.sent || 0);
+
+    const failed =
+      Number(result?.failed || 0);
+
+    const total =
+      Number(
+        result?.total ||
+        sent + failed
+      );
+
+
+    targetCount.textContent =
+      total;
+
+    successCount.textContent =
+      sent;
+
+    failedCount.textContent =
+      failed;
+
+
+    setStatus(
+      "✅ Notification envoyée.\n\n" +
+      "📱 Appareils ciblés : " + total +
+      "\n✅ Réussis : " + sent +
+      "\n❌ Échecs : " + failed,
+      "success"
+    );
+
+
+    historyEl.innerHTML = `
+
+      <div class="history-item">
+
+        <div class="history-title">
+          ${escapeHtml(title)}
+        </div>
+
+        <div class="history-body">
+          ${escapeHtml(message)}
+        </div>
+
+        <div class="history-date">
+          ${new Date().toLocaleString("fr-FR")}
+          · ${sent} réussi(s)
+          · ${failed} échec(s)
+        </div>
+
+      </div>
+
+    `;
 
 
   } catch (error) {
 
     console.error(
-      "Erreur notification :",
+      "Erreur envoi global :",
       error
     );
 
-    status(
-      "❌ Erreur : " + error.message,
+
+    setStatus(
+      "❌ L'envoi global a échoué.\n\n" +
+      error.message,
       "error"
     );
+
+  } finally {
+
+    sendBtn.disabled = false;
+
+    testBtn.disabled = false;
+
+    sendBtn.textContent =
+      "📢 Envoyer à tout le monde";
+
   }
 
-});
+}
 
 
-/* Lancement */
+/* =========================================
+   PROTECTION AFFICHAGE
+========================================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+
+    .replaceAll("<", "&lt;")
+
+    .replaceAll(">", "&gt;")
+
+    .replaceAll('"', "&quot;")
+
+    .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================
+   INITIALISATION
+========================================= */
+
+async function init() {
+
+  updatePreview();
+
+
+  if (!("Notification" in window)) {
+
+    setStatus(
+      "⚠️ Les notifications ne sont pas supportées par ce navigateur. L'envoi global reste disponible.",
+      "info"
+    );
+
+    return;
+
+  }
+
+
+  if ("serviceWorker" in navigator) {
+
+    try {
+
+      const registration =
+        await navigator.serviceWorker.register(
+          "./firebase-messaging-sw.js"
+        );
+
+
+      console.log(
+        "✅ Service Worker :",
+        registration.scope
+      );
+
+
+      setStatus(
+        "✅ Administration prête.\n\n" +
+        "Le bouton « Tester » teste uniquement cet ordinateur.\n" +
+        "Le bouton « Envoyer à tout le monde » utilise le serveur FCM.",
+        "success"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      setStatus(
+        "⚠️ Administration chargée, mais Service Worker indisponible.\n\n" +
+        "Le test local peut ne pas fonctionner.",
+        "info"
+      );
+
+    }
+
+  }
+
+}
+
 
 init();
+
+sendBtn.addEventListener(
+  "click",
+  sendToEveryone
+);
 
 </script>
 
 </body>
-  </html>
+</html>
