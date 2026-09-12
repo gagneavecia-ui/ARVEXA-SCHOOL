@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Test Notifications | ARVEXA School</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #080909;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .logo h1 {
+      color: #E0B84A;
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .logo p {
+      color: #999;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #111412;
+      border: 1px solid #26382e;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.35);
+    }
+
+    label {
+      display: block;
+      color: #ddd;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      background: #080909;
+      color: #fff;
+      border: 1px solid #304238;
+      border-radius: 10px;
+      padding: 13px;
+      outline: none;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #B8860B;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 14px;
+      background: #B8860B;
+      color: #080909;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    button:active {
+      transform: scale(.98);
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #080909;
+      border: 1px solid #26382e;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .success {
+      color: #6ee7a8;
+    }
+
+    .error {
+      color: #ff7777;
+    }
+
+    .info {
+      color: #E0B84A;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="logo">
+      <h1>ARVEXA School</h1>
+      <p>Test du système de notifications</p>
+    </div>
+
+    <div class="card">
+
+      <label for="title">Titre de la notification</label>
+
+      <input
+        id="title"
+        type="text"
+        value="ARVEXA School"
+        placeholder="Ex : Nouveau cours disponible"
+      >
+
+      <label for="message">Message</label>
+
+      <textarea
+        id="message"
+        placeholder="Écris ton message ici..."
+      >Ceci est une notification de test 🚀</textarea>
+
+      <button id="testBtn">
+        🔔 Tester la notification
+      </button>
+
+      <div id="status" class="status">
+        Vérification du système...
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+const statusEl = document.getElementById("status");
+const testBtn = document.getElementById("testBtn");
+
+
+function status(message, type = "info") {
+
+  statusEl.textContent = message;
+
+  statusEl.className = "status " + type;
+}
+
+
+/* =========================================
+   VÉRIFICATION DU NAVIGATEUR
+========================================= */
+
+async function init() {
+
+  if (!("Notification" in window)) {
+
+    status(
+      "❌ Ce navigateur ne supporte pas les notifications.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  if (!("serviceWorker" in navigator)) {
+
+    status(
+      "❌ Les Service Workers ne sont pas supportés.",
+      "error"
+    );
+
+    return;
+  }
+
+
+  status("⚙️ Enregistrement du Service Worker...", "info");
+
+
+  try {
+
+    /*
+      Important pour GitHub Pages :
+
+      ./ signifie que le fichier est recherché
+      dans le même dossier que cette page.
+    */
+
+    const registration =
+      await navigator.serviceWorker.register(
+        "./firebase-messaging-sw.js"
+      );
+
+
+    console.log(
+      "Service Worker enregistré :",
+      registration.scope
+    );
+
+
+    await navigator.serviceWorker.ready;
+
+
+    status(
+      "✅ Service Worker enregistré. Tu peux tester la notification.",
+      "success"
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    status(
+      "❌ Erreur Service Worker : " + error.message,
+      "error"
+    );
+  }
+}
+
+
+/* =========================================
+   TEST NOTIFICATION
+========================================= */
+
+testBtn.addEventListener("click", async () => {
+
+  try {
+
+    /* Demander la permission */
+
+    let permission = Notification.permission;
+
+
+    if (permission !== "granted") {
+
+      permission =
+        await Notification.requestPermission();
+    }
+
+
+    if (permission !== "granted") {
+
+      status(
+        "❌ Permission de notification refusée.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    /* Récupérer les textes */
+
+    const title =
+      document.getElementById("title").value.trim()
+      || "ARVEXA School";
+
+
+    const message =
+      document.getElementById("message").value.trim()
+      || "Nouvelle notification";
+
+
+    /* Récupérer le Service Worker */
+
+    const registration =
+      await navigator.serviceWorker.ready;
+
+
+    /*
+      Afficher une vraie notification
+      via le Service Worker.
+    */
+
+    await registration.showNotification(
+      title,
+      {
+        body: message,
+
+        icon: "./icon.png",
+
+        badge: "./icon.png",
+
+        tag: "arvexa-test-notification",
+
+        data: {
+          url: "./notifications.html"
+        }
+      }
+    );
+
+
+    status(
+      "✅ Notification envoyée ! Vérifie les notifications de ton téléphone.",
+      "success"
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Erreur notification :",
+      error
+    );
+
+    status(
+      "❌ Erreur : " + error.message,
+      "error"
+    );
+  }
+
+});
+
+
+/* Lancement */
+
+init();
+
+</script>
+
+</body>
+  </html>
