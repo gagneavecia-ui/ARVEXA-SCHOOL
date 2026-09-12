@@ -462,6 +462,9 @@ body {
         <span class="push-dot"></span>
         <span id="pushStatusText">Vérification des notifications...</span>
       </div>
+      <div id="pushStatus" class="push-status inactive">
+  Notifications push désactivées
+</div>
 
       <!-- STATS -->
       <div class="stats-row">
@@ -524,15 +527,10 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
-  getMessaging,
-  getToken,
-  onMessage,
-  isSupported,
   getFirestore,
   collection,
   doc,
   addDoc,
-  setDoc,
   getDoc,
   getDocs,
   updateDoc,
@@ -698,6 +696,23 @@ async function initFCM() {
       applyFilterAndRender();
     }
   });
+}
+
+function setPushStatus(type, message) {
+  const statusEl = document.getElementById('pushStatus');
+
+  if (!statusEl) {
+    console.warn('⚠️ Élément #pushStatus introuvable');
+    return;
+  }
+
+  statusEl.textContent = message;
+
+  // Nettoyer les anciennes classes
+  statusEl.classList.remove('active', 'inactive', 'loading', 'error');
+
+  // Ajouter la nouvelle
+  statusEl.classList.add(type);
 }
 
 async function registerToken() {
