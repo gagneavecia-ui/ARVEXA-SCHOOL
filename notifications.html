@@ -518,16 +518,17 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+
 import {
   getAuth,
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
 import {
   getFirestore,
   collection,
   doc,
-  addDoc,
   setDoc,
   getDoc,
   getDocs,
@@ -535,16 +536,23 @@ import {
   deleteDoc,
   query,
   orderBy,
-  where,
   serverTimestamp,
   onSnapshot,
   writeBatch
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
+
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
+
 
 // ================================================================
 // FIREBASE CONFIG
 // ================================================================
+
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -554,623 +562,1844 @@ const firebaseConfig = {
   appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
 };
 
-const VAPID_KEY = "BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA";
+const VAPID_KEY =
+  "BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA";
+
+
+// ================================================================
+// FIREBASE INITIALISATION
+// ================================================================
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 let messaging = null;
+
 try {
   const supported = await isSupported();
+
   if (supported) {
     messaging = getMessaging(app);
+    console.log("✅ Firebase Messaging disponible");
+  } else {
+    console.warn("⚠️ Firebase Messaging non supporté");
   }
-} catch (e) {
-  console.warn('FCM non supporté:', e);
+
+} catch (error) {
+  console.error("❌ Impossible d'initialiser FCM :", error);
 }
 
+
 // ================================================================
-// CONSTANTS
+// CONSTANTES
 // ================================================================
+
 const NOTIF_ICONS = {
-  info: { icon: 'fa-info-circle', class: 'info' },
-  warning: { icon: 'fa-exclamation-triangle', class: 'warning' },
-  success: { icon: 'fa-check-circle', class: 'success' },
-  danger: { icon: 'fa-times-circle', class: 'danger' },
-  announce: { icon: 'fa-bullhorn', class: 'announce' },
-  system: { icon: 'fa-cog', class: 'system' }
+
+  info: {
+    icon: "fa-info-circle",
+    class: "info"
+  },
+
+  warning: {
+    icon: "fa-exclamation-triangle",
+    class: "warning"
+  },
+
+  success: {
+    icon: "fa-check-circle",
+    class: "success"
+  },
+
+  danger: {
+    icon: "fa-times-circle",
+    class: "danger"
+  },
+
+  announce: {
+    icon: "fa-bullhorn",
+    class: "announce"
+  },
+
+  system: {
+    icon: "fa-cog",
+    class: "system"
+  }
+
 };
+
 const TYPE_LABELS = {
-  info: 'Information',
-  warning: 'Alerte',
-  success: 'Succès',
-  danger: 'Urgent',
-  announce: 'Annonce',
-  system: 'Système'
+
+  info: "Information",
+  warning: "Alerte",
+  success: "Succès",
+  danger: "Urgent",
+  announce: "Annonce",
+  system: "Système"
+
 };
+
 
 // ================================================================
 // STATE
 // ================================================================
+
 let currentUser = null;
 let allNotifs = [];
 let filteredNotifs = [];
-let currentFilter = 'all';
+let currentFilter = "all";
+
 let fcmToken = null;
 let pushEnabled = false;
+
 
 // ================================================================
 // DOM
 // ================================================================
-const sidebar = document.getElementById('sidebar');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-const menuToggle = document.getElementById('menuToggle');
-const skeletonLoading = document.getElementById('skeletonLoading');
-const dynamicContent = document.getElementById('dynamicContent');
-const notifList = document.getElementById('notifList');
-const emptyState = document.getElementById('emptyState');
-const filterTabs = document.getElementById('filterTabs');
-const permBanner = document.getElementById('permBanner');
-const pushStatus = document.getElementById('pushStatus');
-const pushStatusText = document.getElementById('pushStatusText');
-const toast = document.getElementById('toast');
-const logoutBtn = document.getElementById('logoutBtn');
+
+const sidebar =
+  document.getElementById("sidebar");
+
+const sidebarOverlay =
+  document.getElementById("sidebarOverlay");
+
+const menuToggle =
+  document.getElementById("menuToggle");
+
+const skeletonLoading =
+  document.getElementById("skeletonLoading");
+
+const dynamicContent =
+  document.getElementById("dynamicContent");
+
+const notifList =
+  document.getElementById("notifList");
+
+const emptyState =
+  document.getElementById("emptyState");
+
+const filterTabs =
+  document.getElementById("filterTabs");
+
+const permBanner =
+  document.getElementById("permBanner");
+
+const enablePushBtn =
+  document.getElementById("enablePushBtn");
+
+const pushStatus =
+  document.getElementById("pushStatus");
+
+const pushStatusText =
+  document.getElementById("pushStatusText");
+
+const toast =
+  document.getElementById("toast");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
 
 // ================================================================
 // SIDEBAR
 // ================================================================
-menuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('open');
-  sidebarOverlay.classList.toggle('active');
-});
-sidebarOverlay.addEventListener('click', () => {
-  sidebar.classList.remove('open');
-  sidebarOverlay.classList.remove('active');
-});
 
-logoutBtn.addEventListener('click', async (e) => {
-  e.preventDefault();
-  try { await signOut(auth); } catch(err) {}
-  window.location.href = 'login.html';
-});
+if (menuToggle) {
+
+  menuToggle.addEventListener("click", () => {
+
+    sidebar?.classList.toggle("open");
+    sidebarOverlay?.classList.toggle("active");
+
+  });
+
+}
+
+if (sidebarOverlay) {
+
+  sidebarOverlay.addEventListener("click", () => {
+
+    sidebar?.classList.remove("open");
+    sidebarOverlay.classList.remove("active");
+
+  });
+
+}
+
+
+// ================================================================
+// LOGOUT
+// ================================================================
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener("click", async (e) => {
+
+    e.preventDefault();
+
+    try {
+
+      await signOut(auth);
+
+    } catch (error) {
+
+      console.error("Erreur déconnexion :", error);
+
+    }
+
+    window.location.href = "login.html";
+
+  });
+
+}
+
 
 // ================================================================
 // TOAST
 // ================================================================
+
 let toastTimeout = null;
-function showToast(message, type = 'info') {
-  const icon = toast.querySelector('.toast-icon i');
-  const iconWrap = toast.querySelector('.toast-icon');
-  const msg = toast.querySelector('.toast-message');
-  iconWrap.className = 'toast-icon ' + type;
-  const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
-  icon.className = 'fas ' + (icons[type] || icons.info);
-  msg.textContent = message;
-  toast.classList.add('show');
+
+function showToast(message, type = "info") {
+
+  if (!toast) return;
+
+  const icon =
+    toast.querySelector(".toast-icon i");
+
+  const iconWrap =
+    toast.querySelector(".toast-icon");
+
+  const msg =
+    toast.querySelector(".toast-message");
+
+  const icons = {
+
+    success: "fa-check-circle",
+    error: "fa-exclamation-circle",
+    info: "fa-info-circle"
+
+  };
+
+  if (iconWrap) {
+
+    iconWrap.className =
+      "toast-icon " + type;
+
+  }
+
+  if (icon) {
+
+    icon.className =
+      "fas " + (icons[type] || icons.info);
+
+  }
+
+  if (msg) {
+
+    msg.textContent = message;
+
+  }
+
+  toast.classList.add("show");
+
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3500);
+
+  toastTimeout = setTimeout(() => {
+
+    toast.classList.remove("show");
+
+  }, 3500);
+
 }
 
+
 // ================================================================
-// FCM — PUSH NOTIFICATIONS
+// PUSH STATUS
 // ================================================================
-async function initFCM() {
-  if (!messaging) {
-    setPushStatus('inactive', 'Notifications push non supportées sur ce navigateur');
+
+function setPushStatus(status, text) {
+
+  if (!pushStatus || !pushStatusText) {
+
+    console.warn(
+      "⚠️ Élément de statut FCM introuvable"
+    );
+
     return;
+
   }
 
-  // Check current permission
-  if (Notification.permission === 'granted') {
-    await registerToken();
-    permBanner.classList.remove('show');
-  } else if (Notification.permission === 'denied') {
-    setPushStatus('inactive', 'Notifications bloquées par le navigateur');
-    permBanner.classList.remove('show');
-  } else {
-    // Default — not yet asked
-    setPushStatus('pending', 'Notifications non encore activées');
-    permBanner.classList.add('show');
-  }
+  pushStatus.classList.remove(
+    "active",
+    "inactive",
+    "pending"
+  );
 
-  // Listen for foreground messages
-  onMessage(messaging, (payload) => {
-    console.log('📬 Message FCM reçu (foreground):', payload);
-    const { title, body } = payload.notification || {};
-    showToast(body || title || 'Nouvelle notification', 'info');
+  pushStatus.classList.add(status);
 
-    // Also show an in-app notification card at the top
-    if (title || body) {
-      const notifData = {
-        id: 'fcm_' + Date.now(),
-        title: title || 'Notification',
-        body: body || '',
-        type: payload.data?.type || 'info',
-        createdAt: new Date(),
-        read: false
-      };
-      allNotifs.unshift(notifData);
-      applyFilterAndRender();
-    }
-  });
-}
-
-  function setPushStatus(status, text) {
-  pushStatus.className = 'push-status ' + status;
   pushStatusText.textContent = text;
+
 }
 
-// Enable push button
-document.getElementById('enablePushBtn').addEventListener('click', async () => {
-  if (!messaging) return;
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      await registerToken();
-      permBanner.classList.remove('show');
-      showToast('Notifications push activées !', 'success');
-    } else if (permission === 'denied') {
-      setPushStatus('inactive', 'Notifications refusées');
-      permBanner.classList.remove('show');
-      showToast('Notifications bloquées', 'error');
-    }
-  } catch (err) {
-    showToast('Erreur d\'activation', 'error');
+
+// ================================================================
+// REGISTER FCM TOKEN
+// ================================================================
+
+async function registerToken() {
+
+  if (!messaging) {
+
+    setPushStatus(
+      "inactive",
+      "Notifications push non supportées"
+    );
+
+    return false;
+
   }
-});
-  
-    // =====================================================
+
+  if (!("serviceWorker" in navigator)) {
+
+    setPushStatus(
+      "inactive",
+      "Service Worker non supporté"
+    );
+
+    return false;
+
+  }
+
+  try {
+
+    setPushStatus(
+      "pending",
+      "Activation des notifications..."
+    );
+
+    console.log(
+      "🔄 Enregistrement du Service Worker FCM..."
+    );
+
+
+    // ============================================================
     // SERVICE WORKER
-    // =====================================================
+    // ============================================================
 
     const registration =
       await navigator.serviceWorker.register(
-        './firebase-messaging-sw.js'
+        "./firebase-messaging-sw.js"
       );
 
     console.log(
-      '✅ Service Worker FCM enregistré :',
+      "✅ Service Worker FCM enregistré :",
       registration.scope
     );
 
-    // =====================================================
-    // TOKEN FCM
-    // =====================================================
 
-    const token = await getToken(
-      messaging,
-      {
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: registration
-      }
-    );
+    // Attendre que le SW soit prêt
 
-    if (!token) {
-      throw new Error(
-        'Firebase n’a retourné aucun token FCM'
-      );
-    }
+    await navigator.serviceWorker.ready;
 
     console.log(
-      '✅ Token FCM obtenu :',
-      token
+      "✅ Service Worker prêt"
     );
+
+
+    // ============================================================
+    // OBTENIR LE TOKEN FCM
+    // ============================================================
+
+    console.log(
+      "🔄 Demande du token FCM..."
+    );
+
+    const token =
+      await getToken(
+        messaging,
+        {
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: registration
+        }
+      );
+
+
+    if (!token) {
+
+      throw new Error(
+        "Firebase n'a retourné aucun token FCM"
+      );
+
+    }
+
+
+    console.log(
+      "✅ Token FCM obtenu :",
+      token.substring(0, 25) + "..."
+    );
+
 
     fcmToken = token;
     pushEnabled = true;
 
-    setPushStatus(
-      'active',
-      'Notifications push activées'
-    );
 
-    // =====================================================
-    // FIRESTORE
-    // =====================================================
+    // ============================================================
+    // ENREGISTRER LE TOKEN DANS FIRESTORE
+    // ============================================================
 
     if (currentUser) {
 
       await setDoc(
+
         doc(
           db,
-          'users',
+          "users",
           currentUser.uid
         ),
+
         {
           fcmToken: token,
+
           fcmTokenUpdatedAt:
             serverTimestamp()
+
+        },
+
+        {
+          merge: true
+        }
+
+      );
+
+      console.log(
+        "✅ Token FCM enregistré dans Firestore"
+      );
+
+    }
+
+
+    // ============================================================
+    // SUCCÈS
+    // ============================================================
+
+    setPushStatus(
+      "active",
+      "Notifications push activées"
+    );
+
+    if (permBanner) {
+
+      permBanner.classList.remove("show");
+
+    }
+
+    return true;
+
+
+  } catch (error) {
+
+    console.error(
+      "❌ ERREUR FCM :",
+      error
+    );
+
+    console.error(
+      "Code :",
+      error?.code
+    );
+
+    console.error(
+      "Message :",
+      error?.message
+    );
+
+
+    setPushStatus(
+      "inactive",
+      "Erreur FCM : " +
+      (
+        error?.code ||
+        error?.message ||
+        "Erreur inconnue"
+      )
+    );
+
+    return false;
+
+  }
+
+}
+
+
+// ================================================================
+// INITIALISATION FCM
+// ================================================================
+
+async function initFCM() {
+
+  if (!messaging) {
+
+    setPushStatus(
+      "inactive",
+      "Notifications push non supportées sur ce navigateur"
+    );
+
+    return;
+
+  }
+
+
+  if (!("Notification" in window)) {
+
+    setPushStatus(
+      "inactive",
+      "Notifications non supportées"
+    );
+
+    return;
+
+  }
+
+
+  console.log(
+    "🔔 Permission actuelle :",
+    Notification.permission
+  );
+
+
+  // ============================================================
+  // PERMISSION DÉJÀ ACCORDÉE
+  // ============================================================
+
+  if (
+    Notification.permission === "granted"
+  ) {
+
+    await registerToken();
+
+    if (permBanner) {
+
+      permBanner.classList.remove("show");
+
+    }
+
+  }
+
+
+  // ============================================================
+  // PERMISSION REFUSÉE
+  // ============================================================
+
+  else if (
+    Notification.permission === "denied"
+  ) {
+
+    setPushStatus(
+      "inactive",
+      "Notifications bloquées par le navigateur"
+    );
+
+    if (permBanner) {
+
+      permBanner.classList.remove("show");
+
+    }
+
+  }
+
+
+  // ============================================================
+  // PAS ENCORE DEMANDÉE
+  // ============================================================
+
+  else {
+
+    setPushStatus(
+      "pending",
+      "Notifications non encore activées"
+    );
+
+    if (permBanner) {
+
+      permBanner.classList.add("show");
+
+    }
+
+  }
+
+
+  // ============================================================
+  // FOREGROUND MESSAGE
+  // ============================================================
+
+  onMessage(
+    messaging,
+    (payload) => {
+
+      console.log(
+        "📬 Message FCM reçu :",
+        payload
+      );
+
+
+      const notification =
+        payload.notification || {};
+
+      const title =
+        notification.title ||
+        payload.data?.title ||
+        "ARVEXa School";
+
+      const body =
+        notification.body ||
+        payload.data?.body ||
+        "Nouvelle notification";
+
+
+      showToast(
+        body || title,
+        "info"
+      );
+
+
+      // Ajouter la notification à la liste
+
+      const notifData = {
+
+        id:
+          "fcm_" +
+          Date.now(),
+
+        title,
+
+        body,
+
+        type:
+          payload.data?.type ||
+          "info",
+
+        createdAt:
+          new Date(),
+
+        _read: false
+
+      };
+
+
+      allNotifs.unshift(
+        notifData
+      );
+
+      applyFilterAndRender();
+
+    }
+  );
+
+}
+
+
+// ================================================================
+// BOUTON ACTIVER LES NOTIFICATIONS
+// ================================================================
+
+if (enablePushBtn) {
+
+  enablePushBtn.addEventListener(
+    "click",
+    async () => {
+
+      if (!messaging) {
+
+        showToast(
+          "Les notifications ne sont pas supportées.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!("Notification" in window)) {
+
+        showToast(
+          "Les notifications ne sont pas supportées.",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        enablePushBtn.disabled = true;
+
+        enablePushBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Activation...';
+
+
+        console.log(
+          "🔔 Demande de permission..."
+        );
+
+
+        const permission =
+          await Notification.requestPermission();
+
+
+        console.log(
+          "🔔 Résultat permission :",
+          permission
+        );
+
+
+        if (permission !== "granted") {
+
+          setPushStatus(
+            "inactive",
+            permission === "denied"
+              ? "Notifications bloquées par le navigateur"
+              : "Permission non accordée"
+          );
+
+          showToast(
+            permission === "denied"
+              ? "Notifications bloquées par le navigateur."
+              : "Permission non accordée.",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        const success =
+          await registerToken();
+
+
+        if (success) {
+
+          showToast(
+            "🔔 Notifications push activées !",
+            "success"
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "❌ Erreur activation :",
+          error
+        );
+
+        showToast(
+          "Impossible d'activer les notifications.",
+          "error"
+        );
+
+      } finally {
+
+        enablePushBtn.disabled = false;
+
+        enablePushBtn.innerHTML =
+          '<i class="fas fa-bell"></i> Activer';
+
+      }
+
+    }
+  );
+
+}
+
+
+// ================================================================
+// LOAD NOTIFICATIONS
+// ================================================================
+
+function initNotificationsListener() {
+
+  const notifQuery =
+    query(
+      collection(db, "notifications"),
+      orderBy("createdAt", "desc")
+    );
+
+
+  onSnapshot(
+
+    notifQuery,
+
+    async (snapshot) => {
+
+      const globalNotifs = [];
+
+
+      snapshot.forEach((d) => {
+
+        globalNotifs.push({
+
+          id: d.id,
+          ...d.data(),
+          _source: "global"
+
+        });
+
+      });
+
+
+      // ==========================================================
+      // ANNOUNCEMENTS
+      // ==========================================================
+
+      let announcements = [];
+
+
+      try {
+
+        const annSnap =
+          await getDocs(
+
+            query(
+              collection(
+                db,
+                "announcements"
+              ),
+              orderBy(
+                "createdAt",
+                "desc"
+              )
+            )
+
+          );
+
+
+        annSnap.forEach((d) => {
+
+          announcements.push({
+
+            id: d.id,
+            ...d.data(),
+            _source: "announcement"
+
+          });
+
+        });
+
+      } catch (error) {
+
+        console.warn(
+          "Erreur chargement annonces :",
+          error
+        );
+
+      }
+
+
+      // ==========================================================
+      // USER NOTIFICATIONS
+      // ==========================================================
+
+      let userNotifs = [];
+
+
+      if (currentUser) {
+
+        try {
+
+          const uq =
+            query(
+
+              collection(
+                db,
+                "users",
+                currentUser.uid,
+                "notifications"
+              ),
+
+              orderBy(
+                "createdAt",
+                "desc"
+              )
+
+            );
+
+
+          const uSnap =
+            await getDocs(uq);
+
+
+          uSnap.forEach((d) => {
+
+            userNotifs.push({
+
+              id: d.id,
+              ...d.data(),
+              _source: "user"
+
+            });
+
+          });
+
+        } catch (error) {
+
+          console.warn(
+            "Erreur chargement notifications utilisateur :",
+            error
+          );
+
+        }
+
+      }
+
+
+      // ==========================================================
+      // MERGE
+      // ==========================================================
+
+      const merged = [
+
+        ...globalNotifs,
+        ...announcements,
+        ...userNotifs
+
+      ];
+
+
+      const seen = new Set();
+
+
+      allNotifs =
+        merged.filter((notification) => {
+
+          if (
+            seen.has(notification.id)
+          ) {
+
+            return false;
+
+          }
+
+          seen.add(
+            notification.id
+          );
+
+          return true;
+
+        });
+
+
+      // ==========================================================
+      // READ STATUS
+      // ==========================================================
+
+      if (currentUser) {
+
+        try {
+
+          const readDoc =
+            await getDoc(
+
+              doc(
+                db,
+                "users",
+                currentUser.uid,
+                "notif_meta",
+                "read_status"
+              )
+
+            );
+
+
+          if (readDoc.exists()) {
+
+            const readIds =
+              readDoc.data().readIds || [];
+
+
+            allNotifs.forEach(
+              (notification) => {
+
+                notification._read =
+                  readIds.includes(
+                    notification.id
+                  );
+
+              }
+            );
+
+          }
+
+        } catch (error) {
+
+          console.warn(
+            "Erreur statut lecture :",
+            error
+          );
+
+        }
+
+      }
+
+
+      applyFilterAndRender();
+
+
+      if (skeletonLoading) {
+
+        skeletonLoading.style.display =
+          "none";
+
+      }
+
+
+      if (dynamicContent) {
+
+        dynamicContent.style.display =
+          "block";
+
+      }
+
+    },
+
+    (error) => {
+
+      console.error(
+        "Erreur écoute notifications :",
+        error
+      );
+
+
+      if (skeletonLoading) {
+
+        skeletonLoading.style.display =
+          "none";
+
+      }
+
+
+      if (dynamicContent) {
+
+        dynamicContent.style.display =
+          "block";
+
+      }
+
+
+      showToast(
+        "Erreur de chargement des notifications",
+        "error"
+      );
+
+    }
+
+  );
+
+}
+
+
+// ================================================================
+// FILTER + RENDER
+// ================================================================
+
+function applyFilterAndRender() {
+
+  let notifs =
+    [...allNotifs];
+
+
+  if (
+    currentFilter === "unread"
+  ) {
+
+    notifs =
+      notifs.filter(
+        n => !n._read
+      );
+
+  }
+
+
+  else if (
+    currentFilter === "announce"
+  ) {
+
+    notifs =
+      notifs.filter(
+        n =>
+          n._source === "announcement" ||
+          n.type === "announce"
+      );
+
+  }
+
+
+  else if (
+    currentFilter !== "all"
+  ) {
+
+    notifs =
+      notifs.filter(
+        n =>
+          n.type === currentFilter
+      );
+
+  }
+
+
+  // ============================================================
+  // SORT
+  // ============================================================
+
+  notifs.sort(
+    (a, b) => {
+
+      const aRead =
+        a._read ? 1 : 0;
+
+      const bRead =
+        b._read ? 1 : 0;
+
+
+      if (
+        aRead !== bRead
+      ) {
+
+        return aRead - bRead;
+
+      }
+
+
+      const aTime =
+        a.createdAt?.toDate?.()?.getTime() ||
+        new Date(
+          a.createdAt || 0
+        ).getTime() ||
+        0;
+
+
+      const bTime =
+        b.createdAt?.toDate?.()?.getTime() ||
+        new Date(
+          b.createdAt || 0
+        ).getTime() ||
+        0;
+
+
+      return bTime - aTime;
+
+    }
+  );
+
+
+  filteredNotifs =
+    notifs;
+
+
+  renderStats();
+
+  renderNotifs(
+    notifs
+  );
+
+}
+
+
+// ================================================================
+// STATS
+// ================================================================
+
+function renderStats() {
+
+  const total =
+    allNotifs.length;
+
+  const unread =
+    allNotifs.filter(
+      n => !n._read
+    ).length;
+
+  const read =
+    total - unread;
+
+
+  const statTotal =
+    document.getElementById(
+      "statTotal"
+    );
+
+  const statUnread =
+    document.getElementById(
+      "statUnread"
+    );
+
+  const statRead =
+    document.getElementById(
+      "statRead"
+    );
+
+
+  if (statTotal)
+    statTotal.textContent =
+      total;
+
+
+  if (statUnread)
+    statUnread.textContent =
+      unread;
+
+
+  if (statRead)
+    statRead.textContent =
+      read;
+
+}
+
+
+// ================================================================
+// RENDER NOTIFICATIONS
+// ================================================================
+
+function renderNotifs(notifs) {
+
+  if (!notifList)
+    return;
+
+
+  if (
+    notifs.length === 0
+  ) {
+
+    notifList.innerHTML =
+      "";
+
+    if (emptyState) {
+
+      emptyState.style.display =
+        "block";
+
+    }
+
+    return;
+
+  }
+
+
+  if (emptyState) {
+
+    emptyState.style.display =
+      "none";
+
+  }
+
+
+  notifList.innerHTML =
+    notifs.map(
+      (n) => {
+
+        const isRead =
+          !!n._read;
+
+        const type =
+          n.type || "info";
+
+        const iconInfo =
+          NOTIF_ICONS[type] ||
+          NOTIF_ICONS.info;
+
+        const typeLabel =
+          TYPE_LABELS[type] ||
+          "Info";
+
+        const title =
+          n.title ||
+          "Notification";
+
+        const body =
+          n.body ||
+          n.text ||
+          "";
+
+        const dateStr =
+          formatTimeAgo(
+            n.createdAt
+          );
+
+
+        return `
+
+          <div
+            class="card notif-card ${
+              isRead
+                ? "read"
+                : "unread"
+            }"
+            data-id="${escapeHtml(
+              String(n.id)
+            )}"
+          >
+
+            <div class="notif-top">
+
+              <div
+                class="notif-icon-wrap ${
+                  iconInfo.class
+                }"
+              >
+
+                <i
+                  class="fas ${
+                    iconInfo.icon
+                  }"
+                ></i>
+
+              </div>
+
+
+              <div class="notif-body">
+
+                <div class="notif-title">
+
+                  ${
+                    !isRead
+                      ? '<span class="unread-dot"></span>'
+                      : ""
+                  }
+
+                  ${escapeHtml(title)}
+
+                </div>
+
+
+                ${
+                  body
+                    ? `
+                      <div class="notif-text">
+                        ${escapeHtml(body)}
+                      </div>
+                    `
+                    : ""
+                }
+
+
+                <div class="notif-meta">
+
+                  <span class="notif-type">
+                    ${escapeHtml(typeLabel)}
+                  </span>
+
+                  <span>
+                    ${dateStr}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <div class="notif-actions">
+
+                ${
+                  !isRead
+                    ? `
+                      <button
+                        class="notif-act-btn"
+                        data-action="read"
+                        data-id="${escapeHtml(
+                          String(n.id)
+                        )}"
+                        title="Marquer lu"
+                      >
+                        <i class="fas fa-check"></i>
+                      </button>
+                    `
+                    : ""
+                }
+
+
+                <button
+                  class="notif-act-btn del"
+                  data-action="delete"
+                  data-id="${escapeHtml(
+                    String(n.id)
+                  )}"
+                  title="Supprimer"
+                >
+                  <i class="fas fa-times"></i>
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
+
+
+  // ============================================================
+  // BUTTON ACTIONS
+  // ============================================================
+
+  notifList
+    .querySelectorAll(
+      ".notif-act-btn"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          handleNotifAction
+        );
+
+      }
+    );
+
+
+  // ============================================================
+  // CARD CLICK
+  // ============================================================
+
+  notifList
+    .querySelectorAll(
+      ".notif-card"
+    )
+    .forEach(
+      card => {
+
+        card.addEventListener(
+          "click",
+          (event) => {
+
+            if (
+              event.target.closest(
+                ".notif-act-btn"
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            markAsRead(
+              card.dataset.id
+            );
+
+          }
+        );
+
+      }
+    );
+
+}
+
+
+// ================================================================
+// ESCAPE HTML
+// ================================================================
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    String(text ?? "");
+
+  return div.innerHTML;
+
+}
+
+
+// ================================================================
+// TIME AGO
+// ================================================================
+
+function formatTimeAgo(ts) {
+
+  if (!ts)
+    return "";
+
+
+  const date =
+    ts.toDate
+      ? ts.toDate()
+      : new Date(ts);
+
+
+  if (
+    isNaN(
+      date.getTime()
+    )
+  ) {
+
+    return "";
+
+  }
+
+
+  const now =
+    new Date();
+
+  const diff =
+    now - date;
+
+
+  const mins =
+    Math.floor(
+      diff / 60000
+    );
+
+  const hours =
+    Math.floor(
+      diff / 3600000
+    );
+
+  const days =
+    Math.floor(
+      diff / 86400000
+    );
+
+
+  if (mins < 1)
+    return "À l'instant";
+
+  if (mins < 60)
+    return `Il y a ${mins} min`;
+
+  if (hours < 24)
+    return `Il y a ${hours}h`;
+
+  if (days < 7)
+    return `Il y a ${days}j`;
+
+
+  return date.toLocaleDateString(
+    "fr-FR",
+    {
+      day: "numeric",
+      month: "short"
+    }
+  );
+
+}
+
+
+// ================================================================
+// NOTIFICATION ACTIONS
+// ================================================================
+
+async function handleNotifAction(event) {
+
+  event.stopPropagation();
+
+
+  const button =
+    event.currentTarget;
+
+  const action =
+    button.dataset.action;
+
+  const id =
+    button.dataset.id;
+
+
+  if (
+    action === "read"
+  ) {
+
+    await markAsRead(id);
+
+  }
+
+
+  if (
+    action === "delete"
+  ) {
+
+    await deleteNotif(id);
+
+  }
+
+}
+
+
+// ================================================================
+// MARK AS READ
+// ================================================================
+
+async function markAsRead(notifId) {
+
+  const notification =
+    allNotifs.find(
+      n => n.id === notifId
+    );
+
+
+  if (!notification)
+    return;
+
+
+  if (notification._read)
+    return;
+
+
+  notification._read =
+    true;
+
+
+  // ============================================================
+  // SAUVEGARDE FIRESTORE
+  // ============================================================
+
+  if (currentUser) {
+
+    try {
+
+      const readRef =
+        doc(
+          db,
+          "users",
+          currentUser.uid,
+          "notif_meta",
+          "read_status"
+        );
+
+
+      const readDoc =
+        await getDoc(
+          readRef
+        );
+
+
+      let readIds =
+        readDoc.exists()
+          ? (
+              readDoc.data()
+                .readIds || []
+            )
+          : [];
+
+
+      if (
+        !readIds.includes(
+          notifId
+        )
+      ) {
+
+        readIds.push(
+          notifId
+        );
+
+      }
+
+
+      await setDoc(
+        readRef,
+        {
+          readIds
         },
         {
           merge: true
         }
       );
 
-      console.log(
-        '✅ Token FCM enregistré dans Firestore'
+
+    } catch (error) {
+
+      console.warn(
+        "Erreur sauvegarde lecture :",
+        error
       );
+
     }
 
-  } catch (err) {
-
-    console.error(
-      '❌ ERREUR FCM :',
-      err
-    );
-
-    console.error(
-      'Code :',
-      err?.code
-    );
-
-    console.error(
-      'Message :',
-      err?.message
-    );
-
-    setPushStatus(
-      'inactive',
-      `Erreur FCM : ${
-        err?.code ||
-        err?.message ||
-        'Erreur inconnue'
-      }`
-    );
-
-  }
-}
-
-// ================================================================
-// LOAD NOTIFICATIONS (realtime)
-// ================================================================
-function initNotificationsListener() {
-  // Listen to global notifications collection (written by admin)
-  const notifQuery = query(collection(db, 'notifications'), orderBy('createdAt', 'desc'));
-
-  onSnapshot(notifQuery, async (snapshot) => {
-    const globalNotifs = [];
-    snapshot.forEach(d => {
-      globalNotifs.push({ id: d.id, ...d.data(), _source: 'global' });
-    });
-
-    // Also listen to announcements (legacy support)
-    let announcements = [];
-    try {
-      const annSnap = await getDocs(query(collection(db, 'announcements'), orderBy('createdAt', 'desc')));
-      annSnap.forEach(d => {
-        announcements.push({ id: d.id, ...d.data(), _source: 'announcement' });
-      });
-    } catch (err) {
-      console.warn('Erreur chargement annonces:', err);
-    }
-
-    // Load user-specific notifications
-    let userNotifs = [];
-    if (currentUser) {
-      try {
-        const uq = query(
-          collection(db, 'users', currentUser.uid, 'notifications'),
-          orderBy('createdAt', 'desc')
-        );
-        const uSnap = await getDocs(uq);
-        uSnap.forEach(d => {
-          userNotifs.push({ id: d.id, ...d.data(), _source: 'user' });
-        });
-      } catch (err) {
-        console.warn('Erreur chargement notifs utilisateur:', err);
-      }
-    }
-
-    // Merge and deduplicate
-    const merged = [...globalNotifs, ...announcements, ...userNotifs];
-    const seen = new Set();
-    allNotifs = merged.filter(n => {
-      if (seen.has(n.id)) return false;
-      seen.add(n.id);
-      return true;
-    });
-
-    // Track read status for current user
-    if (currentUser) {
-      try {
-        const readDoc = await getDoc(doc(db, 'users', currentUser.uid, 'notif_meta', 'read_status'));
-        if (readDoc.exists()) {
-          const readIds = readDoc.data().readIds || [];
-          allNotifs.forEach(n => {
-            n._read = readIds.includes(n.id);
-          });
-        }
-      } catch (err) {
-        // If doc doesn't exist yet, all are unread
-      }
-    }
-
-    applyFilterAndRender();
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
-  }, (err) => {
-    console.error('Erreur écoute annonces:', err);
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
-    showToast('Erreur de chargement', 'error');
-  });
-}
-
-// ================================================================
-// RENDER
-// ================================================================
-function applyFilterAndRender() {
-  let notifs = [...allNotifs];
-
-  if (currentFilter === 'unread') {
-    notifs = notifs.filter(n => !n._read);
-  } else if (currentFilter === 'announce') {
-    notifs = notifs.filter(n => n._source === 'announcement' || n.type === 'announce');
-  } else if (currentFilter !== 'all') {
-    notifs = notifs.filter(n => n.type === currentFilter);
   }
 
-  // Sort: unread first, then by date
-  notifs.sort((a, b) => {
-    const aRead = a._read ? 1 : 0;
-    const bRead = b._read ? 1 : 0;
-    if (aRead !== bRead) return aRead - bRead;
-    const aTime = a.createdAt?.toDate?.()?.getTime() || new Date(a.createdAt || 0).getTime() || 0;
-    const bTime = b.createdAt?.toDate?.()?.getTime() || new Date(b.createdAt || 0).getTime() || 0;
-    return bTime - aTime;
-  });
-
-  filteredNotifs = notifs;
-  renderStats();
-  renderNotifs(notifs);
-}
-
-function renderStats() {
-  const total = allNotifs.length;
-  const unread = allNotifs.filter(n => !n._read).length;
-  const read = total - unread;
-
-  document.getElementById('statTotal').textContent = total;
-  document.getElementById('statUnread').textContent = unread;
-  document.getElementById('statRead').textContent = read;
-
-  // Update header badge
-  const badge = document.querySelector('.header-badge');
-  if (badge) {
-    badge.textContent = unread;
-    badge.style.display = unread > 0 ? 'flex' : 'none';
-  }
-}
-
-function renderNotifs(notifs) {
-  if (notifs.length === 0) {
-    notifList.innerHTML = '';
-    emptyState.style.display = 'block';
-    return;
-  }
-  emptyState.style.display = 'none';
-
-  notifList.innerHTML = notifs.map(n => {
-    const isRead = n._read;
-    const type = n.type || 'info';
-    const iconInfo = NOTIF_ICONS[type] || NOTIF_ICONS.info;
-    const typeLabel = TYPE_LABELS[type] || 'Info';
-    const title = n.title || 'Notification';
-    const body = n.body || n.text || '';
-    const dateStr = formatTimeAgo(n.createdAt);
-
-    return `
-      <div class="card notif-card ${isRead ? 'read' : 'unread'}" data-id="${n.id}">
-        <div class="notif-top">
-          <div class="notif-icon-wrap ${iconInfo.class}">
-            <i class="fas ${iconInfo.icon}"></i>
-          </div>
-          <div class="notif-body">
-            <div class="notif-title">
-              ${!isRead ? '<span class="unread-dot"></span>' : ''}
-              ${escapeHtml(title)}
-            </div>
-            ${body ? `<div class="notif-text">${escapeHtml(body)}</div>` : ''}
-            <div class="notif-meta">
-              <span class="notif-type">${typeLabel}</span>
-              <span>${dateStr}</span>
-            </div>
-          </div>
-          <div class="notif-actions">
-            ${!isRead ? `<button class="notif-act-btn" data-action="read" data-id="${n.id}" title="Marquer lu"><i class="fas fa-check"></i></button>` : ''}
-            <button class="notif-act-btn del" data-action="delete" data-id="${n.id}" title="Supprimer"><i class="fas fa-times"></i></button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Bind actions
-  notifList.querySelectorAll('.notif-act-btn').forEach(btn => {
-    btn.addEventListener('click', handleNotifAction);
-  });
-
-  // Click on card = mark as read
-  notifList.querySelectorAll('.notif-card').forEach(card => {
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.notif-act-btn')) return;
-      const id = card.dataset.id;
-      markAsRead(id);
-    });
-  });
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function formatTimeAgo(ts) {
-  if (!ts) return '';
-  const date = ts.toDate ? ts.toDate() : new Date(ts);
-  if (isNaN(date.getTime())) return '';
-  const now = new Date();
-  const diff = now - date;
-  const mins = Math.floor(diff / 60000);
-  const hours = Math.floor(diff / 3600000);
-  const days = Math.floor(diff / 86400000);
-
-  if (mins < 1) return "À l'instant";
-  if (mins < 60) return `Il y a ${mins} min`;
-  if (hours < 24) return `Il y a ${hours}h`;
-  if (days < 7) return `Il y a ${days}j`;
-  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-}
-
-// ================================================================
-// NOTIFICATION ACTIONS
-// ================================================================
-async function handleNotifAction(e) {
-  e.stopPropagation();
-  const btn = e.currentTarget;
-  const action = btn.dataset.action;
-  const id = btn.dataset.id;
-
-  if (action === 'read') {
-    await markAsRead(id);
-  }
-
-  if (action === 'delete') {
-    await deleteNotif(id);
-  }
-}
-
-async function markAsRead(notifId) {
-  if (!currentUser) return;
-  const notif = allNotifs.find(n => n.id === notifId);
-  if (!notif || notif._read) return;
-
-  notif._read = true;
-
-  try {
-    const ref = doc(db, 'users', currentUser.uid, 'notif_meta', 'read_status');
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const existing = snap.data().readIds || [];
-      if (!existing.includes(notifId)) {
-        await updateDoc(ref, { readIds: [...existing, notifId] });
-      }
-    } else {
-      const { setDoc: sd } = await import("https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js");
-      await sd(ref, { readIds: [notifId] });
-    }
-  } catch (err) {
-    console.warn('Erreur marquer lu:', err);
-  }
 
   applyFilterAndRender();
+
 }
 
-async function deleteNotif(notifId) {
-  // Remove from local list
-  allNotifs = allNotifs.filter(n => n.id !== notifId);
 
-  // If it's a user notification, delete from Firestore
+// ================================================================
+// DELETE NOTIFICATION
+// ================================================================
+
+async function deleteNotif(
+  notifId
+) {
+
+  allNotifs =
+    allNotifs.filter(
+      n => n.id !== notifId
+    );
+
+
   if (currentUser) {
+
     try {
-      await deleteDoc(doc(db, 'users', currentUser.uid, 'notifications', notifId));
-    } catch (err) {
-      // Might be an announcement, not a user notif — that's ok
+
+      await deleteDoc(
+
+        doc(
+          db,
+          "users",
+          currentUser.uid,
+          "notifications",
+          notifId
+        )
+
+      );
+
+    } catch (error) {
+
+      // La notification peut être globale
+      console.warn(
+        "Notification non supprimée de Firestore :",
+        error
+      );
+
     }
+
   }
 
+
   applyFilterAndRender();
-  showToast('Notification supprimée', 'info');
+
+
+  showToast(
+    "Notification supprimée",
+    "info"
+  );
+
 }
 
-// ================================================================
-// MARK ALL READ
-// ================================================================
-document.getElementById('markAllReadBtn').addEventListener('click', async () => {
-  if (!currentUser || allNotifs.length === 0) return;
-
-  const unreadIds = allNotifs.filter(n => !n._read).map(n => n.id);
-  if (unreadIds.length === 0) {
-    showToast('Tout est déjà lu', 'info');
-    return;
-  }
-
-  allNotifs.forEach(n => n._read = true);
-
-  try {
-    const { setDoc: sd } = await import("https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js");
-    const allIds = allNotifs.map(n => n.id);
-    await sd(doc(db, 'users', currentUser.uid, 'notif_meta', 'read_status'), { readIds: allIds });
-  } catch (err) {
-    console.warn('Erreur mark all read:', err);
-  }
-
-  applyFilterAndRender();
-  showToast(`${unreadIds.length} notification(s) marquée(s) lue(s)`, 'success');
-});
-
-// ================================================================
-// CLEAR ALL
-// ================================================================
-document.getElementById('clearAllBtn').addEventListener('click', async () => {
-  if (!currentUser || allNotifs.length === 0) return;
-
-  // Only delete user-specific notifications from Firestore
-  try {
-    const uq = query(collection(db, 'users', currentUser.uid, 'notifications'));
-    const snap = await getDocs(uq);
-    const batch = writeBatch(db);
-    snap.forEach(d => batch.delete(d.ref));
-    await batch.commit();
-  } catch (err) {
-    console.warn('Erreur clear:', err);
-  }
-
-  // Clear read status
-  try {
-    const { setDoc: sd } = await import("https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js");
-    await sd(doc(db, 'users', currentUser.uid, 'notif_meta', 'read_status'), { readIds: allNotifs.map(n => n.id) });
-  } catch (err) {}
-
-  allNotifs = [];
-  applyFilterAndRender();
-  showToast('Toutes les notifications supprimées', 'success');
-});
 
 // ================================================================
 // FILTER TABS
 // ================================================================
-filterTabs.querySelectorAll('button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterTabs.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    applyFilterAndRender();
-  });
-});
+
+if (filterTabs) {
+
+  filterTabs
+    .querySelectorAll("button")
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            filterTabs
+              .querySelectorAll(
+                "button"
+              )
+              .forEach(
+                b =>
+                  b.classList.remove(
+                    "active"
+                  )
+              );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            currentFilter =
+              button.dataset.filter;
+
+
+            applyFilterAndRender();
+
+          }
+        );
+
+      }
+    );
+
+}
+
 
 // ================================================================
 // REFRESH
 // ================================================================
-document.getElementById('refreshBtn').addEventListener('click', () => {
-  showToast('Actualisation...', 'info');
-  // onSnapshot will handle the update automatically
-});
+
+const refreshBtn =
+  document.getElementById(
+    "refreshBtn"
+  );
+
+
+if (refreshBtn) {
+
+  refreshBtn.addEventListener(
+    "click",
+    () => {
+
+      showToast(
+        "Actualisation...",
+        "info"
+      );
+
+      applyFilterAndRender();
+
+    }
+  );
+
+}
+
 
 // ================================================================
 // AUTH
 // ================================================================
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
-    await initFCM();
-    initNotificationsListener();
-  } else {
-    window.location.href = 'login.html';
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+
+    if (user) {
+
+      console.log(
+        "👤 Utilisateur connecté :",
+        user.uid
+      );
+
+      currentUser =
+        user;
+
+
+      // FCM
+      await initFCM();
+
+
+      // Notifications Firestore
+      initNotificationsListener();
+
+    }
+
+    else {
+
+      window.location.href =
+        "login.html";
+
+    }
+
   }
-});
+);
+
 </script>
 </body>
 </html>
