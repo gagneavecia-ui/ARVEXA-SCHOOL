@@ -2,281 +2,366 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Administration Notifications | ARVEXA School</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0A0A0A"
+  >
+
+  <title>Notifications | ARVEXA Admin</title>
+
+  <link
+    rel="icon"
+    href="./icon.png"
+    type="image/png"
+  >
 
   <style>
+    :root {
+      --bg: #0A0A0A;
+      --card: #111313;
+      --card2: #151817;
+      --border: rgba(255,255,255,.08);
+      --text: #f5f5f5;
+      --muted: #929292;
+      --green: #1A3A2A;
+      --gold: #E0B84A;
+      --gold-dark: #B8860B;
+      --success: #38c77b;
+      --danger: #ef5350;
+      --warning: #f0ad4e;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    :root {
-      --bg: #080909;
-      --card: #111412;
-      --border: #26382e;
-      --border2: #304238;
-      --green: #1A3A2A;
-      --gold: #B8860B;
-      --gold2: #E0B84A;
-      --text: #fff;
-      --muted: #999;
-      --success: #6ee7a8;
-      --danger: #ff7777;
-    }
-
     body {
-      min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: Arial, sans-serif;
-      padding: 25px;
+      font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      min-height: 100vh;
     }
 
     .container {
-      width: 100%;
-      max-width: 900px;
-      margin: auto;
+      width: min(100% - 28px, 900px);
+      margin: 0 auto;
+      padding: 24px 0 50px;
     }
 
-    .header {
+    /* HEADER */
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
       margin-bottom: 25px;
     }
 
     .brand {
-      color: var(--gold2);
-      font-size: 27px;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .subtitle {
+    .logo {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(224,184,74,.25);
+    }
+
+    .brand h1 {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .brand p {
       color: var(--muted);
-      margin-top: 6px;
-      font-size: 14px;
+      font-size: 12px;
+      margin-top: 3px;
     }
 
-    .security {
-      margin-top: 15px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: rgba(26,58,42,.35);
-      border: 1px solid var(--border);
-      color: #b9d7c5;
-      font-size: 13px;
+    .admin-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(56,199,123,.08);
+      border: 1px solid rgba(56,199,123,.2);
+      color: var(--success);
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1.4fr .8fr;
-      gap: 20px;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
     }
+
+    /* CARD */
 
     .card {
-      background: var(--card);
+      background: linear-gradient(
+        145deg,
+        var(--card),
+        var(--card2)
+      );
+
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.35);
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 35px rgba(0,0,0,.18);
     }
 
-    .card h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 18px;
     }
+
+    /* FORM */
 
     .field {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
-      color: #ddd;
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-size: 12px;
+      color: #cfcfcf;
+      margin-bottom: 7px;
+      font-weight: 700;
     }
 
     input,
     textarea,
     select {
       width: 100%;
-      background: #080909;
-      color: #fff;
-      border: 1px solid var(--border2);
-      border-radius: 10px;
-      padding: 13px;
+      background: #0c0e0d;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
       outline: none;
-      font-size: 15px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: .2s;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
-      border-color: var(--gold);
+      border-color: rgba(224,184,74,.65);
+      box-shadow: 0 0 0 3px rgba(224,184,74,.08);
     }
 
     textarea {
-      min-height: 140px;
+      min-height: 120px;
       resize: vertical;
-      line-height: 1.5;
-    }
-
-    select {
-      cursor: pointer;
     }
 
     .counter {
       text-align: right;
-      color: #777;
-      font-size: 12px;
+      color: var(--muted);
+      font-size: 11px;
       margin-top: 5px;
     }
 
-    .send-btn,
-    .test-btn {
-      width: 100%;
+    /* BUTTONS */
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
       border: none;
-      border-radius: 11px;
-      padding: 14px;
-      font-weight: bold;
-      font-size: 15px;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 800;
       cursor: pointer;
       transition: .2s;
     }
 
-    .send-btn {
-      background: var(--gold);
-      color: #080909;
-      margin-top: 5px;
+    button:active {
+      transform: scale(.98);
     }
 
-    .test-btn {
+    .btn-primary {
+      background: linear-gradient(
+        135deg,
+        var(--gold-dark),
+        var(--gold)
+      );
+      color: #080808;
+    }
+
+    .btn-secondary {
       background: var(--green);
       color: white;
-      border: 1px solid #31553f;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      filter: brightness(1.1);
+      border: 1px solid rgba(255,255,255,.06);
     }
 
     button:disabled {
       opacity: .5;
       cursor: not-allowed;
+      transform: none;
     }
 
-    .warning {
-      padding: 12px;
-      background: rgba(184,134,11,.08);
-      border: 1px solid rgba(184,134,11,.3);
+    /* PREVIEW */
+
+    .preview {
+      background: #0b0d0c;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 15px;
+    }
+
+    .preview-notification {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .preview-icon {
+      width: 42px;
+      height: 42px;
       border-radius: 10px;
-      color: #d9c27b;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .preview-content {
+      min-width: 0;
+    }
+
+    .preview-title {
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .preview-message {
       font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 18px;
+      color: #c1c1c1;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    /* STATS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
 
     .stat {
-      background: #080909;
+      background: #0c0e0d;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 15px;
-      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 23px;
+      font-weight: 900;
+      margin-bottom: 4px;
     }
 
     .stat-label {
       color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 5px;
+      font-size: 11px;
     }
 
-    .stat-value {
-      font-size: 22px;
-      font-weight: bold;
-      color: var(--gold2);
-    }
+    /* LOG */
 
-    .status {
-      margin-top: 20px;
-      padding: 14px;
-      border-radius: 10px;
+    .log {
       background: #080909;
       border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      font-family: monospace;
+      font-size: 11px;
       color: #aaa;
-      font-size: 13px;
-      line-height: 1.5;
-      white-space: pre-line;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 300px;
+      overflow: auto;
     }
 
-    .success {
+    .message-box {
+      display: none;
+      padding: 13px 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .message-box.success {
+      display: block;
+      background: rgba(56,199,123,.08);
+      border: 1px solid rgba(56,199,123,.2);
       color: var(--success);
     }
 
-    .error {
-      color: var(--danger);
+    .message-box.error {
+      display: block;
+      background: rgba(239,83,80,.08);
+      border: 1px solid rgba(239,83,80,.2);
+      color: #ff7774;
     }
 
-    .info {
-      color: var(--gold2);
+    .message-box.info {
+      display: block;
+      background: rgba(224,184,74,.08);
+      border: 1px solid rgba(224,184,74,.2);
+      color: var(--gold);
     }
 
-    .preview {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 13px;
-      background: #080909;
-      border: 1px solid var(--border);
-    }
+    /* RESPONSIVE */
 
-    .preview-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .preview-body {
-      color: #aaa;
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .history {
-      margin-top: 20px;
-    }
-
-    .history-item {
-      padding: 13px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .history-item:last-child {
-      border-bottom: none;
-    }
-
-    .history-title {
-      font-weight: bold;
-    }
-
-    .history-body {
-      color: #999;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .history-date {
-      color: #666;
-      font-size: 11px;
-      margin-top: 5px;
-    }
-
-    @media (max-width: 750px) {
-      body {
-        padding: 15px;
+    @media (max-width: 650px) {
+      .buttons {
+        grid-template-columns: 1fr;
       }
 
-      .grid {
+      .stats {
         grid-template-columns: 1fr;
+      }
+
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .admin-status {
+        align-self: flex-start;
       }
     }
   </style>
@@ -286,727 +371,1147 @@
 
 <div class="container">
 
-  <div class="header">
-    <div class="brand">ARVEXA School</div>
-    <div class="subtitle">Administration · Notifications push</div>
+  <!-- HEADER -->
+  <header>
 
-    <div class="security">
-      🔐 Panneau administrateur — les envois réels passent par le serveur sécurisé.
+    <div class="brand">
+
+      <img
+        src="./icon.png"
+        class="logo"
+        alt="ARVEXA"
+      >
+
+      <div>
+        <h1>ARVEXA School</h1>
+        <p>Centre de notifications administrateur</p>
+      </div>
+
     </div>
-  </div>
+
+    <div class="admin-status">
+      <span class="status-dot"></span>
+      <span id="authStatus">
+        Vérification...
+      </span>
+    </div>
+
+  </header>
 
 
-  <div class="grid">
+  <!-- MESSAGE GLOBAL -->
+  <div
+    id="messageBox"
+    class="message-box"
+  ></div>
 
-    <!-- =========================
-         FORMULAIRE
-    ========================== -->
 
-    <div class="card">
+  <!-- FORMULAIRE -->
+  <section class="card">
 
-      <h2>🔔 Nouvelle notification</h2>
+    <div class="card-title">
+      📢 Nouvelle notification
+    </div>
 
-      <div class="warning">
-        ⚠️ Cette notification sera envoyée à tous les appareils
-        disposant d'un token FCM valide.
+    <div class="field">
+
+      <label for="title">
+        Titre
+      </label>
+
+      <input
+        id="title"
+        type="text"
+        maxlength="100"
+        placeholder="Ex : Nouveau cours disponible"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label for="message">
+        Message
+      </label>
+
+      <textarea
+        id="message"
+        maxlength="300"
+        placeholder="Écris le message qui sera envoyé aux utilisateurs..."
+      ></textarea>
+
+      <div
+        class="counter"
+        id="counter"
+      >
+        0 / 300
       </div>
 
-
-      <div class="field">
-
-        <label for="title">
-          Titre
-        </label>
-
-        <input
-          id="title"
-          type="text"
-          maxlength="80"
-          value="ARVEXA School"
-          placeholder="Ex : Nouveau cours disponible"
-        >
-
-      </div>
+    </div>
 
 
-      <div class="field">
+    <div class="field">
 
-        <label for="message">
-          Message
-        </label>
+      <label for="type">
+        Type
+      </label>
 
-        <textarea
-          id="message"
-          maxlength="300"
-          placeholder="Écris ton message..."
-        ></textarea>
+      <select id="type">
 
-        <div class="counter">
-          <span id="messageCount">0</span>/300
-        </div>
+        <option value="info">
+          🔵 Information
+        </option>
 
-      </div>
+        <option value="success">
+          🟢 Succès
+        </option>
 
+        <option value="warning">
+          🟠 Avertissement
+        </option>
 
-      <div class="field">
+        <option value="danger">
+          🔴 Important
+        </option>
 
-        <label for="type">
-          Type
-        </label>
+      </select>
 
-        <select id="type">
-          <option value="info">ℹ️ Information</option>
-          <option value="success">✅ Succès</option>
-          <option value="warning">⚠️ Avertissement</option>
-          <option value="danger">🚨 Important</option>
-        </select>
-
-      </div>
+    </div>
 
 
-      <div class="field">
+    <div class="field">
 
-        <label for="url">
-          Page à ouvrir après le clic
-        </label>
+      <label for="clickAction">
+        Page à ouvrir après le clic
+      </label>
 
-        <input
-          id="url"
-          type="text"
-          value="./notifications.html"
-          placeholder="./notifications.html"
-        >
+      <input
+        id="clickAction"
+        type="text"
+        value="./notifications.html"
+        placeholder="./notifications.html"
+      >
 
-      </div>
+    </div>
 
+
+    <div class="buttons">
 
       <button
-        id="sendBtn"
-        class="send-btn"
+        id="sendButton"
+        class="btn-primary"
       >
         📢 Envoyer à tout le monde
       </button>
 
-
       <button
-        id="testBtn"
-        class="test-btn"
+        id="testButton"
+        class="btn-secondary"
       >
         🧪 Tester sur cet ordinateur
       </button>
 
-
-      <div
-        id="status"
-        class="status info"
-      >
-        Initialisation...
-      </div>
-
     </div>
 
+  </section>
 
-    <!-- =========================
-         STATISTIQUES
-    ========================== -->
 
-    <div class="card">
+  <!-- APERÇU -->
+  <section class="card">
 
-      <h2>📊 Statistiques</h2>
+    <div class="card-title">
+      👀 Aperçu
+    </div>
 
-      <div class="stat">
-        <div class="stat-label">
-          Appareils ciblés
-        </div>
+    <div class="preview">
 
-        <div
-          id="targetCount"
-          class="stat-value"
+      <div class="preview-notification">
+
+        <img
+          src="./icon.png"
+          class="preview-icon"
+          alt=""
         >
-          —
-        </div>
-      </div>
 
+        <div class="preview-content">
 
-      <div class="stat">
-        <div class="stat-label">
-          Dernier envoi réussi
-        </div>
+          <div
+            id="previewTitle"
+            class="preview-title"
+          >
+            Nouveau message
+          </div>
 
-        <div
-          id="successCount"
-          class="stat-value"
-        >
-          —
-        </div>
-      </div>
+          <div
+            id="previewMessage"
+            class="preview-message"
+          >
+            Le message apparaîtra ici.
+          </div>
 
-
-      <div class="stat">
-        <div class="stat-label">
-          Dernier échec
-        </div>
-
-        <div
-          id="failedCount"
-          class="stat-value"
-        >
-          —
-        </div>
-      </div>
-
-
-      <div class="preview">
-
-        <div class="preview-title">
-          Aperçu
-        </div>
-
-        <div
-          id="previewTitle"
-          class="preview-title"
-        >
-          ARVEXA School
-        </div>
-
-        <div
-          id="previewBody"
-          class="preview-body"
-        >
-          Ton message apparaîtra ici.
         </div>
 
       </div>
 
     </div>
 
-  </div>
+  </section>
 
 
-  <!-- =========================
-       HISTORIQUE
-  ========================== -->
+  <!-- STATISTIQUES -->
+  <section class="card">
 
-  <div class="card history">
-
-    <h2>🕘 Dernier envoi</h2>
-
-    <div id="history">
-      Aucun envoi effectué depuis cette page.
+    <div class="card-title">
+      📊 Résultat du dernier envoi
     </div>
 
-  </div>
+    <div class="stats">
+
+      <div class="stat">
+
+        <div
+          id="targeted"
+          class="stat-value"
+        >
+          0
+        </div>
+
+        <div class="stat-label">
+          Utilisateurs ciblés
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          id="sent"
+          class="stat-value"
+        >
+          0
+        </div>
+
+        <div class="stat-label">
+          Envoyées
+        </div>
+
+      </div>
+
+
+      <div class="stat">
+
+        <div
+          id="failed"
+          class="stat-value"
+        >
+          0
+        </div>
+
+        <div class="stat-label">
+          Échecs
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LOG -->
+  <section class="card">
+
+    <div class="card-title">
+      🛠 Journal
+    </div>
+
+    <div
+      id="log"
+      class="log"
+    >ARVEXA Admin — prêt.</div>
+
+  </section>
 
 </div>
 
 
+<!-- =====================================================
+     FIREBASE AUTH
+===================================================== -->
+
+<script type="module">
+
+  import {
+    initializeApp
+  } from
+  "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from
+  "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+
+  const firebaseConfig = {
+
+    apiKey:
+      "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+
+    authDomain:
+      "arvexa-fbf10.firebaseapp.com",
+
+    projectId:
+      "arvexa-fbf10",
+
+    storageBucket:
+      "arvexa-fbf10.firebasestorage.app",
+
+    messagingSenderId:
+      "920108330053",
+
+    appId:
+      "1:920108330053:web:f532d71cbc2c824bc7472c"
+
+  };
+
+
+  const app =
+    initializeApp(firebaseConfig);
+
+  const auth =
+    getAuth(app);
+
+
+  /*
+   * Rend Firebase Auth accessible
+   * au reste du fichier.
+   */
+
+  window.arvexaAuth = auth;
+
+
+  /*
+   * Permet d'attendre que Firebase
+   * ait terminé de vérifier la session.
+   */
+
+  let currentAdminUser = null;
+
+  let authReadyResolve;
+
+  const authReady =
+    new Promise((resolve) => {
+
+      authReadyResolve = resolve;
+
+    });
+
+
+  onAuthStateChanged(
+    auth,
+    (user) => {
+
+      currentAdminUser = user;
+
+      authReadyResolve(user);
+
+
+      const status =
+        document.getElementById(
+          "authStatus"
+        );
+
+
+      if (user) {
+
+        status.textContent =
+          "Admin connecté";
+
+        addLog(
+          "✅ Administrateur connecté : " +
+          user.email
+        );
+
+      } else {
+
+        status.textContent =
+          "Non connecté";
+
+        addLog(
+          "❌ Aucun utilisateur Firebase connecté."
+        );
+
+      }
+
+    }
+  );
+
+
+  /*
+   * Rend la session disponible
+   * au script principal.
+   */
+
+  window.arvexaAuthReady =
+    authReady;
+
+  window.getArvexaAdminUser =
+    () => currentAdminUser;
+
+</script>
+
+
+<!-- =====================================================
+     SCRIPT PRINCIPAL
+===================================================== -->
+
 <script>
 
-const titleInput = document.getElementById("title");
-const messageInput = document.getElementById("message");
-const typeInput = document.getElementById("type");
-const urlInput = document.getElementById("url");
+  /*
+   * IMPORTANT :
+   * Mets ici ton URL /exec Google Apps Script.
+   *
+   * Exemple :
+   *
+   * const APPS_SCRIPT_URL =
+   *   "https://script.google.com/macros/s/XXXXXXXX/exec";
+   */
 
-const sendBtn = document.getElementById("sendBtn");
-const testBtn = document.getElementById("testBtn");
-
-const statusEl = document.getElementById("status");
-
-const messageCount = document.getElementById("messageCount");
-
-const previewTitle = document.getElementById("previewTitle");
-const previewBody = document.getElementById("previewBody");
-
-const targetCount = document.getElementById("targetCount");
-const successCount = document.getElementById("successCount");
-const failedCount = document.getElementById("failedCount");
-
-const historyEl = document.getElementById("history");
+  const APPS_SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbxnUzrIW1NdUbj37MiJ53fZEK7zBS15mFPzMDrHzaUaffcKw_t6iuFLBUvvIw8FfGbK/exec";
 
 
-/* =========================================
-   STATUS
-========================================= */
+  /* =========================
+     ELEMENTS
+  ========================= */
 
-function setStatus(message, type = "info") {
+  const titleInput =
+    document.getElementById(
+      "title"
+    );
 
-  statusEl.textContent = message;
+  const messageInput =
+    document.getElementById(
+      "message"
+    );
 
-  statusEl.className = "status " + type;
+  const typeInput =
+    document.getElementById(
+      "type"
+    );
 
-}
+  const clickActionInput =
+    document.getElementById(
+      "clickAction"
+    );
+
+  const sendButton =
+    document.getElementById(
+      "sendButton"
+    );
+
+  const testButton =
+    document.getElementById(
+      "testButton"
+    );
+
+  const counter =
+    document.getElementById(
+      "counter"
+    );
+
+  const previewTitle =
+    document.getElementById(
+      "previewTitle"
+    );
+
+  const previewMessage =
+    document.getElementById(
+      "previewMessage"
+    );
+
+  const messageBox =
+    document.getElementById(
+      "messageBox"
+    );
+
+  const logElement =
+    document.getElementById(
+      "log"
+    );
 
 
-/* =========================================
-   APERÇU
-========================================= */
+  /* =========================
+     LOG
+  ========================= */
 
-function updatePreview() {
+  function addLog(text) {
 
-  const title =
-    titleInput.value.trim() ||
-    "ARVEXA School";
-
-  const message =
-    messageInput.value.trim() ||
-    "Ton message apparaîtra ici.";
-
-  previewTitle.textContent = title;
-  previewBody.textContent = message;
-
-  messageCount.textContent =
-    messageInput.value.length;
-
-}
-
-
-titleInput.addEventListener(
-  "input",
-  updatePreview
-);
-
-messageInput.addEventListener(
-  "input",
-  updatePreview
-);
-
-
-/* =========================================
-   TEST LOCAL
-   Cette fonction NE FAIT PAS un envoi FCM.
-========================================= */
-
-async function testLocalNotification() {
-
-  try {
-
-    if (!("Notification" in window)) {
-
-      throw new Error(
-        "Ce navigateur ne supporte pas les notifications."
+    const now =
+      new Date().toLocaleTimeString(
+        "fr-FR"
       );
 
-    }
+    logElement.textContent +=
+      "\n[" +
+      now +
+      "] " +
+      text;
+
+    logElement.scrollTop =
+      logElement.scrollHeight;
+
+  }
 
 
-    let permission =
-      Notification.permission;
+  /* =========================
+     MESSAGE UI
+  ========================= */
+
+  function showMessage(
+    text,
+    type = "info"
+  ) {
+
+    messageBox.className =
+      "message-box " + type;
+
+    messageBox.textContent =
+      text;
+
+  }
 
 
-    if (permission !== "granted") {
+  function hideMessage() {
 
-      permission =
-        await Notification.requestPermission();
+    messageBox.className =
+      "message-box";
 
-    }
+    messageBox.textContent =
+      "";
 
-
-    if (permission !== "granted") {
-
-      throw new Error(
-        "Permission de notification refusée."
-      );
-
-    }
+  }
 
 
-    if (!("serviceWorker" in navigator)) {
+  /* =========================
+     APERCU
+  ========================= */
 
-      throw new Error(
-        "Les Service Workers ne sont pas disponibles."
-      );
-
-    }
-
-
-    const registration =
-      await navigator.serviceWorker.register(
-        "./firebase-messaging-sw.js"
-      );
-
-
-    await navigator.serviceWorker.ready;
-
+  function updatePreview() {
 
     const title =
-      titleInput.value.trim() ||
-      "ARVEXA School";
-
+      titleInput.value.trim();
 
     const message =
-      messageInput.value.trim() ||
-      "Nouvelle notification";
+      messageInput.value.trim();
 
 
-    await registration.showNotification(
+    previewTitle.textContent =
+      title ||
+      "Nouveau message";
+
+
+    previewMessage.textContent =
+      message ||
+      "Le message apparaîtra ici.";
+
+
+    counter.textContent =
+      messageInput.value.length +
+      " / 300";
+
+  }
+
+
+  titleInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+  messageInput.addEventListener(
+    "input",
+    updatePreview
+  );
+
+
+  /* =========================
+     VALIDATION
+  ========================= */
+
+  function validateForm() {
+
+    const title =
+      titleInput.value.trim();
+
+    const message =
+      messageInput.value.trim();
+
+    const clickAction =
+      clickActionInput.value.trim();
+
+
+    if (!title) {
+
+      showMessage(
+        "❌ Le titre est obligatoire.",
+        "error"
+      );
+
+      titleInput.focus();
+
+      return null;
+
+    }
+
+
+    if (!message) {
+
+      showMessage(
+        "❌ Le message est obligatoire.",
+        "error"
+      );
+
+      messageInput.focus();
+
+      return null;
+
+    }
+
+
+    if (message.length > 300) {
+
+      showMessage(
+        "❌ Le message ne doit pas dépasser 300 caractères.",
+        "error"
+      );
+
+      return null;
+
+    }
+
+
+    return {
+
       title,
-      {
-        body: message,
+      message,
 
-        icon: "./icon.png",
+      type:
+        typeInput.value,
 
-        badge: "./icon.png",
+      clickAction:
+        clickAction ||
+        "./notifications.html"
 
-        tag:
-          "arvexa-local-" +
-          Date.now(),
+    };
 
-        data: {
-          url:
-            urlInput.value.trim() ||
-            "./notifications.html"
+  }
+
+
+  /* =========================
+     TEST LOCAL
+  ========================= */
+
+  testButton.addEventListener(
+    "click",
+    async () => {
+
+      hideMessage();
+
+      try {
+
+        if (
+          !("Notification" in window)
+        ) {
+
+          throw new Error(
+            "Les notifications ne sont pas supportées par ce navigateur."
+          );
+
         }
+
+
+        /*
+         * Demande l'autorisation.
+         */
+
+        const permission =
+          await Notification.requestPermission();
+
+
+        if (
+          permission !== "granted"
+        ) {
+
+          throw new Error(
+            "Permission de notification refusée."
+          );
+
+        }
+
+
+        const data =
+          validateForm();
+
+
+        if (!data) return;
+
+
+        /*
+         * Récupération du Service Worker.
+         */
+
+        const registration =
+          await navigator.serviceWorker.ready;
+
+
+        const notificationOptions = {
+
+          body:
+            data.message,
+
+          icon:
+            "./icon.png",
+
+          badge:
+            "./icon.png",
+
+          tag:
+            "arvexa-test-" +
+            Date.now(),
+
+          data: {
+
+            clickAction:
+              data.clickAction,
+
+            type:
+              data.type
+
+          }
+
+        };
+
+
+        await registration.showNotification(
+          data.title,
+          notificationOptions
+        );
+
+
+        showMessage(
+          "✅ Notification de test envoyée sur cet appareil.",
+          "success"
+        );
+
+
+        addLog(
+          "🧪 Notification locale envoyée."
+        );
+
       }
-    );
+
+      catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          "❌ " +
+          error.message,
+          "error"
+        );
+
+        addLog(
+          "❌ Test local : " +
+          error.message
+        );
+
+      }
+
+    }
+  );
 
 
-    setStatus(
-      "✅ Notification locale affichée sur cet ordinateur.",
-      "success"
-    );
+  /* =========================
+     ENVOI GLOBAL
+  ========================= */
 
-  } catch (error) {
+  sendButton.addEventListener(
+    "click",
+    async () => {
 
-    console.error(error);
-
-    setStatus(
-      "❌ Test local impossible : " +
-      error.message,
-      "error"
-    );
-
-  }
-
-}
+      hideMessage();
 
 
-testBtn.addEventListener(
-  "click",
-  testLocalNotification
-);
+      const data =
+        validateForm();
 
 
-/* =========================================
-   ENVOI GLOBAL
-========================================= */
-
-async function sendToEveryone() {
-
-  const title =
-    titleInput.value.trim() ||
-    "ARVEXA School";
+      if (!data) return;
 
 
-  const message =
-    messageInput.value.trim();
+      /*
+       * Protection contre double clic.
+       */
+
+      sendButton.disabled =
+        true;
+
+      sendButton.textContent =
+        "⏳ Envoi en cours...";
 
 
-  const type =
-    typeInput.value;
+      try {
+
+        addLog(
+          "🔐 Vérification de la session administrateur..."
+        );
 
 
-  const clickAction =
-    urlInput.value.trim() ||
-    "./notifications.html";
+        /*
+         * Attend Firebase Auth.
+         */
+
+        const user =
+          await window.arvexaAuthReady;
 
 
-  if (!message) {
+        if (!user) {
 
-    setStatus(
-      "❌ Écris un message avant l'envoi.",
-      "error"
-    );
-
-    messageInput.focus();
-
-    return;
-
-  }
-
-
-  if (message.length > 300) {
-
-    setStatus(
-      "❌ Le message est trop long.",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  const confirmation =
-    confirm(
-      "⚠️ Envoyer cette notification à TOUS les utilisateurs disposant d'un appareil enregistré ?\n\n" +
-      "Titre : " + title +
-      "\nMessage : " + message
-    );
-
-
-  if (!confirmation) {
-
-    setStatus(
-      "Envoi annulé.",
-      "info"
-    );
-
-    return;
-
-  }
-
-
-  try {
-
-    sendBtn.disabled = true;
-
-    testBtn.disabled = true;
-
-
-    sendBtn.textContent =
-      "⏳ Envoi en cours...";
-
-
-    setStatus(
-      "📡 Connexion au serveur d'envoi...",
-      "info"
-    );
-
-
-    /*
-      IMPORTANT :
-
-      Cet endpoint doit être installé
-      côté serveur.
-
-      Il ne faut JAMAIS mettre la
-      clé privée Firebase ici.
-    */
-
-    const response =
-      await fetch(
-        "/api/send-notification",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-
-            title,
-
-            message,
-
-            type,
-
-            clickAction
-
-          })
+          throw new Error(
+            "Aucun administrateur connecté à Firebase."
+          );
 
         }
-      );
 
 
-    let result = null;
+        /*
+         * Vérification supplémentaire côté client.
+         * La vraie sécurité est effectuée côté Apps Script.
+         */
+
+        const email =
+          (
+            user.email ||
+            ""
+          ).toLowerCase();
 
 
-    try {
+        if (
+          email !==
+          "gagneavecia@gmail.com"
+        ) {
 
-      result =
-        await response.json();
+          throw new Error(
+            "Ce compte n'est pas autorisé à envoyer des notifications."
+          );
 
-    } catch {
+        }
 
-      result = null;
+
+        addLog(
+          "✅ Administrateur reconnu : " +
+          user.email
+        );
+
+
+        /*
+         * Récupération du Firebase ID Token.
+         *
+         * Le token sera vérifié par Apps Script.
+         */
+
+        const idToken =
+          await user.getIdToken(
+            true
+          );
+
+
+        if (!idToken) {
+
+          throw new Error(
+            "Impossible de récupérer le token Firebase."
+          );
+
+        }
+
+
+        addLog(
+          "🔑 Token Firebase obtenu."
+        );
+
+
+        /*
+         * Vérification de l'URL.
+         */
+
+        if (
+          !APPS_SCRIPT_URL ||
+          APPS_SCRIPT_URL ===
+            "TON_URL_APPS_SCRIPT"
+        ) {
+
+          throw new Error(
+            "Tu dois renseigner l'URL de ton Apps Script dans APPS_SCRIPT_URL."
+          );
+
+        }
+
+
+        addLog(
+          "📡 Connexion au serveur Apps Script..."
+        );
+
+
+        /*
+         * IMPORTANT :
+         *
+         * text/plain évite le preflight CORS
+         * qu'un Content-Type application/json
+         * pourrait provoquer avec Apps Script.
+         *
+         * Le serveur récupère quand même
+         * e.postData.contents comme JSON.
+         */
+
+        const response =
+          await fetch(
+            APPS_SCRIPT_URL,
+            {
+
+              method:
+                "POST",
+
+              headers: {
+
+                "Content-Type":
+                  "text/plain;charset=utf-8"
+
+              },
+
+              body:
+                JSON.stringify({
+
+                  idToken:
+                    idToken,
+
+                  title:
+                    data.title,
+
+                  message:
+                    data.message,
+
+                  type:
+                    data.type,
+
+                  clickAction:
+                    data.clickAction
+
+                })
+
+            }
+          );
+
+
+        /*
+         * Récupération de la réponse.
+         */
+
+        const raw =
+          await response.text();
+
+
+        addLog(
+          "📥 Réponse serveur reçue."
+        );
+
+
+        let result;
+
+
+        try {
+
+          result =
+            JSON.parse(raw);
+
+        }
+
+        catch {
+
+          console.error(
+            "Réponse brute :",
+            raw
+          );
+
+          throw new Error(
+            "Réponse serveur invalide."
+          );
+
+        }
+
+
+        if (
+          !response.ok ||
+          !result.success
+        ) {
+
+          throw new Error(
+            result.error ||
+            "Le serveur a refusé l'envoi."
+          );
+
+        }
+
+
+        /*
+         * Statistiques.
+         */
+
+        document.getElementById(
+          "targeted"
+        ).textContent =
+          result.total ??
+          0;
+
+
+        document.getElementById(
+          "sent"
+        ).textContent =
+          result.sent ??
+          0;
+
+
+        document.getElementById(
+          "failed"
+        ).textContent =
+          result.failed ??
+          0;
+
+
+        /*
+         * Message de succès.
+         */
+
+        showMessage(
+          "✅ Notification envoyée à " +
+          (result.sent ?? 0) +
+          " utilisateur(s).",
+          "success"
+        );
+
+
+        addLog(
+          "✅ ENVOI TERMINÉ."
+        );
+
+        addLog(
+          "👥 Ciblés : " +
+          (result.total ?? 0)
+        );
+
+        addLog(
+          "📲 Envoyées : " +
+          (result.sent ?? 0)
+        );
+
+        addLog(
+          "❌ Échecs : " +
+          (result.failed ?? 0)
+        );
+
+
+        /*
+         * Nettoyage du formulaire.
+         */
+
+        titleInput.value =
+          "";
+
+        messageInput.value =
+          "";
+
+        updatePreview();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Erreur envoi :",
+          error
+        );
+
+
+        showMessage(
+          "❌ " +
+          error.message,
+          "error"
+        );
+
+
+        addLog(
+          "❌ ERREUR : " +
+          error.message
+        );
+
+      }
+
+      finally {
+
+        sendButton.disabled =
+          false;
+
+        sendButton.textContent =
+          "📢 Envoyer à tout le monde";
+
+      }
 
     }
+  );
 
 
-    if (!response.ok) {
-
-      throw new Error(
-        result?.error ||
-        "Erreur serveur HTTP " +
-        response.status
-      );
-
-    }
-
-
-    const sent =
-      Number(result?.sent || 0);
-
-    const failed =
-      Number(result?.failed || 0);
-
-    const total =
-      Number(
-        result?.total ||
-        sent + failed
-      );
-
-
-    targetCount.textContent =
-      total;
-
-    successCount.textContent =
-      sent;
-
-    failedCount.textContent =
-      failed;
-
-
-    setStatus(
-      "✅ Notification envoyée.\n\n" +
-      "📱 Appareils ciblés : " + total +
-      "\n✅ Réussis : " + sent +
-      "\n❌ Échecs : " + failed,
-      "success"
-    );
-
-
-    historyEl.innerHTML = `
-
-      <div class="history-item">
-
-        <div class="history-title">
-          ${escapeHtml(title)}
-        </div>
-
-        <div class="history-body">
-          ${escapeHtml(message)}
-        </div>
-
-        <div class="history-date">
-          ${new Date().toLocaleString("fr-FR")}
-          · ${sent} réussi(s)
-          · ${failed} échec(s)
-        </div>
-
-      </div>
-
-    `;
-
-
-  } catch (error) {
-
-    console.error(
-      "Erreur envoi global :",
-      error
-    );
-
-
-    setStatus(
-      "❌ L'envoi global a échoué.\n\n" +
-      error.message,
-      "error"
-    );
-
-  } finally {
-
-    sendBtn.disabled = false;
-
-    testBtn.disabled = false;
-
-    sendBtn.textContent =
-      "📢 Envoyer à tout le monde";
-
-  }
-
-}
-
-
-/* =========================================
-   PROTECTION AFFICHAGE
-========================================= */
-
-function escapeHtml(value) {
-
-  return String(value)
-
-    .replaceAll("&", "&amp;")
-
-    .replaceAll("<", "&lt;")
-
-    .replaceAll(">", "&gt;")
-
-    .replaceAll('"', "&quot;")
-
-    .replaceAll("'", "&#039;");
-
-}
-
-
-/* =========================================
-   INITIALISATION
-========================================= */
-
-async function init() {
+  /* =========================
+     INITIALISATION
+  ========================= */
 
   updatePreview();
 
 
-  if (!("Notification" in window)) {
+  /*
+   * Vérifie que le Service Worker
+   * est disponible.
+   */
 
-    setStatus(
-      "⚠️ Les notifications ne sont pas supportées par ce navigateur. L'envoi global reste disponible.",
-      "info"
-    );
+  if (
+    "serviceWorker" in navigator
+  ) {
 
-    return;
+    navigator.serviceWorker.ready
+      .then(() => {
 
-  }
-
-
-  if ("serviceWorker" in navigator) {
-
-    try {
-
-      const registration =
-        await navigator.serviceWorker.register(
-          "./firebase-messaging-sw.js"
+        addLog(
+          "✅ Service Worker disponible."
         );
 
+      })
+      .catch((error) => {
 
-      console.log(
-        "✅ Service Worker :",
-        registration.scope
-      );
+        addLog(
+          "⚠️ Service Worker indisponible : " +
+          error.message
+        );
 
+      });
 
-      setStatus(
-        "✅ Administration prête.\n\n" +
-        "Le bouton « Tester » teste uniquement cet ordinateur.\n" +
-        "Le bouton « Envoyer à tout le monde » utilise le serveur FCM.",
-        "success"
-      );
+  } else {
 
-    } catch (error) {
-
-      console.error(error);
-
-      setStatus(
-        "⚠️ Administration chargée, mais Service Worker indisponible.\n\n" +
-        "Le test local peut ne pas fonctionner.",
-        "info"
-      );
-
-    }
+    addLog(
+      "⚠️ Service Worker non supporté."
+    );
 
   }
-
-}
-
-
-init();
-
-sendBtn.addEventListener(
-  "click",
-  sendToEveryone
-);
 
 </script>
 
