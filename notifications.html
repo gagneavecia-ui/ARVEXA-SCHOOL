@@ -843,33 +843,39 @@ function setPushStatus(status, text) {
 
 }
 
+// ================================================================
+// FCM — GESTION PROPRE DES NOTIFICATIONS PUSH
+// ================================================================
+
+let fcmInitialized = false;
+let fcmInitializing = false;
+
 
 // ================================================================
-// REGISTER FCM TOKEN
+// ENREGISTRER / ACTUALISER LE TOKEN FCM
 // ================================================================
 
 async function registerToken() {
 
-  if (!messaging) {
+  if (!currentUser) {
+    console.warn("⚠️ Aucun utilisateur connecté.");
+    return false;
+  }
 
+  if (!messaging) {
     setPushStatus(
       "inactive",
       "Notifications push non supportées"
     );
-
     return false;
-
   }
 
   if (!("serviceWorker" in navigator)) {
-
     setPushStatus(
       "inactive",
       "Service Worker non supporté"
     );
-
     return false;
-
   }
 
   try {
@@ -879,44 +885,77 @@ async function registerToken() {
       "Activation des notifications..."
     );
 
-    console.log(
-      "🔄 Enregistrement du Service Worker FCM..."
-    );
+    console.log("======================================");
+    console.log("🔔 INITIALISATION FCM");
+    console.log("👤 UID :", currentUser.uid);
 
 
     // ============================================================
-    // SERVICE WORKER
+    // 1. SERVICE WORKER
     // ============================================================
+
+    console.log("🔄 Enregistrement du Service Worker...");
 
     const registration =
       await navigator.serviceWorker.register(
-        "./firebase-messaging-sw.js"
+        "./firebase-messaging-sw.js",
+        {
+          updateViaCache: "none"
+        }
       );
 
     console.log(
-      "✅ Service Worker FCM enregistré :",
+      "✅ Service Worker enregistré :",
       registration.scope
     );
 
 
-    // Attendre que le SW soit prêt
+    // Vérifier qu'il est prêt
 
     await navigator.serviceWorker.ready;
 
-    console.log(
-      "✅ Service Worker prêt"
-    );
+    console.log("✅ Service Worker prêt");
+
+
+    // Demander au navigateur de vérifier une nouvelle version
+
+    try {
+      await registration.update();
+    } catch (updateError) {
+      console.warn(
+        "⚠️ Mise à jour SW non effectuée :",
+        updateError
+      );
+    }
 
 
     // ============================================================
-    // OBTENIR LE TOKEN FCM
+    // 2. VÉRIFICATION PERMISSION
     // ============================================================
 
-    console.log(
-      "🔄 Demande du token FCM..."
-    );
+    if (Notification.permission !== "granted") {
 
-    const token =
+      console.warn(
+        "⚠️ Permission notification non accordée :",
+        Notification.permission
+      );
+
+      setPushStatus(
+        "inactive",
+        "Permission de notification non accordée"
+      );
+
+      return false;
+    }
+
+
+    // ============================================================
+    // 3. RÉCUPÉRATION DU TOKEN ACTUEL
+    // ============================================================
+
+    console.log("🔄 Récupération du token FCM...");
+
+    const newToken =
       await getToken(
         messaging,
         {
@@ -926,62 +965,89 @@ async function registerToken() {
       );
 
 
-    if (!token) {
+    if (!newToken) {
 
       throw new Error(
-        "Firebase n'a retourné aucun token FCM"
+        "Firebase n'a retourné aucun token FCM."
       );
-
     }
 
 
     console.log(
       "✅ Token FCM obtenu :",
-      token.substring(0, 25) + "..."
+      newToken.substring(0, 30) + "..."
     );
 
 
-    fcmToken = token;
-    pushEnabled = true;
-
-
     // ============================================================
-    // ENREGISTRER LE TOKEN DANS FIRESTORE
+    // 4. REMPLACEMENT DU TOKEN LOCAL
     // ============================================================
 
-    if (currentUser) {
+    const tokenChanged =
+      fcmToken !== newToken;
 
-      await setDoc(
+    fcmToken =
+      newToken;
 
-        doc(
-          db,
-          "users",
-          currentUser.uid
-        ),
+    pushEnabled =
+      true;
 
-        {
-          fcmToken: token,
 
-          fcmTokenUpdatedAt:
-            serverTimestamp()
-
-        },
-
-        {
-          merge: true
-        }
-
-      );
+    if (tokenChanged) {
 
       console.log(
-        "✅ Token FCM enregistré dans Firestore"
+        "🔄 Nouveau token FCM détecté."
+      );
+
+    } else {
+
+      console.log(
+        "ℹ️ Token FCM déjà à jour."
       );
 
     }
 
 
     // ============================================================
-    // SUCCÈS
+    // 5. ENREGISTREMENT FIRESTORE
+    // ============================================================
+
+    const userRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      );
+
+
+    await setDoc(
+      userRef,
+      {
+        fcmToken: newToken,
+
+        fcmTokenUpdatedAt:
+          serverTimestamp(),
+
+        fcmPlatform:
+          "web",
+
+        fcmBrowser:
+          navigator.userAgent.substring(0, 200)
+
+      },
+      {
+        merge: true
+      }
+    );
+
+
+    console.log(
+      "✅ Token FCM enregistré dans Firestore."
+    );
+
+
+    // ============================================================
+    // 6. ÉTAT FINAL
     // ============================================================
 
     setPushStatus(
@@ -990,10 +1056,11 @@ async function registerToken() {
     );
 
     if (permBanner) {
-
       permBanner.classList.remove("show");
-
     }
+
+
+    console.log("======================================");
 
     return true;
 
@@ -1016,20 +1083,55 @@ async function registerToken() {
     );
 
 
+    fcmToken =
+      null;
+
+    pushEnabled =
+      false;
+
+
+    let message =
+      "Impossible d'activer les notifications";
+
+
+    if (
+      error?.code ===
+      "messaging/permission-blocked"
+    ) {
+
+      message =
+        "Notifications bloquées par le navigateur";
+
+    }
+
+    else if (
+      error?.code ===
+      "messaging/unsupported-browser"
+    ) {
+
+      message =
+        "Navigateur incompatible avec les notifications";
+
+    }
+
+    else if (
+      error?.message
+    ) {
+
+      message =
+        "Erreur FCM : " +
+        error.message;
+    }
+
+
     setPushStatus(
       "inactive",
-      "Erreur FCM : " +
-      (
-        error?.code ||
-        error?.message ||
-        "Erreur inconnue"
-      )
+      message
     );
 
+
     return false;
-
   }
-
 }
 
 
@@ -1039,82 +1141,107 @@ async function registerToken() {
 
 async function initFCM() {
 
-  if (!messaging) {
+  // Éviter deux initialisations simultanées
 
-    setPushStatus(
-      "inactive",
-      "Notifications push non supportées sur ce navigateur"
-    );
-
+  if (fcmInitialized) {
+    console.log("ℹ️ FCM déjà initialisé.");
     return;
+  }
 
+  if (fcmInitializing) {
+    console.log("⏳ Initialisation FCM déjà en cours.");
+    return;
   }
 
 
-  if (!("Notification" in window)) {
-
-    setPushStatus(
-      "inactive",
-      "Notifications non supportées"
-    );
-
-    return;
-
-  }
+  fcmInitializing =
+    true;
 
 
-  console.log(
-    "🔔 Permission actuelle :",
-    Notification.permission
-  );
+  try {
 
+    // ============================================================
+    // VÉRIFICATIONS
+    // ============================================================
 
-  // ============================================================
-  // PERMISSION DÉJÀ ACCORDÉE
-  // ============================================================
+    if (!currentUser) {
 
-  if (
-    Notification.permission === "granted"
-  ) {
+      console.warn(
+        "⚠️ FCM : utilisateur non connecté."
+      );
 
-    await registerToken();
-
-    if (permBanner) {
-
-      permBanner.classList.remove("show");
-
+      return;
     }
 
-  }
 
+    if (!messaging) {
 
-  // ============================================================
-  // PERMISSION REFUSÉE
-  // ============================================================
+      setPushStatus(
+        "inactive",
+        "Notifications push non supportées sur ce navigateur"
+      );
 
-  else if (
-    Notification.permission === "denied"
-  ) {
-
-    setPushStatus(
-      "inactive",
-      "Notifications bloquées par le navigateur"
-    );
-
-    if (permBanner) {
-
-      permBanner.classList.remove("show");
-
+      return;
     }
 
-  }
+
+    if (!("Notification" in window)) {
+
+      setPushStatus(
+        "inactive",
+        "Notifications non supportées"
+      );
+
+      return;
+    }
 
 
-  // ============================================================
-  // PAS ENCORE DEMANDÉE
-  // ============================================================
+    console.log(
+      "🔔 Permission actuelle :",
+      Notification.permission
+    );
 
-  else {
+
+    // ============================================================
+    // PERMISSION ACCORDÉE
+    // ============================================================
+
+    if (
+      Notification.permission ===
+      "granted"
+    ) {
+
+      await registerToken();
+
+      return;
+    }
+
+
+    // ============================================================
+    // PERMISSION REFUSÉE
+    // ============================================================
+
+    if (
+      Notification.permission ===
+      "denied"
+    ) {
+
+      setPushStatus(
+        "inactive",
+        "Notifications bloquées par le navigateur"
+      );
+
+      if (permBanner) {
+        permBanner.classList.remove("show");
+      }
+
+      return;
+    }
+
+
+    // ============================================================
+    // PERMISSION NON ENCORE DEMANDÉE
+    // ============================================================
 
     setPushStatus(
       "pending",
@@ -1122,86 +1249,118 @@ async function initFCM() {
     );
 
     if (permBanner) {
-
       permBanner.classList.add("show");
-
     }
+
+
+  } finally {
+
+    fcmInitializing =
+      false;
+
+    fcmInitialized =
+      true;
 
   }
 
 
-  // ============================================================
-  // FOREGROUND MESSAGE
-  // ============================================================
+  // ==============================================================
+  // MESSAGE FCM AU PREMIER PLAN
+  // ==============================================================
 
-  onMessage(
-    messaging,
-    (payload) => {
+  if (messaging) {
 
-      console.log(
-        "📬 Message FCM reçu :",
-        payload
-      );
+    onMessage(
+      messaging,
+      (payload) => {
 
-
-      const notification =
-        payload.notification || {};
-
-      const title =
-        notification.title ||
-        payload.data?.title ||
-        "ARVEXa School";
-
-      const body =
-        notification.body ||
-        payload.data?.body ||
-        "Nouvelle notification";
+        console.log(
+          "📬 Message FCM reçu :",
+          payload
+        );
 
 
-      showToast(
-        body || title,
-        "info"
-      );
+        const notification =
+          payload.notification || {};
+
+        const data =
+          payload.data || {};
 
 
-      // Ajouter la notification à la liste
-
-      const notifData = {
-
-        id:
-          "fcm_" +
-          Date.now(),
-
-        title,
-
-        body,
-
-        type:
-          payload.data?.type ||
-          "info",
-
-        createdAt:
-          new Date(),
-
-        _read: false
-
-      };
+        const title =
+          notification.title ||
+          data.title ||
+          "ARVEXA School";
 
 
-      allNotifs.unshift(
-        notifData
-      );
+        const body =
+          notification.body ||
+          data.body ||
+          "Nouvelle notification";
 
-      applyFilterAndRender();
 
-    }
-  );
+        const type =
+          data.type ||
+          "info";
+
+
+        // ========================================================
+        // TOAST
+        // ========================================================
+
+        showToast(
+          body || title,
+          type === "danger"
+            ? "error"
+            : "info"
+        );
+
+
+        // ========================================================
+        // AJOUT LOCAL
+        // ========================================================
+
+        const notifData = {
+
+          id:
+            "fcm_" +
+            Date.now(),
+
+          title,
+
+          body,
+
+          type,
+
+          createdAt:
+            new Date(),
+
+          _read:
+            false,
+
+          _source:
+            "fcm"
+
+        };
+
+
+        allNotifs.unshift(
+          notifData
+        );
+
+
+        applyFilterAndRender();
+
+      }
+    );
+
+  }
 
 }
 
 
 // ================================================================
-// BOUTON ACTIVER LES NOTIFICATIONS
+// ACTIVER LES NOTIFICATIONS
 // ================================================================
 
 if (enablePushBtn) {
@@ -1218,7 +1377,6 @@ if (enablePushBtn) {
         );
 
         return;
-
       }
 
 
@@ -1230,13 +1388,14 @@ if (enablePushBtn) {
         );
 
         return;
-
       }
 
 
       try {
 
-        enablePushBtn.disabled = true;
+        enablePushBtn.disabled =
+          true;
+
 
         enablePushBtn.innerHTML =
           '<i class="fas fa-spinner fa-spin"></i> Activation...';
@@ -1252,12 +1411,15 @@ if (enablePushBtn) {
 
 
         console.log(
-          "🔔 Résultat permission :",
+          "🔔 Permission :",
           permission
         );
 
 
-        if (permission !== "granted") {
+        if (
+          permission !==
+          "granted"
+        ) {
 
           setPushStatus(
             "inactive",
@@ -1266,6 +1428,7 @@ if (enablePushBtn) {
               : "Permission non accordée"
           );
 
+
           showToast(
             permission === "denied"
               ? "Notifications bloquées par le navigateur."
@@ -1273,9 +1436,15 @@ if (enablePushBtn) {
             "error"
           );
 
-          return;
 
+          return;
         }
+
+
+        // Permettre une nouvelle initialisation
+
+        fcmInitialized =
+          false;
 
 
         const success =
@@ -1284,6 +1453,10 @@ if (enablePushBtn) {
 
         if (success) {
 
+          fcmInitialized =
+            true;
+
+
           showToast(
             "🔔 Notifications push activées !",
             "success"
@@ -1291,21 +1464,26 @@ if (enablePushBtn) {
 
         }
 
+
       } catch (error) {
 
         console.error(
-          "❌ Erreur activation :",
+          "❌ Erreur activation FCM :",
           error
         );
+
 
         showToast(
           "Impossible d'activer les notifications.",
           "error"
         );
 
+
       } finally {
 
-        enablePushBtn.disabled = false;
+        enablePushBtn.disabled =
+          false;
+
 
         enablePushBtn.innerHTML =
           '<i class="fas fa-bell"></i> Activer';
@@ -1316,8 +1494,7 @@ if (enablePushBtn) {
   );
 
 }
-
-
+  
 // ================================================================
 // LOAD NOTIFICATIONS
 // ================================================================
