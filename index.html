@@ -763,6 +763,10 @@
     limit,
     getDocs
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import {
+  checkAndRegisterSession,
+  updateSessionHeartbeat
+} from "./session-manager.js";
 
   // ================================================================
   // CONFIG
@@ -1239,56 +1243,83 @@
   let isRedirecting = false;
 
   onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        // Déconnexion
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-        clearSession();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
+  if (!user) {
+    if (currentUid !== null) {
+      currentUid = null;
+      if (unsubscribeUser) unsubscribeUser();
+      clearSession();
     }
-
-    if (user.uid === currentUid) {
-      // Même utilisateur, ne rien faire
-      return;
+    if (!isRedirecting) {
+      isRedirecting = true;
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 300);
     }
+    return;
+  }
 
-    // Nouvel utilisateur
-    currentUid = user.uid;
+  if (user.uid === currentUid) return;
+  currentUid = user.uid;
 
-    try {
-      await getIdToken(user, true);
-    } catch (e) {}
+  try {
+    await getIdToken(user, true);
+  } catch (e) {}
 
-    saveSession(user);
+  saveSession(user);
 
-    // 1. Charger depuis le cache IMMÉDIATEMENT
+  // ✅ Récupérer les données utilisateur AVANT de vérifier la session
+  let userDataForSession = null;
+  try {
+    const userDoc = await getDoc(doc(db, 'users', user.uid));
+    if (userDoc.exists()) {
+      userDataForSession = userDoc.data();
+    }
+  } catch (e) {
+    // Fallback cache
     const cached = getCachedUserData(user.uid);
-    if (cached) {
-      userData = cached;
-      renderUserData(cached);
-      renderSubjects();
-      renderTools();
-      renderTip();
-      showDashboard();
-    } else {
-      // Afficher les composants statiques en attendant
-      renderSubjects();
-      renderTools();
-      renderTip();
-    }
+    if (cached) userDataForSession = cached;
+  }
 
-    // 2. Charger depuis Firestore (temps réel)
-    loadUserData(user);
-  });
+  // ✅ Vérifier et enregistrer la session
+  if (userDataForSession) {
+    try {
+      const sessionResult = await checkAndRegisterSession(db, user.uid, userDataForSession);
+      if (!sessionResult.allowed) {
+        await signOut(auth);
+        sessionStorage.setItem('redirectAfterLogin', 'index.html');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // ✅ Heartbeat toutes les 5 minutes
+      if (window._arvexaHeartbeat) clearInterval(window._arvexaHeartbeat);
+      window._arvexaHeartbeat = setInterval(() => {
+        updateSessionHeartbeat(db, user.uid);
+      }, 5 * 60 * 1000);
+    } catch (e) {
+      // Silencieux
+    }
+  }
+
+  // Charger depuis le cache
+  const cached = getCachedUserData(user.uid);
+  if (cached) {
+    userData = cached;
+    renderUserData(cached);
+    renderSubjects();
+    renderTools();
+    renderTip();
+    showDashboard();
+  } else {
+    renderSubjects();
+    renderTools();
+    renderTip();
+  }
+
+  // Charger depuis Firestore
+  loadUserData(user);
+});
 
   // ================================================================
   // ÉVÉNEMENTS
