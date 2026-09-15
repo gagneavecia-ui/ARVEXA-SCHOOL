@@ -194,9 +194,7 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 8px; margin-bottom: 6px;
     }
-    .countdown-title-wrap {
-      display: flex; align-items: center; gap: 8px;
-    }
+    .countdown-title-wrap { display: flex; align-items: center; gap: 8px; }
     .countdown-icon { font-size: clamp(20px, 2.5vw, 26px); }
     .countdown-title {
       font-size: clamp(16px, 1.8vw, 20px); font-weight: 700;
@@ -216,7 +214,6 @@
     .countdown-status.critical { background: rgba(231, 76, 60, 0.1); color: #E74C3C; border-color: rgba(231, 76, 60, 0.15); animation: pulseStatus 1.5s ease-in-out infinite; }
     @keyframes pulseStatus { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Barre de progression */
     .progress-track {
       width: 100%; height: 3px; background: rgba(255,255,255,0.06);
       border-radius: 4px; margin: 8px 0 10px; overflow: hidden;
@@ -231,12 +228,7 @@
     .progress-fill.mid { background: linear-gradient(90deg, #F1C40F, #F39C12); }
     .progress-fill.late { background: linear-gradient(90deg, #E67E22, #D35400); }
     .progress-fill.critical { background: linear-gradient(90deg, #E74C3C, #C0392B); }
-    .progress-percent {
-      position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-      font-size: 10px; color: var(--text-muted); font-weight: 600;
-    }
 
-    /* Affichage Jours / Heures / Minutes */
     .countdown-display {
       display: flex; align-items: center; justify-content: center;
       gap: 12px; margin: 4px 0 2px;
@@ -261,7 +253,7 @@
     }
 
     /* ============================================================
-       NEXT CARD - FIXE "Comment choisir une matière"
+       CONSEIL
        ============================================================ */
     .next-card {
       background: linear-gradient(135deg, rgba(184, 134, 11, 0.06), rgba(26, 58, 42, 0.08));
@@ -290,7 +282,7 @@
     .next-card .message strong { color: var(--text-light); }
 
     /* ============================================================
-       SUBJECTS GRID (2 colonnes)
+       SUBJECTS GRID
        ============================================================ */
     .subjects-grid {
       display: grid; grid-template-columns: repeat(2, 1fr);
@@ -317,7 +309,7 @@
     .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
     /* ============================================================
-       TOOLS GRID (3 colonnes)
+       TOOLS GRID
        ============================================================ */
     .tools-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
@@ -438,27 +430,6 @@
     .skeleton-card { height: 160px; border-radius: var(--radius); }
     .skeleton-card-sm { height: 100px; border-radius: var(--radius); }
     .skeleton-card-xs { height: 80px; border-radius: var(--radius); }
-
-    /* ============================================================
-       TOAST
-       ============================================================ */
-    .toast {
-      position: fixed; bottom: 30px; left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      padding: 14px 24px; border-radius: 12px;
-      background: var(--bg-card); backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border); color: var(--text-light);
-      font-size: 13px; font-weight: 500; z-index: 300;
-      opacity: 0; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-      max-width: 90%; text-align: center; box-shadow: var(--shadow);
-      display: flex; align-items: center; gap: 8px; justify-content: center;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { border-color: rgba(45, 125, 90, 0.2); }
-    .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { font-size: 16px; }
-    .toast.success .toast-icon { color: var(--success); }
-    .toast.error .toast-icon { color: var(--danger); }
 
     /* ============================================================
        FOOTER
@@ -660,7 +631,7 @@
           <div class="countdown-header">
             <div class="countdown-title-wrap">
               <span class="countdown-icon">📅</span>
-              <span class="countdown-title">BAC 2026-2027</span>
+              <span class="countdown-title" id="countdownTitle">BAC</span>
             </div>
             <span class="countdown-status" id="countdownStatus">🌱 Tu as le temps</span>
           </div>
@@ -687,7 +658,7 @@
           </div>
         </div>
 
-        <!-- ===== PROCHAINE ÉTAPE (FIXE) ===== -->
+        <!-- ===== CONSEIL ===== -->
         <div class="section-title"><h3>💡 Conseil</h3></div>
         <div class="next-card">
           <div class="badge"><i class="fas fa-lightbulb"></i> Bien démarrer</div>
@@ -753,12 +724,6 @@
 
   </div>
 
-  <!-- ===== TOAST ===== -->
-  <div class="toast" id="toast">
-    <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
-    <span class="toast-message"></span>
-  </div>
-
   <!-- ============================================================ -->
   <!-- SCRIPTS                                                       -->
   <!-- ============================================================ -->
@@ -774,7 +739,8 @@
 
   <script type="module">
   // ================================================================
-  // INDEX - VERSION OPTIMISÉE
+  // INDEX - VERSION CORRIGÉE
+  // Toutes les erreurs silencieuses, compte à rebours dynamique
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -791,8 +757,11 @@
     doc,
     getDoc,
     onSnapshot,
-    updateDoc,
-    serverTimestamp
+    collection,
+    query,
+    where,
+    limit,
+    getDocs
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
@@ -813,13 +782,13 @@
 
   try {
     await setPersistence(auth, browserLocalPersistence);
-    console.log('🔐 Persistance locale activée');
-  } catch (e) { console.warn('⚠️ Persistance:', e); }
+  } catch (e) {}
 
   // ================================================================
   // SESSION
   // ================================================================
   const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
 
   function saveSession(user) {
     if (!user) return;
@@ -829,8 +798,7 @@
         email: user.email,
         displayName: user.displayName,
         emailVerified: user.emailVerified,
-        lastLogin: new Date().toISOString(),
-        token: user.accessToken
+        lastLogin: new Date().toISOString()
       };
       localStorage.setItem(SESSION_KEY, JSON.stringify(data));
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
@@ -841,8 +809,46 @@
     try {
       localStorage.removeItem(SESSION_KEY);
       sessionStorage.removeItem(SESSION_KEY);
-      localStorage.removeItem('arvexa_user_data');
+      localStorage.removeItem(USER_DATA_KEY);
     } catch (e) {}
+  }
+
+  // ================================================================
+  // CACHE UTILISATEUR (lié à l'UID)
+  // ================================================================
+  function saveUserDataToCache(data, uid) {
+    try {
+      localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+        ...data,
+        _cachedAt: Date.now(),
+        _uid: uid
+      }));
+    } catch (e) {}
+  }
+
+  function getCachedUserData(currentUid) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(USER_DATA_KEY) || 'null');
+      if (!cached) return null;
+      if (cached._uid && cached._uid !== currentUid) {
+        localStorage.removeItem(USER_DATA_KEY);
+        return null;
+      }
+      return cached;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ================================================================
+  // UTILITAIRE — CONVERSION TIMESTAMP FIRESTORE
+  // ================================================================
+  function toDate(value) {
+    if (!value) return null;
+    if (typeof value.toDate === 'function') return value.toDate();
+    if (value.seconds !== undefined) return new Date(value.seconds * 1000);
+    const date = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
   // ================================================================
@@ -857,18 +863,14 @@
   const toolsGrid = document.getElementById('toolsGrid');
   const tipTitle = document.getElementById('tipTitle');
   const tipText = document.getElementById('tipText');
+  const notifDot = document.getElementById('notifDot');
 
-  // Compte à rebours
   const cdDays = document.getElementById('cdDays');
   const cdHours = document.getElementById('cdHours');
   const cdMinutes = document.getElementById('cdMinutes');
   const progressFill = document.getElementById('progressFill');
   const countdownStatus = document.getElementById('countdownStatus');
-
-  // Toast
-  const toast = document.getElementById('toast');
-  const toastMessage = document.querySelector('.toast-message');
-  const toastIcon = document.querySelector('.toast-icon i');
+  const countdownTitle = document.getElementById('countdownTitle');
 
   // ================================================================
   // CONSTANTES
@@ -883,13 +885,12 @@
   const TOOLS = [
     { name: 'Calculatrice', icon: 'fa-calculator', href: 'calculatrice.html' },
     { name: 'Formulaires', icon: 'fa-flask', href: 'formulaires.html' },
-    { name: 'Scan', icon: 'fa-qrcode', href: 'scan.html' },
+    { name: 'Sujets BAC', icon: 'fa-file-lines', href: 'sujets.html' },
     { name: 'Mode Examen', icon: 'fa-clock', href: 'mode-examen.html' },
     { name: 'Table périodique', icon: 'fa-table-cells', href: 'tableau-periodique.html' },
-    { name: 'ARV-ASSISTANT', icon: 'fa-robot', href: 'chat.html' }
+    { name: 'ARV-SCAN', icon: 'fa-robot', href: 'scan.html' }
   ];
 
-  // Conseils statiques (fallback)
   const TIPS = [
     { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
     { title: '📚 Méthode Pomodoro', text: "25 minutes de travail, 5 minutes de pause. Répète 4 fois, puis fais une pause plus longue." },
@@ -904,12 +905,27 @@
   ];
 
   // ================================================================
-  // COMPTE À REBOURS
+  // COMPTE À REBOURS — DYNAMIQUE
   // ================================================================
   function getExamDate() {
-    const year = new Date().getFullYear();
-    // BAC : début juin (supposé 1er juin)
-    return new Date(2027, 6, 14);
+    const now = new Date();
+    const year = now.getFullYear();
+    // BAC Niger : début juin
+    // Si on est avant le 1er juin de cette année, c'est cette année, sinon l'année suivante
+    const juneThisYear = new Date(year, 5, 1); // mois 5 = juin
+    if (now < juneThisYear) {
+      return juneThisYear;
+    }
+    return new Date(year + 1, 5, 1);
+  }
+
+  function getSchoolYearStart(examDate) {
+    // L'année scolaire commence en septembre AVANT l'examen
+    const examYear = examDate.getFullYear();
+    const examMonth = examDate.getMonth(); // 0-11
+    // Si l'examen est en juin (mois 5), l'année scolaire a commencé en septembre N-1
+    const startYear = examMonth < 8 ? examYear - 1 : examYear;
+    return new Date(startYear, 8, 1); // mois 8 = septembre
   }
 
   function getCountdownMessages(days) {
@@ -927,10 +943,13 @@
     const exam = getExamDate();
     const diffMs = exam - now;
 
+    // Titre dynamique
+    countdownTitle.textContent = 'BAC ' + exam.getFullYear();
+
     if (diffMs <= 0) {
       cdDays.textContent = '0';
-      cdHours.textContent = '0';
-      cdMinutes.textContent = '0';
+      cdHours.textContent = '00';
+      cdMinutes.textContent = '00';
       progressFill.style.width = '100%';
       progressFill.className = 'progress-fill critical';
       countdownStatus.textContent = '🎉 C\'est le jour J !';
@@ -946,29 +965,27 @@
     cdHours.textContent = String(hours).padStart(2, '0');
     cdMinutes.textContent = String(minutes).padStart(2, '0');
 
-    // Progression : début d'année scolaire (1er septembre) à 100%
-    const start = new Date(now.getFullYear(), 8, 1);
+    // Progression : de septembre N-1 à juin N
+    const start = getSchoolYearStart(exam);
     const total = exam - start;
     const elapsed = now - start;
-    const progress = Math.min(100, Math.max(0, (elapsed / total) * 100));
+    const progress = total > 0 ? Math.min(100, Math.max(0, (elapsed / total) * 100)) : 0;
     progressFill.style.width = progress + '%';
 
-    // Couleur selon la progression
     let progressClass = 'early';
     if (progress > 85) progressClass = 'critical';
     else if (progress > 70) progressClass = 'late';
     else if (progress > 50) progressClass = 'mid';
     progressFill.className = 'progress-fill ' + progressClass;
 
-    // Message
     const msg = getCountdownMessages(days);
     countdownStatus.textContent = `${msg.emoji} ${msg.message}`;
     countdownStatus.className = 'countdown-status ' + msg.class;
   }
 
-  // Mettre à jour toutes les minutes
   updateCountdown();
-  setInterval(updateCountdown, 60000);
+  const countdownInterval = setInterval(updateCountdown, 60000);
+  window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
 
   // ================================================================
   // GREETING
@@ -988,30 +1005,31 @@
   }
 
   // ================================================================
-  // TOAST
-  // ================================================================
-  function showToast(message, type = 'success') {
-    toastMessage.textContent = message;
-    toast.className = `toast ${type}`;
-    toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-    toast.classList.add('show');
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-  }
-
-  // ================================================================
   // RENDER FUNCTIONS
   // ================================================================
   function renderSubjects() {
-    subjectsGrid.innerHTML = SUBJECTS.map(subject => `
-      <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-        <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-        <div>
-          <div class="subject-name">${subject.name}</div>
-          <div class="subject-chapters">${subject.chapters} chapitres</div>
-        </div>
-      </a>
-    `).join('');
+    // Compter les chapitres lus depuis localStorage
+    let readParts = [];
+    try {
+      readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
+    } catch (e) { readParts = []; }
+
+    subjectsGrid.innerHTML = SUBJECTS.map(subject => {
+      const readCount = readParts.filter(key => key.startsWith(subject.key + '_')).length;
+      const displayCount = readCount > 0
+        ? `${readCount}/${subject.chapters} lus`
+        : `${subject.chapters} chapitres`;
+
+      return `
+        <a href="matiere.html?subject=${subject.key}" class="subject-chip">
+          <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
+          <div>
+            <div class="subject-name">${subject.name}</div>
+            <div class="subject-chapters">${displayCount}</div>
+          </div>
+        </a>
+      `;
+    }).join('');
   }
 
   function renderTools() {
@@ -1024,15 +1042,51 @@
   }
 
   function renderTip() {
-    const today = new Date().getDate();
-    const tip = TIPS[today % TIPS.length] || TIPS[0];
+    // Utiliser le jour de l'année pour une rotation plus longue
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const dayOfYear = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+    const tip = TIPS[dayOfYear % TIPS.length] || TIPS[0];
     tipTitle.textContent = tip.title;
     tipText.textContent = tip.text;
   }
 
   // ================================================================
+  // NOTIFICATIONS NON LUES
+  // ================================================================
+  async function checkUnreadNotifications(userId) {
+    try {
+      const q = query(
+        collection(db, 'users', userId, 'notifications'),
+        where('read', '==', false),
+        limit(1)
+      );
+      const snapshot = await getDocs(q);
+      const hasUnread = !snapshot.empty;
+      if (notifDot) notifDot.classList.toggle('show', hasUnread);
+    } catch (e) {
+      // Silencieux
+    }
+  }
+
+  // ================================================================
   // SUBSCRIPTION
   // ================================================================
+  function isUserPremium(userData) {
+    if (!userData) return false;
+
+    const hasStatus = userData.premium === true ||
+                      userData.isUnlocked === true ||
+                      userData.hasDeposited === true;
+
+    if (!hasStatus) return false;
+
+    // Vérifier la date d'expiration
+    const endDate = toDate(userData.subscriptionEndDate);
+    if (!endDate) return true; // Pas de date = premium à vie
+    return endDate.getTime() > Date.now();
+  }
+
   function updateSubscriptionDisplay(isPremium, userData) {
     const reminder = document.getElementById('subscriptionReminder');
     const subTitle = document.getElementById('subTitle');
@@ -1053,17 +1107,18 @@
       return;
     }
 
-    const expiryDate = userData?.subscriptionEndDate;
-    if (!expiryDate) {
+    const expiry = toDate(userData?.subscriptionEndDate);
+    if (!expiry) {
+      // Premium à vie
       reminder.style.display = 'none';
       return;
     }
 
     const now = new Date();
-    const expiry = new Date(expiryDate);
     const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
 
-    if (daysLeft < 0) {
+    if (daysLeft <= 0) {
+      // Expiré
       reminder.style.display = 'block';
       subTitle.textContent = '⏳ Abonnement expiré';
       subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
@@ -1090,11 +1145,27 @@
   }
 
   // ================================================================
+  // AFFICHER LE DASHBOARD
+  // ================================================================
+  function showDashboard() {
+    skeletonLoading.style.display = 'none';
+    dynamicContent.style.display = 'block';
+  }
+
+  function renderUserData(data) {
+    const firstName = data.firstName || 'Élève';
+    updateGreeting(firstName);
+
+    const premium = isUserPremium(data);
+    updateSubscriptionDisplay(premium, data);
+  }
+
+  // ================================================================
   // LOAD USER DATA
   // ================================================================
   let userData = null;
-  let isPremium = false;
   let unsubscribeUser = null;
+  let currentUid = null;
 
   function loadUserData(user) {
     if (unsubscribeUser) {
@@ -1108,38 +1179,25 @@
       (docSnap) => {
         if (docSnap.exists()) {
           userData = docSnap.data();
-          isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-
-          try {
-            localStorage.setItem('arvexa_user_data', JSON.stringify(userData));
-          } catch (e) {}
-
-          // Mise à jour de l'UI
-          const firstName = userData.firstName || 'Élève';
-          updateGreeting(firstName);
-          updateSubscriptionDisplay(isPremium, userData);
-
-          skeletonLoading.style.display = 'none';
-          dynamicContent.style.display = 'block';
-
+          saveUserDataToCache(userData, user.uid);
+          renderUserData(userData);
+          showDashboard();
+          checkUnreadNotifications(user.uid);
         } else {
-          showToast('⚠️ Profil introuvable.', 'error');
+          // Profil introuvable → redirection silencieuse
+          window.location.href = 'register.html';
         }
       },
       (error) => {
-        console.error('❌ Erreur Firestore:', error);
-        try {
-          const cached = localStorage.getItem('arvexa_user_data');
-          if (cached) {
-            userData = JSON.parse(cached);
-            isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-            const firstName = userData.firstName || 'Élève';
-            updateGreeting(firstName);
-            updateSubscriptionDisplay(isPremium, userData);
-            skeletonLoading.style.display = 'none';
-            dynamicContent.style.display = 'block';
-          }
-        } catch (e) {}
+        // Silencieux : utiliser le cache
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          userData = cached;
+          renderUserData(cached);
+          showDashboard();
+        } else {
+          showDashboard();
+        }
       }
     );
   }
@@ -1148,69 +1206,88 @@
   // REFRESH
   // ================================================================
   async function refreshDashboard() {
-    showToast('🔄 Rafraîchissement...', 'info');
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
     const user = auth.currentUser;
-    if (user) {
+    if (!user) return;
+
+    // Animation sur le bouton
+    const btn = document.getElementById('refreshBtn');
+    const icon = btn?.querySelector('i');
+    if (icon) {
+      icon.style.transition = 'transform 0.6s ease';
+      icon.style.transform = 'rotate(360deg)';
+      setTimeout(() => {
+        icon.style.transition = 'none';
+        icon.style.transform = 'rotate(0deg)';
+      }, 600);
+    }
+
+    try {
+      // Force le refresh du token
+      await getIdToken(user, true);
+      // Recharge les données
       loadUserData(user);
       updateCountdown();
       renderTip();
+    } catch (e) {
+      // Silencieux
     }
   }
 
   // ================================================================
   // AUTH
   // ================================================================
-  let authChecked = false;
   let isRedirecting = false;
-  let redirectCooldown = 0;
 
   onAuthStateChanged(auth, async (user) => {
-    if (authChecked) {
-      console.log('⏳ Auth déjà vérifié, skip');
-      return;
-    }
-
-    const now = Date.now();
-    if (now - redirectCooldown < 3000) {
-      console.log('⏳ Cooldown actif, skip');
-      return;
-    }
-
-    authChecked = true;
-
-    if (user) {
-      console.log('✅ Index - Utilisateur connecté:', user.uid);
-
-      try {
-        await getIdToken(user, true);
-        console.log('🔄 Token rafraîchi');
-      } catch (e) {
-        console.warn('⚠️ Erreur rafraîchissement token:', e);
+    if (!user) {
+      if (currentUid !== null) {
+        // Déconnexion
+        currentUid = null;
+        if (unsubscribeUser) unsubscribeUser();
+        clearSession();
       }
+      if (!isRedirecting) {
+        isRedirecting = true;
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 300);
+      }
+      return;
+    }
 
-      saveSession(user);
-      loadUserData(user);
+    if (user.uid === currentUid) {
+      // Même utilisateur, ne rien faire
+      return;
+    }
 
-      // Rendu des composants statiques
+    // Nouvel utilisateur
+    currentUid = user.uid;
+
+    try {
+      await getIdToken(user, true);
+    } catch (e) {}
+
+    saveSession(user);
+
+    // 1. Charger depuis le cache IMMÉDIATEMENT
+    const cached = getCachedUserData(user.uid);
+    if (cached) {
+      userData = cached;
+      renderUserData(cached);
       renderSubjects();
       renderTools();
       renderTip();
-
+      showDashboard();
     } else {
-      if (isRedirecting) return;
-      isRedirecting = true;
-      redirectCooldown = now;
-      clearSession();
-      console.log('🔒 Non connecté, redirection vers login');
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 300);
+      // Afficher les composants statiques en attendant
+      renderSubjects();
+      renderTools();
+      renderTip();
     }
+
+    // 2. Charger depuis Firestore (temps réel)
+    loadUserData(user);
   });
 
   // ================================================================
@@ -1220,11 +1297,12 @@
     e.preventDefault();
     try {
       if (unsubscribeUser) unsubscribeUser();
+      currentUid = null;
       await signOut(auth);
       clearSession();
       window.location.href = 'login.html';
     } catch (error) {
-      showToast('Erreur de déconnexion.', 'error');
+      // Silencieux
     }
   });
 
@@ -1247,8 +1325,6 @@
   });
 
   document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
-
-  console.log('🚀 ARVEXA School — Tableau de bord (version optimisée)');
   </script>
 </body>
 </html>

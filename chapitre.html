@@ -216,11 +216,6 @@
     }
     .tab-btn:not(.active) { border: 1px solid transparent; }
     .tab-btn:hover:not(.active) { color: var(--text-dim); }
-    .tab-btn .tab-badge {
-      position: absolute; top: -4px; right: -4px;
-      font-size: 8px; background: var(--success); color: #fff;
-      padding: 1px 6px; border-radius: 10px; font-weight: 700;
-    }
 
     /* ============================================================
        CARDS VIEW
@@ -344,26 +339,6 @@
     .empty-state p { font-size: 13px; color: var(--text-muted); max-width: 300px; line-height: 1.6; }
 
     /* ============================================================
-       TOAST
-       ============================================================ */
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      padding: 12px 20px; border-radius: 12px; background: rgba(20,20,20,0.95);
-      backdrop-filter: blur(16px); border: 1px solid rgba(184,134,11,0.15);
-      color: var(--text-light); font-size: clamp(12px, 1.2vw, 14px);
-      font-weight: 500; z-index: 300;
-      opacity: 0; transition: all 0.4s cubic-bezier(0.25,1,0.5,1);
-      display: flex; align-items: center; gap: 8px;
-      box-shadow: var(--shadow);
-    }
-    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .toast i { color: var(--accent-bright); }
-    .toast.success { border-color: rgba(45,125,90,0.2); }
-    .toast.success i { color: var(--success); }
-    .toast.error { border-color: rgba(184,92,58,0.2); }
-    .toast.error i { color: var(--danger); }
-
-    /* ============================================================
        POPUP PREMIUM
        ============================================================ */
     .premium-popup-overlay {
@@ -478,8 +453,6 @@
     /* ============================================================
        RESPONSIVE
        ============================================================ */
-
-    /* Tablette et petits écrans */
     @media (max-width: 640px) {
       .container { padding: 10px 10px 24px; }
       .chapter-info { padding: 12px 14px; }
@@ -491,7 +464,6 @@
       .pc-title { font-size: 13px; }
     }
 
-    /* Mobile moyen */
     @media (max-width: 480px) {
       .header { padding: 8px 12px; min-height: 48px; }
       .back-btn { width: 32px; height: 32px; font-size: 14px; }
@@ -525,7 +497,6 @@
       .premium-popup .popup-features { grid-template-columns: 1fr 1fr; }
     }
 
-    /* Très petits écrans (≤ 360px) */
     @media (max-width: 360px) {
       .header { padding: 6px 8px; min-height: 42px; }
       .back-btn { width: 28px; height: 28px; font-size: 12px; }
@@ -564,13 +535,6 @@
       .premium-popup .popup-subtitle { font-size: 11px; }
       .premium-popup .popup-features .feature { padding: 6px 4px; font-size: 10px; }
       .premium-popup .popup-buttons .btn-subscribe { font-size: 13px; padding: 8px; }
-
-      .loading-state { padding: 40px 16px; min-height: 150px; }
-      .loading-state .spinner { width: 24px; height: 24px; }
-      .empty-state { padding: 40px 16px; }
-      .empty-state .es-icon { width: 48px; height: 48px; font-size: 18px; }
-      .empty-state h4 { font-size: 14px; }
-      .empty-state p { font-size: 12px; }
     }
 
     @media (min-width: 768px) {
@@ -669,7 +633,7 @@
   <div class="premium-popup-overlay" id="premiumPopup">
     <div class="premium-popup">
       <button class="popup-close" id="popupCloseBtn"><i class="fas fa-times"></i></button>
-      <span class="popup-icon"></span>
+      <span class="popup-icon">👑</span>
       <h2>Accès <span>Premium</span></h2>
       <p class="popup-subtitle">Débloque <strong>tous</strong> les chapitres, exercices et corrections !</p>
 
@@ -701,9 +665,6 @@
     </div>
   </div>
 
-  <!-- ===== TOAST ===== -->
-  <div class="toast" id="toast"><i class="fas fa-info-circle"></i> <span id="toastText"></span></div>
-
   <!-- ============================================================ -->
   <!-- SCRIPTS                                                       -->
   <!-- ============================================================ -->
@@ -719,7 +680,8 @@
 
   <script type="module">
   // ================================================================
-  // CHAPITRE - VERSION COMPLETE OPTIMISÉE
+  // CHAPITRE — VERSION CORRIGÉE
+  // Toutes les erreurs silencieuses, premium avec date d'expiration
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -729,6 +691,12 @@
     setPersistence,
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG
@@ -744,13 +712,11 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getFirestore(app);
 
   try {
     await setPersistence(auth, browserLocalPersistence);
-    console.log('🔐 Persistance locale activée');
-  } catch (e) {
-    console.warn('⚠️ Persistance:', e);
-  }
+  } catch (e) {}
 
   // ================================================================
   // URL PARAMS
@@ -818,8 +784,6 @@
   // DOM
   // ================================================================
   const cardsView = document.getElementById('cardsView');
-  const toast = document.getElementById('toast');
-  const toastText = document.getElementById('toastText');
   const cpRead = document.getElementById('cpRead');
   const cpTotal = document.getElementById('cpTotal');
   const cpPercent = document.getElementById('cpPercent');
@@ -828,14 +792,31 @@
   const nextChapBtn = document.getElementById('nextChapBtn');
 
   // ================================================================
-  // TOAST
+  // UTILITAIRE — CONVERSION TIMESTAMP FIRESTORE
   // ================================================================
-  function showToast(message, type = 'info') {
-    toastText.textContent = message;
-    toast.className = 'toast ' + type;
-    toast.classList.add('show');
-    clearTimeout(toast._timeout);
-    toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
+  function toDate(value) {
+    if (!value) return null;
+    if (typeof value.toDate === 'function') return value.toDate();
+    if (value.seconds !== undefined) return new Date(value.seconds * 1000);
+    const date = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  // ================================================================
+  // VÉRIFICATION PREMIUM
+  // ================================================================
+  function isUserPremium(userData) {
+    if (!userData) return false;
+
+    const hasStatus = userData.premium === true ||
+                      userData.isUnlocked === true ||
+                      userData.hasDeposited === true;
+
+    if (!hasStatus) return false;
+
+    const endDate = toDate(userData.subscriptionEndDate);
+    if (!endDate) return true;
+    return endDate.getTime() > Date.now();
   }
 
   // ================================================================
@@ -910,13 +891,18 @@
   let subjectConfig = null;
   let chapters = [];
   let isPremium = false;
-  let currentTab = tabParam || 'cours';
+  let currentTab = (tabParam === 'cours' || tabParam === 'exercices' || tabParam === 'corrections')
+    ? tabParam
+    : 'cours';
   let currentParts = [];
+  let unsubscribeUser = null;
+  let currentUid = null;
 
   // ================================================================
   // RENDU
   // ================================================================
   function loadSubjectData() {
+    // Cache d'abord (instantané)
     try {
       const cached = localStorage.getItem('arvexa_subject_' + subjectKey);
       if (cached) {
@@ -928,6 +914,7 @@
       }
     } catch (e) {}
 
+    // Fallback
     const defaultData = SUBJECTS_CONFIG[subjectKey];
     if (defaultData) {
       subjectConfig = {
@@ -938,6 +925,7 @@
       chapters = DEFAULT_CHAPTERS[subjectKey] || [];
       renderPage();
     } else {
+      // Redirection silencieuse
       window.location.replace('index.html');
     }
   }
@@ -968,10 +956,9 @@
       statusEl.className = 'ci-status locked';
     }
 
-    // Navigation entre chapitres
+    // Navigation
     prevChapBtn.disabled = chapIdx <= 0;
     nextChapBtn.disabled = chapIdx >= chapters.length - 1;
-
     prevChapBtn.onclick = () => navigateToChapter(chapIdx - 1);
     nextChapBtn.onclick = () => navigateToChapter(chapIdx + 1);
 
@@ -1016,11 +1003,9 @@
     const icon = tabIcons[currentTab] || 'fa-file';
     const ic = iconClass[currentTab] || '';
 
-    // Vérifier si c'est une correction et si le chapitre est premium
     const isFree = chapIdx === 0;
     const isLockedCorrection = currentTab === 'corrections' && !isPremium && !isFree;
 
-    // Compter les parties lues
     const totalParts = currentParts.length;
     const readCount = getPartsReadForChapter(subjectKey, chapIdx, currentTab, totalParts);
     cpTotal.textContent = totalParts;
@@ -1111,30 +1096,86 @@
   }
 
   // ================================================================
+  // CHARGEMENT UTILISATEUR (temps réel)
+  // ================================================================
+  function loadUserData(user) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+
+    const userRef = doc(db, 'users', user.uid);
+
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const newPremium = isUserPremium(data);
+
+          if (newPremium !== isPremium) {
+            isPremium = newPremium;
+            // Mettre à jour l'UI si le statut change
+            if (subjectConfig && chapters.length) {
+              renderPage();
+            }
+          }
+
+          try {
+            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+          } catch (e) {}
+        }
+      },
+      (error) => {
+        // Silencieux : utiliser le cache
+        try {
+          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+          isPremium = isUserPremium(cached);
+        } catch (e) {
+          isPremium = false;
+        }
+      }
+    );
+  }
+
+  // ================================================================
   // AUTH
   // ================================================================
-  let authChecked = false;
+  let isRedirecting = false;
 
-  onAuthStateChanged(auth, (user) => {
-    if (authChecked) return;
-    authChecked = true;
-
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
-      window.location.href = 'login.html';
+      if (currentUid !== null) {
+        currentUid = null;
+        if (unsubscribeUser) unsubscribeUser();
+      }
+      if (!isRedirecting) {
+        isRedirecting = true;
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 300);
+      }
       return;
     }
 
-    try {
-      const userData = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-      isPremium = userData.premium === true || userData.isUnlocked === true || userData.hasDeposited === true;
-      console.log('👑 Premium:', isPremium);
-    } catch (e) {}
+    if (user.uid === currentUid) return;
+    currentUid = user.uid;
 
+    // 1. Charger premium depuis le cache IMMÉDIATEMENT
+    try {
+      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      isPremium = isUserPremium(cached);
+    } catch (e) {
+      isPremium = false;
+    }
+
+    // 2. Charger les données de la matière (instantané)
     loadSubjectData();
     setupTabs();
-  });
 
-  console.log('📖 ARVEXA - Chapitre (version complète optimisée)');
+    // 3. Écouter les changements Firestore en temps réel
+    loadUserData(user);
+  });
   </script>
 </body>
 </html>
