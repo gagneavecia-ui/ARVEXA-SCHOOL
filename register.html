@@ -13,16 +13,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    /* ============================================================
-       ROOT — Design system ARVEXA
-       ============================================================ */
     :root {
       --primary: #1A3A2A;
       --accent: #B8860B;
       --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
       --success: #2D7D5A;
       --danger: #E74C3C;
       --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
       --bg-card: rgba(20, 20, 20, 0.7);
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
@@ -68,7 +67,6 @@
     .glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.03); bottom: 0; left: 0; animation-delay: -4s; }
     @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
-    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -131,7 +129,6 @@
       background: rgba(184, 134, 11, 0.04);
     }
 
-    /* CONTAINER */
     .register-container {
       width: 100%;
       max-width: 480px;
@@ -159,7 +156,6 @@
       font-weight: 300;
     }
 
-    /* FORM CARD */
     .register-form {
       background: var(--bg-card);
       backdrop-filter: blur(12px);
@@ -178,7 +174,6 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
 
-    /* FORM GROUP */
     .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
@@ -270,7 +265,6 @@
     }
     .form-group .error-message.visible { display: block; }
 
-    /* PASSWORD STRENGTH */
     .password-strength {
       margin-top: 6px;
       display: flex;
@@ -303,14 +297,12 @@
       transition: color 0.3s ease;
     }
 
-    /* NAME ROW */
     .name-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    /* TERMS */
     .form-group-checkbox {
       display: flex;
       align-items: flex-start;
@@ -355,7 +347,6 @@
     }
     .form-group-checkbox .error-message.visible { display: block; }
 
-    /* BUTTON */
     .btn-submit {
       width: 100%;
       padding: 13px;
@@ -412,7 +403,6 @@
     .btn-submit.loading .btn-icon { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* SECURE */
     .secure {
       text-align: center;
       font-size: 11px;
@@ -421,7 +411,6 @@
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
-    /* TOAST */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -458,7 +447,6 @@
       font-weight: 600;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
       .register-form { padding: 20px 16px; }
@@ -510,12 +498,10 @@
 </head>
 <body>
 
-<!-- ===== BACKGROUND ===== -->
 <div class="gradient-bg"></div>
 <div class="glow glow-1"></div>
 <div class="glow glow-2"></div>
 
-<!-- ===== HEADER ===== -->
 <header class="header">
   <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
   <div class="header-actions">
@@ -524,7 +510,6 @@
   </div>
 </header>
 
-<!-- ===== FORMULAIRE ===== -->
 <div class="register-container">
 
   <div class="register-header">
@@ -534,7 +519,6 @@
 
   <form class="register-form" id="registerForm" novalidate>
 
-    <!-- Prénom + Nom -->
     <div class="name-row">
       <div class="form-group">
         <label for="firstName">Prénom</label>
@@ -556,7 +540,6 @@
       </div>
     </div>
 
-    <!-- Email -->
     <div class="form-group">
       <label for="email">Adresse e-mail</label>
       <div class="input-wrap" id="emailWrap">
@@ -567,7 +550,6 @@
       <div class="error-message" id="emailError">Adresse e-mail invalide.</div>
     </div>
 
-    <!-- Établissement (optionnel) -->
     <div class="form-group">
       <label for="establishment">Établissement <span class="optional">(optionnel)</span></label>
       <div class="input-wrap" id="establishmentWrap">
@@ -578,7 +560,6 @@
       <div class="error-message" id="establishmentError"></div>
     </div>
 
-    <!-- Mot de passe -->
     <div class="form-group">
       <label for="password">Mot de passe</label>
       <div class="input-wrap" id="passwordWrap">
@@ -598,7 +579,6 @@
       <div class="error-message" id="passwordError">Le mot de passe doit contenir au moins 6 caractères.</div>
     </div>
 
-    <!-- Confirmation mot de passe -->
     <div class="form-group">
       <label for="confirmPassword">Confirmation du mot de passe</label>
       <div class="input-wrap" id="confirmWrap">
@@ -612,7 +592,6 @@
       <div class="error-message" id="confirmError">Les mots de passe ne correspondent pas.</div>
     </div>
 
-    <!-- Conditions -->
     <div class="form-group-checkbox" id="termsWrap">
       <input type="checkbox" id="termsCheckbox">
       <label for="termsCheckbox">
@@ -622,7 +601,6 @@
       <div class="error-message" id="termsError">Vous devez accepter les conditions.</div>
     </div>
 
-    <!-- Bouton -->
     <button type="submit" class="btn-submit" id="submitBtn" disabled>
       <span class="btn-icon"><i class="fas fa-user-plus"></i></span>
       <span class="btn-text">Créer mon compte</span>
@@ -636,13 +614,11 @@
   </form>
 </div>
 
-<!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
 
-<!-- ============================================================ -->
 <script type="importmap">
 {
   "imports": {
@@ -655,7 +631,7 @@
 
 <script type="module">
 // ================================================================
-// REGISTER — VERSION CORRIGÉE
+// REGISTER — Sans limite d'appareils
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -664,8 +640,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence,
-  signOut
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
   getFirestore,
@@ -674,9 +649,6 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-// ================================================================
-// CONFIG
-// ================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -756,38 +728,23 @@ const validators = {
   })
 };
 
-// ================================================================
-// PASSWORD STRENGTH
-// ================================================================
 function getPasswordStrength(pwd) {
   if (!pwd) return { score: 0, label: 'Très faible', color: '#E74C3C' };
-
   let score = 0;
   if (pwd.length >= 8) score++;
   if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) score++;
   if (/\d/.test(pwd)) score++;
   if (/[^a-zA-Z0-9]/.test(pwd)) score++;
-
   const levels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
   const colors = ['#E74C3C', '#E67E22', '#F1C40F', '#2ECC71', '#27AE60'];
-
-  return {
-    score,
-    label: levels[score] || 'Très faible',
-    color: colors[score] || '#E74C3C'
-  };
+  return { score, label: levels[score] || 'Très faible', color: colors[score] || '#E74C3C' };
 }
 
 function updatePasswordStrength(strength) {
   const container = document.getElementById('passwordStrength');
   const fill = document.getElementById('strengthFill');
   const label = document.getElementById('strengthLabel');
-
-  if (!password.value) {
-    container.classList.remove('visible');
-    return;
-  }
-
+  if (!password.value) { container.classList.remove('visible'); return; }
   container.classList.add('visible');
   const width = ((strength.score + 1) / 5) * 100;
   fill.style.width = width + '%';
@@ -800,11 +757,8 @@ function updatePasswordStrength(strength) {
 // TOAST
 // ================================================================
 function showToast(message, type = 'success', isHtml = false, duration = 4000) {
-  if (isHtml) {
-    toastMessage.innerHTML = message;
-  } else {
-    toastMessage.textContent = message;
-  }
+  if (isHtml) toastMessage.innerHTML = message;
+  else toastMessage.textContent = message;
   toast.className = `toast ${type}`;
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
@@ -813,7 +767,7 @@ function showToast(message, type = 'success', isHtml = false, duration = 4000) {
 }
 
 // ================================================================
-// VALIDATION FIELD
+// VALIDATION
 // ================================================================
 function validateField(fieldId) {
   const value = formState.values[fieldId] || '';
@@ -833,32 +787,22 @@ function validateField(fieldId) {
     wrap.classList.toggle('error', hasError);
     wrap.classList.toggle('success', result.isValid && value.length > 0);
   }
-
   if (errorEl) {
     errorEl.classList.toggle('visible', hasError);
     errorEl.textContent = hasError ? result.message : '';
   }
-
   if (statusEl) {
     statusEl.className = 'input-status';
     if (value.length > 0) {
       statusEl.classList.add(result.isValid ? 'success' : 'error');
-      statusEl.innerHTML = result.isValid
-        ? '<i class="fas fa-check-circle"></i>'
-        : '<i class="fas fa-times-circle"></i>';
+      statusEl.innerHTML = result.isValid ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-times-circle"></i>';
     } else {
       statusEl.innerHTML = '';
     }
   }
-
-  if (fieldId === 'password' && result.strength) {
-    updatePasswordStrength(result.strength);
-  }
+  if (fieldId === 'password' && result.strength) updatePasswordStrength(result.strength);
 }
 
-// ================================================================
-// VALIDATE FORM
-// ================================================================
 function validateForm() {
   const fields = ['firstName', 'lastName', 'email', 'password', 'confirmPassword'];
   const allValid = fields.every(field => {
@@ -868,16 +812,14 @@ function validateForm() {
     const result = validator(value, { password: formState.values.password });
     return result.isValid && value.length > 0;
   });
-
   const termsValid = termsCheckbox.checked;
   formState.isValid = allValid && termsValid;
-
   submitBtn.disabled = !formState.isValid || formState.isSubmitting;
   return formState.isValid;
 }
 
 // ================================================================
-// SAVE / LOAD PROGRESS
+// SAUVEGARDE PROGRESSION
 // ================================================================
 const SAVE_KEY = 'arvexa_register_progress';
 
@@ -907,9 +849,7 @@ function loadFormProgress() {
 }
 
 function clearFormProgress() {
-  try {
-    localStorage.removeItem(SAVE_KEY);
-  } catch (e) {}
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
 }
 
 // ================================================================
@@ -934,9 +874,6 @@ function clearFormProgress() {
   });
 });
 
-// ================================================================
-// TOGGLE PASSWORD
-// ================================================================
 document.getElementById('togglePassword').addEventListener('click', function() {
   const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
   password.setAttribute('type', type);
@@ -949,9 +886,6 @@ document.getElementById('toggleConfirm').addEventListener('click', function() {
   this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
 });
 
-// ================================================================
-// TERMS
-// ================================================================
 termsCheckbox.addEventListener('change', () => {
   const wrap = document.getElementById('termsWrap');
   const err = document.getElementById('termsError');
@@ -961,19 +895,16 @@ termsCheckbox.addEventListener('change', () => {
 });
 
 // ================================================================
-// AUTH STATE — REDIRECTION SI DÉJÀ CONNECTÉ
+// AUTH STATE
 // ================================================================
 let currentUid = null;
 let isRedirecting = false;
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    if (currentUid !== null) {
-      currentUid = null;
-    }
+    if (currentUid !== null) currentUid = null;
     return;
   }
-
   if (user.uid === currentUid) return;
   currentUid = user.uid;
 
@@ -992,10 +923,8 @@ onAuthStateChanged(auth, (user) => {
 // ================================================================
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-
   if (formState.isSubmitting || submitBtn.disabled) return;
 
-  // Marquer les champs touchés
   formState.touched.terms = true;
 
   if (!termsCheckbox.checked) {
@@ -1015,11 +944,9 @@ form.addEventListener('submit', async (e) => {
   const establishmentValue = establishment.value.trim();
 
   try {
-    // 1. Créer le compte Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
     const user = userCredential.user;
 
-    // 2. Créer le profil Firestore
     await setDoc(doc(db, 'users', user.uid), {
       uid: user.uid,
       firstName: firstNameValue,
@@ -1038,7 +965,6 @@ form.addEventListener('submit', async (e) => {
       subscriptionPlan: null,
       subscriptionStartDate: null,
       subscriptionEndDate: null,
-      subscriptionPausedDaysLeft: null,
       chaptersRead: 0,
       totalStudyTime: 0,
       onboardingCompleted: false,
@@ -1047,20 +973,14 @@ form.addEventListener('submit', async (e) => {
       lastLogin: serverTimestamp()
     });
 
-    // 3. Nettoyer la sauvegarde
     clearFormProgress();
-
-    // 4. Message de succès
     showToast('✅ Compte créé ! Redirection...', 'success');
 
-    // 5. Redirection vers onboarding
     setTimeout(() => {
       window.location.href = 'onboarding.html';
     }, 1200);
 
   } catch (error) {
-    console.error('Erreur inscription:', error);
-
     let message = 'Une erreur est survenue. Réessaie.';
     let isHtml = false;
 
@@ -1089,7 +1009,6 @@ form.addEventListener('submit', async (e) => {
     }
 
     showToast(message, 'error', isHtml, 6000);
-
     formState.isSubmitting = false;
     submitBtn.disabled = false;
     submitBtn.classList.remove('loading');
@@ -1101,14 +1020,9 @@ form.addEventListener('submit', async (e) => {
 // INIT
 // ================================================================
 loadFormProgress();
-
-// Valider les champs déjà remplis
 ['firstName', 'lastName', 'email', 'establishment', 'password', 'confirmPassword'].forEach(field => {
-  if (formState.values[field]) {
-    validateField(field);
-  }
+  if (formState.values[field]) validateField(field);
 });
-
 validateForm();
 
 console.log('🚀 ARVEXA School — Inscription');

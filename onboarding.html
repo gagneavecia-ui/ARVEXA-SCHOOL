@@ -13,9 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
-    /* ============================================================
-       ROOT — Design system ARVEXA
-       ============================================================ */
     :root {
       --primary: #1A3A2A;
       --accent: #B8860B;
@@ -34,13 +31,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-    html {
-      scroll-behavior: smooth;
-      width: 100%;
-      overflow-x: hidden;
-    }
-
+    html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
     body {
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
@@ -50,7 +41,6 @@
       min-height: 100vh;
       width: 100%;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -58,38 +48,20 @@
       padding: 20px 16px 40px;
     }
 
-    /* ============================================================
-       BACKGROUND
-       ============================================================ */
     .gradient-bg {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -2;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 20%, rgba(26, 58, 42, 0.12) 0%, transparent 70%),
                   radial-gradient(ellipse 30% 20% at 70% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 60%),
                   linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
     }
-
     .glow {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      pointer-events: none;
-      z-index: -1;
-      opacity: 0.15;
-      animation: glowMove 10s ease-in-out infinite alternate;
+      position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
+      opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
     }
     .glow-1 { width: 350px; height: 350px; background: rgba(26,58,42,0.15); top: -80px; right: -80px; }
     .glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.03); bottom: 0; left: 0; animation-delay: -4s; }
-    @keyframes glowMove {
-      0% { transform: translate(0,0) scale(1); }
-      100% { transform: translate(30px,-20px) scale(1.1); }
-    }
+    @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
-    /* ============================================================
-       CONTAINER
-       ============================================================ */
     .onboarding-container {
       width: 100%;
       max-width: 480px;
@@ -101,9 +73,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ============================================================
-       CARD
-       ============================================================ */
     .onboarding-card {
       background: var(--bg-card);
       backdrop-filter: blur(12px);
@@ -123,12 +92,7 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
 
-    /* ============================================================
-       HEADER
-       ============================================================ */
-    .header {
-      margin-bottom: 20px;
-    }
+    .header { margin-bottom: 20px; }
     .header .icon-big {
       font-size: clamp(48px, 8vw, 64px);
       display: block;
@@ -155,10 +119,7 @@
       font-style: italic;
       animation: shimmerText 4s linear infinite;
     }
-    @keyframes shimmerText {
-      0% { background-position: 0% center; }
-      100% { background-position: 200% center; }
-    }
+    @keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
     .header .subtitle {
       font-size: clamp(13px, 1.6vw, 14px);
       color: var(--text-dim);
@@ -166,9 +127,6 @@
       font-weight: 300;
     }
 
-    /* ============================================================
-       USER INFO
-       ============================================================ */
     .user-info {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid rgba(255, 255, 255, 0.04);
@@ -191,9 +149,6 @@
       word-break: break-all;
     }
 
-    /* ============================================================
-       STATS GRID
-       ============================================================ */
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -232,9 +187,6 @@
       margin-top: 2px;
     }
 
-    /* ============================================================
-       SUBJECTS TAGS
-       ============================================================ */
     .subjects-tags {
       display: flex;
       flex-wrap: wrap;
@@ -260,9 +212,6 @@
       transform: translateY(-2px);
     }
 
-    /* ============================================================
-       FEATURES LIST
-       ============================================================ */
     .features-list {
       display: flex;
       flex-direction: column;
@@ -297,9 +246,6 @@
       font-weight: 500;
     }
 
-    /* ============================================================
-       BUTTON
-       ============================================================ */
     .btn-primary {
       width: 100%;
       padding: 14px;
@@ -332,9 +278,7 @@
       transform: rotate(45deg) translateX(-100%);
       transition: transform 0.6s ease;
     }
-    .btn-primary:hover:not(:disabled)::after {
-      transform: rotate(45deg) translateX(100%);
-    }
+    .btn-primary:hover:not(:disabled)::after { transform: rotate(45deg) translateX(100%); }
     .btn-primary:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 30px rgba(184, 134, 11, 0.3);
@@ -344,7 +288,6 @@
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
-      box-shadow: none;
     }
     .btn-primary .spinner {
       display: none;
@@ -360,9 +303,6 @@
     .btn-primary.loading .btn-icon { display: none; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ============================================================
-       SECURE BADGE
-       ============================================================ */
     .secure {
       text-align: center;
       font-size: 11px;
@@ -373,9 +313,6 @@
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
-    /* ============================================================
-       COUNTDOWN MINI
-       ============================================================ */
     .countdown-mini {
       display: flex;
       align-items: center;
@@ -399,27 +336,18 @@
       font-weight: 700;
     }
 
-    /* ============================================================
-       SKELETON LOADING
-       ============================================================ */
     .skeleton {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 8px;
       animation: pulse 1.5s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
-    }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
     .skeleton-text { height: 16px; margin: 4px 0; }
     .skeleton-name { height: 24px; width: 60%; margin: 0 auto; }
     .skeleton-email { height: 14px; width: 70%; margin: 4px auto; }
     .skeleton-stat { height: 60px; border-radius: 10px; }
     .skeleton-tag { height: 26px; width: 80px; border-radius: 20px; }
 
-    /* ============================================================
-       TOAST
-       ============================================================ */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -444,19 +372,13 @@
       gap: 8px;
       justify-content: center;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { border-color: rgba(45, 125, 90, 0.2); }
     .toast.error { border-color: rgba(184, 92, 58, 0.3); }
     .toast .toast-icon { font-size: 16px; }
     .toast.success .toast-icon { color: var(--success); }
     .toast.error .toast-icon { color: var(--danger); }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
     @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
       .onboarding-card { padding: 24px 18px; }
@@ -468,7 +390,6 @@
 
     @media (max-width: 480px) {
       .onboarding-card { padding: 20px 16px; }
-      .stats-grid { gap: 6px; }
       .stat-item { padding: 8px 4px; }
       .stat-item .si-icon { font-size: 18px; }
       .stat-item .si-value { font-size: 13px; }
@@ -489,7 +410,7 @@
       .header .subtitle { font-size: 12px; }
       .user-info .user-name { font-size: 15px; }
       .user-info .user-email { font-size: 11px; }
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
+      .stats-grid { gap: 4px; }
       .stat-item { padding: 6px 4px; }
       .stat-item .si-icon { font-size: 16px; }
       .stat-item .si-label { font-size: 8px; }
@@ -522,17 +443,13 @@
 </head>
 <body>
 
-<!-- ===== BACKGROUND ===== -->
 <div class="gradient-bg"></div>
 <div class="glow glow-1"></div>
 <div class="glow glow-2"></div>
 
-<!-- ===== CONTAINER ===== -->
 <div class="onboarding-container">
-
   <div class="onboarding-card">
 
-    <!-- ===== SKELETON ===== -->
     <div id="skeletonLoading">
       <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.03);margin:0 auto 8px;"></div>
       <div class="skeleton skeleton-text" style="width:150px;margin:0 auto;"></div>
@@ -556,29 +473,24 @@
       <div class="skeleton skeleton-text" style="height:52px;border-radius:30px;width:100%;"></div>
     </div>
 
-    <!-- ===== CONTENU DYNAMIQUE ===== -->
     <div id="dynamicContent" style="display:none;">
 
-      <!-- HEADER -->
       <div class="header">
         <span class="icon-big">🎓</span>
         <div class="logo">ARVE<span>XA<span> School</span></div>
         <p class="subtitle">Prépare-toi pour le BAC en toute sérénité</p>
       </div>
 
-      <!-- COUNTDOWN -->
       <div class="countdown-mini">
         <i class="fas fa-hourglass-half" style="color: var(--accent-bright);"></i>
         <span>BAC dans <strong id="cdDays">--</strong> jours</span>
       </div>
 
-      <!-- USER INFO -->
       <div class="user-info">
         <div class="user-name" id="userName">Chargement...</div>
         <div class="user-email" id="userEmail">---</div>
       </div>
 
-      <!-- STATS -->
       <div class="stats-grid">
         <div class="stat-item">
           <span class="si-icon">📚</span>
@@ -592,7 +504,6 @@
         </div>
       </div>
 
-      <!-- SUBJECTS -->
       <div class="subjects-tags">
         <span class="tag">📐 Mathématiques</span>
         <span class="tag">⚡ Physique</span>
@@ -600,7 +511,6 @@
         <span class="tag">🧬 SVT</span>
       </div>
 
-      <!-- FEATURES -->
       <div class="features-list">
         <div class="feature-item">
           <span class="fi-icon">📖</span>
@@ -611,16 +521,11 @@
           <span class="fi-text">Exercices corrigés détaillés</span>
         </div>
         <div class="feature-item">
-          <span class="fi-icon">📋</span>
-          <span class="fi-text">Sujets BAC avec corrections</span>
-        </div>
-        <div class="feature-item">
           <span class="fi-icon">🎯</span>
-          <span class="fi-text">Mode examen chronométré</span>
+          <span class="fi-text">Plus encore</span>
         </div>
       </div>
 
-      <!-- BUTTON -->
       <button class="btn-primary" id="startBtn">
         <span class="btn-icon"><i class="fas fa-rocket"></i></span>
         <span class="btn-text">Commencer l'aventure</span>
@@ -632,19 +537,14 @@
       </div>
 
     </div>
-
   </div>
 </div>
 
-<!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
 
-<!-- ============================================================ -->
-<!-- SCRIPTS                                                       -->
-<!-- ============================================================ -->
 <script type="importmap">
 {
   "imports": {
@@ -657,7 +557,7 @@
 
 <script type="module">
 // ================================================================
-// ONBOARDING — VERSION CORRIGÉE
+// ONBOARDING — Sans limite d'appareils
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -666,7 +566,6 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence,
-  signOut,
   getIdToken
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
@@ -679,9 +578,6 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-// ================================================================
-// CONFIG
-// ================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -752,23 +648,12 @@ function saveUserDataToCache(data, uid) {
 }
 
 // ================================================================
-// UTILITAIRE — TIMESTAMP
-// ================================================================
-function toDate(value) {
-  if (!value) return null;
-  if (typeof value.toDate === 'function') return value.toDate();
-  if (value.seconds !== undefined) return new Date(value.seconds * 1000);
-  const date = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-// ================================================================
 // COMPTE À REBOURS
 // ================================================================
 function getExamDate() {
   const now = new Date();
   const year = now.getFullYear();
-  const juneThisYear = new Date(year, 5, 1); // 1er juin
+  const juneThisYear = new Date(year, 5, 1);
   if (now < juneThisYear) return juneThisYear;
   return new Date(year + 1, 5, 1);
 }
@@ -782,7 +667,7 @@ function updateCountdown() {
 }
 
 // ================================================================
-// VÉRIFICATION COMPTE (bloqué / paused)
+// VÉRIFICATION COMPTE
 // ================================================================
 function isAccountAccessible(data) {
   if (!data) return true;
@@ -818,34 +703,26 @@ function showContent(data) {
 }
 
 // ================================================================
-// CHARGEMENT DONNÉES UTILISATEUR
+// CHARGEMENT DONNÉES
 // ================================================================
 async function loadUserData(user) {
-  // 1. Cache d'abord
   const cached = getCachedUserData(user.uid);
   if (cached) {
-    // Vérifier le statut du compte
     if (!isAccountAccessible(cached)) {
-      // Compte bloqué ou en pause → redirection silencieuse
       window.location.href = 'login.html';
       return;
     }
-
-    // Déjà onboardé → redirection
     if (cached.onboardingCompleted === true) {
       window.location.href = 'index.html';
       return;
     }
-
     showContent(cached);
   }
 
-  // 2. Firestore ensuite
   try {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
 
     if (!userDoc.exists()) {
-      // Profil introuvable → redirection
       window.location.href = 'register.html';
       return;
     }
@@ -853,13 +730,11 @@ async function loadUserData(user) {
     const data = userDoc.data();
     saveUserDataToCache(data, user.uid);
 
-    // Vérifier le statut
     if (!isAccountAccessible(data)) {
       window.location.href = 'login.html';
       return;
     }
 
-    // Déjà onboardé
     if (data.onboardingCompleted === true) {
       window.location.href = 'index.html';
       return;
@@ -868,7 +743,6 @@ async function loadUserData(user) {
     showContent(data);
 
   } catch (error) {
-    // Silencieux : garder le cache si dispo, sinon afficher un minimum
     if (!cached) {
       skeletonLoading.style.display = 'none';
       dynamicContent.style.display = 'block';
@@ -889,14 +763,12 @@ startBtn.addEventListener('click', async () => {
     const user = auth.currentUser;
     if (!user) throw new Error('Non connecté');
 
-    // 1. Marquer onboarding terminé
     await updateDoc(doc(db, 'users', user.uid), {
       onboardingCompleted: true,
       onboardingCompletedAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
 
-    // 2. Créer une notification de bienvenue
     try {
       await addDoc(collection(db, 'users', user.uid, 'notifications'), {
         title: '🎉 Bienvenue sur ARVEXA !',
@@ -905,11 +777,8 @@ startBtn.addEventListener('click', async () => {
         read: false,
         createdAt: serverTimestamp()
       });
-    } catch (e) {
-      // Silencieux : la notif n'est pas critique
-    }
+    } catch (e) {}
 
-    // 3. Mettre à jour le cache
     try {
       const cached = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{}');
       cached.onboardingCompleted = true;
@@ -919,16 +788,13 @@ startBtn.addEventListener('click', async () => {
 
     showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
 
-    // 4. Redirection
     setTimeout(() => {
       window.location.href = 'index.html';
     }, 900);
 
   } catch (error) {
-    // Silencieux
     startBtn.classList.remove('loading');
     startBtn.disabled = false;
-    // Réessayer automatiquement
     setTimeout(() => {
       window.location.href = 'index.html';
     }, 1500);
@@ -964,10 +830,7 @@ onAuthStateChanged(auth, async (user) => {
     await getIdToken(user, true);
   } catch (e) {}
 
-  // Compte à rebours
   updateCountdown();
-
-  // Charger les données
   loadUserData(user);
 });
 
