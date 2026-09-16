@@ -1052,192 +1052,174 @@
   }
 
   // ================================================================
-  // NOTIFICATIONS NON LUES
-  // ================================================================
-  async function checkUnreadNotifications(userId) {
-    try {
-      const q = query(
-        collection(db, 'users', userId, 'notifications'),
-        where('read', '==', false),
-        limit(1)
-      );
-      const snapshot = await getDocs(q);
-      const hasUnread = !snapshot.empty;
-      if (notifDot) notifDot.classList.toggle('show', hasUnread);
-    } catch (e) {
-      
-    }
-
-  // ================================================================
-  // SUBSCRIPTION
-  // ================================================================
-  function isUserPremium(userData) {
-    if (!userData) return false;
-
-    const hasStatus = userData.premium === true ||
-                      userData.isUnlocked === true ||
-                      userData.hasDeposited === true;
-
-    if (!hasStatus) return false;
-
-    // Vérifier la date d'expiration
-    const endDate = toDate(userData.subscriptionEndDate);
-    if (!endDate) return true; // Pas de date = premium à vie
-    return endDate.getTime() > Date.now();
-  }
-
-  function updateSubscriptionDisplay(isPremium, userData) {
-    const reminder = document.getElementById('subscriptionReminder');
-    const subTitle = document.getElementById('subTitle');
-    const subText = document.getElementById('subText');
-    const subExpiry = document.getElementById('subExpiry');
-    const subBtn = document.getElementById('subBtn');
-
-    if (!reminder) return;
-
-    if (!isPremium) {
-      reminder.style.display = 'block';
-      subTitle.textContent = '🔓 Débloque tout ARVEXA School';
-      subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
-      subExpiry.style.display = 'none';
-      subBtn.textContent = 'Voir les offres';
-      subBtn.className = 'sub-btn';
-      subBtn.href = 'abonnement.html';
-      return;
-    }
-
-    const expiry = toDate(userData?.subscriptionEndDate);
-    if (!expiry) {
-      // Premium à vie
-      reminder.style.display = 'none';
-      return;
-    }
-
-    const now = new Date();
-    const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-
-    if (daysLeft <= 0) {
-      // Expiré
-      reminder.style.display = 'block';
-      subTitle.textContent = '⏳ Abonnement expiré';
-      subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
-      subExpiry.style.display = 'none';
-      subBtn.textContent = 'Renouveler maintenant';
-      subBtn.className = 'sub-btn renew';
-      subBtn.href = 'abonnement.html';
-      return;
-    }
-
-    if (daysLeft <= 7) {
-      reminder.style.display = 'block';
-      subTitle.textContent = '⚠️ Abonnement bientôt terminé';
-      subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
-      subExpiry.style.display = 'block';
-      subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
-      subBtn.textContent = 'Renouveler maintenant';
-      subBtn.className = 'sub-btn renew';
-      subBtn.href = 'abonnement.html';
-      return;
-    }
-
-    reminder.style.display = 'none';
-  }
-
-  // ================================================================
-  // AFFICHER LE DASHBOARD
-  // ================================================================
-  function showDashboard() {
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
-  }
-
-  function renderUserData(data) {
-    const firstName = data.firstName || 'Élève';
-    updateGreeting(firstName);
-
-    const premium = isUserPremium(data);
-    updateSubscriptionDisplay(premium, data);
-  }
-
-  // ================================================================
-  // LOAD USER DATA
-  // ================================================================
-  let userData = null;
-  let unsubscribeUser = null;
-  let currentUid = null;
-
-  function loadUserData(user) {
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
-
-    const userRef = doc(db, 'users', user.uid);
-
-    unsubscribeUser = onSnapshot(userRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          userData = docSnap.data();
-          saveUserDataToCache(userData, user.uid);
-          renderUserData(userData);
-          showDashboard();
-          checkUnreadNotifications(user.uid);
-        } else {
-          // Profil introuvable → redirection silencieuse
-          window.location.href = 'register.html';
-        }
-      },
-      (error) => {
-        // Silencieux : utiliser le cache
-        const cached = getCachedUserData(user.uid);
-        if (cached) {
-          userData = cached;
-          renderUserData(cached);
-          showDashboard();
-        } else {
-          showDashboard();
-        }
-      }
+// NOTIFICATIONS NON LUES
+// ================================================================
+async function checkUnreadNotifications(userId) {
+  try {
+    const q = query(
+      collection(db, 'users', userId, 'notifications'),
+      where('read', '==', false),
+      limit(1)
     );
+    const snapshot = await getDocs(q);
+    const hasUnread = !snapshot.empty;
+    if (notifDot) notifDot.classList.toggle('show', hasUnread);
+  } catch (e) {
+    // Silencieux
+  }
+}
+
+// ================================================================
+// SUBSCRIPTION
+// ================================================================
+function isUserPremium(userData) {
+  if (!userData) return false;
+  const hasStatus = userData.premium === true ||
+                    userData.isUnlocked === true ||
+                    userData.hasDeposited === true;
+  if (!hasStatus) return false;
+  const endDate = toDate(userData.subscriptionEndDate);
+  if (!endDate) return true;
+  return endDate.getTime() > Date.now();
+}
+
+function updateSubscriptionDisplay(isPremium, userData) {
+  const reminder = document.getElementById('subscriptionReminder');
+  const subTitle = document.getElementById('subTitle');
+  const subText = document.getElementById('subText');
+  const subExpiry = document.getElementById('subExpiry');
+  const subBtn = document.getElementById('subBtn');
+  if (!reminder) return;
+
+  if (!isPremium) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
+    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Voir les offres';
+    subBtn.className = 'sub-btn';
+    subBtn.href = 'abonnement.html';
+    return;
   }
 
-  // ================================================================
-  // REFRESH
-  // ================================================================
-  async function refreshDashboard() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    // Animation sur le bouton
-    const btn = document.getElementById('refreshBtn');
-    const icon = btn?.querySelector('i');
-    if (icon) {
-      icon.style.transition = 'transform 0.6s ease';
-      icon.style.transform = 'rotate(360deg)';
-      setTimeout(() => {
-        icon.style.transition = 'none';
-        icon.style.transform = 'rotate(0deg)';
-      }, 600);
-    }
-
-    try {
-      // Force le refresh du token
-      await getIdToken(user, true);
-      // Recharge les données
-      loadUserData(user);
-      updateCountdown();
-      renderTip();
-    } catch (e) {
-      // Silencieux
-    }
+  const expiry = toDate(userData?.subscriptionEndDate);
+  if (!expiry) {
+    reminder.style.display = 'none';
+    return;
   }
 
-  // ================================================================
-  // AUTH
-  // ================================================================
-  let isRedirecting = false;
+  const now = new Date();
+  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
 
-  onAuthStateChanged(auth, async (user) => {
+  if (daysLeft <= 0) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⏳ Abonnement expiré';
+    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
+    subExpiry.style.display = 'none';
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  if (daysLeft <= 7) {
+    reminder.style.display = 'block';
+    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
+    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
+    subExpiry.style.display = 'block';
+    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
+    subBtn.textContent = 'Renouveler maintenant';
+    subBtn.className = 'sub-btn renew';
+    subBtn.href = 'abonnement.html';
+    return;
+  }
+
+  reminder.style.display = 'none';
+}
+
+// ================================================================
+// AFFICHER LE DASHBOARD
+// ================================================================
+function showDashboard() {
+  skeletonLoading.style.display = 'none';
+  dynamicContent.style.display = 'block';
+}
+
+function renderUserData(data) {
+  const firstName = data.firstName || 'Élève';
+  updateGreeting(firstName);
+  const premium = isUserPremium(data);
+  updateSubscriptionDisplay(premium, data);
+}
+
+// ================================================================
+// LOAD USER DATA
+// ================================================================
+let userData = null;
+let unsubscribeUser = null;
+let currentUid = null;
+
+function loadUserData(user) {
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
+  }
+  const userRef = doc(db, 'users', user.uid);
+  unsubscribeUser = onSnapshot(userRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        userData = docSnap.data();
+        saveUserDataToCache(userData, user.uid);
+        renderUserData(userData);
+        showDashboard();
+        checkUnreadNotifications(user.uid);
+      } else {
+        window.location.href = 'register.html';
+      }
+    },
+    (error) => {
+      const cached = getCachedUserData(user.uid);
+      if (cached) {
+        userData = cached;
+        renderUserData(cached);
+        showDashboard();
+      } else {
+        showDashboard();
+      }
+    }
+  );
+}
+
+// ================================================================
+// REFRESH
+// ================================================================
+async function refreshDashboard() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const btn = document.getElementById('refreshBtn');
+  const icon = btn?.querySelector('i');
+  if (icon) {
+    icon.style.transition = 'transform 0.6s ease';
+    icon.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+      icon.style.transition = 'none';
+      icon.style.transform = 'rotate(0deg)';
+    }, 600);
+  }
+  try {
+    await getIdToken(user, true);
+    loadUserData(user);
+    updateCountdown();
+    renderTip();
+  } catch (e) {}
+}
+
+// ================================================================
+// AUTH
+// ================================================================
+let isRedirecting = false;
+
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     if (currentUid !== null) {
       currentUid = null;
@@ -1263,75 +1245,56 @@
 
   saveSession(user);
 
-  // ✅ Récupérer les données utilisateur AVANT de vérifier la session
-  let userDataForSession = null;
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    if (userDoc.exists()) {
-      userDataForSession = userDoc.data();
-    }
-  } catch (e) {
-    // Fallback cache
-    const cached = getCachedUserData(user.uid);
-    if (cached) userDataForSession = cached;
-  }
-}
-  }
-
-  // Charger depuis le cache
+  // Cache d'abord (affichage instantané)
   const cached = getCachedUserData(user.uid);
   if (cached) {
     userData = cached;
     renderUserData(cached);
-    renderSubjects();
-    renderTools();
-    renderTip();
-    showDashboard();
-  } else {
-    renderSubjects();
-    renderTools();
-    renderTip();
   }
 
-  // Charger depuis Firestore
+  // Rendu des sections statiques
+  renderSubjects();
+  renderTools();
+  renderTip();
+  showDashboard();
+
+  // Firestore ensuite (temps réel)
   loadUserData(user);
 });
 
-  // ================================================================
-  // ÉVÉNEMENTS
-  // ================================================================
-  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      if (unsubscribeUser) unsubscribeUser();
-      currentUid = null;
-      await signOut(auth);
-      clearSession();
-      window.location.href = 'login.html';
-    } catch (error) {
-      // Silencieux
-    }
-  });
+// ================================================================
+// ÉVÉNEMENTS
+// ================================================================
+document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  e.preventDefault();
+  try {
+    if (unsubscribeUser) unsubscribeUser();
+    currentUid = null;
+    await signOut(auth);
+    clearSession();
+    window.location.href = 'login.html';
+  } catch (error) {}
+});
 
-  document.getElementById('menuToggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('sidebarOverlay').classList.toggle('active');
-  });
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+});
 
-  document.getElementById('sidebarOverlay').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('active');
-  });
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+});
 
-  document.getElementById('notifBtn').addEventListener('click', () => {
-    window.location.href = 'notifications.html';
-  });
+document.getElementById('notifBtn').addEventListener('click', () => {
+  window.location.href = 'notifications.html';
+});
 
-  document.getElementById('profileBtn').addEventListener('click', () => {
-    window.location.href = 'profil.html';
-  });
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'profil.html';
+});
 
-  document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
   </script>
 </body>
 </html>
