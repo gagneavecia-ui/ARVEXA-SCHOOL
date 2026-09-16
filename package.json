@@ -1,8 +1,14 @@
 {
   "name": "arvexa-school",
   "version": "1.0.0",
+  "description": "ARVEXA School - Plateforme d'apprentissage",
   "private": true,
-  "dependencies": {
-    "firebase-admin": "^13.5.0"
-  }
+  "keywords": ["education", "learning", "platform"],
+  "author": "ARVEXA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
