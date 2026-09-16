@@ -763,11 +763,7 @@
     limit,
     getDocs
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-  import {
-  checkAndRegisterSession,
-  updateSessionHeartbeat
-} from "./session-manager.js";
-
+  
   // ================================================================
   // CONFIG
   // ================================================================
@@ -1280,26 +1276,7 @@
     const cached = getCachedUserData(user.uid);
     if (cached) userDataForSession = cached;
   }
-
-  // ✅ Vérifier et enregistrer la session
-  if (userDataForSession) {
-    try {
-      const sessionResult = await checkAndRegisterSession(db, user.uid, userDataForSession);
-      if (!sessionResult.allowed) {
-        await signOut(auth);
-        sessionStorage.setItem('redirectAfterLogin', 'index.html');
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // ✅ Heartbeat toutes les 5 minutes
-      if (window._arvexaHeartbeat) clearInterval(window._arvexaHeartbeat);
-      window._arvexaHeartbeat = setInterval(() => {
-        updateSessionHeartbeat(db, user.uid);
-      }, 5 * 60 * 1000);
-    } catch (e) {
-      // Silencieux
-    }
+}
   }
 
   // Charger depuis le cache

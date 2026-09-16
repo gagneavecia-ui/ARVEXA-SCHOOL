@@ -42,7 +42,7 @@
     }
 
     body {
-      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
       color: var(--text-light);
       font-size: 14px;
@@ -63,10 +63,8 @@
        ============================================================ */
     .gradient-bg {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: -2;
       background: radial-gradient(ellipse 40% 30% at 30% 20%, rgba(26, 58, 42, 0.12) 0%, transparent 70%),
                   radial-gradient(ellipse 30% 20% at 70% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 60%),
@@ -111,7 +109,7 @@
       backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 32px 28px;
+      padding: 32px 26px;
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
@@ -120,9 +118,7 @@
     .onboarding-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
@@ -136,17 +132,17 @@
     .header .icon-big {
       font-size: clamp(48px, 8vw, 64px);
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       animation: iconBounce 2s ease-in-out infinite;
     }
     @keyframes iconBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(5deg); }
     }
     .header .logo {
       font-size: clamp(20px, 3vw, 26px);
       font-weight: 700;
-      font-family: 'Playfair Display', 'Georgia', serif;
+      font-family: 'Playfair Display', Georgia, serif;
       color: var(--text-light);
       letter-spacing: 1px;
     }
@@ -166,7 +162,7 @@
     .header .subtitle {
       font-size: clamp(13px, 1.6vw, 14px);
       color: var(--text-dim);
-      margin-top: 2px;
+      margin-top: 4px;
       font-weight: 300;
     }
 
@@ -180,6 +176,8 @@
       padding: 16px 20px;
       margin: 16px 0 14px;
       transition: var(--transition);
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.2s forwards;
     }
     .user-info .user-name {
       font-size: clamp(17px, 2.2vw, 20px);
@@ -201,6 +199,8 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin: 12px 0 18px;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.3s forwards;
     }
     .stat-item {
       background: rgba(255, 255, 255, 0.02);
@@ -241,12 +241,14 @@
       justify-content: center;
       gap: 6px;
       margin: 10px 0 18px;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.4s forwards;
     }
     .subjects-tags .tag {
       background: rgba(184, 134, 11, 0.06);
       border: 1px solid rgba(184, 134, 11, 0.08);
       border-radius: 20px;
-      padding: 4px 14px;
+      padding: 5px 14px;
       font-size: clamp(10px, 1.2vw, 11px);
       color: var(--accent-bright);
       font-weight: 500;
@@ -255,7 +257,44 @@
     }
     .subjects-tags .tag:hover {
       background: rgba(184, 134, 11, 0.12);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       FEATURES LIST
+       ============================================================ */
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0 20px;
+      text-align: left;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.5s forwards;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      transition: var(--transition);
+    }
+    .feature-item:hover {
+      background: rgba(184, 134, 11, 0.04);
+      border-color: rgba(184, 134, 11, 0.08);
+      transform: translateX(4px);
+    }
+    .feature-item .fi-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .feature-item .fi-text {
+      font-size: clamp(12px, 1.4vw, 13px);
+      color: var(--text-light);
+      font-weight: 500;
     }
 
     /* ============================================================
@@ -281,6 +320,8 @@
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
       min-height: 52px;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.6s forwards;
     }
     .btn-primary::after {
       content: '';
@@ -327,8 +368,36 @@
       font-size: 11px;
       color: var(--text-muted);
       margin-top: 14px;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.7s forwards;
     }
     .secure i { color: var(--success); margin-right: 4px; }
+
+    /* ============================================================
+       COUNTDOWN MINI
+       ============================================================ */
+    .countdown-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(184, 134, 11, 0.06);
+      border: 1px solid rgba(184, 134, 11, 0.1);
+      font-size: 12px;
+      color: var(--text-dim);
+      margin: 0 auto 16px;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeInUp 0.5s ease-out 0.35s forwards;
+    }
+    .countdown-mini strong {
+      color: var(--accent-bright);
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
 
     /* ============================================================
        SKELETON LOADING
@@ -407,6 +476,9 @@
       .subjects-tags .tag { padding: 3px 10px; font-size: 10px; }
       .btn-primary { font-size: 14px; padding: 10px; min-height: 44px; }
       .secure { font-size: 10px; margin-top: 10px; }
+      .feature-item { padding: 8px 12px; }
+      .feature-item .fi-icon { font-size: 16px; }
+      .feature-item .fi-text { font-size: 12px; }
     }
 
     @media (max-width: 360px) {
@@ -424,16 +496,13 @@
       .stat-item .si-value { font-size: 12px; }
       .subjects-tags .tag { font-size: 9px; padding: 2px 8px; }
       .btn-primary { font-size: 13px; padding: 8px; min-height: 40px; }
+      .countdown-mini { font-size: 11px; padding: 6px 12px; }
+      .countdown-mini strong { font-size: 13px; }
     }
 
     @media (min-width: 768px) {
       .onboarding-container { max-width: 520px; }
       .onboarding-card { padding: 40px 36px; }
-    }
-
-    @media (min-width: 1024px) {
-      .onboarding-container { max-width: 560px; }
-      .onboarding-card { padding: 44px 40px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -449,7 +518,6 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
   </style>
 </head>
 <body>
@@ -498,6 +566,12 @@
         <p class="subtitle">Prépare-toi pour le BAC en toute sérénité</p>
       </div>
 
+      <!-- COUNTDOWN -->
+      <div class="countdown-mini">
+        <i class="fas fa-hourglass-half" style="color: var(--accent-bright);"></i>
+        <span>BAC dans <strong id="cdDays">--</strong> jours</span>
+      </div>
+
       <!-- USER INFO -->
       <div class="user-info">
         <div class="user-name" id="userName">Chargement...</div>
@@ -514,7 +588,7 @@
         <div class="stat-item">
           <span class="si-icon">🎯</span>
           <div class="si-label">Objectif</div>
-          <div class="si-value">BAC 2026</div>
+          <div class="si-value">BAC 2027</div>
         </div>
       </div>
 
@@ -524,6 +598,26 @@
         <span class="tag">⚡ Physique</span>
         <span class="tag">🧪 Chimie</span>
         <span class="tag">🧬 SVT</span>
+      </div>
+
+      <!-- FEATURES -->
+      <div class="features-list">
+        <div class="feature-item">
+          <span class="fi-icon">📖</span>
+          <span class="fi-text">Tous les chapitres du programme</span>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">✍️</span>
+          <span class="fi-text">Exercices corrigés détaillés</span>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">📋</span>
+          <span class="fi-text">Sujets BAC avec corrections</span>
+        </div>
+        <div class="feature-item">
+          <span class="fi-icon">🎯</span>
+          <span class="fi-text">Mode examen chronométré</span>
+        </div>
       </div>
 
       <!-- BUTTON -->
@@ -562,18 +656,26 @@
 </script>
 
 <script type="module">
+// ================================================================
+// ONBOARDING — VERSION CORRIGÉE
+// ================================================================
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import {
   getAuth,
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  signOut,
+  getIdToken
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
   getFirestore,
   doc,
   getDoc,
   updateDoc,
+  addDoc,
+  collection,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
@@ -593,138 +695,186 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ================================================================
-// PERSISTANCE
-// ================================================================
 try {
   await setPersistence(auth, browserLocalPersistence);
-  console.log('🔐 Persistance locale activée');
-} catch (e) {
-  console.warn('⚠️ Erreur persistance:', e);
-}
+} catch (e) {}
 
 // ================================================================
-// DOM ELEMENTS
+// DOM
 // ================================================================
 const skeletonLoading = document.getElementById('skeletonLoading');
 const dynamicContent = document.getElementById('dynamicContent');
 const startBtn = document.getElementById('startBtn');
 const userName = document.getElementById('userName');
 const userEmail = document.getElementById('userEmail');
+const cdDays = document.getElementById('cdDays');
+
+const toast = document.getElementById('toast');
+const toastMessage = document.querySelector('.toast-message');
+const toastIcon = document.querySelector('.toast-icon i');
+
+// ================================================================
+// SESSION / CACHE
+// ================================================================
+const USER_DATA_KEY = 'arvexa_user_data';
+const SESSION_KEY = 'arvexa_session';
+
+function clearSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+  } catch (e) {}
+}
+
+function getCachedUserData(currentUid) {
+  try {
+    const cached = JSON.parse(localStorage.getItem(USER_DATA_KEY) || 'null');
+    if (!cached) return null;
+    if (cached._uid && cached._uid !== currentUid) {
+      localStorage.removeItem(USER_DATA_KEY);
+      return null;
+    }
+    return cached;
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveUserDataToCache(data, uid) {
+  try {
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+      ...data,
+      _cachedAt: Date.now(),
+      _uid: uid
+    }));
+  } catch (e) {}
+}
+
+// ================================================================
+// UTILITAIRE — TIMESTAMP
+// ================================================================
+function toDate(value) {
+  if (!value) return null;
+  if (typeof value.toDate === 'function') return value.toDate();
+  if (value.seconds !== undefined) return new Date(value.seconds * 1000);
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+// ================================================================
+// COMPTE À REBOURS
+// ================================================================
+function getExamDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const juneThisYear = new Date(year, 5, 1); // 1er juin
+  if (now < juneThisYear) return juneThisYear;
+  return new Date(year + 1, 5, 1);
+}
+
+function updateCountdown() {
+  const now = new Date();
+  const exam = getExamDate();
+  const diffMs = exam - now;
+  const days = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  cdDays.textContent = days;
+}
+
+// ================================================================
+// VÉRIFICATION COMPTE (bloqué / paused)
+// ================================================================
+function isAccountAccessible(data) {
+  if (!data) return true;
+  const status = data.accountStatus || 'active';
+  return status !== 'blocked' && status !== 'paused';
+}
 
 // ================================================================
 // TOAST
 // ================================================================
 function showToast(message, type = 'success') {
-  const toast = document.getElementById('toast');
-  const toastMessage = document.querySelector('.toast-message');
-  const toastIcon = document.querySelector('.toast-icon i');
-  
   toastMessage.textContent = message;
   toast.className = `toast ${type}`;
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
-  
   clearTimeout(toast._timeout);
   toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
 }
 
 // ================================================================
-// CHARGEMENT DES DONNÉES (Cache + Firestore)
+// AFFICHAGE
 // ================================================================
-function loadFromCache() {
-  try {
-    const cached = localStorage.getItem('arvexa_user_data');
-    if (cached) {
-      const data = JSON.parse(cached);
-      const firstName = data.firstName || '';
-      const lastName = data.lastName || '';
-      const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
-      
-      userName.textContent = fullName;
-      userEmail.textContent = data.email || '';
-      
-      // Si déjà onboardé, rediriger
-      if (data.onboardingCompleted === true) {
-        window.location.href = 'index.html';
-        return true;
-      }
-      
-      return true;
-    }
-  } catch (e) {}
-  return false;
+function showContent(data) {
+  const firstName = data.firstName || '';
+  const lastName = data.lastName || '';
+  const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
+
+  userName.textContent = `Bienvenue, ${fullName} !`;
+  userEmail.textContent = data.email || '';
+
+  skeletonLoading.style.display = 'none';
+  dynamicContent.style.display = 'block';
 }
 
-async function loadFromFirestore(user) {
+// ================================================================
+// CHARGEMENT DONNÉES UTILISATEUR
+// ================================================================
+async function loadUserData(user) {
+  // 1. Cache d'abord
+  const cached = getCachedUserData(user.uid);
+  if (cached) {
+    // Vérifier le statut du compte
+    if (!isAccountAccessible(cached)) {
+      // Compte bloqué ou en pause → redirection silencieuse
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Déjà onboardé → redirection
+    if (cached.onboardingCompleted === true) {
+      window.location.href = 'index.html';
+      return;
+    }
+
+    showContent(cached);
+  }
+
+  // 2. Firestore ensuite
   try {
     const userDoc = await getDoc(doc(db, 'users', user.uid));
-    
+
     if (!userDoc.exists()) {
-      showToast('⚠️ Profil introuvable.', 'error');
-      return false;
+      // Profil introuvable → redirection
+      window.location.href = 'register.html';
+      return;
     }
 
     const data = userDoc.data();
+    saveUserDataToCache(data, user.uid);
 
-    // Mise à jour du cache
-    try {
-      localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-    } catch (e) {}
-
-    // Afficher les infos
-    const firstName = data.firstName || '';
-    const lastName = data.lastName || '';
-    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
-    
-    userName.textContent = fullName;
-    userEmail.textContent = data.email || '';
-
-    // Si déjà onboardé, rediriger
-    if (data.onboardingCompleted === true) {
-      window.location.href = 'index.html';
-      return false;
+    // Vérifier le statut
+    if (!isAccountAccessible(data)) {
+      window.location.href = 'login.html';
+      return;
     }
 
-    // Afficher le contenu
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
+    // Déjà onboardé
+    if (data.onboardingCompleted === true) {
+      window.location.href = 'index.html';
+      return;
+    }
 
-    return true;
+    showContent(data);
 
   } catch (error) {
-    console.error('❌ Erreur Firestore:', error);
-    showToast('Erreur lors du chargement des données.', 'error');
-    return false;
+    // Silencieux : garder le cache si dispo, sinon afficher un minimum
+    if (!cached) {
+      skeletonLoading.style.display = 'none';
+      dynamicContent.style.display = 'block';
+    }
   }
 }
-
-// ================================================================
-// AUTH + DATA LOADING
-// ================================================================
-let authChecked = false;
-
-onAuthStateChanged(auth, async (user) => {
-  if (authChecked) return;
-  authChecked = true;
-
-  if (!user) {
-    window.location.href = 'login.html';
-    return;
-  }
-
-  // 1. Tentative de chargement depuis le cache (instantané)
-  const cacheLoaded = loadFromCache();
-  
-  if (cacheLoaded) {
-    // Cache chargé, afficher le contenu
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
-  }
-
-  // 2. Chargement depuis Firestore (mise à jour)
-  await loadFromFirestore(user);
-});
 
 // ================================================================
 // BOUTON START
@@ -739,35 +889,89 @@ startBtn.addEventListener('click', async () => {
     const user = auth.currentUser;
     if (!user) throw new Error('Non connecté');
 
-    // Marquer onboarding comme terminé
+    // 1. Marquer onboarding terminé
     await updateDoc(doc(db, 'users', user.uid), {
       onboardingCompleted: true,
       onboardingCompletedAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
 
-    // Mise à jour cache
+    // 2. Créer une notification de bienvenue
     try {
-      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      await addDoc(collection(db, 'users', user.uid, 'notifications'), {
+        title: '🎉 Bienvenue sur ARVEXA !',
+        body: 'Ton compte est prêt. Commence par explorer les chapitres et fixe-toi un objectif.',
+        type: 'success',
+        read: false,
+        createdAt: serverTimestamp()
+      });
+    } catch (e) {
+      // Silencieux : la notif n'est pas critique
+    }
+
+    // 3. Mettre à jour le cache
+    try {
+      const cached = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{}');
       cached.onboardingCompleted = true;
-      localStorage.setItem('arvexa_user_data', JSON.stringify(cached));
+      cached._uid = user.uid;
+      localStorage.setItem(USER_DATA_KEY, JSON.stringify(cached));
     } catch (e) {}
 
     showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
 
+    // 4. Redirection
     setTimeout(() => {
       window.location.href = 'index.html';
-    }, 800);
+    }, 900);
 
   } catch (error) {
-    console.error('❌ Erreur:', error);
-    showToast('Une erreur est survenue. Réessaie.', 'error');
+    // Silencieux
     startBtn.classList.remove('loading');
     startBtn.disabled = false;
+    // Réessayer automatiquement
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1500);
   }
 });
 
-console.log('🚀 ARVEXA School — Onboarding (version refactorisée)');
+// ================================================================
+// AUTH
+// ================================================================
+let currentUid = null;
+let isRedirecting = false;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    if (currentUid !== null) {
+      currentUid = null;
+      clearSession();
+    }
+    if (!isRedirecting) {
+      isRedirecting = true;
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 300);
+    }
+    return;
+  }
+
+  if (user.uid === currentUid) return;
+  currentUid = user.uid;
+
+  try {
+    await getIdToken(user, true);
+  } catch (e) {}
+
+  // Compte à rebours
+  updateCountdown();
+
+  // Charger les données
+  loadUserData(user);
+});
+
+console.log('🚀 ARVEXA School — Onboarding');
 </script>
 
 </body>

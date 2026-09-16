@@ -381,163 +381,6 @@
     }
     .secure i { color: var(--success); margin-right: 4px; }
 
-    /* ============================================================
-       MODALE LIMITE APPAREILS
-       ============================================================ */
-    .device-limit-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.3s ease;
-    }
-    .device-limit-overlay.show { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .device-limit-modal {
-      background: linear-gradient(145deg, #141414 0%, #0A0A0A 100%);
-      border: 1px solid rgba(184, 134, 11, 0.25);
-      border-radius: 20px;
-      padding: 32px 26px 24px;
-      max-width: 420px;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(184, 134, 11, 0.1);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    @keyframes slideUp {
-      from { transform: translateY(30px) scale(0.95); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
-    }
-    .device-limit-modal::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
-      background-size: 200% 100%;
-      animation: shimmerText 3s linear infinite;
-    }
-    .device-limit-icon {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 18px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.15), rgba(184, 134, 11, 0.05));
-      border: 1px solid rgba(184, 134, 11, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      animation: iconPulse 2s ease-in-out infinite;
-    }
-    @keyframes iconPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(184, 134, 11, 0.2); }
-      50% { box-shadow: 0 0 0 15px rgba(184, 134, 11, 0); }
-    }
-    .device-limit-title {
-      font-size: 21px;
-      font-weight: 700;
-      font-family: 'Playfair Display', Georgia, serif;
-      color: var(--text-light);
-      text-align: center;
-      margin-bottom: 10px;
-      line-height: 1.25;
-    }
-    .device-limit-message {
-      font-size: 14px;
-      line-height: 1.7;
-      color: var(--text-dim);
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .device-limit-message strong { color: var(--text-light); }
-    .device-limit-list {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .device-limit-list .dl-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text-dim);
-    }
-    .device-limit-list .dl-item .dl-icon { font-size: 16px; }
-    .device-limit-list .dl-item .dl-name {
-      flex: 1;
-      color: var(--text-light);
-      font-weight: 500;
-    }
-    .device-limit-hint {
-      background: rgba(184, 134, 11, 0.06);
-      border: 1px solid rgba(184, 134, 11, 0.15);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: var(--accent-bright);
-      line-height: 1.6;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-    .device-limit-hint i { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
-    .device-limit-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .device-limit-btn {
-      padding: 13px 20px;
-      border-radius: 30px;
-      border: none;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .device-limit-btn.primary {
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A;
-      box-shadow: 0 4px 16px rgba(184, 134, 11, 0.25);
-    }
-    .device-limit-btn.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(184, 134, 11, 0.35);
-    }
-    .device-limit-btn.secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-dim);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .device-limit-btn.secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text-light);
-    }
-
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -568,6 +411,11 @@
     .toast .toast-icon { font-size: 16px; }
     .toast.success .toast-icon { color: var(--success); }
     .toast.error .toast-icon { color: var(--danger); }
+    .toast a {
+      color: var(--accent-bright);
+      text-decoration: underline;
+      font-weight: 600;
+    }
 
     @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
@@ -577,7 +425,6 @@
       .login-header h1 { font-size: 24px; }
       .form-group .input-wrap input { padding: 10px 12px; min-height: 40px; }
       .btn-login { padding: 12px; min-height: 48px; }
-      .device-limit-modal { padding: 26px 20px 20px; }
     }
 
     @media (max-width: 480px) {
@@ -585,8 +432,6 @@
       .login-header h1 { font-size: 22px; }
       .login-options { flex-direction: column; align-items: flex-start; gap: 4px; }
       .forgot-link { font-size: 11px; }
-      .device-limit-title { font-size: 18px; }
-      .device-limit-message { font-size: 13px; }
     }
 
     @media (max-width: 360px) {
@@ -694,50 +539,11 @@
   </div>
 </div>
 
-<!-- ============================================================
-     MODALE LIMITE APPAREILS
-     ============================================================ -->
-<div class="device-limit-overlay" id="deviceLimitModal">
-  <div class="device-limit-modal">
-
-    <div class="device-limit-icon">🔒</div>
-
-    <h3 class="device-limit-title">Limite d'appareils atteinte</h3>
-
-    <p class="device-limit-message" id="deviceLimitMessage">
-      Ton compte permet un nombre limité d'appareils connectés.
-    </p>
-
-    <div class="device-limit-list" id="deviceLimitList"></div>
-
-    <div class="device-limit-hint" id="deviceLimitHint">
-      <i class="fas fa-lightbulb"></i>
-      <div>
-        <strong>Solutions :</strong><br>
-        • Déconnecte-toi d'un autre appareil<br>
-        • Ou passe à <strong>Premium</strong> pour 5 appareils
-      </div>
-    </div>
-
-    <div class="device-limit-actions">
-      <a href="abonnement.html" class="device-limit-btn primary" id="deviceLimitPremiumBtn">
-        <i class="fas fa-crown"></i> Voir Premium
-      </a>
-      <button class="device-limit-btn secondary" id="deviceLimitCloseBtn">
-        Annuler
-      </button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ===== TOAST ===== -->
 <div class="toast" id="toast">
   <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
   <span class="toast-message"></span>
 </div>
 
-<!-- ============================================================ -->
 <script type="importmap">
 {
   "imports": {
@@ -750,7 +556,7 @@
 
 <script type="module">
 // ================================================================
-// LOGIN — SANS VÉRIFICATION EMAIL, AVEC LIMITE D'APPAREILS
+// LOGIN — SANS LIMITE D'APPAREILS
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -769,10 +575,6 @@ import {
   updateDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
-import {
-  checkAndRegisterSession
-} from "./session-manager.js";
 
 // ================================================================
 // CONFIG
@@ -808,13 +610,6 @@ const toast = document.getElementById('toast');
 const toastMessage = document.querySelector('.toast-message');
 const toastIcon = document.querySelector('.toast-icon i');
 
-// Modale limite
-const deviceLimitModal = document.getElementById('deviceLimitModal');
-const deviceLimitMessage = document.getElementById('deviceLimitMessage');
-const deviceLimitList = document.getElementById('deviceLimitList');
-const deviceLimitPremiumBtn = document.getElementById('deviceLimitPremiumBtn');
-const deviceLimitCloseBtn = document.getElementById('deviceLimitCloseBtn');
-
 // ================================================================
 // SESSION CACHE
 // ================================================================
@@ -844,7 +639,7 @@ function clearSession() {
 // ================================================================
 // TOAST
 // ================================================================
-function showToast(message, type = 'success', isHtml = false) {
+function showToast(message, type = 'success', isHtml = false, duration = 4000) {
   if (isHtml) {
     toastMessage.innerHTML = message;
   } else {
@@ -854,7 +649,7 @@ function showToast(message, type = 'success', isHtml = false) {
   toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
   toast.classList.add('show');
   clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 5000);
+  toast._timeout = setTimeout(() => toast.classList.remove('show'), duration);
 }
 
 // ================================================================
@@ -934,7 +729,7 @@ if (savedEmail) {
 let currentUid = null;
 let isRedirecting = false;
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) {
     if (currentUid !== null) {
       currentUid = null;
@@ -960,57 +755,6 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ================================================================
-// MODALE LIMITE APPAREILS
-// ================================================================
-function showDeviceLimitModal(result) {
-  const isPremium = result.maxDevices >= 5;
-
-  if (result.maxDevices === 1) {
-    deviceLimitMessage.innerHTML = `
-      Ton compte <strong>gratuit</strong> permet <strong>1 seul appareil</strong> connecté.
-      Tu as déjà <strong>${result.currentCount} appareil connecté</strong>.
-    `;
-  } else {
-    deviceLimitMessage.innerHTML = `
-      Ton compte <strong>Premium</strong> permet <strong>${result.maxDevices} appareils</strong>.
-      Tu as déjà <strong>${result.currentCount} appareils connectés</strong>.
-    `;
-  }
-
-  let listHtml = '';
-  if (result.sessions && result.sessions.length > 0) {
-    result.sessions.forEach(s => {
-      const icon = s.deviceIcon || '💻';
-      const name = s.deviceInfo || 'Appareil inconnu';
-      listHtml += `
-        <div class="dl-item">
-          <span class="dl-icon">${icon}</span>
-          <span class="dl-name">${name}</span>
-        </div>
-      `;
-    });
-  }
-  deviceLimitList.innerHTML = listHtml;
-
-  if (isPremium) {
-    deviceLimitPremiumBtn.style.display = 'none';
-  } else {
-    deviceLimitPremiumBtn.style.display = 'flex';
-  }
-
-  deviceLimitModal.classList.add('show');
-}
-
-function hideDeviceLimitModal() {
-  deviceLimitModal.classList.remove('show');
-}
-
-deviceLimitCloseBtn.addEventListener('click', hideDeviceLimitModal);
-deviceLimitModal.addEventListener('click', (e) => {
-  if (e.target === deviceLimitModal) hideDeviceLimitModal();
-});
-
-// ================================================================
 // SOUMISSION
 // ================================================================
 let isSubmitting = false;
@@ -1032,7 +776,7 @@ form.addEventListener('submit', async (e) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // 2. Récupérer les données utilisateur
+    // 2. Vérifier que le profil existe
     const userRef = doc(db, 'users', user.uid);
     const userDoc = await getDoc(userRef);
 
@@ -1048,13 +792,19 @@ form.addEventListener('submit', async (e) => {
 
     const userData = userDoc.data();
 
-    // 3. VÉRIFIER LA LIMITE D'APPAREILS
-    const sessionResult = await checkAndRegisterSession(db, user.uid, userData);
-
-    if (!sessionResult.allowed) {
-      // Limite atteinte
+    // 3. Vérifier le statut du compte
+    if (userData.accountStatus === 'blocked') {
       await signOut(auth);
-      showDeviceLimitModal(sessionResult);
+      showToast('❌ Ton compte est bloqué. Contacte le support.', 'error', false, 6000);
+      isSubmitting = false;
+      loginBtn.disabled = false;
+      loginBtn.classList.remove('loading');
+      return;
+    }
+
+    if (userData.accountStatus === 'paused') {
+      await signOut(auth);
+      showToast('⏸️ Ton compte est en pause. Contacte le support.', 'error', false, 6000);
       isSubmitting = false;
       loginBtn.disabled = false;
       loginBtn.classList.remove('loading');
@@ -1086,7 +836,7 @@ form.addEventListener('submit', async (e) => {
 
     switch (error.code) {
       case 'auth/user-not-found':
-        message = '❌ Aucun compte trouvé. <a href="register.html" style="color:var(--accent-bright);text-decoration:underline">Créer un compte</a>';
+        message = '❌ Aucun compte trouvé. <a href="register.html">Créer un compte</a>';
         isHtml = true;
         break;
       case 'auth/wrong-password':
@@ -1106,7 +856,7 @@ form.addEventListener('submit', async (e) => {
         message = `❌ ${error.message}`;
     }
 
-    showToast(message, 'error', isHtml);
+    showToast(message, 'error', isHtml, 6000);
 
     loginBtn.disabled = false;
     loginBtn.classList.remove('loading');
@@ -1114,6 +864,8 @@ form.addEventListener('submit', async (e) => {
     isSubmitting = false;
   }
 });
+
+console.log('🚀 ARVEXA School — Login (sans limite d\'appareils)');
 </script>
 
 </body>

@@ -361,144 +361,6 @@
     .badge-item.locked { opacity: 0.4; }
     .badge-item i { font-size: clamp(11px, 1.2vw, 14px); }
 
-    /* MES APPAREILS */
-    .devices-section {
-      padding: 0 20px 14px;
-    }
-    .devices-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .devices-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .devices-title i { color: var(--accent-bright); font-size: 13px; }
-    .devices-count {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--accent-bright);
-      background: rgba(184, 134, 11, 0.08);
-      padding: 2px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(184, 134, 11, 0.12);
-    }
-    .devices-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .device-loading {
-      text-align: center;
-      padding: 12px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .device-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 10px;
-      transition: var(--transition);
-    }
-    .device-item.current {
-      border-color: rgba(45, 125, 90, 0.2);
-      background: rgba(45, 125, 90, 0.04);
-    }
-    .device-item:hover { background: rgba(255,255,255,0.04); }
-    .device-icon {
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .device-info {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .device-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-light);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .device-current-badge {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--success);
-      background: rgba(45, 125, 90, 0.12);
-      padding: 1px 8px;
-      border-radius: 8px;
-      border: 1px solid rgba(45, 125, 90, 0.2);
-    }
-    .device-seen {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-    .device-action {
-      padding: 6px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(184, 92, 58, 0.15);
-      background: rgba(184, 92, 58, 0.06);
-      color: var(--danger);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-    }
-    .device-action:hover { background: rgba(184, 92, 58, 0.15); }
-    .device-empty {
-      text-align: center;
-      padding: 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      background: rgba(255,255,255,0.02);
-      border-radius: 10px;
-    }
-    .device-upgrade-hint {
-      margin-top: 8px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      background: rgba(184, 134, 11, 0.04);
-      border: 1px solid rgba(184, 134, 11, 0.1);
-      font-size: 12px;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .device-upgrade-hint i {
-      color: var(--accent-bright);
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .device-upgrade-hint strong { color: var(--text-light); }
-    .device-upgrade-hint a {
-      color: var(--accent-bright);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
     /* INFO */
     .profile-info {
       padding: 0 20px 12px;
@@ -1045,19 +907,6 @@
             <div class="badges-grid" id="badgesGrid"></div>
           </div>
 
-          <!-- MES APPAREILS -->
-          <div class="devices-section">
-            <div class="devices-header">
-              <span class="devices-title">
-                <i class="fas fa-mobile-screen"></i> Mes appareils
-              </span>
-              <span class="devices-count" id="devicesCount">—</span>
-            </div>
-            <div class="devices-list" id="devicesList">
-              <div class="device-loading">Chargement...</div>
-            </div>
-          </div>
-
           <!-- INFO -->
           <div class="profile-info">
             <div class="info-row">
@@ -1158,14 +1007,6 @@
     updateDoc,
     serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
-  import {
-    getActiveSessions,
-    revokeSession,
-    getLocalSessionId,
-    formatLastSeen,
-    getMaxDevices
-  } from "./session-manager.js";
 
   // ================================================================
   // CONFIG
@@ -1362,95 +1203,6 @@
         ${b.emoji} ${b.label}
       </span>
     `).join('');
-  }
-
-  // ================================================================
-  // MES APPAREILS
-  // ================================================================
-  async function renderDevices(data) {
-    const list = document.getElementById('devicesList');
-    const count = document.getElementById('devicesCount');
-    if (!list || !count) return;
-
-    const user = auth.currentUser;
-    if (!user) return;
-
-    try {
-      const sessions = await getActiveSessions(db, user.uid);
-      const maxDevices = getMaxDevices(data);
-      const currentSessionId = getLocalSessionId();
-
-      count.textContent = `${sessions.length} / ${maxDevices}`;
-
-      if (sessions.length === 0) {
-        list.innerHTML = `<div class="device-empty">Aucun appareil enregistré</div>`;
-        return;
-      }
-
-      let html = '';
-      sessions.forEach(s => {
-        const isCurrent = s.id === currentSessionId;
-        const icon = s.deviceIcon || '💻';
-        const name = s.deviceInfo || 'Appareil inconnu';
-        const lastSeen = formatLastSeen(s.lastSeen);
-
-        html += `
-          <div class="device-item ${isCurrent ? 'current' : ''}">
-            <span class="device-icon">${icon}</span>
-            <div class="device-info">
-              <div class="device-name">
-                ${name}
-                ${isCurrent ? '<span class="device-current-badge">Actuel</span>' : ''}
-              </div>
-              <div class="device-seen">
-                ${isCurrent ? '🟢 En ligne' : `Dernière activité : ${lastSeen}`}
-              </div>
-            </div>
-            ${!isCurrent ? `
-              <button class="device-action" data-session-id="${s.id}">
-                <i class="fas fa-xmark"></i> Déconnecter
-              </button>
-            ` : ''}
-          </div>
-        `;
-      });
-
-      if (maxDevices === 1) {
-        html += `
-          <div class="device-upgrade-hint">
-            <i class="fas fa-crown"></i>
-            <div>
-              Passe à <strong>Premium</strong> pour connecter jusqu'à 5 appareils.
-              <a href="abonnement.html">Voir Premium →</a>
-            </div>
-          </div>
-        `;
-      }
-
-      list.innerHTML = html;
-
-      list.querySelectorAll('.device-action').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const sessionId = btn.dataset.sessionId;
-          window.arvexaConfirm({
-            title: 'Déconnecter cet appareil ?',
-            message: 'Cet appareil devra se reconnecter pour accéder à ton compte.',
-            icon: '🔌',
-            confirmText: 'Déconnecter',
-            variant: 'danger',
-            onConfirm: async () => {
-              const ok = await revokeSession(db, user.uid, sessionId);
-              if (ok) {
-                renderDevices(data);
-              }
-            }
-          });
-        });
-      });
-
-    } catch (e) {
-      list.innerHTML = `<div class="device-empty">Erreur de chargement</div>`;
-    }
   }
 
   // ================================================================
