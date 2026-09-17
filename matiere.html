@@ -949,14 +949,16 @@
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-    getFirestore,
-    doc,
-    getDoc,
-    onSnapshot,
-    collection,
-    query,
-    orderBy
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  initializeFirestore,
+  persistentLocalCache,
+  persistentSingleTabManager,
+  doc,
+  getDoc,
+  onSnapshot,
+  collection,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG FIREBASE
@@ -971,9 +973,15 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const auth = getAuth(app);
 
+// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager()
+  })
+});
+    
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
@@ -1490,17 +1498,42 @@
 
           if (newPremium !== isPremium) {
             isPremium = newPremium;
-            // Re-render avec le nouveau statut
             if (chapters.length > 0) renderChapters();
           }
+
+          try {
+            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+          } catch (e) {}
+        } else {
+          // ⚡ Pas de doc frais → utiliser le cache
+          try {
+            const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+            if (cached && Object.keys(cached).length > 0) {
+              const newPremium = isUserPremium(cached);
+              if (newPremium !== isPremium) {
+                isPremium = newPremium;
+                if (chapters.length > 0) renderChapters();
+              }
+            }
+          } catch (e) {}
         }
       },
       (error) => {
-        // Silencieux : on garde le cache
+        // ⚡ En cas d'erreur (offline), utiliser le cache
+        try {
+          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+          if (cached && Object.keys(cached).length > 0) {
+            const newPremium = isUserPremium(cached);
+            if (newPremium !== isPremium) {
+              isPremium = newPremium;
+              if (chapters.length > 0) renderChapters();
+            }
+          }
+        } catch (e) {}
       }
     );
   }
-
+    
   // ================================================================
   // REFRESH
   // ================================================================
