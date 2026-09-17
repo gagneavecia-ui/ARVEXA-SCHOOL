@@ -1190,13 +1190,15 @@
     getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-    getFirestore,
-    doc,
-    onSnapshot,
-    updateDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
+  initializeFirestore,
+  persistentLocalCache,
+  persistentSingleTabManager,
+  doc,
+  onSnapshot,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+    
   // ================================================================
   // CONFIG
   // ================================================================
@@ -1210,8 +1212,14 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager()
+  })
+});
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -1552,33 +1560,41 @@
   // CHARGEMENT UTILISATEUR
   // ================================================================
   function loadUserData(user) {
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
+  }
 
-    const userRef = doc(db, 'users', user.uid);
+  const userRef = doc(db, 'users', user.uid);
 
-    unsubscribeUser = onSnapshot(userRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          saveUserDataToCache(data, user.uid);
-          renderProfile(data);
-        } else {
-          window.location.href = 'register.html';
-        }
-      },
-      (error) => {
-        const cached = getCachedUserData(user.uid);
-        if (cached) {
-          renderProfile(cached);
-        } else {
-          skeletonLoading.style.display = 'none';
-          dynamicContent.style.display = 'block';
-        }
+  unsubscribeUser = onSnapshot(userRef,
+    (docSnap) => {
+      // ⚡ Vérifier le cache AVANT de rediriger
+      const cached = getCachedUserData(user.uid);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        saveUserDataToCache(data, user.uid);
+        renderProfile(data);
+      } else if (cached) {
+        // ⚡ Pas de doc frais MAIS cache disponible → utiliser le cache
+        renderProfile(cached);
+      } else {
+        // ⚡ Vraiment introuvable ET pas de cache → rediriger
+        window.location.href = 'register.html';
       }
-    );
+    },
+    (error) => {
+      // ⚡ En cas d'erreur (offline), utiliser le cache
+      const cached = getCachedUserData(user.uid);
+      if (cached) {
+        renderProfile(cached);
+      } else {
+        skeletonLoading.style.display = 'none';
+        dynamicContent.style.display = 'block';
+      }
+    }
+  );
   }
 
   // ================================================================
