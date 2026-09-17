@@ -294,6 +294,217 @@
       font-size: 13px; color: var(--text-muted);
     }
 
+        /* ============================================================
+       SABLIER ANIMÉ — Contenu en préparation
+       ============================================================ */
+    .hourglass-wrap {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Halo lumineux pulsant */
+    .hourglass-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        rgba(224, 184, 74, 0.25) 0%,
+        rgba(224, 184, 74, 0.08) 40%,
+        transparent 70%
+      );
+      animation: hourglassHalo 3s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes hourglassHalo {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+    }
+
+    /* Sablier principal — rotation subtile */
+    .hourglass-svg {
+      width: 72px;
+      height: 72px;
+      position: relative;
+      z-index: 1;
+      animation: hourglassTilt 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px rgba(224, 184, 74, 0.4));
+    }
+
+    @keyframes hourglassTilt {
+      0%, 100% { transform: rotate(-3deg); }
+      50% { transform: rotate(3deg); }
+    }
+
+    /* Structure du sablier */
+    .hourglass-svg .frame {
+      stroke: var(--accent-bright);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .hourglass-svg .glass {
+      fill: rgba(224, 184, 74, 0.08);
+      stroke: rgba(224, 184, 74, 0.4);
+      stroke-width: 1.5;
+    }
+
+    /* Sable du haut (diminue) */
+    .hourglass-svg .sand-top {
+      fill: var(--accent-bright);
+      animation: sandTopDrain 4s ease-in-out infinite;
+      transform-origin: center top;
+    }
+
+    @keyframes sandTopDrain {
+      0%, 10% {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+      80%, 90% {
+        transform: scaleY(0.05);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+    }
+
+    /* Filet de sable qui coule au centre */
+    .hourglass-svg .sand-stream {
+      fill: var(--accent-bright);
+      animation: sandStream 4s ease-in-out infinite;
+    }
+
+    @keyframes sandStream {
+      0%, 15% {
+        opacity: 0.9;
+      }
+      75%, 85% {
+        opacity: 0.9;
+      }
+      95%, 100% {
+        opacity: 0;
+      }
+    }
+
+    /* Sable du bas (augmente) */
+    .hourglass-svg .sand-bottom {
+      fill: var(--accent-bright);
+      animation: sandBottomFill 4s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+
+    @keyframes sandBottomFill {
+      0%, 10% {
+        transform: scaleY(0.1);
+        opacity: 0.8;
+      }
+      80%, 90% {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scaleY(0.1);
+        opacity: 0.8;
+      }
+    }
+
+    /* Particules qui tombent */
+    .hourglass-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--accent-bright);
+      box-shadow: 0 0 6px var(--accent-bright);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hourglass-particle:nth-child(1) {
+      left: 50%;
+      top: 35%;
+      animation: particleDrop 2.5s ease-in 0s infinite;
+    }
+    .hourglass-particle:nth-child(2) {
+      left: 48%;
+      top: 35%;
+      animation: particleDrop 2.5s ease-in 0.6s infinite;
+    }
+    .hourglass-particle:nth-child(3) {
+      left: 52%;
+      top: 35%;
+      animation: particleDrop 2.5s ease-in 1.2s infinite;
+    }
+    .hourglass-particle:nth-child(4) {
+      left: 50%;
+      top: 35%;
+      animation: particleDrop 2.5s ease-in 1.8s infinite;
+    }
+
+    @keyframes particleDrop {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.5);
+      }
+      10% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      80% {
+        opacity: 1;
+        transform: translateY(28px) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(35px) scale(0.4);
+      }
+    }
+
+    /* Version claire : adapter les couleurs */
+    html[data-theme="light"] .hourglass-wrap::before {
+      background: radial-gradient(
+        circle,
+        rgba(184, 134, 11, 0.3) 0%,
+        rgba(184, 134, 11, 0.1) 40%,
+        transparent 70%
+      );
+    }
+
+    html[data-theme="light"] .hourglass-svg {
+      filter: drop-shadow(0 0 12px rgba(184, 134, 11, 0.5));
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .hourglass-wrap {
+        width: 84px;
+        height: 84px;
+        margin-bottom: 16px;
+      }
+      .hourglass-svg {
+        width: 60px;
+        height: 60px;
+      }
+    }
+
     .content-unavailable {
       text-align: center; padding: 60px 24px;
       display: flex; flex-direction: column;
@@ -1941,30 +2152,104 @@
   // ================================================================
   // CONTENU INDISPONIBLE
   // ================================================================
-  function showContentUnavailable() {
-    contentBody.innerHTML = `
-      <div class="content-unavailable">
-        <div class="cu-icon">📚</div>
-        <h2>Contenu en préparation</h2>
-        <p>Cette partie sera bientôt disponible. Merci de ta patience !</p>
-        <div class="cu-actions">
-          <a href="chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}" class="cu-btn primary">
-            <i class="fas fa-arrow-left"></i> Retour au chapitre
-          </a>
-          <a href="matiere.html?subject=${subject}" class="cu-btn">
-            <i class="fas fa-list"></i> Voir les chapitres
-          </a>
-        </div>
-      </div>
-    `;
-    pageTitle.textContent = 'Contenu en préparation';
-    document.title = 'ARVEXA - Contenu en préparation';
-    prevBtn.style.display = 'none';
-    nextBtn.style.display = 'none';
-    partCounter.style.display = 'none';
-    notesBtn.style.display = 'none';
-    if (ttsBtn) ttsBtn.style.display = 'none';
+ function showContentUnavailable() {
+  // Numéro de la partie (index 0 → affichage 1)
+  const partNumber = currentIndex + 1;
+
+  // Configuration selon l'onglet
+  const tabConfig = {
+    cours: {
+      titleLabel: 'Partie',
+      tabName: 'Cours',
+      description: `La partie ${partNumber} du cours de ce chapitre sera bientôt disponible.`,
+      backLabel: 'Retour au cours',
+      backIcon: 'fa-arrow-left',
+      listLabel: 'Voir les autres parties',
+      listIcon: 'fa-book'
+    },
+    exercices: {
+      titleLabel: 'Exercice',
+      tabName: 'Exercices',
+      description: `L'exercice ${partNumber} de ce chapitre sera bientôt disponible.`,
+      backLabel: 'Retour aux exercices',
+      backIcon: 'fa-arrow-left',
+      listLabel: 'Voir les autres exercices',
+      listIcon: 'fa-pen-to-square'
+    },
+    corrections: {
+      titleLabel: 'Correction',
+      tabName: 'Corrections',
+      description: `La correction ${partNumber} de ce chapitre sera bientôt disponible.`,
+      backLabel: 'Retour aux corrections',
+      backIcon: 'fa-arrow-left',
+      listLabel: 'Voir les autres corrections',
+      listIcon: 'fa-check-double'
+    }
+  };
+
+  const cfg = tabConfig[tab] || tabConfig.cours;
+
+  // Construire le titre
+  let title;
+  if (tab === 'cours') {
+    title = `Partie ${partNumber} — Cours`;
+  } else if (tab === 'exercices') {
+    title = `Exercice ${partNumber}`;
+  } else if (tab === 'corrections') {
+    title = `Correction ${partNumber}`;
+  } else {
+    title = `Partie ${partNumber}`;
   }
+
+  // SVG Sablier animé
+  const hourglassSVG = `
+    <div class="hourglass-wrap">
+      <span class="hourglass-particle"></span>
+      <span class="hourglass-particle"></span>
+      <span class="hourglass-particle"></span>
+      <span class="hourglass-particle"></span>
+      <svg class="hourglass-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Contour supérieur -->
+        <path class="frame" d="M 20 15 L 80 15" />
+        <!-- Contour inférieur -->
+        <path class="frame" d="M 20 85 L 80 85" />
+        <!-- Verre du haut (triangle inversé) -->
+        <path class="glass" d="M 22 17 L 78 17 L 50 50 Z" />
+        <!-- Verre du bas (triangle) -->
+        <path class="glass" d="M 50 50 L 78 83 L 22 83 Z" />
+        <!-- Sable du haut -->
+        <path class="sand-top" d="M 26 20 L 74 20 L 50 47 Z" />
+        <!-- Filet de sable au centre -->
+        <rect class="sand-stream" x="48.5" y="47" width="3" height="8" />
+        <!-- Sable du bas -->
+        <path class="sand-bottom" d="M 50 53 L 74 80 L 26 80 Z" />
+      </svg>
+    </div>
+  `;
+
+  contentBody.innerHTML = `
+    <div class="content-unavailable">
+      ${hourglassSVG}
+      <h2>${title} en préparation</h2>
+      <p>${cfg.description}</p>
+      <div class="cu-actions">
+        <a href="chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}" class="cu-btn primary">
+          <i class="fas ${cfg.backIcon}"></i> ${cfg.backLabel}
+        </a>
+        <a href="matiere.html?subject=${subject}" class="cu-btn">
+          <i class="fas ${cfg.listIcon}"></i> ${cfg.listLabel}
+        </a>
+      </div>
+    </div>
+  `;
+  pageTitle.textContent = `${title} en préparation`;
+  document.title = `ARVEXA - ${title} en préparation`;
+  prevBtn.style.display = 'none';
+  nextBtn.style.display = 'none';
+  partCounter.style.display = 'none';
+  notesBtn.style.display = 'none';
+  if (ttsBtn) ttsBtn.style.display = 'none';
+}
 
   // ================================================================
   // CHARGEMENT
