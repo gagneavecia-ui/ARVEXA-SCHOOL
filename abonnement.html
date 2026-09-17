@@ -2018,35 +2018,35 @@ function openModal() {
   document.body.style.overflow = 'hidden';
 }
 
-fonction  closeModal ( )  {
-  modal.classList.remove ( ' show ' ) ;​​
-  document.body.style.overflow = ' ' ;​​​​​
-  confirmerBtn.classList.remove ( ' loading ' ) ;​​
-  confirmBtn.disabled = false ;​​
+function closeModal() {
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+  confirmBtn.classList.remove('loading');
+  confirmBtn.disabled = false;
 }
 
 // ================================================================
 // IDENTIFIANT
 // ================================================================
-fonction  generateRequestId ( )  {
-  const  timestamp = Date . now ( ) . toString ( 36 ) . toUpperCase ( ) ;
-  const  random = Math.random ( ) . toString ( 36 ) .substring ( 2 , 6 ) .toUpperCase ( ) ;​​​​
-  renvoyer  'ARV-' + horodatage + '-' + aléatoire ;
+function generateRequestId() {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return 'ARV-' + timestamp + '-' + random;
 }
 
 // ================================================================
 // ENVOI WHATSAPP + FIRESTORE
 // ================================================================
- fonction  asynchrone sendToWhatsApp ( )  {
-  si  ( estAbonné )  retourner ;
+async function sendToWhatsApp() {
+  if (isSubscribing) return;
 
-  const  fullName = fullNameInput.value.trim ( ) ;​​​​
-  const  whatsapp = whatsappInput.value.trim ( ) . replace ( /\ s / g , ' ' ) ;
-  const  display = getPrice ( ) ;
-  const  économies = obtenirÉpargne ( ) ;
-  const  planName = currentPlan === 'mensuel' ? 'Mensuel' : 'Annuel' ;
+  const fullName = fullNameInput.value.trim();
+  const whatsapp = whatsappInput.value.trim().replace(/\s/g, '');
+  const display = getPrice();
+  const savings = getSavings();
+  const planName = currentPlan === 'monthly' ? 'Mensuel' : 'Annuel';
   const requestId = generateRequestId();
-
+  
   if (!selectedPaymentMethod) {
     alert('Choisis un mode de paiement');
     return;
@@ -2289,7 +2289,6 @@ function loadUserData(user) {
     }
   }
 );
-}
   
 // ================================================================
 // AUTH
