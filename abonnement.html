@@ -13,6 +13,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -118,7 +119,7 @@
     .sidebar .nav-bottom a:hover { color: var(--text-dim); }
 
     /* ============================================================
-       MAIN CONTENT / HEADER
+       MAIN / HEADER
        ============================================================ */
     .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
 
@@ -158,59 +159,35 @@
     }
 
     /* ============================================================
-       HERO SECTION
+       HERO
        ============================================================ */
-    .hero-section {
-      text-align: center;
-      padding: 12px 0 8px;
-    }
+    .hero-section { text-align: center; padding: 12px 0 8px; }
     .hero-section .hero-badge {
-      display: inline-block;
-      padding: 4px 16px;
-      border-radius: 20px;
-      background: rgba(184, 134, 11, 0.1);
-      border: 1px solid rgba(184, 134, 11, 0.12);
-      color: var(--accent-bright);
-      font-size: 11px;
-      font-weight: 600;
-      margin-bottom: 8px;
+      display: inline-block; padding: 4px 16px; border-radius: 20px;
+      background: rgba(184, 134, 11, 0.1); border: 1px solid rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright); font-size: 11px; font-weight: 600; margin-bottom: 8px;
     }
     .hero-section .hero-badge i { margin-right: 4px; }
     .hero-section h1 {
-      font-size: clamp(28px, 5vw, 40px);
-      font-weight: 800;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
-      line-height: 1.1;
+      font-size: clamp(28px, 5vw, 40px); font-weight: 800;
+      font-family: 'Playfair Display', serif; color: var(--text-light); line-height: 1.1;
     }
     .hero-section h1 span { color: var(--accent-bright); }
     .hero-section .hero-sub {
-      font-size: clamp(14px, 1.8vw, 18px);
-      color: var(--text-dim);
-      margin-top: 6px;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      font-size: clamp(14px, 1.8vw, 18px); color: var(--text-dim);
+      margin-top: 6px; max-width: 600px; margin-left: auto; margin-right: auto;
     }
     .hero-section .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-top: 12px;
-      flex-wrap: wrap;
+      display: flex; justify-content: center; gap: 24px; margin-top: 12px; flex-wrap: wrap;
     }
     .hero-section .hero-stats .stat {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted);
     }
     .hero-section .hero-stats .stat i { color: var(--accent-bright); }
     .hero-section .hero-stats .stat strong { color: var(--text-light); }
 
     /* ============================================================
-       STATUS SECTION
+       STATUS
        ============================================================ */
     .status-section {
       background: rgba(255,255,255,0.02);
@@ -218,11 +195,8 @@
       border-radius: var(--radius);
       padding: 16px 20px;
       margin: 12px 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
     }
     .status-section .status-left { display: flex; align-items: center; gap: 12px; }
     .status-section .status-left .status-icon {
@@ -247,18 +221,14 @@
        CARTE PRINCIPALE
        ============================================================ */
     .sub-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(10px);
+      background: var(--bg-card); backdrop-filter: blur(10px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 28px 24px;
-      margin: 0 auto;
-      position: relative;
-      overflow: hidden;
+      padding: 28px 24px; margin: 0 auto;
+      position: relative; overflow: hidden;
     }
     .sub-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
     }
 
@@ -347,8 +317,7 @@
     }
     .benefits-section .benefits-title span { color: var(--accent-bright); }
     .benefits-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px 16px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
     }
     .benefits-grid .item {
       display: flex; align-items: center; gap: 10px;
@@ -363,19 +332,11 @@
     }
     .benefits-grid .item .icon.gold { background: rgba(184,134,11,0.08); color: var(--accent-bright); }
     .benefits-grid .item .icon.green { background: rgba(45,125,90,0.08); color: var(--success); }
-    .benefits-grid .item .icon.blue { background: rgba(74,175,224,0.08); color: #4AAFE0; }
     .benefits-grid .item .icon.purple { background: rgba(155,89,182,0.08); color: #9B59B6; }
     .benefits-grid .item .icon.orange { background: rgba(212,160,23,0.08); color: #D4A017; }
-    .benefits-grid .item .icon.red { background: rgba(184,92,58,0.08); color: #D97A3A; }
-    .benefits-grid .item .text {
-      display: flex; flex-direction: column;
-    }
-    .benefits-grid .item .text .name {
-      font-size: 13px; font-weight: 500; color: var(--text-light);
-    }
-    .benefits-grid .item .text .desc {
-      font-size: 11px; color: var(--text-muted);
-    }
+    .benefits-grid .item .text { display: flex; flex-direction: column; }
+    .benefits-grid .item .text .name { font-size: 13px; font-weight: 500; color: var(--text-light); }
+    .benefits-grid .item .text .desc { font-size: 11px; color: var(--text-muted); }
 
     /* ============================================================
        CODE PROMO
@@ -395,9 +356,7 @@
       outline: none; transition: var(--transition);
       text-transform: uppercase; letter-spacing: 1px;
     }
-    .promo-row input::placeholder {
-      color: var(--text-muted); text-transform: none; letter-spacing: 0;
-    }
+    .promo-row input::placeholder { color: var(--text-muted); text-transform: none; letter-spacing: 0; }
     .promo-row input:focus { border-color: rgba(184, 134, 11, 0.2); }
     .promo-row input.success { border-color: var(--success); background: rgba(45,125,90,0.05); }
     .promo-row input.error { border-color: var(--danger); background: rgba(184,92,58,0.05); }
@@ -410,9 +369,7 @@
     }
     .promo-row .btn-apply:hover { background: rgba(255,255,255,0.1); color: var(--text-light); }
     .promo-row .btn-apply.applied { background: rgba(45,125,90,0.15); color: var(--success); }
-    .promo-message {
-      font-size: 12px; margin-top: 6px; min-height: 20px;
-    }
+    .promo-message { font-size: 12px; margin-top: 6px; min-height: 20px; }
     .promo-message.success { color: var(--success); }
     .promo-message.error { color: var(--danger); }
     .promo-message.info { color: var(--accent-bright); }
@@ -432,8 +389,7 @@
       box-shadow: 0 4px 24px rgba(184, 134, 11, 0.15);
     }
     .btn-subscribe-main::after {
-      content: '';
-      position: absolute; top: -50%; left: -50%;
+      content: ''; position: absolute; top: -50%; left: -50%;
       width: 200%; height: 200%;
       background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
       transform: rotate(45deg) translateX(-100%);
@@ -461,26 +417,15 @@
        ÉCRAN EN ATTENTE
        ============================================================ */
     .pending-screen-content {
-      text-align: center;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      min-height: 60vh;
-      justify-content: center;
+      text-align: center; padding: 40px 20px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; min-height: 60vh; justify-content: center;
     }
     .pending-icon-wrap {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: rgba(212,160,23,0.1);
-      border: 2px solid rgba(212,160,23,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 44px;
-      color: var(--warning);
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(212,160,23,0.1); border: 2px solid rgba(212,160,23,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; color: var(--warning);
       animation: pulsePending 2s ease-in-out infinite;
     }
     @keyframes pulsePending {
@@ -488,16 +433,12 @@
       50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(212,160,23,0); }
     }
     .pending-screen-content h1 {
-      font-size: clamp(22px, 4vw, 28px);
-      font-weight: 700;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
+      font-size: clamp(22px, 4vw, 28px); font-weight: 700;
+      font-family: 'Playfair Display', serif; color: var(--text-light);
     }
     .pending-screen-content p {
-      font-size: clamp(13px, 1.5vw, 15px);
-      color: var(--text-dim);
-      max-width: 460px;
-      line-height: 1.7;
+      font-size: clamp(13px, 1.5vw, 15px); color: var(--text-dim);
+      max-width: 460px; line-height: 1.7;
     }
     .pending-screen-content p strong { color: var(--accent-bright); }
 
@@ -505,67 +446,39 @@
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: var(--radius);
-      padding: 18px 22px;
-      max-width: 400px;
-      width: 100%;
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      padding: 18px 22px; max-width: 400px; width: 100%;
+      text-align: left; display: flex; flex-direction: column; gap: 10px;
     }
     .pending-info-card .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      gap: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; gap: 10px;
     }
     .pending-info-card .info-row .label {
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--text-muted); display: flex; align-items: center; gap: 6px;
     }
     .pending-info-card .info-row .label i { color: var(--accent-bright); font-size: 12px; }
     .pending-info-card .info-row .value {
-      color: var(--text-light);
-      font-weight: 600;
-      text-align: right;
-      word-break: break-all;
+      color: var(--text-light); font-weight: 600;
+      text-align: right; word-break: break-all;
     }
     .pending-info-card .info-row .value.ref {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      color: var(--accent-bright);
-      letter-spacing: 0.5px;
+      font-family: 'Courier New', monospace; font-size: 12px;
+      color: var(--accent-bright); letter-spacing: 0.5px;
     }
 
     .pending-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 400px;
-      width: 100%;
-      margin-top: 8px;
+      display: flex; flex-direction: column; gap: 10px;
+      max-width: 400px; width: 100%; margin-top: 8px;
     }
     .pending-actions .btn-action {
-      padding: 13px 20px;
-      border-radius: 30px;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
+      padding: 13px 20px; border-radius: 30px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: var(--transition); font-family: 'Inter', sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; text-decoration: none;
     }
     .pending-actions .btn-action.primary {
-      background: linear-gradient(135deg, #25D366, #128C7E);
-      color: #fff;
+      background: linear-gradient(135deg, #25D366, #128C7E); color: #fff;
     }
     .pending-actions .btn-action.primary:hover {
       box-shadow: 0 6px 24px rgba(37, 211, 102, 0.3);
@@ -573,36 +486,25 @@
     }
     .pending-actions .btn-action.secondary {
       background: rgba(255,255,255,0.04);
-      color: var(--text-dim);
-      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text-dim); border: 1px solid rgba(255,255,255,0.06);
     }
     .pending-actions .btn-action.secondary:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--text-light);
+      background: rgba(255,255,255,0.08); color: var(--text-light);
     }
 
     /* ============================================================
        ÉCRAN PREMIUM
        ============================================================ */
     .premium-screen-content {
-      text-align: center;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+      text-align: center; padding: 30px 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
     }
     .premium-crown-wrap {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
+      width: 110px; height: 110px; border-radius: 50%;
       background: linear-gradient(135deg, rgba(184,134,11,0.15), rgba(224,184,74,0.08));
       border: 2px solid rgba(184,134,11,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 50px;
-      animation: crownGlow 3s ease-in-out infinite;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 50px; animation: crownGlow 3s ease-in-out infinite;
       position: relative;
     }
     @keyframes crownGlow {
@@ -610,97 +512,64 @@
       50% { box-shadow: 0 0 30px 10px rgba(184,134,11,0.15); }
     }
     .premium-screen-content h1 {
-      font-size: clamp(24px, 4.5vw, 32px);
-      font-weight: 800;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
-      line-height: 1.2;
+      font-size: clamp(24px, 4.5vw, 32px); font-weight: 800;
+      font-family: 'Playfair Display', serif; color: var(--text-light); line-height: 1.2;
     }
     .premium-screen-content h1 span {
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      background-size: 200% auto; -webkit-background-clip: text;
+      background-clip: text; -webkit-text-fill-color: transparent;
       animation: shimmerText 4s linear infinite;
     }
     .premium-screen-content .premium-sub {
-      font-size: clamp(13px, 1.5vw, 15px);
-      color: var(--text-dim);
-      max-width: 460px;
-      line-height: 1.7;
+      font-size: clamp(13px, 1.5vw, 15px); color: var(--text-dim);
+      max-width: 460px; line-height: 1.7;
     }
 
     .premium-info-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      max-width: 500px;
-      width: 100%;
-      margin-top: 10px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 10px; max-width: 500px; width: 100%; margin-top: 10px;
     }
     .premium-info-card {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(184,134,11,0.12);
-      border-radius: 12px;
-      padding: 14px 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      border-radius: 12px; padding: 14px 10px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
       transition: var(--transition);
     }
     .premium-info-card:hover {
-      border-color: rgba(184,134,11,0.2);
-      background: rgba(184,134,11,0.04);
+      border-color: rgba(184,134,11,0.2); background: rgba(184,134,11,0.04);
     }
     .premium-info-card .pic-icon {
-      font-size: 20px;
-      color: var(--accent-bright);
-      margin-bottom: 2px;
+      font-size: 20px; color: var(--accent-bright); margin-bottom: 2px;
     }
     .premium-info-card .pic-value {
-      font-size: clamp(14px, 1.6vw, 17px);
-      font-weight: 700;
+      font-size: clamp(14px, 1.6vw, 17px); font-weight: 700;
       font-family: 'Playfair Display', serif;
-      color: var(--text-light);
-      line-height: 1.2;
-      text-align: center;
+      color: var(--text-light); line-height: 1.2; text-align: center;
     }
     .premium-info-card .pic-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+      font-size: 10px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
     }
 
     .premium-countdown {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border-radius: 30px;
-      background: rgba(184,134,11,0.06);
-      border: 1px solid rgba(184,134,11,0.12);
-      font-size: 14px;
-      color: var(--text-dim);
-      margin-top: 4px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 22px; border-radius: 30px;
+      background: rgba(184,134,11,0.06); border: 1px solid rgba(184,134,11,0.12);
+      font-size: 14px; color: var(--text-dim); margin-top: 4px;
     }
     .premium-countdown strong {
-      color: var(--accent-bright);
-      font-size: 17px;
-      font-weight: 700;
+      color: var(--accent-bright); font-size: 17px; font-weight: 700;
       font-family: 'Playfair Display', serif;
     }
     .premium-countdown.warning {
-      background: rgba(212,160,23,0.08);
-      border-color: rgba(212,160,23,0.2);
+      background: rgba(212,160,23,0.08); border-color: rgba(212,160,23,0.2);
     }
     .premium-countdown.warning strong { color: var(--warning); }
     .premium-countdown.critical {
-      background: rgba(184,92,58,0.08);
-      border-color: rgba(184,92,58,0.2);
+      background: rgba(184,92,58,0.08); border-color: rgba(184,92,58,0.2);
       animation: pulseWarning 1.5s ease-in-out infinite;
     }
     .premium-countdown.critical strong { color: var(--danger); }
@@ -710,130 +579,78 @@
     }
 
     .premium-benefits {
-      max-width: 500px;
-      width: 100%;
-      margin-top: 16px;
+      max-width: 500px; width: 100%; margin-top: 16px;
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.04);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      text-align: left;
+      border-radius: var(--radius); padding: 20px 22px; text-align: left;
     }
     .premium-benefits .pb-title {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent-bright);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--accent-bright);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
     }
-    .premium-benefits .pb-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .premium-benefits .pb-list { display: flex; flex-direction: column; gap: 10px; }
     .premium-benefits .pb-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      color: var(--text-light);
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; color: var(--text-light);
     }
     .premium-benefits .pb-item i {
-      color: var(--success);
-      font-size: 14px;
-      flex-shrink: 0;
+      color: var(--success); font-size: 14px; flex-shrink: 0;
     }
 
     .premium-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-width: 400px;
-      width: 100%;
-      margin-top: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      max-width: 400px; width: 100%; margin-top: 16px;
     }
     .premium-actions .btn-action {
-      padding: 13px 20px;
-      border-radius: 30px;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      text-decoration: none;
+      padding: 13px 20px; border-radius: 30px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: var(--transition); font-family: 'Inter', sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; text-decoration: none;
     }
     .premium-actions .btn-action.primary {
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
       color: #0A0A0A;
     }
     .premium-actions .btn-action.primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(184,134,11,0.25);
+      transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184,134,11,0.25);
     }
     .premium-actions .btn-action.secondary {
-      background: rgba(255,255,255,0.04);
-      color: var(--text-dim);
+      background: rgba(255,255,255,0.04); color: var(--text-dim);
       border: 1px solid rgba(255,255,255,0.06);
     }
     .premium-actions .btn-action.secondary:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--text-light);
+      background: rgba(255,255,255,0.08); color: var(--text-light);
     }
 
     /* ============================================================
        ÉCRAN EXPIRÉ
        ============================================================ */
     .expired-screen-content {
-      text-align: center;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      min-height: 60vh;
-      justify-content: center;
+      text-align: center; padding: 40px 20px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 20px; min-height: 60vh; justify-content: center;
     }
     .expired-icon-wrap {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: rgba(184,92,58,0.1);
-      border: 2px solid rgba(184,92,58,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 44px;
-      color: var(--danger);
+      width: 100px; height: 100px; border-radius: 50%;
+      background: rgba(184,92,58,0.1); border: 2px solid rgba(184,92,58,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px; color: var(--danger);
     }
     .expired-screen-content h1 {
-      font-size: clamp(22px, 4vw, 28px);
-      font-weight: 700;
-      font-family: 'Playfair Display', serif;
-      color: var(--text-light);
+      font-size: clamp(22px, 4vw, 28px); font-weight: 700;
+      font-family: 'Playfair Display', serif; color: var(--text-light);
     }
     .expired-screen-content p {
-      font-size: clamp(13px, 1.5vw, 15px);
-      color: var(--text-dim);
-      max-width: 460px;
-      line-height: 1.7;
+      font-size: clamp(13px, 1.5vw, 15px); color: var(--text-dim);
+      max-width: 460px; line-height: 1.7;
     }
     .expired-screen-content .expired-info {
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.05);
-      border-radius: var(--radius);
-      padding: 14px 20px;
-      font-size: 13px;
-      color: var(--text-dim);
-      max-width: 400px;
+      border-radius: var(--radius); padding: 14px 20px;
+      font-size: 13px; color: var(--text-dim); max-width: 400px;
     }
     .expired-screen-content .expired-info strong { color: var(--danger); }
 
@@ -845,8 +662,7 @@
       background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
       z-index: 300; display: none;
       align-items: center; justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.3s ease;
+      padding: 20px; animation: fadeIn 0.3s ease;
     }
     .modal-overlay.show { display: flex; }
 
@@ -854,11 +670,9 @@
       background: var(--bg-card); backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 28px 24px;
-      max-width: 480px; width: 100%;
+      padding: 28px 24px; max-width: 480px; width: 100%;
       max-height: 90vh; overflow-y: auto;
-      animation: slideUp 0.3s ease;
-      position: relative;
+      animation: slideUp 0.3s ease; position: relative;
     }
     @keyframes slideUp {
       from { transform: translateY(30px); opacity: 0; }
@@ -885,8 +699,7 @@
     .recap {
       background: rgba(255,255,255,0.02);
       border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 12px;
-      padding: 14px 16px; margin-bottom: 16px;
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
     }
     .recap .row {
       display: flex; justify-content: space-between;
@@ -908,53 +721,156 @@
     .recap .saving .value { color: var(--success); }
 
     /* ============================================================
-       MODES DE PAIEMENT — NOUVEAU
+       MODES DE PAIEMENT + QR
        ============================================================ */
-    .payment-methods {
+    .payment-section {
       margin-bottom: 16px;
-      padding: 12px 14px;
+      padding: 14px 16px;
       background: rgba(184, 134, 11, 0.03);
-      border: 1px solid rgba(184, 134, 11, 0.08);
-      border-radius: 10px;
+      border: 1px solid rgba(184, 134, 11, 0.1);
+      border-radius: 12px;
     }
-    .payment-methods .pm-title {
-      font-size: 11px;
-      font-weight: 600;
+    .payment-section .ps-title {
+      font-size: 12px;
+      font-weight: 700;
       color: var(--accent-bright);
-      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .payment-methods .pm-title i {
-      font-size: 12px;
-    }
-    .payment-methods .pm-logos {
+    .payment-section .ps-title i { font-size: 13px; }
+
+    /* Logos sélectionnables */
+    .payment-logos {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 14px;
     }
-    .payment-methods .pm-logos img {
-      height: 32px;
-      width: auto;
-      max-width: 80px;
-      object-fit: contain;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 4px 6px;
+    .payment-logo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
       transition: var(--transition);
-      filter: grayscale(0.3);
+      flex: 1;
+      min-width: 80px;
+      max-width: 120px;
+      position: relative;
     }
-    .payment-methods .pm-logos img:hover {
-      filter: grayscale(0);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    .payment-logo-btn:hover {
+      border-color: rgba(184, 134, 11, 0.3);
+      background: rgba(184, 134, 11, 0.06);
+    }
+    .payment-logo-btn.active {
+      border-color: var(--accent-bright);
+      background: rgba(184, 134, 11, 0.12);
+      box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+    }
+    .payment-logo-btn.active::after {
+      content: '✓';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-bright);
+      color: #0A0A0A;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .payment-logo-btn img {
+      height: 30px;
+      width: auto;
+      max-width: 90px;
+      object-fit: contain;
+      border-radius: 4px;
     }
 
+    /* Zone QR */
+    .qr-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .qr-zone .qr-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-bright);
+      text-align: center;
+    }
+    .qr-zone .qr-image-wrap {
+      background: #FFFFFF;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+    .qr-zone .qr-image-wrap img {
+      width: 180px;
+      height: 180px;
+      display: block;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .qr-zone .qr-hint {
+      font-size: 11.5px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .qr-zone .qr-hint strong {
+      color: var(--text-light);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* Placeholder avant sélection */
+    .qr-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .qr-placeholder i {
+      font-size: 32px;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .qr-placeholder p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* ============================================================
+       FORM
+       ============================================================ */
     .modal .form-group { margin-bottom: 14px; }
     .modal .form-group label {
       display: block; font-size: 12px; font-weight: 500;
@@ -993,11 +909,17 @@
       display: flex; align-items: center; justify-content: center;
       gap: 10px;
     }
-    .modal .btn-confirm:hover {
+    .modal .btn-confirm:hover:not(:disabled) {
       transform: translateY(-2px);
       box-shadow: 0 6px 30px rgba(37, 211, 102, 0.25);
     }
-    .modal .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .modal .btn-confirm:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      background: linear-gradient(135deg, #555, #333);
+      box-shadow: none;
+    }
     .modal .btn-confirm .spinner {
       display: none; width: 18px; height: 18px;
       border: 2px solid rgba(255,255,255,0.2);
@@ -1078,6 +1000,7 @@
       .premium-info-card .pic-label { font-size: 9px; }
       .premium-countdown { padding: 10px 18px; font-size: 13px; }
       .premium-countdown strong { font-size: 15px; }
+      .qr-zone .qr-image-wrap img { width: 160px; height: 160px; }
     }
 
     @media (max-width: 480px) {
@@ -1111,8 +1034,11 @@
       .premium-benefits { padding: 16px 18px; }
       .premium-benefits .pb-item { font-size: 13px; }
 
-      .payment-methods .pm-logos { gap: 10px; }
-      .payment-methods .pm-logos img { height: 28px; max-width: 70px; }
+      .payment-logo-btn { padding: 5px 8px; min-width: 70px; }
+      .payment-logo-btn img { height: 26px; max-width: 75px; }
+      .qr-zone { padding: 12px; }
+      .qr-zone .qr-image-wrap { padding: 8px; }
+      .qr-zone .qr-image-wrap img { width: 140px; height: 140px; }
     }
 
     @media (max-width: 360px) {
@@ -1121,7 +1047,8 @@
       .toggle-switch { width: 50px; height: 26px; }
       .toggle-switch .thumb { width: 20px; height: 20px; top: 2px; left: 2px; }
       .toggle-switch.active .thumb { left: 26px; }
-      .payment-methods .pm-logos img { height: 26px; max-width: 62px; }
+      .payment-logo-btn img { height: 24px; max-width: 65px; }
+      .qr-zone .qr-image-wrap img { width: 120px; height: 120px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1193,7 +1120,6 @@
          ============================================================ -->
     <div class="screen" id="screenFree">
 
-      <!-- HERO -->
       <div class="hero-section">
         <div class="hero-badge"><i class="fas fa-fire"></i> Rejoins les étudiants qui réussissent</div>
         <h1>👑 Passe à <span>Premium</span> et débloque tout</h1>
@@ -1205,7 +1131,6 @@
         </div>
       </div>
 
-      <!-- STATUT -->
       <div class="status-section">
         <div class="status-left">
           <div class="status-icon free"><i class="fas fa-unlock"></i></div>
@@ -1219,10 +1144,8 @@
         </div>
       </div>
 
-      <!-- CARTE PRINCIPALE -->
       <div class="sub-card">
 
-        <!-- TOGGLE -->
         <div class="toggle-container">
           <span class="toggle-label active" id="labelMonthly">📅 Mensuel</span>
           <div class="toggle-switch" id="toggleSwitch">
@@ -1231,7 +1154,6 @@
           <span class="toggle-label" id="labelAnnual">📅 Annuel <span class="popular-badge"><i class="fas fa-star"></i></span></span>
         </div>
 
-        <!-- PRIX -->
         <div class="price-display">
           <div class="price-row">
             <span class="price-original" id="priceOriginal" style="display:none;">18 000 FCFA</span>
@@ -1246,7 +1168,6 @@
           </div>
         </div>
 
-        <!-- BÉNÉFICES -->
         <div class="benefits-section">
           <div class="benefits-title">✨ Ce que tu obtiens avec <span>Premium</span></div>
           <div class="benefits-grid">
@@ -1281,7 +1202,6 @@
           </div>
         </div>
 
-        <!-- CODE PROMO -->
         <div class="promo-section">
           <div class="promo-label"><i class="fas fa-ticket-alt"></i> Code promo</div>
           <div class="promo-row">
@@ -1291,7 +1211,6 @@
           <div class="promo-message" id="promoMessage"></div>
         </div>
 
-        <!-- BOUTON -->
         <div class="subscribe-section">
           <button class="btn-subscribe-main" id="subscribeBtn">
             <i class="fas fa-crown"></i>
@@ -1306,7 +1225,6 @@
 
       </div>
 
-      <!-- SUPPORT -->
       <div class="support-section">
         <div class="support-title">
           <i class="fas fa-headset"></i> Une question ? Notre équipe est là pour t'aider
@@ -1364,7 +1282,7 @@
     </div>
 
     <!-- ============================================================
-         ÉCRAN 3 — PREMIUM ACTIF
+         ÉCRAN 3 — PREMIUM
          ============================================================ -->
     <div class="screen" id="screenPremium">
       <div class="premium-screen-content">
@@ -1376,7 +1294,6 @@
           les contenus ARVEXA School.
         </p>
 
-        <!-- 3 cartes info -->
         <div class="premium-info-grid">
           <div class="premium-info-card">
             <div class="pic-icon">📅</div>
@@ -1395,13 +1312,11 @@
           </div>
         </div>
 
-        <!-- Countdown -->
         <div class="premium-countdown" id="premiumCountdown">
           <i class="fas fa-hourglass-half"></i>
           <span>Il te reste <strong id="premiumDaysLeft">—</strong> jours</span>
         </div>
 
-        <!-- Bénéfices -->
         <div class="premium-benefits">
           <div class="pb-title"><i class="fas fa-check-circle"></i> Tu as débloqué</div>
           <div class="pb-list">
@@ -1413,7 +1328,6 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="premium-actions">
           <a href="https://wa.me/22798064667" target="_blank" class="btn-action secondary">
             <i class="fab fa-whatsapp"></i> Support
@@ -1463,6 +1377,7 @@
     <div class="modal-title">💳 Confirmation de <span>paiement</span></div>
     <div class="modal-sub">Vérifie les informations avant de confirmer.</div>
 
+    <!-- RÉCAP -->
     <div class="recap" id="recapContainer">
       <div class="row">
         <span class="label">📅 Forfait</span>
@@ -1486,18 +1401,35 @@
       </div>
     </div>
 
-    <!-- MODES DE PAIEMENT -->
-    <div class="payment-methods">
-      <div class="pm-title">
-        <i class="fas fa-credit-card"></i> Modes de paiement acceptés
+    <!-- SÉLECTION MODE DE PAIEMENT + QR -->
+    <div class="payment-section">
+      <div class="ps-title">
+        <i class="fas fa-credit-card"></i> Choisis ton mode de paiement
       </div>
-      <div class="pm-logos">
-        <img src="mynita.png" alt="Mynita" loading="lazy">
-        <img src="wave.png" alt="Wave" loading="lazy">
-        <img src="amanata.png" alt="Amanata" loading="lazy">
+
+      <!-- Logos cliquables -->
+      <div class="payment-logos">
+        <button type="button" class="payment-logo-btn" data-method="mynita">
+          <img src="mynita.png" alt="Mynita" loading="lazy">
+        </button>
+        <button type="button" class="payment-logo-btn" data-method="wave">
+          <img src="wave.png" alt="Wave" loading="lazy">
+        </button>
+        <button type="button" class="payment-logo-btn" data-method="amanata">
+          <img src="amanata.png" alt="Amanata" loading="lazy">
+        </button>
+      </div>
+
+      <!-- Zone QR (remplie par JS) -->
+      <div id="qrZone">
+        <div class="qr-placeholder">
+          <i class="fas fa-qrcode"></i>
+          <p>Choisis un mode de paiement pour voir le QR code</p>
+        </div>
       </div>
     </div>
 
+    <!-- FORMULAIRE -->
     <div class="form-group">
       <label for="fullNameInput">👤 Nom complet</label>
       <input type="text" id="fullNameInput" placeholder="Jean Dupont">
@@ -1511,17 +1443,17 @@
     <div class="payment-instructions">
       <div class="title">📝 Comment payer</div>
       <div class="text">
-        <strong>1️⃣</strong> Envoyer le montant total sur <strong>+227 98 06 46 67</strong> via le mode de paiement de ton choix<br>
-        <strong>2️⃣</strong> Prendre une <strong>capture d'écran</strong><br>
-        <strong>3️⃣</strong> Cliquer sur <strong>"Confirmer et envoyer"</strong><br>
-        <strong>4️⃣</strong> Envoyer la capture dans la conversation WhatsApp<br>
+        <strong>1️⃣</strong> Scanne le QR code ou envoie au <strong>+227 98 06 46 67</strong><br>
+        <strong>2️⃣</strong> Prends une <strong>capture d'écran</strong><br>
+        <strong>3️⃣</strong> Clique sur <strong>"Confirmer et envoyer"</strong><br>
+        <strong>4️⃣</strong> Envoie la capture dans la conversation WhatsApp<br>
         <strong>5️⃣</strong> Activation dans les <strong>minutes</strong> qui suivent
       </div>
     </div>
 
-    <button class="btn-confirm" id="confirmPaymentBtn">
+    <button class="btn-confirm" id="confirmPaymentBtn" disabled>
       <span class="btn-icon"><i class="fab fa-whatsapp"></i></span>
-      <span class="btn-text">Confirmer et envoyer sur WhatsApp</span>
+      <span class="btn-text">Choisis un mode de paiement</span>
       <span class="spinner"></span>
     </button>
 
@@ -1548,9 +1480,8 @@
 
 <script type="module">
 // ================================================================
-// ABONNEMENT — VERSION 2.1
-// Ajout : Modes de paiement (Mynita, Wave, Amanata)
-// Retrait : Sujets BAC, Suivi de progression
+// ABONNEMENT — VERSION 2.2
+// Sélection mode de paiement + QR codes dynamiques
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1604,6 +1535,30 @@ const PROMO_CODES = {
 const SUPPORT_WHATSAPP = '22798064667';
 
 // ================================================================
+// MODES DE PAIEMENT
+// ================================================================
+const PAYMENT_METHODS = {
+  mynita: {
+    name: 'Mynita',
+    logo: 'mynita.png',
+    qr: 'mynita_qr.png',
+    color: '#FF6B00'
+  },
+  wave: {
+    name: 'Wave',
+    logo: 'wave.png',
+    qr: 'wave_qr.png',
+    color: '#1DC3F0'
+  },
+  amanata: {
+    name: 'Amanata',
+    logo: 'amanata.png',
+    qr: 'amanata_qr.png',
+    color: '#00A651'
+  }
+};
+
+// ================================================================
 // DOM
 // ================================================================
 const toggleSwitch = document.getElementById('toggleSwitch');
@@ -1633,6 +1588,7 @@ const recapSaving = document.getElementById('recapSaving');
 const fullNameInput = document.getElementById('fullNameInput');
 const whatsappInput = document.getElementById('whatsappInput');
 const confirmBtn = document.getElementById('confirmPaymentBtn');
+const qrZone = document.getElementById('qrZone');
 
 const screenFree = document.getElementById('screenFree');
 const screenPending = document.getElementById('screenPending');
@@ -1644,6 +1600,7 @@ const screenExpired = document.getElementById('screenExpired');
 // ================================================================
 let currentPlan = 'monthly';
 let appliedPromo = null;
+let selectedPaymentMethod = null;
 let userData = null;
 let currentUser = null;
 let isSubscribing = false;
@@ -1711,17 +1668,13 @@ function showScreen(screenName) {
 // RENDU DES ÉCRANS
 // ================================================================
 function renderPendingScreen(data) {
-  document.getElementById('pendingRef').textContent =
-    data.subscriptionRequestId || '—';
+  document.getElementById('pendingRef').textContent = data.subscriptionRequestId || '—';
 
   const planLabels = { monthly: '📱 Mensuel', annual: '📅 Annuel' };
-  document.getElementById('pendingPlan').textContent =
-    planLabels[data.subscriptionPlan] || '—';
+  document.getElementById('pendingPlan').textContent = planLabels[data.subscriptionPlan] || '—';
 
   document.getElementById('pendingAmount').textContent =
-    data.subscriptionPrice
-      ? data.subscriptionPrice.toLocaleString('fr-FR') + ' FCFA'
-      : '—';
+    data.subscriptionPrice ? data.subscriptionPrice.toLocaleString('fr-FR') + ' FCFA' : '—';
 
   const reqDate = toDate(data.subscriptionRequestDate);
   document.getElementById('pendingDate').textContent = reqDate
@@ -1734,16 +1687,13 @@ function renderPremiumScreen(data) {
   const endDate = toDate(data.subscriptionEndDate);
 
   const planLabels = { monthly: 'Mensuel', annual: 'Annuel' };
-  document.getElementById('premiumPlan').textContent =
-    planLabels[data.subscriptionPlan] || 'Premium';
+  document.getElementById('premiumPlan').textContent = planLabels[data.subscriptionPlan] || 'Premium';
 
   document.getElementById('premiumStartDate').textContent = startDate
-    ? startDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' })
-    : '—';
+    ? startDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' }) : '—';
 
   document.getElementById('premiumEndDate').textContent = endDate
-    ? endDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' })
-    : '—';
+    ? endDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: '2-digit' }) : '—';
 
   const countdownEl = document.getElementById('premiumCountdown');
   const daysLeftEl = document.getElementById('premiumDaysLeft');
@@ -1784,9 +1734,6 @@ function renderExpiredScreen(data) {
   }
 }
 
-// ================================================================
-// ROUTEUR D'ÉCRAN
-// ================================================================
 function routeToScreen(data) {
   userData = data;
   const state = getUserState(data);
@@ -1807,8 +1754,7 @@ function routeToScreen(data) {
     default:
       showScreen('free');
       if (data && fullNameInput) {
-        const fullName = data.fullName ||
-          ((data.firstName || '') + ' ' + (data.lastName || '')).trim();
+        const fullName = data.fullName || ((data.firstName || '') + ' ' + (data.lastName || '')).trim();
         if (fullName && !fullNameInput.value) fullNameInput.value = fullName;
         if (data.phone && !whatsappInput.value) whatsappInput.value = data.phone;
       }
@@ -1929,6 +1875,59 @@ function updateRecap() {
 }
 
 // ================================================================
+// SÉLECTION MODE DE PAIEMENT
+// ================================================================
+function selectPaymentMethod(methodKey) {
+  selectedPaymentMethod = methodKey;
+
+  // Mettre à jour les boutons
+  document.querySelectorAll('.payment-logo-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.method === methodKey);
+  });
+
+  // Afficher le QR
+  renderQR(methodKey);
+
+  // Activer le bouton "Confirmer"
+  updateConfirmButtonState();
+}
+
+function renderQR(methodKey) {
+  const method = PAYMENT_METHODS[methodKey];
+  if (!method) return;
+
+  qrZone.innerHTML = `
+    <div class="qr-zone">
+      <div class="qr-label">📱 Scanne avec ${method.name}</div>
+      <div class="qr-image-wrap">
+        <img src="${method.qr}" alt="QR code ${method.name}" loading="lazy">
+      </div>
+      <div class="qr-hint">
+        Ou envoie le montant au<br>
+        <strong>+227 98 06 46 67</strong>
+      </div>
+    </div>
+  `;
+}
+
+function updateConfirmButtonState() {
+  const hasName = fullNameInput.value.trim().length > 0;
+  const hasWhatsapp = whatsappInput.value.trim().length >= 8;
+  const hasMethod = selectedPaymentMethod !== null;
+
+  if (!hasMethod) {
+    confirmBtn.disabled = true;
+    confirmBtn.querySelector('.btn-text').textContent = 'Choisis un mode de paiement';
+  } else if (!hasName || !hasWhatsapp) {
+    confirmBtn.disabled = false; // On laisse activer mais avec validation au clic
+    confirmBtn.querySelector('.btn-text').textContent = 'Confirmer et envoyer sur WhatsApp';
+  } else {
+    confirmBtn.disabled = false;
+    confirmBtn.querySelector('.btn-text').textContent = 'Confirmer et envoyer sur WhatsApp';
+  }
+}
+
+// ================================================================
 // CODE PROMO
 // ================================================================
 function resetPromo() {
@@ -1989,13 +1988,24 @@ function openModal() {
   }
 
   if (userData) {
-    const fullName = userData.fullName ||
-      ((userData.firstName || '') + ' ' + (userData.lastName || '')).trim();
+    const fullName = userData.fullName || ((userData.firstName || '') + ' ' + (userData.lastName || '')).trim();
     if (fullName && !fullNameInput.value) fullNameInput.value = fullName;
     if (userData.phone && !whatsappInput.value) whatsappInput.value = userData.phone;
   }
 
+  // Réinitialiser la sélection
+  selectedPaymentMethod = null;
+  document.querySelectorAll('.payment-logo-btn').forEach(btn => btn.classList.remove('active'));
+  qrZone.innerHTML = `
+    <div class="qr-placeholder">
+      <i class="fas fa-qrcode"></i>
+      <p>Choisis un mode de paiement pour voir le QR code</p>
+    </div>
+  `;
+
   updateRecap();
+  updateConfirmButtonState();
+
   modal.classList.add('show');
   document.body.style.overflow = 'hidden';
 }
@@ -2008,7 +2018,7 @@ function closeModal() {
 }
 
 // ================================================================
-// GÉNÉRATION ID
+// ID
 // ================================================================
 function generateRequestId() {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -2029,6 +2039,11 @@ async function sendToWhatsApp() {
   const planName = currentPlan === 'monthly' ? 'Mensuel' : 'Annuel';
   const requestId = generateRequestId();
 
+  if (!selectedPaymentMethod) {
+    alert('Choisis un mode de paiement');
+    return;
+  }
+
   if (!fullName) {
     fullNameInput.focus();
     return;
@@ -2042,6 +2057,8 @@ async function sendToWhatsApp() {
   isSubscribing = true;
   confirmBtn.classList.add('loading');
   confirmBtn.disabled = true;
+
+  const methodInfo = PAYMENT_METHODS[selectedPaymentMethod];
 
   let message = '📱 *NOUVELLE DEMANDE D\'ABONNEMENT ARVEXA*\n\n';
   message += `🔖 *Réf. :* ${requestId}\n`;
@@ -2063,17 +2080,18 @@ async function sendToWhatsApp() {
     message += '💡 *Économie :* ' + savings.totalSaving.toLocaleString('fr-FR') + ' FCFA\n';
   }
 
+  message += '💳 *Mode de paiement :* ' + methodInfo.name + '\n';
   message += '\n🔹 *Statut :* En attente de paiement\n';
   message += '🔹 *Date :* ' + new Date().toLocaleDateString('fr-FR') + '\n\n';
 
   message += '📌 *Instructions :*\n';
-  message += '1️⃣ Envoyer le montant sur *+227 98 06 46 67*\n';
+  message += '1️⃣ Envoyer le montant sur *+227 98 06 46 67* via ' + methodInfo.name + '\n';
   message += '2️⃣ Prendre une *capture d\'écran*\n';
   message += '3️⃣ Envoyer la capture dans cette conversation\n';
   message += '4️⃣ Activation dans les minutes qui suivent\n\n';
   message += '🙏 *Merci pour votre confiance !*';
 
-  const saved = await saveSubscriptionRequest(fullName, whatsapp, display, requestId);
+  const saved = await saveSubscriptionRequest(fullName, whatsapp, display, requestId, selectedPaymentMethod);
   if (!saved) {
     isSubscribing = false;
     confirmBtn.classList.remove('loading');
@@ -2096,13 +2114,14 @@ async function sendToWhatsApp() {
       userData.subscriptionPromoCode = appliedPromo ? appliedPromo.code : null;
       userData.subscriptionRequestId = requestId;
       userData.subscriptionRequestDate = new Date();
+      userData.subscriptionPaymentMethod = selectedPaymentMethod;
     }
     renderPendingScreen(userData || {});
     showScreen('pending');
   }, 600);
 }
 
-async function saveSubscriptionRequest(fullName, whatsapp, display, requestId) {
+async function saveSubscriptionRequest(fullName, whatsapp, display, requestId, paymentMethod) {
   if (!currentUser) return false;
   try {
     await updateDoc(doc(db, 'users', currentUser.uid), {
@@ -2114,7 +2133,8 @@ async function saveSubscriptionRequest(fullName, whatsapp, display, requestId) {
       subscriptionRequestId: requestId,
       subscriptionRequestDate: serverTimestamp(),
       subscriptionFullName: fullName,
-      subscriptionWhatsapp: whatsapp
+      subscriptionWhatsapp: whatsapp,
+      subscriptionPaymentMethod: paymentMethod
     });
     return true;
   } catch (error) {
@@ -2161,6 +2181,17 @@ promoInput.addEventListener('keydown', (e) => {
 promoInput.addEventListener('input', () => {
   if (appliedPromo) resetPromo();
 });
+
+// Sélection mode de paiement
+document.querySelectorAll('.payment-logo-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectPaymentMethod(btn.dataset.method);
+  });
+});
+
+// Inputs → mise à jour du bouton
+fullNameInput.addEventListener('input', updateConfirmButtonState);
+whatsappInput.addEventListener('input', updateConfirmButtonState);
 
 subscribeBtn.addEventListener('click', openModal);
 closeModalBtn.addEventListener('click', closeModal);
@@ -2260,9 +2291,7 @@ onAuthStateChanged(auth, async (user) => {
 
   try {
     const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-    if (Object.keys(cached).length > 0 && cached._uid !== user.uid) {
-      // Cache d'un autre user, ignorer
-    } else if (Object.keys(cached).length > 0) {
+    if (Object.keys(cached).length > 0) {
       routeToScreen(cached);
     }
   } catch (e) {}
