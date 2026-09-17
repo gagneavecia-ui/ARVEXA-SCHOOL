@@ -785,16 +785,19 @@
     signOut,
     getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-  import {
-    getFirestore,
-    doc,
-    onSnapshot,
-    collection,
-    query,
-    where,
-    limit,
-    getDocs
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentSingleTabManager,
+  doc,
+  getDoc,
+  onSnapshot,
+  collection,
+  query,
+  where,
+  limit,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG
@@ -808,9 +811,15 @@
     appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+ const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager()
+  })
+});
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -1175,28 +1184,46 @@
   let unsubscribeUser = null;
   let currentUid = null;
 
-  function loadUserData(user) {
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
-    const userRef = doc(db, 'users', user.uid);
-    unsubscribeUser = onSnapshot(userRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          userData = docSnap.data();
-          saveUserDataToCache(userData, user.uid);
-          renderUserData(userData);
-          checkUnreadNotifications(user.uid);
-        } else {
-          window.location.href = 'register.html';
-        }
-      },
-      (error) => {
-        // Silencieux : on garde le cache déjà affiché
-      }
-    );
+ function loadUserData(user) {
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
   }
+  const userRef = doc(db, 'users', user.uid);
+  unsubscribeUser = onSnapshot(userRef,
+    (docSnap) => {
+      // ⚡ Vérifier le cache AVANT de rediriger
+      const cached = getCachedUserData(user.uid);
+      
+      if (docSnap.exists()) {
+        userData = docSnap.data();
+        saveUserDataToCache(userData, user.uid);
+        renderUserData(userData);
+        showDashboard();
+        checkUnreadNotifications(user.uid);
+      } else if (cached) {
+        // ⚡ Pas de doc frais MAIS cache disponible → utiliser le cache
+        userData = cached;
+        renderUserData(cached);
+        showDashboard();
+      } else {
+        // ⚡ Vraiment introuvable ET pas de cache → rediriger
+        window.location.href = 'register.html';
+      }
+    },
+    (error) => {
+      // ⚡ En cas d'erreur (offline), utiliser le cache
+      const cached = getCachedUserData(user.uid);
+      if (cached) {
+        userData = cached;
+        renderUserData(cached);
+        showDashboard();
+      } else {
+        showDashboard();
+      }
+    }
+  );
+}
 
   // ================================================================
   // REFRESH
