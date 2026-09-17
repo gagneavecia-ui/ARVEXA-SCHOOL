@@ -1493,13 +1493,15 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
-  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentSingleTabManager,
   doc,
   updateDoc,
   onSnapshot,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
+  
 // ================================================================
 // FIREBASE
 // ================================================================
@@ -1514,8 +1516,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
+// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager()
+  })
+});
+  
 try {
   await setPersistence(auth, browserLocalPersistence);
 } catch (e) {}
@@ -2010,33 +2018,33 @@ function openModal() {
   document.body.style.overflow = 'hidden';
 }
 
-function closeModal() {
-  modal.classList.remove('show');
-  document.body.style.overflow = '';
-  confirmBtn.classList.remove('loading');
-  confirmBtn.disabled = false;
+fonction  closeModal ( )  {
+  modal.classList.remove ( ' show ' ) ;​​
+  document.body.style.overflow = ' ' ;​​​​​
+  confirmerBtn.classList.remove ( ' loading ' ) ;​​
+  confirmBtn.disabled = false ;​​
 }
 
 // ================================================================
-// ID
+// IDENTIFIANT
 // ================================================================
-function generateRequestId() {
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return 'ARV-' + timestamp + '-' + random;
+fonction  generateRequestId ( )  {
+  const  timestamp = Date . now ( ) . toString ( 36 ) . toUpperCase ( ) ;
+  const  random = Math.random ( ) . toString ( 36 ) .substring ( 2 , 6 ) .toUpperCase ( ) ;​​​​
+  renvoyer  'ARV-' + horodatage + '-' + aléatoire ;
 }
 
 // ================================================================
 // ENVOI WHATSAPP + FIRESTORE
 // ================================================================
-async function sendToWhatsApp() {
-  if (isSubscribing) return;
+ fonction  asynchrone sendToWhatsApp ( )  {
+  si  ( estAbonné )  retourner ;
 
-  const fullName = fullNameInput.value.trim();
-  const whatsapp = whatsappInput.value.trim().replace(/\s/g, '');
-  const display = getPrice();
-  const savings = getSavings();
-  const planName = currentPlan === 'monthly' ? 'Mensuel' : 'Annuel';
+  const  fullName = fullNameInput.value.trim ( ) ;​​​​
+  const  whatsapp = whatsappInput.value.trim ( ) . replace ( /\ s / g , ' ' ) ;
+  const  display = getPrice ( ) ;
+  const  économies = obtenirÉpargne ( ) ;
+  const  planName = currentPlan === 'mensuel' ? 'Mensuel' : 'Annuel' ;
   const requestId = generateRequestId();
 
   if (!selectedPaymentMethod) {
@@ -2242,28 +2250,46 @@ function loadUserData(user) {
   const userRef = doc(db, 'users', user.uid);
 
   unsubscribeUser = onSnapshot(userRef,
-    (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-        } catch (e) {}
-        routeToScreen(data);
-      } else {
-        window.location.href = 'register.html';
-      }
-    },
-    (error) => {
-      try {
-        const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-        if (Object.keys(cached).length > 0) {
-          routeToScreen(cached);
-        }
-      } catch (e) {}
-    }
-  );
-}
+  (docSnap) => {
+    // ⚡ Vérifier le cache AVANT de rediriger
+    let cached = null;
+    try {
+      cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      if (!cached || Object.keys(cached).length === 0) cached = null;
+    } catch (e) {}
 
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      try {
+        localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+      } catch (e) {}
+      routeToScreen(data);
+    } else if (cached) {
+      // ⚡ Pas de doc frais MAIS cache disponible → utiliser le cache
+      routeToScreen(cached);
+    } else if (!navigator.onLine) {
+      // ⚡ Hors-ligne et pas de cache → ne PAS rediriger
+      // Afficher l'écran "free" par défaut
+      routeToScreen(null);
+    } else {
+      // ⚡ En ligne, vraiment introuvable → rediriger
+      window.location.href = 'register.html';
+    }
+  },
+  (error) => {
+    try {
+      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+      if (Object.keys(cached).length > 0) {
+        routeToScreen(cached);
+      } else {
+        routeToScreen(null);
+      }
+    } catch (e) {
+      routeToScreen(null);
+    }
+  }
+);
+  
 // ================================================================
 // AUTH
 // ================================================================
