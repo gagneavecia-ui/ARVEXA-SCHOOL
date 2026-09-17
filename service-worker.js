@@ -1,13 +1,14 @@
 // ================================================================
 // SERVICE WORKER — ARVEXA School
-// Version : 1.0.0
+// Version : 1.0.1 — CORRIGÉE
+// Ne touche PAS aux CDN externes (Firebase, Google Fonts, FontAwesome)
 // ================================================================
 
-const CACHE_VERSION = 'arvexa-v1.0.0';
+const CACHE_VERSION = 'arvexa-v1.0.1';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_DYNAMIC = `${CACHE_VERSION}-dynamic`;
 
-// Fichiers essentiels à mettre en cache dès l'installation
+// Fichiers LOCAUX à mettre en cache (uniquement ceux de ton site)
 const ESSENTIAL_FILES = [
   './',
   './index.html',
@@ -35,13 +36,14 @@ self.addEventListener('install', (event) => {
 
   event.waitUntil(
     caches.open(CACHE_STATIC).then((cache) => {
-      return cache.addAll(ESSENTIAL_FILES).catch((err) => {
-        console.warn('[SW] Certains fichiers n\'ont pas pu être mis en cache:', err);
-      });
-    }).then(() => {
-      // Prendre le contrôle immédiatement
-      return self.skipWaiting();
-    })
+      return Promise.all(
+        ESSENTIAL_FILES.map((url) => {
+          return cache.add(url).catch((err) => {
+            console.warn('[SW] Impossible de cacher:', url, err);
+          });
+        })
+      );
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -55,89 +57,134 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          // Supprimer les anciens caches
           if (cacheName !== CACHE_STATIC && cacheName !== CACHE_DYNAMIC) {
             console.log('[SW] Suppression ancien cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => {
-      // Prendre le contrôle des clients ouverts
-      return self.clients.claim();
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
 // ================================================================
-// FETCH — INTERCEPTION DES REQUÊTES
+// FETCH — Interception
 // ================================================================
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
 
-  // Ne pas intercepter les requêtes non-GET
+  // ═══════════════════════════════════════════════════════════════
+  // RÈGLE CRITIQUE : Ne JAMAIS intercepter les requêtes externes
+  // ═══════════════════════════════════════════════════════════════
+
+  // 1. Ignorer les requêtes non-GET
   if (request.method !== 'GET') return;
 
-  // Ne pas intercepter les requêtes Firebase (Firestore, Auth)
-  if (url.hostname.includes('firebase') ||
-      url.hostname.includes('googleapis.com') ||
-      url.hostname.includes('gstatic.com')) {
-    // Pour Firebase Auth et Firestore, on utilise network-first
-    if (url.pathname.includes('/v1/') || url.pathname.includes('firestore')) {
-      return;
-    }
+  // 2. Ignorer TOUTES les requêtes qui ne sont PAS de ton domaine
+  //    (CDN, Firebase, Google Fonts, etc.)
+  if (url.origin !== self.location.origin) {
+    return; // Le navigateur gère directement
   }
 
-  // Ne pas intercepter les scripts analytics ou autres services externes
-  if (url.hostname !== location.hostname &&
-      !url.hostname.includes('cdnjs.cloudflare.com') &&
-      !url.hostname.includes('fonts.googleapis.com') &&
-      !url.hostname.includes('fonts.gstatic.com') &&
-      !url.hostname.includes('cdn.jsdelivr.net') &&
-      !url.hostname.includes('gstatic.com')) {
+  // 3. Ignorer les requêtes vers Firebase (au cas où)
+  if (url.hostname.includes('firebase') || url.hostname.includes('gstatic')) {
     return;
   }
 
-  // Stratégie selon le type de ressource
+  // ═══════════════════════════════════════════════════════════════
+  // À PARTIR D'ICI : Uniquement tes fichiers LOCAUX
+  // ═══════════════════════════════════════════════════════════════
+
+  // HTML : Network-first avec fallback cache
   if (request.destination === 'document' || url.pathname.endsWith('.html')) {
-    // HTML : Network-first avec fallback cache
-    event.respondWith(networkFirstWithCache(request, CACHE_DYNAMIC));
-  } else if (url.pathname.endsWith('.json')) {
-    // JSON : Network-first avec fallback cache
-    event.respondWith(networkFirstWithCache(request, CACHE_DYNAMIC));
-  } else if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css')) {
-    // JS/CSS : Cache-first (moins de changement)
-    event.respondWith(cacheFirstWithNetwork(request, CACHE_STATIC));
-  } else if (request.destination === 'image' || url.pathname.endsWith('.png') ||
-             url.pathname.endsWith('.jpg') || url.pathname.endsWith('.svg') ||
-             url.pathname.endsWith('.webp')) {
-    // Images : Cache-first
-    event.respondWith(cacheFirstWithNetwork(request, CACHE_DYNAMIC));
-  } else if (url.hostname.includes('cdnjs.cloudflare.com') ||
-             url.hostname.includes('fonts.googleapis.com') ||
-             url.hostname.includes('fonts.gstatic.com') ||
-             url.hostname.includes('cdn.jsdelivr.net')) {
-    // Ressources externes (CDN, fonts) : Cache-first
-    event.respondWith(cacheFirstWithNetwork(request, CACHE_STATIC));
-  } else {
-    // Par défaut : Network-first
-    event.respondWith(networkFirstWithCache(request, CACHE_DYNAMIC));
+    event.respondWith(handleHTML(request));
+    return;
   }
+
+  // JSON : Network-first avec fallback cache
+  if (url.pathname.endsWith('.json')) {
+    event.respondWith(handleJSON(request));
+    return;
+  }
+
+  // JS / CSS / Images LOCAUX : Cache-first
+  if (url.pathname.endsWith('.js') ||
+      url.pathname.endsWith('.css') ||
+      request.destination === 'image' ||
+      url.pathname.endsWith('.png') ||
+      url.pathname.endsWith('.jpg') ||
+      url.pathname.endsWith('.svg') ||
+      url.pathname.endsWith('.webp') ||
+      url.pathname.endsWith('.ico')) {
+    event.respondWith(handleStatic(request));
+    return;
+  }
+
+  // Par défaut : Network-first
+  event.respondWith(handleDefault(request));
 });
 
 // ================================================================
-// STRATÉGIES DE CACHE
+// HANDLERS
 // ================================================================
 
-// Cache-first : Utilise le cache, sinon fetch et met en cache
-async function cacheFirstWithNetwork(request, cacheName) {
+// HTML : Network-first avec fallback cache + offline.html
+async function handleHTML(request) {
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_DYNAMIC);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    // Offline → chercher dans le cache
+    const cached = await caches.match(request);
+    if (cached) return cached;
+
+    // Vraiment rien → offline.html
+    const offline = await caches.match('./offline.html');
+    if (offline) return offline;
+
+    // Fallback ultime
+    return new Response('Hors ligne', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
+  }
+}
+
+// JSON : Network-first avec fallback cache
+async function handleJSON(request) {
+  try {
+    const response = await fetch(request);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_DYNAMIC);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+
+    // Pas de cache → retourner un JSON vide valide
+    return new Response('{"parts":[]}', {
+      status: 200,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' }
+    });
+  }
+}
+
+// Static : Cache-first avec update en arrière-plan
+async function handleStatic(request) {
   const cached = await caches.match(request);
+
   if (cached) {
     // Mettre à jour en arrière-plan
     fetch(request).then((response) => {
       if (response && response.ok) {
-        caches.open(cacheName).then((cache) => {
+        caches.open(CACHE_STATIC).then((cache) => {
           cache.put(request, response.clone());
         });
       }
@@ -147,56 +194,39 @@ async function cacheFirstWithNetwork(request, cacheName) {
 
   try {
     const response = await fetch(request);
-    if (response && response.ok && response.type === 'basic') {
-      const cache = await caches.open(cacheName);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_STATIC);
       cache.put(request, response.clone());
     }
     return response;
   } catch (error) {
-    // Si on est hors-ligne, essayer offline.html pour les documents
-    if (request.destination === 'document') {
-      const offline = await caches.match('./offline.html');
-      if (offline) return offline;
-    }
-    throw error;
+    return new Response('', { status: 404 });
   }
 }
 
-// Network-first : Essaye le réseau, fallback cache
-async function networkFirstWithCache(request, cacheName) {
+// Default : Network-first avec fallback cache
+async function handleDefault(request) {
   try {
     const response = await fetch(request);
-
-    // Mettre en cache si valide
-    if (response && response.ok && response.type === 'basic') {
-      const cache = await caches.open(cacheName);
+    if (response && response.ok) {
+      const cache = await caches.open(CACHE_DYNAMIC);
       cache.put(request, response.clone());
     }
-
     return response;
   } catch (error) {
-    // Réseau échoué → chercher dans le cache
     const cached = await caches.match(request);
     if (cached) return cached;
-
-    // Si c'est un document et rien en cache → offline.html
-    if (request.destination === 'document') {
-      const offline = await caches.match('./offline.html');
-      if (offline) return offline;
-    }
-
-    throw error;
+    return new Response('', { status: 404 });
   }
 }
 
 // ================================================================
-// MESSAGES (depuis les pages)
+// MESSAGES
 // ================================================================
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     caches.keys().then((names) => {
       names.forEach((name) => caches.delete(name));
