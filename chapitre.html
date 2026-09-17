@@ -36,6 +36,8 @@
       --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       --radius: 16px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -70,11 +72,12 @@
     @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
     /* ============================================================
-       HEADER
+       HEADER (flèches supprimées)
        ============================================================ */
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10,10,10,0.92);
+      justify-content: space-between; padding: calc(10px + var(--safe-top)) 16px 10px;
+      background: rgba(10,10,10,0.92);
       backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184,134,11,0.06);
       gap: 12px; min-height: 56px;
     }
@@ -90,18 +93,9 @@
       font-size: clamp(13px, 1.6vw, 15px); font-weight: 600; color: var(--text-light);
       font-family: 'Playfair Display', serif;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: clamp(120px, 30vw, 250px);
+      max-width: clamp(180px, 50vw, 350px);
     }
     .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 13px; }
-    .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .chap-nav-btn {
-      display: flex; align-items: center; justify-content: center; width: 32px; height: 32px;
-      border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
-      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 12px;
-      text-decoration: none;
-    }
-    .chap-nav-btn:hover:not(:disabled) { border-color: rgba(184,134,11,0.14); color: var(--text-light); }
-    .chap-nav-btn:disabled { opacity: 0.2; cursor: not-allowed; pointer-events: none; }
 
     /* ============================================================
        CONTAINER
@@ -465,10 +459,9 @@
     }
 
     @media (max-width: 480px) {
-      .header { padding: 8px 12px; min-height: 48px; }
+      .header { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 48px; }
       .back-btn { width: 32px; height: 32px; font-size: 14px; }
-      .page-title { font-size: 12px; max-width: 100px; }
-      .chap-nav-btn { width: 28px; height: 28px; font-size: 11px; }
+      .page-title { font-size: 12px; max-width: 180px; }
 
       .container { padding: 8px 8px 20px; gap: 10px; }
       .chapter-info { padding: 10px 12px; gap: 10px; border-radius: 12px; }
@@ -498,11 +491,10 @@
     }
 
     @media (max-width: 360px) {
-      .header { padding: 6px 8px; min-height: 42px; }
+      .header { padding: 6px 8px; padding-top: calc(6px + var(--safe-top)); min-height: 42px; }
       .back-btn { width: 28px; height: 28px; font-size: 12px; }
-      .page-title { font-size: 11px; max-width: 80px; }
+      .page-title { font-size: 11px; max-width: 140px; }
       .page-title i { font-size: 11px; }
-      .chap-nav-btn { width: 24px; height: 24px; font-size: 10px; }
 
       .container { padding: 6px 6px 16px; gap: 8px; }
       .chapter-info { padding: 8px 10px; gap: 8px; border-radius: 10px; }
@@ -564,19 +556,11 @@
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
-  <!-- ===== HEADER ===== -->
+  <!-- ===== HEADER (flèches supprimées) ===== -->
   <header class="header">
     <div class="header-left">
       <a href="#" class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></a>
       <h1 class="page-title" id="pageTitle">Chapitre</h1>
-    </div>
-    <div class="header-right" id="headerNav">
-      <button class="chap-nav-btn" id="prevChapBtn" title="Chapitre précédent" disabled>
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <button class="chap-nav-btn" id="nextChapBtn" title="Chapitre suivant" disabled>
-        <i class="fas fa-chevron-right"></i>
-      </button>
     </div>
   </header>
 
@@ -680,8 +664,8 @@
 
   <script type="module">
   // ================================================================
-  // CHAPITRE — VERSION CORRIGÉE
-  // Toutes les erreurs silencieuses, premium avec date d'expiration
+  // CHAPITRE — Version avec flèches supprimées
+  // Toutes les autres fonctionnalités restent intactes
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -788,8 +772,6 @@
   const cpTotal = document.getElementById('cpTotal');
   const cpPercent = document.getElementById('cpPercent');
   const cpFill = document.getElementById('cpFill');
-  const prevChapBtn = document.getElementById('prevChapBtn');
-  const nextChapBtn = document.getElementById('nextChapBtn');
 
   // ================================================================
   // UTILITAIRE — CONVERSION TIMESTAMP FIRESTORE
@@ -847,11 +829,6 @@
   // ================================================================
   // NAVIGATION
   // ================================================================
-  function navigateToChapter(newChap) {
-    if (newChap < 0 || newChap >= chapters.length) return;
-    window.location.href = 'chapitre.html?subject=' + subjectKey + '&chapter=' + newChap + '&tab=' + currentTab;
-  }
-
   function openPart(index) {
     window.location.href = `lecture.html?subject=${subjectKey}&chapter=${chapIdx}&tab=${currentTab}&part=${index}`;
   }
@@ -868,7 +845,6 @@
     document.body.style.overflow = '';
   }
 
-  window.navigateToChapter = navigateToChapter;
   window.openPart = openPart;
   window.showPremiumPopup = showPremiumPopup;
   window.hidePremiumPopup = hidePremiumPopup;
@@ -955,12 +931,6 @@
       statusEl.textContent = '🔒 Verrouillé';
       statusEl.className = 'ci-status locked';
     }
-
-    // Navigation
-    prevChapBtn.disabled = chapIdx <= 0;
-    nextChapBtn.disabled = chapIdx >= chapters.length - 1;
-    prevChapBtn.onclick = () => navigateToChapter(chapIdx - 1);
-    nextChapBtn.onclick = () => navigateToChapter(chapIdx + 1);
 
     // Tabs
     document.querySelectorAll('.tab-btn').forEach(b => {

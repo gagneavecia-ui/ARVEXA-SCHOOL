@@ -14,761 +14,1151 @@
 
   <style>
     /* ============================================================
-       ROOT — Design system ARVEXA
+       ROOT — Design tokens ARVEXA
        ============================================================ */
     :root {
       --primary: #1A3A2A;
       --accent: #B8860B;
       --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
       --success: #2D7D5A;
-      --danger: #B85C3A;
+      --success-light: #3AB67E;
+      --danger: #E74C3C;
+      --warning: #F1C40F;
+
       --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
       --bg-card: rgba(20, 20, 20, 0.7);
+      --bg-elevated: rgba(255, 255, 255, 0.02);
+
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
       --text-muted: #5A5A4A;
-      --card-border: rgba(184, 134, 11, 0.06);
+
+      --card-border: rgba(184, 134, 11, 0.08);
+      --card-border-hover: rgba(184, 134, 11, 0.18);
+
       --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      --transition-fast: all 0.15s ease;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
       --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      --radius: 16px;
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 20px;
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    /* ============================================================
+       RESET
+       ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     html {
       scroll-behavior: smooth;
       width: 100%;
       overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       background: var(--bg-dark);
       color: var(--text-light);
       font-size: 14px;
       line-height: 1.6;
       min-height: 100vh;
+      min-height: 100dvh;
       width: 100%;
       overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 16px 40px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
     }
 
     /* ============================================================
        BACKGROUND
        ============================================================ */
-    .gradient-bg {
+    .bg-layer {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      background: radial-gradient(ellipse 40% 30% at 30% 20%, rgba(26, 58, 42, 0.12) 0%, transparent 70%),
-                  radial-gradient(ellipse 30% 20% at 70% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 60%),
-                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+      inset: 0;
+      z-index: -3;
+      background:
+        radial-gradient(ellipse 40% 30% at 30% 20%, rgba(26, 58, 42, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 30% 20% at 70% 80%, rgba(184, 134, 11, 0.03) 0%, transparent 60%),
+        linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
     }
 
     .glow {
       position: fixed;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(90px);
       pointer-events: none;
-      z-index: -1;
+      z-index: -2;
       opacity: 0.15;
-      animation: glowMove 10s ease-in-out infinite alternate;
+      animation: glowFloat 12s ease-in-out infinite alternate;
     }
-    .glow-1 { width: 350px; height: 350px; background: rgba(26,58,42,0.15); top: -80px; right: -80px; }
-    .glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.03); bottom: 0; left: 0; animation-delay: -4s; }
-    @keyframes glowMove {
-      0% { transform: translate(0,0) scale(1); }
-      100% { transform: translate(30px,-20px) scale(1.1); }
+    .glow-1 { width: 380px; height: 380px; background: rgba(26, 58, 42, 0.25); top: -100px; right: -100px; }
+    .glow-2 { width: 250px; height: 250px; background: rgba(184, 134, 11, 0.08); bottom: -60px; left: -60px; animation-delay: -6s; }
+
+    @keyframes glowFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, -30px) scale(1.15); }
     }
 
-    /* ============================================================
-       CONTAINER
-       ============================================================ */
-    .onboarding-container {
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      animation: fadeInUp 0.6s ease-out;
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ============================================================
-       CARD
-       ============================================================ */
-    .onboarding-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 32px 28px;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-      text-align: center;
-    }
-    .onboarding-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
     /* ============================================================
        HEADER
        ============================================================ */
-    .header {
-      margin-bottom: 20px;
+    .site-header {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 20px 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
-    .header .icon-big {
-      font-size: clamp(48px, 8vw, 64px);
-      display: block;
-      margin-bottom: 4px;
-      animation: iconBounce 2s ease-in-out infinite;
-    }
-    @keyframes iconBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    .header .logo {
-      font-size: clamp(20px, 3vw, 26px);
+
+    .logo {
+      display: inline-flex;
+      align-items: baseline;
+      text-decoration: none;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(18px, 3vw, 22px);
       font-weight: 700;
-      font-family: 'Playfair Display', 'Georgia', serif;
+      letter-spacing: 0.5px;
       color: var(--text-light);
-      letter-spacing: 1px;
+      transition: var(--transition-fast);
     }
-    .header .logo span {
+    .logo .gold {
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
       background-size: 200% auto;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       font-style: italic;
-      animation: shimmerText 4s linear infinite;
+      margin: 0 1px;
+      animation: shimmerText 5s linear infinite;
     }
     @keyframes shimmerText {
       0% { background-position: 0% center; }
       100% { background-position: 200% center; }
     }
-    .header .subtitle {
-      font-size: clamp(13px, 1.6vw, 14px);
-      color: var(--text-dim);
-      margin-top: 2px;
-      font-weight: 300;
-    }
 
-    /* ============================================================
-       USER INFO
-       ============================================================ */
-    .user-info {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin: 16px 0 14px;
-      transition: var(--transition);
-    }
-    .user-info .user-name {
-      font-size: clamp(17px, 2.2vw, 20px);
+    .header-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
       font-weight: 600;
-      color: var(--text-light);
+      color: var(--accent-bright);
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(184, 134, 11, 0.08);
+      border: 1px solid rgba(184, 134, 11, 0.15);
+      letter-spacing: 0.3px;
     }
-    .user-info .user-email {
-      font-size: clamp(12px, 1.4vw, 13px);
-      color: var(--text-dim);
-      margin-top: 2px;
-      word-break: break-all;
+    .header-step i { font-size: 10px; }
+
+    /* ============================================================
+       MAIN
+       ============================================================ */
+    .page {
+      flex: 1;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+      animation: pageEnter 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes pageEnter {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ============================================================
-       STATS GRID
+       HERO
        ============================================================ */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin: 12px 0 18px;
+    .hero {
+      text-align: center;
+      padding: 20px 0 24px;
     }
-    .stat-item {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 10px;
-      padding: 12px 8px;
+
+    .hero-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.15), rgba(45, 125, 90, 0.1));
+      border: 1px solid rgba(184, 134, 11, 0.2);
+      font-size: 34px;
+      margin-bottom: 20px;
+      animation: iconFloat 3s ease-in-out infinite;
+      position: relative;
+    }
+    .hero-icon::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), transparent, rgba(45, 125, 90, 0.2));
+      z-index: -1;
+      filter: blur(8px);
+      opacity: 0.6;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(24px, 5vw, 32px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .hero-title em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(13px, 1.8vw, 14.5px);
+      color: var(--text-dim);
+      line-height: 1.65;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    /* ============================================================
+       PROGRESS
+       ============================================================ */
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0 24px;
+    }
+    .progress-dot {
+      width: 24px;
+      height: 3px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.06);
       transition: var(--transition);
     }
-    .stat-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(184, 134, 11, 0.06);
+    .progress-dot.done {
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
     }
-    .stat-item .si-icon {
-      font-size: clamp(18px, 2.5vw, 22px);
-      display: block;
-      margin-bottom: 2px;
+    .progress-dot.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+      width: 36px;
     }
-    .stat-item .si-label {
-      font-size: clamp(9px, 1vw, 10px);
+    .progress-label {
+      font-size: 11px;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      margin-left: 8px;
       font-weight: 500;
     }
-    .stat-item .si-value {
-      font-size: clamp(13px, 1.6vw, 15px);
-      font-weight: 600;
-      color: var(--text-light);
-      margin-top: 2px;
+
+    /* ============================================================
+       CARD
+       ============================================================ */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 26px 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--success), var(--accent));
+      background-size: 300% 100%;
+      animation: borderShimmer 6s linear infinite;
+    }
+    @keyframes borderShimmer {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 300% 0%; }
     }
 
     /* ============================================================
-       SUBJECTS TAGS
+       USER IDENTITY
        ============================================================ */
-    .subjects-tags {
+    .identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      margin-bottom: 20px;
+    }
+
+    .identity-avatar {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--bg-dark);
+      margin-bottom: 12px;
+      border: 3px solid rgba(184, 134, 11, 0.2);
+      box-shadow: 0 8px 24px rgba(184, 134, 11, 0.2);
+      animation: avatarPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes avatarPop {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .identity-name {
+      font-size: clamp(17px, 2.4vw, 20px);
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .identity-email {
+      font-size: 12.5px;
+      color: var(--text-dim);
+      word-break: break-all;
+      line-height: 1.5;
+      max-width: 100%;
+    }
+
+    /* ============================================================
+       INFO CARDS
+       ============================================================ */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      text-align: center;
+      transition: var(--transition-fast);
+      min-width: 0;
+    }
+    .info-card:hover {
+      background: rgba(184, 134, 11, 0.04);
+      border-color: rgba(184, 134, 11, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .info-card .info-icon {
+      font-size: 20px;
+      margin-bottom: 6px;
+      display: block;
+      line-height: 1;
+    }
+    .info-card .info-label {
+      font-size: 9.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .info-card .info-value {
+      font-size: clamp(12px, 1.5vw, 14px);
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1.3;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .info-card .info-value.gold { color: var(--accent-bright); }
+
+    /* ============================================================
+       SUBJECTS
+       ============================================================ */
+    .subjects-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .subjects-list {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 6px;
-      margin: 10px 0 18px;
+      margin-bottom: 22px;
     }
-    .subjects-tags .tag {
-      background: rgba(184, 134, 11, 0.06);
-      border: 1px solid rgba(184, 134, 11, 0.08);
+
+    .subject-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
       border-radius: 20px;
-      padding: 4px 14px;
-      font-size: clamp(10px, 1.2vw, 11px);
+      background: rgba(184, 134, 11, 0.06);
+      border: 1px solid rgba(184, 134, 11, 0.1);
       color: var(--accent-bright);
-      font-weight: 500;
-      transition: var(--transition);
+      font-size: 11.5px;
+      font-weight: 600;
+      transition: var(--transition-fast);
       white-space: nowrap;
     }
-    .subjects-tags .tag:hover {
+    .subject-chip:hover {
       background: rgba(184, 134, 11, 0.12);
       transform: translateY(-1px);
+    }
+    .subject-chip i {
+      font-size: 11px;
+      opacity: 0.9;
     }
 
     /* ============================================================
        BUTTON
        ============================================================ */
-    .btn-primary {
+    .btn-start {
       width: 100%;
-      padding: 14px;
+      padding: 15px 20px;
       border: none;
       border-radius: 30px;
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
       color: #0A0A0A;
-      font-size: clamp(15px, 1.8vw, 16px);
+      font-family: inherit;
+      font-size: 15px;
       font-weight: 700;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      transition: var(--transition);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
-      min-height: 52px;
+      box-shadow: 0 4px 20px rgba(184, 134, 11, 0.2);
+      min-height: 54px;
     }
-    .btn-primary::after {
+    .btn-start::before {
       content: '';
       position: absolute;
-      top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
-      transform: rotate(45deg) translateX(-100%);
-      transition: transform 0.6s ease;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: left 0.6s ease;
     }
-    .btn-primary:hover:not(:disabled)::after {
-      transform: rotate(45deg) translateX(100%);
+    .btn-start:not(:disabled):hover::before {
+      left: 100%;
     }
-    .btn-primary:hover:not(:disabled) {
+    .btn-start:not(:disabled):hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 30px rgba(184, 134, 11, 0.3);
+      box-shadow: 0 8px 32px rgba(184, 134, 11, 0.4);
     }
-    .btn-primary:active:not(:disabled) { transform: scale(0.97); }
-    .btn-primary:disabled {
+    .btn-start:not(:disabled):active {
+      transform: translateY(0) scale(0.98);
+    }
+    .btn-start:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-      transform: none;
       box-shadow: none;
     }
-    .btn-primary .spinner {
+    .btn-start .btn-icon { font-size: 14px; }
+    .btn-start .spinner {
       display: none;
       width: 18px;
       height: 18px;
-      border: 2px solid rgba(10, 10, 10, 0.15);
+      border: 2px solid rgba(10, 10, 10, 0.2);
       border-top-color: #0A0A0A;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
-    .btn-primary.loading .spinner { display: block; }
-    .btn-primary.loading .btn-text { display: none; }
-    .btn-primary.loading .btn-icon { display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-start.loading .spinner { display: block; }
+    .btn-start.loading .btn-icon,
+    .btn-start.loading .btn-text { display: none; }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-    /* ============================================================
-       SECURE BADGE
-       ============================================================ */
-    .secure {
-      text-align: center;
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
       font-size: 11px;
       color: var(--text-muted);
-      margin-top: 14px;
+      text-align: center;
     }
-    .secure i { color: var(--success); margin-right: 4px; }
+    .security-note i {
+      color: var(--success-light);
+      font-size: 10px;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .site-footer {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+    .site-footer p {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
 
     /* ============================================================
        SKELETON LOADING
        ============================================================ */
     .skeleton {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 8px;
-      animation: pulse 1.5s ease-in-out infinite;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 25%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0.03) 75%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.6s infinite;
+      border-radius: 6px;
     }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
-    .skeleton-text { height: 16px; margin: 4px 0; }
-    .skeleton-name { height: 24px; width: 60%; margin: 0 auto; }
-    .skeleton-email { height: 14px; width: 70%; margin: 4px auto; }
-    .skeleton-stat { height: 60px; border-radius: 10px; }
-    .skeleton-tag { height: 26px; width: 80px; border-radius: 20px; }
+    .skeleton-avatar {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+    }
+    .skeleton-line {
+      height: 14px;
+      margin: 8px auto;
+    }
+    .skeleton-line.name { width: 60%; height: 18px; }
+    .skeleton-line.email { width: 75%; }
+    .skeleton-line.title { width: 40%; margin-top: 4px; }
+    .skeleton-block {
+      height: 70px;
+      border-radius: var(--radius);
+    }
 
     /* ============================================================
        TOAST
        ============================================================ */
-    .toast {
+    .toast-container {
       position: fixed;
-      bottom: 30px;
+      top: calc(var(--safe-top) + 16px);
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      padding: 14px 24px;
-      border-radius: 12px;
-      background: var(--bg-card);
+      transform: translateX(-50%);
+      z-index: 999;
+      width: calc(100% - 32px);
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      background: rgba(20, 22, 20, 0.96);
       backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       color: var(--text-light);
       font-size: 13px;
       font-weight: 500;
-      z-index: 300;
-      opacity: 0;
-      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-      max-width: 90%;
-      text-align: center;
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      animation: toastIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: auto;
     }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .toast.success { border-color: rgba(45, 125, 90, 0.4); }
+    .toast.error { border-color: rgba(231, 76, 60, 0.4); }
+    .toast i { font-size: 15px; flex-shrink: 0; }
+    .toast.success i { color: var(--success-light); }
+    .toast.error i { color: var(--danger); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .toast.success { border-color: rgba(45, 125, 90, 0.2); }
-    .toast.error { border-color: rgba(184, 92, 58, 0.3); }
-    .toast .toast-icon { font-size: 16px; }
-    .toast.success .toast-icon { color: var(--success); }
-    .toast.error .toast-icon { color: var(--danger); }
 
     /* ============================================================
        RESPONSIVE
        ============================================================ */
-    @media (max-width: 640px) {
-      body { padding: 16px 12px 30px; }
-      .onboarding-card { padding: 24px 18px; }
-      .user-info { padding: 14px 16px; margin: 12px 0; }
-      .stats-grid { gap: 6px; }
-      .stat-item { padding: 10px 6px; }
-      .btn-primary { padding: 12px; min-height: 48px; }
-    }
-
     @media (max-width: 480px) {
-      .onboarding-card { padding: 20px 16px; }
-      .stats-grid { gap: 6px; }
-      .stat-item { padding: 8px 4px; }
-      .stat-item .si-icon { font-size: 18px; }
-      .stat-item .si-value { font-size: 13px; }
-      .subjects-tags { gap: 4px; }
-      .subjects-tags .tag { padding: 3px 10px; font-size: 10px; }
-      .btn-primary { font-size: 14px; padding: 10px; min-height: 44px; }
-      .secure { font-size: 10px; margin-top: 10px; }
+      .site-header { padding: 16px 16px 0; }
+      .page { padding: 0 16px 32px; }
+      .hero { padding: 16px 0 20px; }
+      .hero-icon { width: 62px; height: 62px; font-size: 28px; margin-bottom: 16px; }
+      .card { padding: 22px 18px; }
+      .info-grid { gap: 8px; }
+      .info-card { padding: 12px 10px; }
+      .btn-start { padding: 13px 18px; min-height: 50px; font-size: 14px; }
     }
 
     @media (max-width: 360px) {
-      body { padding: 12px 8px 24px; }
-      .onboarding-card { padding: 16px 12px; border-radius: 12px; }
-      .header .icon-big { font-size: 40px; }
-      .header .logo { font-size: 18px; }
-      .header .subtitle { font-size: 12px; }
-      .user-info .user-name { font-size: 15px; }
-      .user-info .user-email { font-size: 11px; }
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
-      .stat-item { padding: 6px 4px; }
-      .stat-item .si-icon { font-size: 16px; }
-      .stat-item .si-label { font-size: 8px; }
-      .stat-item .si-value { font-size: 12px; }
-      .subjects-tags .tag { font-size: 9px; padding: 2px 8px; }
-      .btn-primary { font-size: 13px; padding: 8px; min-height: 40px; }
+      .site-header { padding: 12px 12px 0; }
+      .page { padding: 0 12px 24px; }
+      .hero-icon { width: 56px; height: 56px; font-size: 26px; }
+      .hero-title { font-size: 22px; }
+      .card { padding: 20px 14px; border-radius: 16px; }
+      .identity-avatar { width: 58px; height: 58px; font-size: 22px; }
+      .info-grid { grid-template-columns: 1fr; gap: 6px; }
+      .btn-start { font-size: 13.5px; padding: 12px 16px; }
+      .header-step { font-size: 10.5px; padding: 5px 10px; }
     }
 
     @media (min-width: 768px) {
-      .onboarding-container { max-width: 520px; }
-      .onboarding-card { padding: 40px 36px; }
+      .site-header { max-width: 560px; padding: 24px 24px 0; }
+      .page { max-width: 560px; padding: 0 24px 40px; }
+      .card { padding: 32px 28px; }
     }
 
-    @media (min-width: 1024px) {
-      .onboarding-container { max-width: 560px; }
-      .onboarding-card { padding: 44px 40px; }
-    }
-
+    /* ============================================================
+       ACCESSIBILITÉ
+       ============================================================ */
     @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
 
-    a:focus-visible, button:focus-visible, input:focus-visible {
-      outline: 2px solid var(--accent);
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent-bright);
       outline-offset: 2px;
-      border-radius: 6px;
     }
 
-    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(184, 134, 11, 0.25);
+      border-radius: 10px;
+    }
   </style>
 </head>
 <body>
 
-<!-- ===== BACKGROUND ===== -->
-<div class="gradient-bg"></div>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
+  <!-- ===== BACKGROUND ===== -->
+  <div class="bg-layer"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="grain"></div>
 
-<!-- ===== CONTAINER ===== -->
-<div class="onboarding-container">
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <a href="index.html" class="logo">
+  ARVEX<span class="gold">A School</span>
+</a>
+    <div class="header-step">
+      <i class="fas fa-flag-checkered"></i>
+      <span>Étape finale</span>
+    </div>
+  </header>
 
-  <div class="onboarding-card">
+  <!-- ===== PAGE ===== -->
+  <main class="page">
 
-    <!-- ===== SKELETON ===== -->
-    <div id="skeletonLoading">
-      <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.03);margin:0 auto 8px;"></div>
-      <div class="skeleton skeleton-text" style="width:150px;margin:0 auto;"></div>
-      <div class="skeleton skeleton-text" style="width:200px;margin:4px auto;"></div>
-      <div style="height:16px;"></div>
-      <div class="skeleton skeleton-name"></div>
-      <div class="skeleton skeleton-email"></div>
-      <div style="height:12px;"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div class="skeleton skeleton-stat"></div>
-        <div class="skeleton skeleton-stat"></div>
-      </div>
-      <div style="height:12px;"></div>
-      <div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;">
-        <div class="skeleton skeleton-tag"></div>
-        <div class="skeleton skeleton-tag"></div>
-        <div class="skeleton skeleton-tag"></div>
-        <div class="skeleton skeleton-tag"></div>
-      </div>
-      <div style="height:16px;"></div>
-      <div class="skeleton skeleton-text" style="height:52px;border-radius:30px;width:100%;"></div>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-icon">🎓</div>
+      <h1 class="hero-title">
+        Bienvenue<br>
+        sur <em>ARVEXA</em>
+      </h1>
+      <p class="hero-subtitle">
+        Tu es à un clic de commencer ton parcours vers la réussite au BAC.
+      </p>
+    </section>
+
+    <!-- PROGRESS -->
+    <div class="progress-row">
+      <div class="progress-dot done"></div>
+      <div class="progress-dot active"></div>
+      <span class="progress-label">Activation</span>
     </div>
 
-    <!-- ===== CONTENU DYNAMIQUE ===== -->
-    <div id="dynamicContent" style="display:none;">
+    <!-- CARD -->
+    <div class="card">
 
-      <!-- HEADER -->
-      <div class="header">
-        <span class="icon-big">🎓</span>
-        <div class="logo">ARVE<span>XA<span> School</span></div>
-        <p class="subtitle">Prépare-toi pour le BAC en toute sérénité</p>
-      </div>
+      <!-- SKELETON -->
+      <div id="skeletonLoading">
+        <div class="skeleton skeleton-avatar"></div>
+        <div class="skeleton skeleton-line name"></div>
+        <div class="skeleton skeleton-line email"></div>
 
-      <!-- USER INFO -->
-      <div class="user-info">
-        <div class="user-name" id="userName">Chargement...</div>
-        <div class="user-email" id="userEmail">---</div>
-      </div>
+        <div style="height:20px;"></div>
 
-      <!-- STATS -->
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="si-icon">📚</span>
-          <div class="si-label">Classe</div>
-          <div class="si-value">Terminale D</div>
+        <div class="skeleton skeleton-line title"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div class="skeleton skeleton-block"></div>
+          <div class="skeleton skeleton-block"></div>
         </div>
-        <div class="stat-item">
-          <span class="si-icon">🎯</span>
-          <div class="si-label">Objectif</div>
-          <div class="si-value">BAC 2026</div>
+
+        <div style="height:20px;"></div>
+
+        <div class="skeleton" style="height:52px;border-radius:30px;"></div>
+      </div>
+
+      <!-- CONTENU DYNAMIQUE -->
+      <div id="dynamicContent" style="display:none;">
+
+        <!-- IDENTITY -->
+        <div class="identity">
+          <div class="identity-avatar" id="userAvatar">👤</div>
+          <div class="identity-name" id="userName">Chargement...</div>
+          <div class="identity-email" id="userEmail">—</div>
         </div>
+
+        <!-- INFO CARDS -->
+        <div class="info-grid">
+          <div class="info-card">
+            <span class="info-icon">📚</span>
+            <div class="info-label">Classe</div>
+            <div class="info-value" id="userClass">Terminale D</div>
+          </div>
+          <div class="info-card">
+            <span class="info-icon">🎯</span>
+            <div class="info-label">Objectif</div>
+            <div class="info-value gold" id="userGoal">BAC 2026</div>
+          </div>
+        </div>
+
+        <!-- SUBJECTS -->
+        <div class="subjects-title">Matières disponibles</div>
+        <div class="subjects-list">
+          <span class="subject-chip"><i class="fas fa-square-root-variable"></i> Mathématiques</span>
+          <span class="subject-chip"><i class="fas fa-bolt"></i> Physique</span>
+          <span class="subject-chip"><i class="fas fa-flask"></i> Chimie</span>
+          <span class="subject-chip"><i class="fas fa-dna"></i> SVT</span>
+        </div>
+
+        <!-- BUTTON -->
+        <button type="button" class="btn-start" id="startBtn">
+          <span class="btn-icon"><i class="fas fa-rocket"></i></span>
+          <span class="btn-text">Commencer l'aventure</span>
+          <span class="spinner"></span>
+        </button>
+
+        <div class="security-note">
+          <i class="fas fa-lock"></i>
+          <span>Ton compte est sécurisé par Firebase</span>
+        </div>
+
       </div>
-
-      <!-- SUBJECTS -->
-      <div class="subjects-tags">
-        <span class="tag">📐 Mathématiques</span>
-        <span class="tag">⚡ Physique</span>
-        <span class="tag">🧪 Chimie</span>
-        <span class="tag">🧬 SVT</span>
-      </div>
-
-      <!-- BUTTON -->
-      <button class="btn-primary" id="startBtn">
-        <span class="btn-icon"><i class="fas fa-rocket"></i></span>
-        <span class="btn-text">Commencer l'aventure</span>
-        <span class="spinner"></span>
-      </button>
-
-      <div class="secure">
-        <i class="fas fa-lock"></i> Rejoins ARVEXA School en toute sécurité
-      </div>
-
     </div>
 
-  </div>
-</div>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <p>© 2026 ARVEXA School — Tous droits réservés</p>
+    </footer>
+  </main>
 
-<!-- ===== TOAST ===== -->
-<div class="toast" id="toast">
-  <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
-  <span class="toast-message"></span>
-</div>
+  <!-- ===== TOASTS ===== -->
+  <div class="toast-container" id="toastContainer"></div>
 
-<!-- ============================================================ -->
-<!-- SCRIPTS                                                       -->
-<!-- ============================================================ -->
-<script type="importmap">
-{
-  "imports": {
-    "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
-    "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
-    "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    }
   }
-}
-</script>
+  </script>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  <script type="module">
+  // ================================================================
+  // ONBOARDING — Version refondue
+  // Structure propre • Bug authChecked corrigé • UX améliorée
+  // ================================================================
 
-// ================================================================
-// CONFIG
-// ================================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  // ================================================================
+  // CONFIG FIREBASE
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
+  };
 
-// ================================================================
-// PERSISTANCE
-// ================================================================
-try {
-  await setPersistence(auth, browserLocalPersistence);
-  console.log('🔐 Persistance locale activée');
-} catch (e) {
-  console.warn('⚠️ Erreur persistance:', e);
-}
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-// ================================================================
-// DOM ELEMENTS
-// ================================================================
-const skeletonLoading = document.getElementById('skeletonLoading');
-const dynamicContent = document.getElementById('dynamicContent');
-const startBtn = document.getElementById('startBtn');
-const userName = document.getElementById('userName');
-const userEmail = document.getElementById('userEmail');
-
-// ================================================================
-// TOAST
-// ================================================================
-function showToast(message, type = 'success') {
-  const toast = document.getElementById('toast');
-  const toastMessage = document.querySelector('.toast-message');
-  const toastIcon = document.querySelector('.toast-icon i');
-  
-  toastMessage.textContent = message;
-  toast.className = `toast ${type}`;
-  toastIcon.className = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
-  toast.classList.add('show');
-  
-  clearTimeout(toast._timeout);
-  toast._timeout = setTimeout(() => toast.classList.remove('show'), 4000);
-}
-
-// ================================================================
-// CHARGEMENT DES DONNÉES (Cache + Firestore)
-// ================================================================
-function loadFromCache() {
   try {
-    const cached = localStorage.getItem('arvexa_user_data');
-    if (cached) {
-      const data = JSON.parse(cached);
-      const firstName = data.firstName || '';
-      const lastName = data.lastName || '';
-      const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
-      
-      userName.textContent = fullName;
-      userEmail.textContent = data.email || '';
-      
-      // Si déjà onboardé, rediriger
-      if (data.onboardingCompleted === true) {
-        window.location.href = 'index.html';
-        return true;
-      }
-      
-      return true;
-    }
-  } catch (e) {}
-  return false;
-}
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (e) {
+    // Silencieux
+  }
 
-async function loadFromFirestore(user) {
-  try {
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    
-    if (!userDoc.exists()) {
-      showToast('⚠️ Profil introuvable.', 'error');
-      return false;
-    }
+  // ================================================================
+  // HELPERS
+  // ================================================================
+  const $ = (id) => document.getElementById(id);
 
-    const data = userDoc.data();
+  // ================================================================
+  // ÉTAT GLOBAL
+  // ================================================================
+  const state = {
+    user: null,
+    userData: null,
+    isLoading: false,
+    currentUid: null,        // ← Pour tracker le changement d'utilisateur
+    isSubmitting: false
+  };
 
-    // Mise à jour du cache
+  // ================================================================
+  // DOM
+  // ================================================================
+  const skeletonLoading = $('skeletonLoading');
+  const dynamicContent = $('dynamicContent');
+  const startBtn = $('startBtn');
+  const userAvatar = $('userAvatar');
+  const userName = $('userName');
+  const userEmail = $('userEmail');
+  const userClass = $('userClass');
+  const userGoal = $('userGoal');
+  const toastContainer = $('toastContainer');
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'success', duration = 4000) {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    const icon = type === 'success'
+      ? '<i class="fas fa-check-circle"></i>'
+      : '<i class="fas fa-exclamation-circle"></i>';
+
+    toast.innerHTML = `${icon}<span>${message}</span>`;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-10px)';
+      setTimeout(() => toast.remove(), 300);
+    }, duration);
+  }
+
+  // ================================================================
+  // UTILITAIRES
+  // ================================================================
+  function getInitials(firstName, lastName) {
+    const f = (firstName || '').trim();
+    const l = (lastName || '').trim();
+    if (!f && !l) return '👤';
+    if (!l) return f.charAt(0).toUpperCase();
+    return (f.charAt(0) + l.charAt(0)).toUpperCase();
+  }
+
+  function getFullName(firstName, lastName) {
+    return [firstName, lastName].filter(Boolean).join(' ').trim() || 'Élève';
+  }
+
+  function getCurrentYear() {
+    return new Date().getFullYear();
+  }
+
+  // Calcule l'année du BAC de manière cohérente avec index.html
+  function getBacYear() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const juneThisYear = new Date(year, 5, 1);
+    return now < juneThisYear ? year : year + 1;
+  }
+
+  // ================================================================
+  // CACHE LOCAL
+  // ================================================================
+  const USER_DATA_KEY = 'arvexa_user_data';
+
+  function saveUserDataToCache(data, uid) {
     try {
-      localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+      localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+        ...data,
+        _cachedAt: Date.now(),
+        _uid: uid
+      }));
     } catch (e) {}
+  }
 
-    // Afficher les infos
+  function getCachedUserData(uid) {
+    try {
+      const raw = localStorage.getItem(USER_DATA_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw);
+      if (cached._uid && cached._uid !== uid) {
+        localStorage.removeItem(USER_DATA_KEY);
+        return null;
+      }
+      return cached;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ================================================================
+  // RENDU
+  // ================================================================
+  function renderUserData(data) {
+    if (!data) return;
+
     const firstName = data.firstName || '';
     const lastName = data.lastName || '';
-    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Élève';
-    
-    userName.textContent = fullName;
-    userEmail.textContent = data.email || '';
+    const fullName = getFullName(firstName, lastName);
+    const initials = getInitials(firstName, lastName);
+    const email = data.email || '—';
 
-    // Si déjà onboardé, rediriger
-    if (data.onboardingCompleted === true) {
-      window.location.href = 'index.html';
-      return false;
-    }
+    // Avatar
+    userAvatar.textContent = initials;
+
+    // Nom + Email
+    userName.textContent = fullName;
+    userEmail.textContent = email;
+
+    // Classe
+    const classLabel = data.classId === 'terminale_d' || !data.classId
+      ? 'Terminale D'
+      : data.classId;
+    userClass.textContent = classLabel;
+
+    // Objectif (BAC + année)
+    userGoal.textContent = `BAC ${getBacYear()}`;
 
     // Afficher le contenu
     skeletonLoading.style.display = 'none';
     dynamicContent.style.display = 'block';
-
-    return true;
-
-  } catch (error) {
-    console.error('❌ Erreur Firestore:', error);
-    showToast('Erreur lors du chargement des données.', 'error');
-    return false;
-  }
-}
-
-// ================================================================
-// AUTH + DATA LOADING
-// ================================================================
-let authChecked = false;
-
-onAuthStateChanged(auth, async (user) => {
-  if (authChecked) return;
-  authChecked = true;
-
-  if (!user) {
-    window.location.href = 'login.html';
-    return;
   }
 
-  // 1. Tentative de chargement depuis le cache (instantané)
-  const cacheLoaded = loadFromCache();
-  
-  if (cacheLoaded) {
-    // Cache chargé, afficher le contenu
-    skeletonLoading.style.display = 'none';
-    dynamicContent.style.display = 'block';
-  }
+  // ================================================================
+  // CHARGEMENT DES DONNÉES
+  // ================================================================
+  async function loadUserData(user) {
+    if (!user) return;
 
-  // 2. Chargement depuis Firestore (mise à jour)
-  await loadFromFirestore(user);
-});
+    // 1. Afficher le cache (instantané)
+    const cached = getCachedUserData(user.uid);
+    if (cached) {
+      state.userData = cached;
+      renderUserData(cached);
+    }
 
-// ================================================================
-// BOUTON START
-// ================================================================
-startBtn.addEventListener('click', async () => {
-  if (startBtn.classList.contains('loading')) return;
-
-  startBtn.classList.add('loading');
-  startBtn.disabled = true;
-
-  try {
-    const user = auth.currentUser;
-    if (!user) throw new Error('Non connecté');
-
-    // Marquer onboarding comme terminé
-    await updateDoc(doc(db, 'users', user.uid), {
-      onboardingCompleted: true,
-      onboardingCompletedAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-
-    // Mise à jour cache
+    // 2. Charger depuis Firestore
     try {
-      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-      cached.onboardingCompleted = true;
-      localStorage.setItem('arvexa_user_data', JSON.stringify(cached));
-    } catch (e) {}
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
 
-    showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
+      if (!userDoc.exists()) {
+        showToast('Profil introuvable. Redirection...', 'error');
+        setTimeout(() => {
+          window.location.href = 'register.html';
+        }, 1500);
+        return;
+      }
 
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 800);
+      const data = userDoc.data();
+      state.userData = data;
 
-  } catch (error) {
-    console.error('❌ Erreur:', error);
-    showToast('Une erreur est survenue. Réessaie.', 'error');
-    startBtn.classList.remove('loading');
-    startBtn.disabled = false;
+      // Mettre à jour le cache
+      saveUserDataToCache(data, user.uid);
+
+      // Si déjà onboardé → redirection
+      if (data.onboardingCompleted === true) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Rendu
+      renderUserData(data);
+
+    } catch (error) {
+      console.error('Erreur Firestore:', error);
+      showToast('Erreur de chargement. Vérifie ta connexion.', 'error', 6000);
+
+      // Fallback : afficher le cache si dispo
+      if (cached) {
+        renderUserData(cached);
+      }
+    }
   }
-});
 
-console.log('🚀 ARVEXA School — Onboarding (version refactorisée)');
-</script>
+  // ================================================================
+  // BOUTON START
+  // ================================================================
+  async function handleStart() {
+    if (state.isSubmitting) return;
+    if (!state.user) {
+      showToast('Session expirée. Reconnecte-toi.', 'error');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1500);
+      return;
+    }
 
+    state.isSubmitting = true;
+    startBtn.disabled = true;
+    startBtn.classList.add('loading');
+
+    try {
+      // 1. Marquer l'onboarding comme terminé dans Firestore
+      await updateDoc(doc(db, 'users', state.user.uid), {
+        onboardingCompleted: true,
+        onboardingCompletedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      // 2. Mettre à jour le cache
+      if (state.userData) {
+        state.userData.onboardingCompleted = true;
+        saveUserDataToCache(state.userData, state.user.uid);
+      }
+
+      // 3. Toast de confirmation
+      showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
+
+      // 4. Redirection
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 900);
+
+    } catch (error) {
+      console.error('Erreur onboarding:', error);
+      showToast('Impossible de valider. Réessaie.', 'error', 5000);
+
+      // Anti-spam : 2s
+      setTimeout(() => {
+        state.isSubmitting = false;
+        startBtn.disabled = false;
+        startBtn.classList.remove('loading');
+      }, 2000);
+    }
+  }
+
+  // ================================================================
+  // AUTH STATE — Version corrigée
+  // ================================================================
+  // ⚠️ NE PAS utiliser de flag "authChecked" qui bloque les mises à jour
+  // On tracke juste l'UID courant pour éviter les doublons
+
+  onAuthStateChanged(auth, async (user) => {
+    // Cas 1 : utilisateur déconnecté
+    if (!user) {
+      if (state.currentUid !== null) {
+        state.currentUid = null;
+        state.user = null;
+        state.userData = null;
+      }
+      // Redirection vers login
+      sessionStorage.setItem('redirectAfterLogin', 'onboarding.html');
+      window.location.href = 'login.html';
+      return;
+    }
+
+    // Cas 2 : même utilisateur → ne rien refaire
+    if (user.uid === state.currentUid) return;
+
+    // Cas 3 : nouvel utilisateur (ou changement de compte)
+    state.currentUid = user.uid;
+    state.user = user;
+
+    // Charger les données
+    await loadUserData(user);
+  });
+
+  // ================================================================
+  // ÉVÉNEMENTS
+  // ================================================================
+  startBtn.addEventListener('click', handleStart);
+
+  // ================================================================
+  // INIT
+  // ================================================================
+  // Le rendu initial est géré par onAuthStateChanged
+  // Le skeleton s'affiche par défaut jusqu'à ce que les données arrivent
+  </script>
 </body>
 </html>

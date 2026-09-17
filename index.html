@@ -420,18 +420,6 @@
     }
 
     /* ============================================================
-       SKELETON
-       ============================================================ */
-    .skeleton {
-      background: rgba(255,255,255,0.03); border-radius: 8px;
-      animation: pulse 1.5s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
-    .skeleton-card { height: 160px; border-radius: var(--radius); }
-    .skeleton-card-sm { height: 100px; border-radius: var(--radius); }
-    .skeleton-card-xs { height: 80px; border-radius: var(--radius); }
-
-    /* ============================================================
        FOOTER
        ============================================================ */
     .footer {
@@ -569,7 +557,7 @@
 
   <!-- ===== SIDEBAR ===== -->
   <aside class="sidebar" id="sidebar">
-    <a href="index.html" class="logo">ARVEX<span>A<span> School</span></a>
+    <a href="index.html" class="logo">ARVEX<span>A School</span></a>
     <nav class="nav">
       <a href="index.html" class="active"><i class="fas fa-home"></i> Accueil</a>
       <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
@@ -614,30 +602,21 @@
     <!-- ===== CONTAINER ===== -->
     <div class="container" id="dashboardContent">
 
-      <!-- ===== SKELETON LOADING ===== -->
-      <div id="skeletonLoading">
-        <div class="skeleton skeleton-card"></div>
-        <div style="height:12px;"></div>
-        <div class="skeleton skeleton-card-sm"></div>
-        <div style="height:12px;"></div>
-        <div class="skeleton skeleton-card-xs"></div>
-      </div>
-
-      <!-- ===== CONTENU DYNAMIQUE ===== -->
-      <div id="dynamicContent" style="display:none;">
+      <!-- ===== CONTENU STATIQUE (affiché immédiatement) ===== -->
+      <div id="dynamicContent">
 
         <!-- ===== HERO ===== -->
         <div class="card hero-card">
           <div class="countdown-header">
             <div class="countdown-title-wrap">
               <span class="countdown-icon">📅</span>
-              <span class="countdown-title" id="countdownTitle">BAC</span>
+              <span class="countdown-title" id="countdownTitle">BAC 2026</span>
             </div>
-            <span class="countdown-status" id="countdownStatus">🌱 Tu as le temps</span>
+            <span class="countdown-status early" id="countdownStatus">🌱 Tu as le temps</span>
           </div>
 
           <div class="progress-track">
-            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-fill early" id="progressFill" style="width: 25%"></div>
           </div>
 
           <div class="countdown-display">
@@ -670,13 +649,67 @@
           </div>
         </div>
 
-        <!-- ===== MES MATIÈRES ===== -->
+        <!-- ===== MES MATIÈRES (STATIQUE EN DUR) ===== -->
         <div class="section-title"><h3>📐 Mes matières</h3></div>
-        <div class="subjects-grid" id="subjectsGrid"></div>
+        <div class="subjects-grid" id="subjectsGrid">
+          <a href="matiere.html?subject=mathematiques" class="subject-chip">
+            <div class="icon-badge"><i class="fas fa-square-root-variable"></i></div>
+            <div>
+              <div class="subject-name">Mathématiques</div>
+              <div class="subject-chapters" data-subject="mathematiques">8 chapitres</div>
+            </div>
+          </a>
+          <a href="matiere.html?subject=physique" class="subject-chip">
+            <div class="icon-badge"><i class="fas fa-bolt"></i></div>
+            <div>
+              <div class="subject-name">Physique</div>
+              <div class="subject-chapters" data-subject="physique">17 chapitres</div>
+            </div>
+          </a>
+          <a href="matiere.html?subject=chimie" class="subject-chip">
+            <div class="icon-badge"><i class="fas fa-flask"></i></div>
+            <div>
+              <div class="subject-name">Chimie</div>
+              <div class="subject-chapters" data-subject="chimie">9 chapitres</div>
+            </div>
+          </a>
+          <a href="matiere.html?subject=svt" class="subject-chip">
+            <div class="icon-badge"><i class="fas fa-dna"></i></div>
+            <div>
+              <div class="subject-name">SVT</div>
+              <div class="subject-chapters" data-subject="svt">4 chapitres</div>
+            </div>
+          </a>
+        </div>
 
-        <!-- ===== OUTILS & RESSOURCES ===== -->
+        <!-- ===== OUTILS & RESSOURCES (STATIQUE EN DUR) ===== -->
         <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
-        <div class="tools-grid" id="toolsGrid"></div>
+        <div class="tools-grid" id="toolsGrid">
+          <a href="calculatrice.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-calculator"></i></div>
+            <div class="name">Calculatrice</div>
+          </a>
+          <a href="formulaires.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-flask"></i></div>
+            <div class="name">Formulaires</div>
+          </a>
+          <a href="sujets.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-file-lines"></i></div>
+            <div class="name">Sujets BAC</div>
+          </a>
+          <a href="mode-examen.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-clock"></i></div>
+            <div class="name">Mode Examen</div>
+          </a>
+          <a href="tableau-periodique.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-table-cells"></i></div>
+            <div class="name">Table périodique</div>
+          </a>
+          <a href="scan.html" class="tool-card">
+            <div class="icon-badge"><i class="fas fa-robot"></i></div>
+            <div class="name">ARV-SCAN</div>
+          </a>
+        </div>
 
         <!-- ===== CONSEIL DU JOUR ===== -->
         <div class="section-title"><h3>💡 Conseil du jour</h3></div>
@@ -691,7 +724,7 @@
           </div>
         </div>
 
-        <!-- ===== SECTION ABONNEMENT ===== -->
+        <!-- ===== SECTION ABONNEMENT (cachée par défaut, affichée par JS) ===== -->
         <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
           <div class="sub-card" id="subCard">
             <div class="sub-icon"><i class="fas fa-crown"></i></div>
@@ -710,7 +743,7 @@
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
       <div class="footer-content">
-        <div class="footer-logo">ARVEX<span>A<span> School</span></div>
+        <div class="footer-logo">ARVEX<span>A School</span></div>
         <div class="footer-links">
           <a href="index.html">Accueil</a>
           <a href="profil.html">Profil</a>
@@ -739,8 +772,8 @@
 
   <script type="module">
   // ================================================================
-  // INDEX - VERSION CORRIGÉE
-  // Toutes les erreurs silencieuses, compte à rebours dynamique
+  // INDEX — VERSION CACHE-FIRST
+  // Contenu statique affiché immédiatement • Firestore en arrière-plan
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -755,7 +788,6 @@
   import {
     getFirestore,
     doc,
-    getDoc,
     onSnapshot,
     collection,
     query,
@@ -763,7 +795,7 @@
     limit,
     getDocs
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-  
+
   // ================================================================
   // CONFIG
   // ================================================================
@@ -785,10 +817,11 @@
   } catch (e) {}
 
   // ================================================================
-  // SESSION
+  // SESSION / CACHE
   // ================================================================
   const SESSION_KEY = 'arvexa_session';
   const USER_DATA_KEY = 'arvexa_user_data';
+  const READ_KEY = 'arvexa_read_parts';
 
   function saveSession(user) {
     if (!user) return;
@@ -813,9 +846,6 @@
     } catch (e) {}
   }
 
-  // ================================================================
-  // CACHE UTILISATEUR (lié à l'UID)
-  // ================================================================
   function saveUserDataToCache(data, uid) {
     try {
       localStorage.setItem(USER_DATA_KEY, JSON.stringify({
@@ -841,7 +871,7 @@
   }
 
   // ================================================================
-  // UTILITAIRE — CONVERSION TIMESTAMP FIRESTORE
+  // UTILITAIRE — CONVERSION TIMESTAMP
   // ================================================================
   function toDate(value) {
     if (!value) return null;
@@ -854,13 +884,9 @@
   // ================================================================
   // DOM
   // ================================================================
-  const skeletonLoading = document.getElementById('skeletonLoading');
-  const dynamicContent = document.getElementById('dynamicContent');
   const userFirstName = document.getElementById('userFirstName');
   const greetingText = document.getElementById('greetingText');
   const greetingEmoji = document.getElementById('greetingEmoji');
-  const subjectsGrid = document.getElementById('subjectsGrid');
-  const toolsGrid = document.getElementById('toolsGrid');
   const tipTitle = document.getElementById('tipTitle');
   const tipText = document.getElementById('tipText');
   const notifDot = document.getElementById('notifDot');
@@ -876,19 +902,10 @@
   // CONSTANTES
   // ================================================================
   const SUBJECTS = [
-    { key: 'mathematiques', name: 'Mathématiques', icon: 'fa-square-root-variable', chapters: 8 },
-    { key: 'physique', name: 'Physique', icon: 'fa-bolt', chapters: 17 },
-    { key: 'chimie', name: 'Chimie', icon: 'fa-flask', chapters: 9 },
-    { key: 'svt', name: 'SVT', icon: 'fa-dna', chapters: 4 }
-  ];
-
-  const TOOLS = [
-    { name: 'Calculatrice', icon: 'fa-calculator', href: 'calculatrice.html' },
-    { name: 'Formulaires', icon: 'fa-flask', href: 'formulaires.html' },
-    { name: 'Sujets BAC', icon: 'fa-file-lines', href: 'sujets.html' },
-    { name: 'Mode Examen', icon: 'fa-clock', href: 'mode-examen.html' },
-    { name: 'Table périodique', icon: 'fa-table-cells', href: 'tableau-periodique.html' },
-    { name: 'ARV-SCAN', icon: 'fa-robot', href: 'scan.html' }
+    { key: 'mathematiques', name: 'Mathématiques', chapters: 8 },
+    { key: 'physique', name: 'Physique', chapters: 17 },
+    { key: 'chimie', name: 'Chimie', chapters: 9 },
+    { key: 'svt', name: 'SVT', chapters: 4 }
   ];
 
   const TIPS = [
@@ -901,31 +918,35 @@
     { title: '🌿 Pause nature', text: "Prends une pause de 10 minutes en extérieur. L'air frais booste la concentration." },
     { title: '🎵 Concentration', text: "Écoute de la musique instrumentale ou des sons de nature pour rester focus." },
     { title: '📖 Lecture active', text: "Ne lis pas passivement. Pose-toi des questions, souligne, prends des notes." },
-    { title: '🏆 Petit victoire', text: "Célèbre chaque petite victoire. Chaque exercice réussi est une étape franchie." }
+    { title: '🏆 Petit victoire', text: "Célèbre chaque petite victoire. Chaque exercice réussi est une étape franchie." },
+    { title: '💤 Sommeil', text: "Dors 7 à 8 heures par nuit. Le cerveau consolide les apprentissages pendant le sommeil." },
+    { title: '🥗 Nutrition', text: "Mange équilibré. Un cerveau bien nourri est un cerveau performant." },
+    { title: '🚶 Bouge', text: "Fais 15 minutes d'exercice par jour. Le sport améliore la mémoire et la concentration." },
+    { title: '🎯 Révisions ciblées', text: "Ne révise pas tout au hasard. Cible les chapitres où tu as le plus de difficultés." },
+    { title: '👥 Groupe d\'étude', text: "Réviser à plusieurs peut être motivant. Explique une notion à un ami pour mieux la comprendre." },
+    { title: '📅 Planning', text: "Fais un planning réaliste. Mieux vaut 2 heures régulières que 8 heures d'un coup." },
+    { title: '🎓 Vieille épreuve', text: "Entraîne-toi sur les sujets des années passées. C'est le meilleur moyen de te préparer." },
+    { title: '🚫 Sans téléphone', text: "Range ton téléphone pendant les révisions. Les notifications cassent la concentration." },
+    { title: '💧 Hydratation', text: "Bois de l'eau régulièrement. La déshydratation réduit la concentration." },
+    { title: '🎉 Fête tes réussites', text: "Chaque progrès mérite d'être célébré. Sois fier de ton travail !" }
   ];
 
   // ================================================================
-  // COMPTE À REBOURS — DYNAMIQUE
+  // COMPTE À REBOURS — JS PUR (0ms)
   // ================================================================
   function getExamDate() {
     const now = new Date();
     const year = now.getFullYear();
-    // BAC Niger : début juin
-    // Si on est avant le 1er juin de cette année, c'est cette année, sinon l'année suivante
-    const juneThisYear = new Date(year, 5, 1); // mois 5 = juin
-    if (now < juneThisYear) {
-      return juneThisYear;
-    }
+    const juneThisYear = new Date(year, 5, 1);
+    if (now < juneThisYear) return juneThisYear;
     return new Date(year + 1, 5, 1);
   }
 
   function getSchoolYearStart(examDate) {
-    // L'année scolaire commence en septembre AVANT l'examen
     const examYear = examDate.getFullYear();
-    const examMonth = examDate.getMonth(); // 0-11
-    // Si l'examen est en juin (mois 5), l'année scolaire a commencé en septembre N-1
+    const examMonth = examDate.getMonth();
     const startYear = examMonth < 8 ? examYear - 1 : examYear;
-    return new Date(startYear, 8, 1); // mois 8 = septembre
+    return new Date(startYear, 8, 1);
   }
 
   function getCountdownMessages(days) {
@@ -943,7 +964,6 @@
     const exam = getExamDate();
     const diffMs = exam - now;
 
-    // Titre dynamique
     countdownTitle.textContent = 'BAC ' + exam.getFullYear();
 
     if (diffMs <= 0) {
@@ -965,7 +985,6 @@
     cdHours.textContent = String(hours).padStart(2, '0');
     cdMinutes.textContent = String(minutes).padStart(2, '0');
 
-    // Progression : de septembre N-1 à juin N
     const start = getSchoolYearStart(exam);
     const total = exam - start;
     const elapsed = now - start;
@@ -983,12 +1002,13 @@
     countdownStatus.className = 'countdown-status ' + msg.class;
   }
 
+  // Lancer immédiatement
   updateCountdown();
   const countdownInterval = setInterval(updateCountdown, 60000);
   window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
 
   // ================================================================
-  // GREETING
+  // GREETING — JS PUR
   // ================================================================
   function getGreeting() {
     const hours = new Date().getHours();
@@ -1004,45 +1024,13 @@
     greetingEmoji.textContent = emoji;
   }
 
+  // Appliquer le greeting immédiatement (avec valeur par défaut)
+  updateGreeting('Élève');
+
   // ================================================================
-  // RENDER FUNCTIONS
+  // CONSEIL DU JOUR — JS PUR (0ms)
   // ================================================================
-  function renderSubjects() {
-    // Compter les chapitres lus depuis localStorage
-    let readParts = [];
-    try {
-      readParts = JSON.parse(localStorage.getItem('arvexa_read_parts') || '[]');
-    } catch (e) { readParts = []; }
-
-    subjectsGrid.innerHTML = SUBJECTS.map(subject => {
-      const readCount = readParts.filter(key => key.startsWith(subject.key + '_')).length;
-      const displayCount = readCount > 0
-        ? `${readCount}/${subject.chapters} lus`
-        : `${subject.chapters} chapitres`;
-
-      return `
-        <a href="matiere.html?subject=${subject.key}" class="subject-chip">
-          <div class="icon-badge"><i class="fas ${subject.icon}"></i></div>
-          <div>
-            <div class="subject-name">${subject.name}</div>
-            <div class="subject-chapters">${displayCount}</div>
-          </div>
-        </a>
-      `;
-    }).join('');
-  }
-
-  function renderTools() {
-    toolsGrid.innerHTML = TOOLS.map(tool => `
-      <a href="${tool.href}" class="tool-card">
-        <div class="icon-badge"><i class="fas ${tool.icon}"></i></div>
-        <div class="name">${tool.name}</div>
-      </a>
-    `).join('');
-  }
-
   function renderTip() {
-    // Utiliser le jour de l'année pour une rotation plus longue
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const dayOfYear = Math.floor((now - start) / (1000 * 60 * 60 * 24));
@@ -1051,250 +1039,265 @@
     tipText.textContent = tip.text;
   }
 
-  // ================================================================
-// NOTIFICATIONS NON LUES
-// ================================================================
-async function checkUnreadNotifications(userId) {
-  try {
-    const q = query(
-      collection(db, 'users', userId, 'notifications'),
-      where('read', '==', false),
-      limit(1)
-    );
-    const snapshot = await getDocs(q);
-    const hasUnread = !snapshot.empty;
-    if (notifDot) notifDot.classList.toggle('show', hasUnread);
-  } catch (e) {
-    // Silencieux
-  }
-}
-
-// ================================================================
-// SUBSCRIPTION
-// ================================================================
-function isUserPremium(userData) {
-  if (!userData) return false;
-  const hasStatus = userData.premium === true ||
-                    userData.isUnlocked === true ||
-                    userData.hasDeposited === true;
-  if (!hasStatus) return false;
-  const endDate = toDate(userData.subscriptionEndDate);
-  if (!endDate) return true;
-  return endDate.getTime() > Date.now();
-}
-
-function updateSubscriptionDisplay(isPremium, userData) {
-  const reminder = document.getElementById('subscriptionReminder');
-  const subTitle = document.getElementById('subTitle');
-  const subText = document.getElementById('subText');
-  const subExpiry = document.getElementById('subExpiry');
-  const subBtn = document.getElementById('subBtn');
-  if (!reminder) return;
-
-  if (!isPremium) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '🔓 Débloque tout ARVEXA School';
-    subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Voir les offres';
-    subBtn.className = 'sub-btn';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  const expiry = toDate(userData?.subscriptionEndDate);
-  if (!expiry) {
-    reminder.style.display = 'none';
-    return;
-  }
-
-  const now = new Date();
-  const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
-
-  if (daysLeft <= 0) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⏳ Abonnement expiré';
-    subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
-    subExpiry.style.display = 'none';
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  if (daysLeft <= 7) {
-    reminder.style.display = 'block';
-    subTitle.textContent = '⚠️ Abonnement bientôt terminé';
-    subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
-    subExpiry.style.display = 'block';
-    subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
-    subBtn.textContent = 'Renouveler maintenant';
-    subBtn.className = 'sub-btn renew';
-    subBtn.href = 'abonnement.html';
-    return;
-  }
-
-  reminder.style.display = 'none';
-}
-
-// ================================================================
-// AFFICHER LE DASHBOARD
-// ================================================================
-function showDashboard() {
-  skeletonLoading.style.display = 'none';
-  dynamicContent.style.display = 'block';
-}
-
-function renderUserData(data) {
-  const firstName = data.firstName || 'Élève';
-  updateGreeting(firstName);
-  const premium = isUserPremium(data);
-  updateSubscriptionDisplay(premium, data);
-}
-
-// ================================================================
-// LOAD USER DATA
-// ================================================================
-let userData = null;
-let unsubscribeUser = null;
-let currentUid = null;
-
-function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
-  }
-  const userRef = doc(db, 'users', user.uid);
-  unsubscribeUser = onSnapshot(userRef,
-    (docSnap) => {
-      if (docSnap.exists()) {
-        userData = docSnap.data();
-        saveUserDataToCache(userData, user.uid);
-        renderUserData(userData);
-        showDashboard();
-        checkUnreadNotifications(user.uid);
-      } else {
-        window.location.href = 'register.html';
-      }
-    },
-    (error) => {
-      const cached = getCachedUserData(user.uid);
-      if (cached) {
-        userData = cached;
-        renderUserData(cached);
-        showDashboard();
-      } else {
-        showDashboard();
-      }
-    }
-  );
-}
-
-// ================================================================
-// REFRESH
-// ================================================================
-async function refreshDashboard() {
-  const user = auth.currentUser;
-  if (!user) return;
-  const btn = document.getElementById('refreshBtn');
-  const icon = btn?.querySelector('i');
-  if (icon) {
-    icon.style.transition = 'transform 0.6s ease';
-    icon.style.transform = 'rotate(360deg)';
-    setTimeout(() => {
-      icon.style.transition = 'none';
-      icon.style.transform = 'rotate(0deg)';
-    }, 600);
-  }
-  try {
-    await getIdToken(user, true);
-    loadUserData(user);
-    updateCountdown();
-    renderTip();
-  } catch (e) {}
-}
-
-// ================================================================
-// AUTH
-// ================================================================
-let isRedirecting = false;
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    if (currentUid !== null) {
-      currentUid = null;
-      if (unsubscribeUser) unsubscribeUser();
-      clearSession();
-    }
-    if (!isRedirecting) {
-      isRedirecting = true;
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 300);
-    }
-    return;
-  }
-
-  if (user.uid === currentUid) return;
-  currentUid = user.uid;
-
-  try {
-    await getIdToken(user, true);
-  } catch (e) {}
-
-  saveSession(user);
-
-  // Cache d'abord (affichage instantané)
-  const cached = getCachedUserData(user.uid);
-  if (cached) {
-    userData = cached;
-    renderUserData(cached);
-  }
-
-  // Rendu des sections statiques
-  renderSubjects();
-  renderTools();
   renderTip();
-  showDashboard();
 
-  // Firestore ensuite (temps réel)
-  loadUserData(user);
-});
+  // ================================================================
+  // COMPTEUR CHAPITRES — Lecture localStorage
+  // ================================================================
+  function updateSubjectsProgress() {
+    let readParts = [];
+    try {
+      readParts = JSON.parse(localStorage.getItem(READ_KEY) || '[]');
+    } catch (e) { readParts = []; }
 
-// ================================================================
-// ÉVÉNEMENTS
-// ================================================================
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-  e.preventDefault();
-  try {
-    if (unsubscribeUser) unsubscribeUser();
-    currentUid = null;
-    await signOut(auth);
-    clearSession();
-    window.location.href = 'login.html';
-  } catch (error) {}
-});
+    SUBJECTS.forEach(subject => {
+      // Compter les CHAPITRES uniques (pas les parties)
+      const chaptersSet = new Set();
+      readParts.forEach(key => {
+        const parts = key.split('_');
+        if (parts[0] === subject.key && parts.length >= 2) {
+          chaptersSet.add(parts[1]);
+        }
+      });
+      const readCount = chaptersSet.size;
 
-document.getElementById('menuToggle').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
-});
+      // Mettre à jour le DOM
+      const el = document.querySelector(`[data-subject="${subject.key}"]`);
+      if (el) {
+        const displayCount = readCount > 0
+          ? `${readCount}/${subject.chapters} chapitres lus`
+          : `${subject.chapters} chapitres`;
+        el.textContent = displayCount;
+      }
+    });
+  }
 
-document.getElementById('sidebarOverlay').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('active');
-});
+  updateSubjectsProgress();
 
-document.getElementById('notifBtn').addEventListener('click', () => {
-  window.location.href = 'notifications.html';
-});
+  // ================================================================
+  // NOTIFICATIONS NON LUES
+  // ================================================================
+  async function checkUnreadNotifications(userId) {
+    try {
+      const q = query(
+        collection(db, 'users', userId, 'notifications'),
+        where('read', '==', false),
+        limit(1)
+      );
+      const snapshot = await getDocs(q);
+      const hasUnread = !snapshot.empty;
+      if (notifDot) notifDot.classList.toggle('show', hasUnread);
+    } catch (e) {}
+  }
 
-document.getElementById('profileBtn').addEventListener('click', () => {
-  window.location.href = 'profil.html';
-});
+  // ================================================================
+  // SUBSCRIPTION
+  // ================================================================
+  function isUserPremium(userData) {
+    if (!userData) return false;
+    const hasStatus = userData.premium === true ||
+                      userData.isUnlocked === true ||
+                      userData.hasDeposited === true;
+    if (!hasStatus) return false;
+    const endDate = toDate(userData.subscriptionEndDate);
+    if (!endDate) return true;
+    return endDate.getTime() > Date.now();
+  }
 
-document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+  function updateSubscriptionDisplay(isPremium, userData) {
+    const reminder = document.getElementById('subscriptionReminder');
+    const subTitle = document.getElementById('subTitle');
+    const subText = document.getElementById('subText');
+    const subExpiry = document.getElementById('subExpiry');
+    const subBtn = document.getElementById('subBtn');
+    if (!reminder) return;
+
+    if (!isPremium) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '🔓 Débloque tout ARVEXA School';
+      subText.textContent = 'Accède à tous les chapitres, exercices, corrections et plus de fonctionnalités avec Premium.';
+      subExpiry.style.display = 'none';
+      subBtn.textContent = 'Voir les offres';
+      subBtn.className = 'sub-btn';
+      subBtn.href = 'abonnement.html';
+      return;
+    }
+
+    const expiry = toDate(userData?.subscriptionEndDate);
+    if (!expiry) {
+      reminder.style.display = 'none';
+      return;
+    }
+
+    const now = new Date();
+    const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+
+    if (daysLeft <= 0) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '⏳ Abonnement expiré';
+      subText.textContent = 'Renouvelle ton abonnement pour continuer à profiter de tous les avantages.';
+      subExpiry.style.display = 'none';
+      subBtn.textContent = 'Renouveler maintenant';
+      subBtn.className = 'sub-btn renew';
+      subBtn.href = 'abonnement.html';
+      return;
+    }
+
+    if (daysLeft <= 7) {
+      reminder.style.display = 'block';
+      subTitle.textContent = '⚠️ Abonnement bientôt terminé';
+      subText.textContent = 'Renouvelle pour ne pas perdre l\'accès à tous les chapitres.';
+      subExpiry.style.display = 'block';
+      subExpiry.textContent = `📅 Expire dans ${daysLeft} jour${daysLeft > 1 ? 's' : ''} (${expiry.toLocaleDateString('fr-FR')})`;
+      subBtn.textContent = 'Renouveler maintenant';
+      subBtn.className = 'sub-btn renew';
+      subBtn.href = 'abonnement.html';
+      return;
+    }
+
+    reminder.style.display = 'none';
+  }
+
+  // ================================================================
+  // RENDU UTILISATEUR (depuis cache ou Firestore)
+  // ================================================================
+  function renderUserData(data) {
+    if (!data) return;
+    updateGreeting(data.firstName || 'Élève');
+    const premium = isUserPremium(data);
+    updateSubscriptionDisplay(premium, data);
+  }
+
+  // ================================================================
+  // LOAD USER DATA — Cache-first puis Firestore
+  // ================================================================
+  let userData = null;
+  let unsubscribeUser = null;
+  let currentUid = null;
+
+  function loadUserData(user) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    const userRef = doc(db, 'users', user.uid);
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+          saveUserDataToCache(userData, user.uid);
+          renderUserData(userData);
+          checkUnreadNotifications(user.uid);
+        } else {
+          window.location.href = 'register.html';
+        }
+      },
+      (error) => {
+        // Silencieux : on garde le cache déjà affiché
+      }
+    );
+  }
+
+  // ================================================================
+  // REFRESH
+  // ================================================================
+  async function refreshDashboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const btn = document.getElementById('refreshBtn');
+    const icon = btn?.querySelector('i');
+    if (icon) {
+      icon.style.transition = 'transform 0.6s ease';
+      icon.style.transform = 'rotate(360deg)';
+      setTimeout(() => {
+        icon.style.transition = 'none';
+        icon.style.transform = 'rotate(0deg)';
+      }, 600);
+    }
+    try {
+      await getIdToken(user, true);
+      loadUserData(user);
+      updateCountdown();
+      renderTip();
+      updateSubjectsProgress();
+    } catch (e) {}
+  }
+
+  // ================================================================
+  // AUTH
+  // ================================================================
+  let isRedirecting = false;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      if (currentUid !== null) {
+        currentUid = null;
+        if (unsubscribeUser) unsubscribeUser();
+        clearSession();
+      }
+      if (!isRedirecting) {
+        isRedirecting = true;
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 300);
+      }
+      return;
+    }
+
+    if (user.uid === currentUid) return;
+    currentUid = user.uid;
+
+    try {
+      await getIdToken(user, true);
+    } catch (e) {}
+
+    saveSession(user);
+
+    // ✅ CACHE-FIRST : Afficher immédiatement les données en cache
+    const cached = getCachedUserData(user.uid);
+    if (cached) {
+      userData = cached;
+      renderUserData(cached);
+    }
+
+    // Firestore en arrière-plan (met à jour silencieusement)
+    loadUserData(user);
+  });
+
+  // ================================================================
+  // ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      if (unsubscribeUser) unsubscribeUser();
+      currentUid = null;
+      await signOut(auth);
+      clearSession();
+      window.location.href = 'login.html';
+    } catch (error) {}
+  });
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  });
+
+  document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+  });
+
+  document.getElementById('notifBtn').addEventListener('click', () => {
+    window.location.href = 'notifications.html';
+  });
+
+  document.getElementById('profileBtn').addEventListener('click', () => {
+    window.location.href = 'profil.html';
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
   </script>
 </body>
 </html>
