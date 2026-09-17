@@ -1915,10 +1915,13 @@
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-    getFirestore,
-    doc,
-    onSnapshot
-  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  getFirestore,
+  doc,
+  onSnapshot,
+  getDoc,
+  updateDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
@@ -2312,20 +2315,21 @@
       </div>
     `;
 
-    fetch(filePath)
-      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-      .then(html => {
-        const cleaned = preprocessContent(html);
-        contentBody.innerHTML = cleaned;
-        markPartAsRead();
-        loadNotes();
-        renderKaTeX();
-        updateReadProgress();
-      })
-      .catch(() => {
-        showContentUnavailable();
-      });
-  }
+      fetch(filePath)
+    .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
+    .then(html => {
+      const cleaned = preprocessContent(html);
+      contentBody.innerHTML = cleaned;
+      markPartAsRead();
+      loadNotes();
+      renderKaTeX();
+      updateReadProgress();
+      resetStudyTimer();
+    })
+    .catch(() => {
+      showContentUnavailable();
+    });
+}   // ← ⚠️ CETTE ACCOLADE MANQUE
 
   // ================================================================
   // PROGRESSION LECTURE
@@ -2343,22 +2347,24 @@
   // NAVIGATION
   // ================================================================
   function goToPrev() {
-    if (currentIndex > 0) {
-      currentIndex--;
-      if (notesTextarea.value.trim()) saveNotes();
-      contentWrapper.scrollTop = 0;
-      renderPart();
-    }
+  if (currentIndex > 0) {
+    saveStudyTimeBeforeChange();
+    currentIndex--;
+    if (notesTextarea.value.trim()) saveNotes();
+    contentWrapper.scrollTop = 0;
+    renderPart();
   }
+}
 
-  function goToNext() {
-    if (currentIndex < parts.length - 1) {
-      currentIndex++;
-      if (notesTextarea.value.trim()) saveNotes();
-      contentWrapper.scrollTop = 0;
-      renderPart();
-    }
+function goToNext() {
+  if (currentIndex < parts.length - 1) {
+    saveStudyTimeBeforeChange();
+    currentIndex++;
+    if (notesTextarea.value.trim()) saveNotes();
+    contentWrapper.scrollTop = 0;
+    renderPart();
   }
+}
 
   // ================================================================
   // MODAL NOTES
@@ -2378,8 +2384,9 @@
   // ÉVÉNEMENTS
   // ================================================================
   backBtn.addEventListener('click', () => {
-    window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
-  });
+  saveStudyTimeBeforeChange();
+  window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
+});
 
   prevBtn.addEventListener('click', goToPrev);
   nextBtn.addEventListener('click', goToNext);
@@ -2708,6 +2715,75 @@
   window.addEventListener('beforeunload', () => {
     try { if (tts.synth) tts.synth.cancel(); } catch (e) {}
   });
+  
+  // ================================================================
+// SUIVI DU TEMPS D'ÉTUDE
+// ================================================================
+let studyStartTime = Date.now();
+let studyTimeActive = true;
+
+// Détecter quand l'élève quitte/revient sur l'onglet
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    pauseStudyTime();
+  } else {
+    resumeStudyTime();
+  }
+});
+
+function pauseStudyTime() {
+  if (!studyTimeActive) return;
+  const duration = Math.floor((Date.now() - studyStartTime) / 1000);
+  if (duration >= 5) {
+    saveStudyTime(duration);
+  }
+  studyTimeActive = false;
+}
+
+function resumeStudyTime() {
+  studyStartTime = Date.now();
+  studyTimeActive = true;
+}
+
+// Sauvegarder avant de quitter la page
+window.addEventListener('beforeunload', () => {
+  pauseStudyTime();
+});
+
+// Sauvegarder quand on change de partie
+function saveStudyTimeBeforeChange() {
+  const duration = Math.floor((Date.now() - studyStartTime) / 1000);
+  if (duration >= 5) {
+    saveStudyTime(duration);
+  }
+  studyStartTime = Date.now();
+}
+
+async function saveStudyTime(seconds) {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      const current = snap.data().totalStudyTime || 0;
+      await updateDoc(userRef, {
+        totalStudyTime: current + seconds,
+        lastStudyUpdate: serverTimestamp()
+      });
+    }
+  } catch (e) {
+    // Silencieux
+  }
+}
+
+// Réinitialiser le chrono quand une nouvelle partie est chargée
+function resetStudyTimer() {
+  studyStartTime = Date.now();
+  studyTimeActive = true;
+}
+
 
   // ================================================================
   // CHARGEMENT UTILISATEUR
@@ -2768,6 +2844,7 @@
     loadContent();
     loadUserData(user);
   });
+  
   </script>
 </body>
 </html>
