@@ -19,17 +19,30 @@
     :root {
       --accent: #B8860B;
       --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
       --success: #2D7D5A;
+      --success-light: #3AB67E;
       --danger: #B85C3A;
+      --warning: #D4A017;
+      --blue: #60a5fa;
+
       --bg-dark: #0A0A0A;
       --bg-surface: #141414;
-      --bg-card: rgba(20,20,20,0.85);
+      --bg-card: rgba(20, 20, 20, 0.85);
+      --bg-elevated: rgba(255, 255, 255, 0.02);
+
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
       --text-muted: #5A5A4A;
-      --card-border: rgba(184,134,11,0.08);
-      --transition: all 0.2s cubic-bezier(0.25,1,0.5,1);
+
+      --border-soft: rgba(255, 255, 255, 0.05);
+      --border-gold: rgba(184, 134, 11, 0.15);
+
+      --transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+      --transition-fast: all 0.1s ease;
       --radius: 14px;
+      --radius-lg: 20px;
+
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -55,18 +68,20 @@
       inset: 0;
       user-select: none;
       -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
 
     .gradient-bg {
       position: fixed; inset: 0;
       z-index: -2;
-      background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26,58,42,.16) 0%, transparent 70%),
-                  radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184,134,11,.05) 0%, transparent 60%),
-                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+      background:
+        radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26,58,42,.16) 0%, transparent 70%),
+        radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184,134,11,.05) 0%, transparent 60%),
+        linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
     }
 
     /* ============================================================
-       HEADER (fixe en haut)
+       HEADER
        ============================================================ */
     .header {
       flex-shrink: 0;
@@ -99,7 +114,7 @@
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.05);
+      border: 1px solid var(--border-soft);
       background: transparent;
       color: var(--text-dim);
       cursor: pointer;
@@ -108,8 +123,11 @@
       text-decoration: none;
       flex-shrink: 0;
     }
-
-    .back-btn:hover { border-color: rgba(184,134,11,.14); color: var(--text-light); }
+    .back-btn:hover {
+      border-color: rgba(184,134,11,.2);
+      color: var(--accent-bright);
+      background: rgba(184,134,11,.04);
+    }
 
     .page-title {
       font-size: 14px;
@@ -120,8 +138,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
-    .page-title i { color: var(--accent-bright); margin-right: 5px; font-size: 13px; }
+    .page-title i {
+      color: var(--accent-bright);
+      margin-right: 5px;
+      font-size: 13px;
+    }
 
     .header-right {
       display: flex;
@@ -137,22 +158,26 @@
       padding: 6px 12px;
       border-radius: 20px;
       background: rgba(184,134,11,.08);
-      border: 1px solid rgba(184,134,11,.12);
+      border: 1px solid rgba(184,134,11,.15);
       color: var(--accent-bright);
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
       font-family: 'Inter', sans-serif;
+      letter-spacing: 0.5px;
     }
-
-    .mode-toggle:hover { background: rgba(184,134,11,.14); }
+    .mode-toggle:hover {
+      background: rgba(184,134,11,.15);
+      transform: translateY(-1px);
+    }
+    .mode-toggle i { font-size: 10px; }
 
     .icon-btn {
       width: 34px;
       height: 34px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.05);
+      border: 1px solid var(--border-soft);
       background: transparent;
       color: var(--text-dim);
       cursor: pointer;
@@ -162,12 +187,19 @@
       align-items: center;
       justify-content: center;
     }
-
-    .icon-btn:hover { border-color: rgba(184,134,11,.14); color: var(--text-light); }
-    .icon-btn.active { background: rgba(184,134,11,.12); color: var(--accent-bright); border-color: rgba(184,134,11,.2); }
+    .icon-btn:hover {
+      border-color: rgba(184,134,11,.2);
+      color: var(--accent-bright);
+      background: rgba(184,134,11,.04);
+    }
+    .icon-btn.active {
+      background: rgba(184,134,11,.12);
+      color: var(--accent-bright);
+      border-color: rgba(184,134,11,.25);
+    }
 
     /* ============================================================
-       DISPLAY (fixe, ne bouge pas)
+       DISPLAY
        ============================================================ */
     .display {
       flex-shrink: 0;
@@ -213,7 +245,6 @@
       font-size: 9px;
       display: none;
     }
-
     .display-status .mem-indicator.visible { display: inline-block; }
 
     .display-status .paren-indicator {
@@ -221,7 +252,6 @@
       font-size: 11px;
       display: none;
     }
-
     .display-status .paren-indicator.visible { display: inline-block; }
 
     .display-expr {
@@ -237,9 +267,11 @@
       font-weight: 400;
       letter-spacing: 0.5px;
     }
-
     .display-expr::-webkit-scrollbar { width: 2px; }
-    .display-expr::-webkit-scrollbar-thumb { background: rgba(184,134,11,.3); border-radius: 4px; }
+    .display-expr::-webkit-scrollbar-thumb {
+      background: rgba(184,134,11,.3);
+      border-radius: 4px;
+    }
 
     .display-result {
       font-size: 34px;
@@ -253,13 +285,16 @@
       padding: 0 4px;
       transition: font-size 0.15s ease;
     }
-
-    .display-result.error { color: var(--danger); font-size: 18px; font-family: 'Inter', sans-serif; }
+    .display-result.error {
+      color: var(--danger);
+      font-size: 18px;
+      font-family: 'Inter', sans-serif;
+    }
     .display-result.small { font-size: 24px; }
     .display-result.tiny { font-size: 18px; }
 
     /* ============================================================
-       KEYPAD (fixe, prend tout l'espace restant)
+       KEYPAD
        ============================================================ */
     .keypad {
       flex: 1;
@@ -293,7 +328,7 @@
       font-size: 15px;
       font-weight: 500;
       cursor: pointer;
-      transition: background 0.1s ease, transform 0.08s ease;
+      transition: background 0.1s ease, transform 0.08s ease, border-color 0.15s ease;
       font-family: 'Inter', sans-serif;
       min-height: 0;
       user-select: none;
@@ -307,9 +342,11 @@
       background: rgba(255,255,255,.08);
     }
 
-    .cb:hover { border-color: rgba(184,134,11,.12); background: rgba(255,255,255,.05); }
+    .cb:hover {
+      border-color: rgba(184,134,11,.2);
+      background: rgba(255,255,255,.05);
+    }
 
-    /* Variantes */
     .cb.fn {
       color: var(--accent-bright);
       font-size: 12px;
@@ -318,6 +355,10 @@
       border-color: rgba(184,134,11,.1);
     }
     .cb.fn:active { background: rgba(184,134,11,.16); }
+    .cb.fn:hover {
+      background: rgba(184,134,11,.1);
+      border-color: rgba(184,134,11,.25);
+    }
 
     .cb.op {
       color: var(--accent-bright);
@@ -327,6 +368,10 @@
       border-color: rgba(184,134,11,.1);
     }
     .cb.op:active { background: rgba(184,134,11,.18); }
+    .cb.op:hover {
+      background: rgba(184,134,11,.14);
+      border-color: rgba(184,134,11,.25);
+    }
 
     .cb.num {
       font-size: 20px;
@@ -348,21 +393,33 @@
       transform: scale(0.95);
       box-shadow: 0 2px 8px rgba(184,134,11,.4);
     }
+    .cb.eq:hover {
+      background: linear-gradient(135deg, #F0CC65, var(--accent-bright));
+      transform: translateY(-1px);
+    }
 
     .cb.danger { color: var(--danger); font-weight: 700; }
     .cb.danger:active { background: rgba(184,92,58,.15); }
+    .cb.danger:hover {
+      background: rgba(184,92,58,.1);
+      border-color: rgba(184,92,58,.25);
+    }
 
     .cb.clear {
       color: #E74C3C;
       font-weight: 700;
       font-size: 14px;
     }
+    .cb.clear:hover {
+      background: rgba(231, 76, 60, 0.1);
+      border-color: rgba(231, 76, 60, 0.25);
+    }
 
     .cb sup { font-size: 0.7em; vertical-align: super; }
     .cb sub { font-size: 0.7em; vertical-align: sub; }
 
     /* ============================================================
-       TOOLBAR (fixe en bas)
+       TOOLBAR
        ============================================================ */
     .toolbar {
       flex-shrink: 0;
@@ -395,12 +452,20 @@
       white-space: nowrap;
     }
 
-    .toolbar-btn:hover { background: rgba(184,134,11,.08); color: var(--text-light); border-color: rgba(184,134,11,.15); }
+    .toolbar-btn:hover {
+      background: rgba(184,134,11,.08);
+      color: var(--accent-bright);
+      border-color: rgba(184,134,11,.2);
+      transform: translateY(-1px);
+    }
     .toolbar-btn:active { transform: scale(0.97); }
-    .toolbar-btn i { font-size: 13px; color: var(--accent-bright); }
+    .toolbar-btn i {
+      font-size: 13px;
+      color: var(--accent-bright);
+    }
 
     /* ============================================================
-       MODALES (par-dessus, la calculatrice reste dessous)
+       MODALES (avec swipe-to-close)
        ============================================================ */
     .modal-overlay {
       position: fixed;
@@ -417,7 +482,10 @@
       transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
     }
 
-    .modal-overlay.show { opacity: 1; visibility: visible; }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
 
     .modal-sheet {
       width: 100%;
@@ -434,8 +502,11 @@
       position: relative;
     }
 
-    .modal-overlay.show .modal-sheet { transform: translateY(0); }
+    .modal-overlay.show .modal-sheet {
+      transform: translateY(0);
+    }
 
+    /* ---------- DRAG HANDLE (FONCTIONNEL) ---------- */
     .modal-sheet::before {
       content: '';
       position: absolute;
@@ -445,7 +516,24 @@
       width: 40px;
       height: 4px;
       border-radius: 2px;
-      background: rgba(255,255,255,.1);
+      background: rgba(255, 255, 255, 0.15);
+      cursor: grab;
+      z-index: 10;
+      transition: background 0.2s ease, width 0.2s ease;
+    }
+
+    .modal-sheet::before:hover {
+      background: rgba(224, 184, 74, 0.4);
+      width: 50px;
+    }
+
+    .modal-sheet.dragging {
+      transition: none;
+    }
+
+    .modal-sheet.dragging::before {
+      background: rgba(224, 184, 74, 0.6);
+      cursor: grabbing;
     }
 
     .modal-head {
@@ -482,8 +570,11 @@
       font-size: 13px;
       transition: var(--transition);
     }
-
-    .modal-close:hover { color: var(--text-light); border-color: rgba(184,134,11,.15); }
+    .modal-close:hover {
+      color: var(--text-light);
+      border-color: rgba(184,134,11,.25);
+      background: rgba(184,134,11,.06);
+    }
 
     /* ============================================================
        HISTORIQUE
@@ -504,8 +595,11 @@
       cursor: pointer;
       transition: var(--transition);
     }
-
-    .history-item:hover { background: rgba(184,134,11,.06); border-color: rgba(184,134,11,.12); }
+    .history-item:hover {
+      background: rgba(184,134,11,.06);
+      border-color: rgba(184,134,11,.15);
+      transform: translateX(3px);
+    }
 
     .history-item .h-expr {
       font-size: 12px;
@@ -513,7 +607,6 @@
       word-break: break-all;
       margin-bottom: 4px;
     }
-
     .history-item .h-res {
       font-size: 15px;
       font-weight: 700;
@@ -540,7 +633,7 @@
       padding: 11px;
       border-radius: 12px;
       background: rgba(184,92,58,.08);
-      border: 1px solid rgba(184,92,58,.12);
+      border: 1px solid rgba(184,92,58,.15);
       color: var(--danger);
       font-weight: 600;
       font-size: 13px;
@@ -552,8 +645,10 @@
       justify-content: center;
       gap: 6px;
     }
-
-    .history-clear:hover { background: rgba(184,92,58,.15); }
+    .history-clear:hover {
+      background: rgba(184,92,58,.15);
+      transform: translateY(-1px);
+    }
 
     /* ============================================================
        CONSTANTES
@@ -562,7 +657,6 @@
       position: relative;
       margin-bottom: 12px;
     }
-
     .const-search-wrap i {
       position: absolute;
       left: 14px;
@@ -572,12 +666,11 @@
       font-size: 13px;
       pointer-events: none;
     }
-
     .const-search {
       width: 100%;
       padding: 11px 14px 11px 38px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.05);
+      border: 1px solid var(--border-soft);
       background: rgba(255,255,255,.03);
       color: var(--text-light);
       font-size: 13px;
@@ -585,8 +678,10 @@
       outline: none;
       transition: var(--transition);
     }
-
-    .const-search:focus { border-color: rgba(184,134,11,.3); }
+    .const-search:focus {
+      border-color: rgba(184,134,11,.3);
+      background: rgba(184,134,11,.02);
+    }
     .const-search::placeholder { color: var(--text-muted); }
 
     .const-category {
@@ -618,12 +713,13 @@
       transition: var(--transition);
       gap: 10px;
     }
-
-    .const-item:hover { background: rgba(184,134,11,.06); }
+    .const-item:hover {
+      background: rgba(184,134,11,.06);
+      transform: translateX(3px);
+    }
     .const-item:active { transform: scale(0.98); }
 
     .const-item .ci-left { min-width: 0; flex: 1; }
-
     .const-item .ci-symbol {
       font-size: 15px;
       font-weight: 700;
@@ -631,25 +727,21 @@
       font-family: 'Playfair Display', serif;
       line-height: 1.2;
     }
-
     .const-item .ci-name {
       font-size: 11px;
       color: var(--text-muted);
       margin-top: 2px;
     }
-
     .const-item .ci-right {
       text-align: right;
       flex-shrink: 0;
     }
-
     .const-item .ci-value {
       font-size: 13px;
       color: var(--text-light);
       font-weight: 600;
       font-family: 'Playfair Display', serif;
     }
-
     .const-item .ci-unit {
       font-size: 10px;
       color: var(--text-muted);
@@ -665,7 +757,6 @@
       flex-wrap: wrap;
       margin-bottom: 16px;
     }
-
     .conv-cat {
       padding: 7px 12px;
       border-radius: 20px;
@@ -678,14 +769,17 @@
       transition: var(--transition);
       font-family: 'Inter', sans-serif;
     }
-
-    .conv-cat:hover { color: var(--text-dim); border-color: rgba(255,255,255,.1); }
-    .conv-cat.active { background: rgba(184,134,11,.12); color: var(--accent-bright); border-color: rgba(184,134,11,.2); }
-
-    .conv-field {
-      margin-bottom: 14px;
+    .conv-cat:hover {
+      color: var(--text-dim);
+      border-color: rgba(255,255,255,.1);
+    }
+    .conv-cat.active {
+      background: rgba(184,134,11,.12);
+      color: var(--accent-bright);
+      border-color: rgba(184,134,11,.25);
     }
 
+    .conv-field { margin-bottom: 14px; }
     .conv-field label {
       display: block;
       font-size: 11px;
@@ -695,19 +789,17 @@
       font-weight: 600;
       margin-bottom: 6px;
     }
-
     .conv-row {
       display: flex;
       gap: 8px;
       align-items: center;
     }
-
     .conv-input {
       flex: 1;
       min-width: 0;
       padding: 12px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.05);
+      border: 1px solid var(--border-soft);
       background: rgba(255,255,255,.03);
       color: var(--text-light);
       font-size: 16px;
@@ -716,13 +808,14 @@
       outline: none;
       transition: var(--transition);
     }
-
-    .conv-input:focus { border-color: rgba(184,134,11,.3); }
-
+    .conv-input:focus {
+      border-color: rgba(184,134,11,.3);
+      background: rgba(184,134,11,.02);
+    }
     .conv-select {
       padding: 12px 10px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,.05);
+      border: 1px solid var(--border-soft);
       background: var(--bg-surface);
       color: var(--text-light);
       font-size: 12px;
@@ -740,7 +833,7 @@
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      border: 1px solid rgba(184,134,11,.12);
+      border: 1px solid rgba(184,134,11,.15);
       background: rgba(184,134,11,.06);
       color: var(--accent-bright);
       cursor: pointer;
@@ -749,8 +842,10 @@
       margin: 0 auto;
       flex-shrink: 0;
     }
-
-    .conv-swap:hover { background: rgba(184,134,11,.15); transform: rotate(180deg); }
+    .conv-swap:hover {
+      background: rgba(184,134,11,.15);
+      transform: rotate(180deg);
+    }
 
     .conv-formula {
       text-align: center;
@@ -759,6 +854,15 @@
       font-style: italic;
       margin-top: 4px;
       min-height: 18px;
+    }
+
+    /* ============================================================
+       MENU
+       ============================================================ */
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     /* ============================================================
@@ -773,7 +877,8 @@
       border-radius: 12px;
       background: var(--bg-card);
       backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-gold);
       color: var(--text-light);
       font-size: 13px;
       font-weight: 500;
@@ -785,8 +890,10 @@
       text-align: center;
       box-shadow: 0 8px 32px rgba(0,0,0,.4);
     }
-
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
 
     /* ============================================================
        RESPONSIVE
@@ -821,7 +928,6 @@
       .mode-toggle { padding: 5px 10px; font-size: 10px; }
     }
 
-    /* Landscape - écran court */
     @media (max-height: 600px) and (orientation: landscape) {
       .display { min-height: 80px; padding: 6px 14px 8px; }
       .display-result { font-size: 24px; min-height: 30px; }
@@ -844,7 +950,7 @@
 <div class="gradient-bg"></div>
 
 <!-- ============================================================
-     HEADER (fixe)
+     HEADER
      ============================================================ -->
 <header class="header">
   <div class="header-left">
@@ -865,7 +971,7 @@
 </header>
 
 <!-- ============================================================
-     DISPLAY (fixe)
+     DISPLAY
      ============================================================ -->
 <div class="display">
   <div class="display-status">
@@ -878,7 +984,7 @@
 </div>
 
 <!-- ============================================================
-     KEYPAD (fixe, occupe le reste de l'écran)
+     KEYPAD
      ============================================================ -->
 <div class="keypad">
 
@@ -904,18 +1010,18 @@
   <div class="keypad-row row-sci-2">
     <button class="cb fn" data-fn="square">x²</button>
     <button class="cb fn" data-fn="cube">x³</button>
-    <button class="cb fn" data-fn="power">xⁿ</button>
+    <button class="cb fn" data-fn="power">xʸ</button>
     <button class="cb fn" data-fn="exp">eˣ</button>
     <button class="cb fn" data-fn="tenpow">10ˣ</button>
   </div>
 
-  <!-- Rangée scientifique 4 -->
+  <!-- Rangée scientifique 4 (sans nCr/nPr) -->
   <div class="keypad-row row-sci-2">
     <button class="cb fn" data-fn="inv">1/x</button>
     <button class="cb fn" data-fn="abs">|x|</button>
     <button class="cb fn" data-fn="fact">n!</button>
-    <button class="cb fn" data-fn="ncr">nCr</button>
-    <button class="cb fn" data-fn="npr">nPr</button>
+    <button class="cb fn" data-fn="percent">%</button>
+    <button class="cb fn" data-const="pi">π</button>
   </div>
 
   <!-- Rangée principale 1 -->
@@ -952,7 +1058,7 @@
 
   <!-- Rangée principale 5 -->
   <div class="keypad-row row-main">
-    <button class="cb fn" data-const="pi">π</button>
+    <button class="cb fn" data-const="e">e</button>
     <button class="cb num" data-n="0">0</button>
     <button class="cb num" data-n=".">.</button>
     <button class="cb eq" id="btnEq">=</button>
@@ -961,7 +1067,7 @@
 </div>
 
 <!-- ============================================================
-     TOOLBAR (fixe en bas)
+     TOOLBAR
      ============================================================ -->
 <div class="toolbar">
   <button class="toolbar-btn" id="toolHistory">
@@ -1063,7 +1169,7 @@
       <button class="modal-close" data-close="modalMenu"><i class="fas fa-xmark"></i></button>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:8px;">
+    <div class="menu-list">
       <button class="toolbar-btn" id="menuAns" style="justify-content:flex-start;padding:14px;">
         <i class="fas fa-reply"></i> Insérer le dernier résultat (Ans)
       </button>
@@ -1088,7 +1194,7 @@
 
 <script>
 // ================================================================
-// CALCULATRICE — VERSION FIXE
+// CALCULATRICE — Version avec swipe-to-close
 // ================================================================
 (function() {
   'use strict';
@@ -1181,17 +1287,14 @@
     if (!isFinite(n)) return n > 0 ? '∞' : (n < 0 ? '-∞' : 'Erreur');
     if (isNaN(n)) return 'Erreur';
 
-    // Notation scientifique pour très grands ou très petits
     const absN = Math.abs(n);
     if (absN !== 0 && (absN >= 1e12 || absN < 1e-6)) {
       return n.toExponential(6).replace('e+', ' × 10^').replace('e-', ' × 10^−');
     }
 
-    // Essayons de trouver une fraction simple
     const frac = toSimpleFraction(n);
     if (frac) return frac;
 
-    // Arrondi intelligent
     if (Number.isInteger(n)) return n.toLocaleString('fr-FR');
 
     const rounded = parseFloat(n.toPrecision(10));
@@ -1203,13 +1306,11 @@
     const absN = Math.abs(n);
     if (absN >= 100 || absN < 0.001) return null;
 
-    // Dénominateurs courants
     const denominators = [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 20, 25, 50];
     for (const d of denominators) {
       const num = n * d;
       if (Math.abs(num - Math.round(num)) < 1e-9) {
         const roundedNum = Math.round(num);
-        // Simplifier
         const g = gcd(Math.abs(roundedNum), d);
         if (g > 1) {
           return `${roundedNum / g}/${d / g}`;
@@ -1225,13 +1326,13 @@
   }
 
   // ============================================================
-  // DÉTECTION SIGNES UNICODE
+  // NORMALIZE
   // ============================================================
   function normalizeInput(str) {
     return String(str)
-      .replace(/[−–—]/g, '-')     // tous les tirets Unicode → -
-      .replace(/[×✕✖]/g, '*')      // multiplications
-      .replace(/[÷∕]/g, '/')       // divisions
+      .replace(/[−–—]/g, '-')
+      .replace(/[×✕✖]/g, '*')
+      .replace(/[÷∕]/g, '/')
       .replace(/²/g, '^2')
       .replace(/³/g, '^3')
       .replace(/π/g, 'PI')
@@ -1252,22 +1353,9 @@
     return r;
   }
 
-  function nCr(n, r) {
-    if (!Number.isInteger(n) || !Number.isInteger(r)) return NaN;
-    if (r < 0 || r > n) return NaN;
-    return factorial(n) / (factorial(r) * factorial(n - r));
-  }
-
-  function nPr(n, r) {
-    if (!Number.isInteger(n) || !Number.isInteger(r)) return NaN;
-    if (r < 0 || r > n) return NaN;
-    return factorial(n) / factorial(n - r);
-  }
-
   function safeEval(raw) {
     let e = normalizeInput(raw);
 
-    // Fonctions trigonométriques (en fonction du mode)
     if (isDeg) {
       e = e.replace(/\bsin\(/g, '__sinD(');
       e = e.replace(/\bcos\(/g, '__cosD(');
@@ -1284,7 +1372,6 @@
       e = e.replace(/\batan\(/g, 'Math.atan(');
     }
 
-    // Autres fonctions
     e = e.replace(/\bln\(/g, 'Math.log(');
     e = e.replace(/\blog\(/g, 'Math.log10(');
     e = e.replace(/\bsqrt\(/g, 'Math.sqrt(');
@@ -1292,19 +1379,12 @@
     e = e.replace(/\babs\(/g, 'Math.abs(');
     e = e.replace(/\bexp\(/g, 'Math.exp(');
     e = e.replace(/\bfact\(/g, 'fact(');
-    e = e.replace(/\bfactorial\(/g, 'fact(');
-    e = e.replace(/\bncr\(/g, 'nCr(');
-    e = e.replace(/\bnpr\(/g, 'nPr(');
 
-    // PI
     e = e.replace(/\bPI\b/g, '(' + Math.PI + ')');
     e = e.replace(/π/g, '(' + Math.PI + ')');
 
-    // Constante e (attention : ne pas toucher aux 'e' dans 'exp', 'sqrt', etc.)
-    // Remplacement des e isolés (entourés de chiffres ou opérateurs)
     e = e.replace(/(^|[^a-zA-Z_])e(?![a-zA-Z_])/g, '$1(' + Math.E + ')');
 
-    // Multiplications implicites : 2(3) → 2*(3)
     e = e.replace(/(\d)\(/g, '$1*(');
     e = e.replace(/\)(\d)/g, ')*$1');
     e = e.replace(/\)\(/g, ')*(');
@@ -1313,7 +1393,7 @@
     try {
       const fn = new Function(
         '__sinD', '__cosD', '__tanD', '__asinD', '__acosD', '__atanD',
-        'fact', 'nCr', 'nPr',
+        'fact',
         `'use strict'; return (${e});`
       );
       return fn(
@@ -1323,9 +1403,7 @@
         x => toDeg(Math.asin(Math.min(1, Math.max(-1, x)))),
         x => toDeg(Math.acos(Math.min(1, Math.max(-1, x)))),
         x => toDeg(Math.atan(x)),
-        factorial,
-        nCr,
-        nPr
+        factorial
       );
     } catch (err) {
       return NaN;
@@ -1338,7 +1416,6 @@
   function updateDisplay() {
     displayExpr.textContent = expr;
 
-    // Indicateur de parenthèses
     if (openP > 0) {
       parenIndicator.textContent = openP + ' parenthèse(s) ouverte(s)';
       parenIndicator.classList.add('visible');
@@ -1346,7 +1423,6 @@
       parenIndicator.classList.remove('visible');
     }
 
-    // Ajuster la taille du résultat
     const len = displayResult.textContent.length;
     displayResult.classList.remove('small', 'tiny');
     if (len > 14) displayResult.classList.add('small');
@@ -1407,18 +1483,12 @@
       case 'fact':
         if (expr) { expr += '!'; calc = 'fact(' + calc + ')'; }
         break;
-      case 'ncr':
-        if (expr) { expr += ' nCr '; calc += ', '; }
-        break;
-      case 'npr':
-        if (expr) { expr += ' nPr '; calc += ', '; }
+      case 'percent':
+        expr += '%'; calc += '/100';
         break;
       case 'tenpow':
         if (expr) { expr = '10^(' + expr + ')'; calc = 'Math.pow(10,' + calc + ')'; }
         else { expr = '10^('; calc = 'Math.pow(10,'; openP++; }
-        break;
-      case 'percent':
-        expr += '%'; calc += '/100';
         break;
       default:
         expr += fn + '(';
@@ -1503,7 +1573,6 @@
     let fCalc = calc;
     let fExpr = expr;
 
-    // Fermer les parenthèses
     while (openP > 0) {
       fCalc += ')';
       fExpr += ')';
@@ -1522,7 +1591,6 @@
     displayExpr.textContent = fExpr + ' =';
     updateResult(formatted);
 
-    // Ajouter à l'historique
     history.unshift({ e: fExpr, r: formatted });
     if (history.length > 50) history.length = 50;
     saveHistory();
@@ -1536,35 +1604,6 @@
 
     vibrate([10, 20, 10]);
     updateDisplay();
-  }
-
-  function toggleSign() {
-    if (!expr || done) return;
-
-    // Trouver le dernier nombre
-    const m = expr.match(/(−?)([\d.]+)$/);
-    if (m) {
-      const before = expr.slice(0, expr.length - m[0].length);
-      if (m[1] === '−') {
-        expr = before + m[2];
-      } else {
-        expr = before + '−' + m[2];
-      }
-
-      // Reconstruire calc en inversant juste la fin
-      const lastNumMatch = calc.match(/(-?)([\d.]+)$/);
-      if (lastNumMatch) {
-        const beforeCalc = calc.slice(0, calc.length - lastNumMatch[0].length);
-        if (lastNumMatch[1] === '-') {
-          calc = beforeCalc + lastNumMatch[2];
-        } else {
-          calc = beforeCalc + '-' + lastNumMatch[2];
-        }
-      }
-
-      vibrate(8);
-      updateDisplay();
-    }
   }
 
   // ============================================================
@@ -1633,6 +1672,87 @@
   function closeModal(id) {
     const modal = document.getElementById(id);
     if (modal) modal.classList.remove('show');
+  }
+
+  // ============================================================
+  // SWIPE TO CLOSE — LE TRAIT DEVIENT FONCTIONNEL
+  // ============================================================
+  function setupSwipeToClose() {
+    document.querySelectorAll('.modal-sheet').forEach(sheet => {
+      let startY = 0;
+      let currentY = 0;
+      let isDragging = false;
+      let startTime = 0;
+
+      sheet.addEventListener('touchstart', (e) => {
+        // Zone de déclenchement : les 80 premiers px du sheet
+        const rect = sheet.getBoundingClientRect();
+        const touchY = e.touches[0].clientY;
+        const touchX = e.touches[0].clientX;
+
+        // Seulement si on touche le haut du sheet (drag handle zone)
+        if (touchY - rect.top < 80) {
+          startY = touchY;
+          currentY = touchY;
+          startTime = Date.now();
+          isDragging = true;
+          sheet.classList.add('dragging');
+        }
+      }, { passive: true });
+
+      sheet.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+
+        currentY = e.touches[0].clientY;
+        const diff = currentY - startY;
+
+        // Ne tirer que vers le bas
+        if (diff > 0) {
+          sheet.style.transform = `translateY(${diff}px)`;
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      sheet.addEventListener('touchend', () => {
+        if (!isDragging) return;
+
+        isDragging = false;
+        sheet.classList.remove('dragging');
+
+        const diff = currentY - startY;
+        const duration = Date.now() - startTime;
+        const velocity = diff / duration;
+
+        // Fermer si :
+        // - Tirage > 100px
+        // - OU vitesse > 0.5 px/ms et tirage > 30px
+        if (diff > 100 || (velocity > 0.5 && diff > 30)) {
+          // Animation de fermeture
+          sheet.style.transition = 'transform 0.3s cubic-bezier(0.25,1,0.5,1)';
+          sheet.style.transform = `translateY(100%)`;
+
+          setTimeout(() => {
+            sheet.parentElement.classList.remove('show');
+            sheet.style.transform = '';
+            sheet.style.transition = '';
+          }, 300);
+        } else {
+          // Revenir en place
+          sheet.style.transform = '';
+        }
+
+        startY = 0;
+        currentY = 0;
+      }, { passive: true });
+
+      // Annuler si l'utilisateur fait un geste vers le haut
+      sheet.addEventListener('touchcancel', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        sheet.classList.remove('dragging');
+        sheet.style.transform = '';
+      }, { passive: true });
+    });
   }
 
   // ============================================================
@@ -1757,7 +1877,7 @@
   // ============================================================
   const CONVERSIONS = {
     'Longueur': {
-      units: ['m', 'km', 'cm', 'mm', 'μm', 'in', 'ft', 'mi'],
+      units: ['m', 'km', 'cm', 'mm', 'µm', 'in', 'ft', 'mi'],
       labels: ['Mètre', 'Kilomètre', 'Centimètre', 'Millimètre', 'Micromètre', 'Pouce', 'Pied', 'Mile'],
       toBase: [1, 1000, 0.01, 0.001, 1e-6, 0.0254, 0.3048, 1609.344]
     },
@@ -1881,34 +2001,28 @@
   // ÉVÉNEMENTS
   // ============================================================
   function bindEvents() {
-    // Chiffres
     document.querySelectorAll('.cb.num[data-n]').forEach(btn => {
       btn.addEventListener('click', () => inputNumber(btn.dataset.n));
     });
 
-    // Opérateurs
     document.getElementById('btnAdd').addEventListener('click', () => inputOperator('+'));
     document.getElementById('btnSub').addEventListener('click', () => inputOperator('-'));
     document.getElementById('btnMul').addEventListener('click', () => inputOperator('*'));
     document.getElementById('btnDiv').addEventListener('click', () => inputOperator('/'));
 
-    // Fonctions
     document.querySelectorAll('.cb.fn[data-fn]').forEach(btn => {
       btn.addEventListener('click', () => inputFunction(btn.dataset.fn));
     });
 
-    // Constantes
     document.querySelectorAll('.cb[data-const]').forEach(btn => {
       btn.addEventListener('click', () => inputConst(btn.dataset.const));
     });
 
-    // Autres boutons
     document.getElementById('btnAC').addEventListener('click', clearAll);
     document.getElementById('btnDel').addEventListener('click', deleteLast);
     document.getElementById('btnParen').addEventListener('click', inputParen);
     document.getElementById('btnEq').addEventListener('click', evaluate);
 
-    // Mode DEG/RAD
     modeToggle.addEventListener('click', () => {
       isDeg = !isDeg;
       modeLabel.textContent = isDeg ? 'DEG' : 'RAD';
@@ -1916,7 +2030,6 @@
       vibrate(10);
     });
 
-    // Toolbar
     document.getElementById('toolHistory').addEventListener('click', () => {
       renderHistory();
       openModal('modalHistory');
@@ -1937,13 +2050,11 @@
       vibrate(10);
     });
 
-    // Menu
     document.getElementById('menuBtn').addEventListener('click', () => {
       updateMemValue();
       openModal('modalMenu');
     });
 
-    // Menu actions
     document.getElementById('menuAns').addEventListener('click', () => {
       done = false;
       expr += String(lastAns);
@@ -1973,19 +2084,16 @@
       closeModal('modalMenu');
     });
 
-    // Close buttons
     document.querySelectorAll('[data-close]').forEach(btn => {
       btn.addEventListener('click', () => closeModal(btn.dataset.close));
     });
 
-    // Close on overlay click
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) overlay.classList.remove('show');
       });
     });
 
-    // History clear
     document.getElementById('clearHistory').addEventListener('click', () => {
       history = [];
       saveHistory();
@@ -1994,12 +2102,10 @@
       vibrate(15);
     });
 
-    // Const search
     document.getElementById('constSearch').addEventListener('input', (e) => {
       renderConstants(e.target.value);
     });
 
-    // Conversion events
     document.getElementById('convFrom').addEventListener('input', doConversion);
     document.getElementById('convFromUnit').addEventListener('change', doConversion);
     document.getElementById('convToUnit').addEventListener('change', doConversion);
@@ -2017,7 +2123,6 @@
       vibrate(10);
     });
 
-    // Clavier physique
     document.addEventListener('keydown', (e) => {
       if (document.querySelector('.modal-overlay.show')) {
         if (e.key === 'Escape') {
@@ -2050,6 +2155,7 @@
   function init() {
     loadStorage();
     bindEvents();
+    setupSwipeToClose();  // ← NOUVEAU
     updateDisplay();
     updateMemValue();
   }
