@@ -1916,14 +1916,16 @@
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-  getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentSingleTabManager,
   doc,
   onSnapshot,
   getDoc,
   updateDoc,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
+    
   const firebaseConfig = {
     apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
     authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -1934,8 +1936,14 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentSingleTabManager()
+  })
+});
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -2790,24 +2798,42 @@ function resetStudyTimer() {
   // CHARGEMENT UTILISATEUR
   // ================================================================
   function loadUserData(user) {
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
-    const userRef = doc(db, 'users', user.uid);
-    unsubscribeUser = onSnapshot(userRef,
-      (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const newPremium = isUserPremium(data);
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
+  }
+  const userRef = doc(db, 'users', user.uid);
+  unsubscribeUser = onSnapshot(userRef,
+    (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const newPremium = isUserPremium(data);
+        if (newPremium !== isPremium) isPremium = newPremium;
+        try {
+          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+        } catch (e) {}
+      } else {
+        // ⚡ Si le document n'existe pas frais, utiliser le cache
+        try {
+          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+          if (cached && Object.keys(cached).length > 0) {
+            const newPremium = isUserPremium(cached);
+            if (newPremium !== isPremium) isPremium = newPremium;
+          }
+        } catch (e) {}
+      }
+    },
+    (error) => {
+      // ⚡ En cas d'erreur (offline), utiliser le cache
+      try {
+        const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+        if (cached && Object.keys(cached).length > 0) {
+          const newPremium = isUserPremium(cached);
           if (newPremium !== isPremium) isPremium = newPremium;
-          try {
-            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-          } catch (e) {}
         }
-      },
-      () => {}
-    );
+      } catch (e) {}
+    }
+  );
   }
 
   // ================================================================
