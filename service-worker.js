@@ -4,7 +4,7 @@
 // Ne touche PAS aux CDN externes (Firebase, Google Fonts, FontAwesome)
 // ================================================================
 
-const CACHE_VERSION = 'arvexa-v1.0.12';
+const CACHE_VERSION = 'arvexa-v1.0.13';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_DYNAMIC = `${CACHE_VERSION}-dynamic`;
 
