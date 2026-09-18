@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -83,6 +83,7 @@
       padding: calc(10px + var(--safe-top)) 16px 10px;
       background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(184, 134, 11, 0.06);
       gap: 12px;
       min-height: 56px;
@@ -115,7 +116,7 @@
     .container { max-width: 640px; margin: 0 auto; padding: 12px 12px 40px; width: 100%; }
 
     /* ============================================================
-       SUBJECT HERO — NOUVELLE STRUCTURE ENRICHIE
+       SUBJECT HERO
        ============================================================ */
     .subject-hero {
       position: relative;
@@ -292,9 +293,6 @@
        ============================================================ */
     .chapter-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; }
 
-    /* ============================================================
-       CHAPTER CARD — ENRICHIE AVEC STATUTS
-       ============================================================ */
     .chapter-card {
       background: var(--bg-card);
       backdrop-filter: blur(10px);
@@ -314,7 +312,6 @@
     }
     .chapter-card:active { transform: scale(0.99); }
 
-    /* Statut : En cours */
     .chapter-card.in-progress {
       border-color: rgba(184, 134, 11, 0.3);
       background: rgba(184, 134, 11, 0.03);
@@ -325,7 +322,6 @@
       background: linear-gradient(180deg, var(--accent), var(--accent-bright));
     }
 
-    /* Statut : Terminé */
     .chapter-card.completed {
       border-color: rgba(45, 125, 90, 0.3);
       background: rgba(45, 125, 90, 0.03);
@@ -336,11 +332,9 @@
       background: linear-gradient(180deg, var(--success), var(--success-light));
     }
 
-    /* Statut : Verrouillé */
     .chapter-card.locked { opacity: 0.75; }
     .chapter-card.locked:hover { opacity: 0.9; }
 
-    /* En-tête de la carte */
     .cc-header {
       display: flex; align-items: flex-start;
       gap: 12px;
@@ -376,9 +370,7 @@
       border-color: rgba(255, 255, 255, 0.04);
     }
 
-    .cc-info {
-      flex: 1; min-width: 0;
-    }
+    .cc-info { flex: 1; min-width: 0; }
 
     .cc-title-row {
       display: flex; align-items: flex-start;
@@ -427,7 +419,6 @@
       border: 1px solid rgba(45, 125, 90, 0.18);
     }
 
-    /* Description du chapitre */
     .cc-description {
       font-size: 12px;
       color: var(--text-dim);
@@ -439,7 +430,6 @@
       overflow: hidden;
     }
 
-    /* Méta infos (durée, difficulté) */
     .cc-meta {
       display: flex;
       align-items: center;
@@ -461,7 +451,6 @@
     .cc-meta-item.difficulty-medium i { color: var(--warning); }
     .cc-meta-item.difficulty-hard i { color: var(--danger); }
 
-    /* Barre de progression du chapitre (uniquement si en cours ou terminé) */
     .cc-progress {
       margin-top: 10px;
       padding-top: 10px;
@@ -938,7 +927,7 @@
 
   <script type="module">
   // ================================================================
-  // MATIERE — Version enrichie + Firestore
+  // MATIERE — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -949,16 +938,16 @@
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  getDoc,
-  onSnapshot,
-  collection,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    getDoc,
+    onSnapshot,
+    collection,
+    query,
+    orderBy
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG FIREBASE
@@ -973,18 +962,60 @@
   };
 
   const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
-    
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
+
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
+
+  // ================================================================
+  // SESSION / CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
+  const LAST_UID_KEY = 'arvexa_last_uid';
+  const READ_KEY = 'arvexa_read_parts';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
+  function getCachedUserData(uid) {
+    try {
+      const raw = localStorage.getItem(USER_DATA_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw);
+      if (cached._uid && cached._uid !== uid) {
+        localStorage.removeItem(USER_DATA_KEY);
+        return null;
+      }
+      return cached;
+    } catch (e) { return null; }
+  }
 
   // ================================================================
   // URL PARAMS
@@ -1100,8 +1131,7 @@ const db = initializeFirestore(app, {
   let currentUid = null;
   let unsubscribeUser = null;
   let unsubscribeChapters = null;
-
-  const READ_KEY = 'arvexa_read_parts';
+  let unsubscribeSubject = null;
 
   // ================================================================
   // UTILITAIRES
@@ -1140,14 +1170,12 @@ const db = initializeFirestore(app, {
     } catch (e) { return []; }
   }
 
-  // Compte les parties lues pour UN chapitre spécifique
   function getReadPartsForChapter(chapterIndex) {
     const readParts = getReadParts();
     const prefix = `${subjectKey}_${chapterIndex}_`;
     return readParts.filter(key => key.startsWith(prefix)).length;
   }
 
-  // Compte les CHAPITRES uniques lus (pour la barre de progression globale)
   function getReadChaptersCount() {
     const readParts = getReadParts();
     const chaptersSet = new Set();
@@ -1161,7 +1189,7 @@ const db = initializeFirestore(app, {
   }
 
   // ================================================================
-  // CALCUL DU STATUT D'UN CHAPITRE
+  // STATUT D'UN CHAPITRE
   // ================================================================
   function getChapterStatus(chapterIndex, chapterData) {
     const readCount = getReadPartsForChapter(chapterIndex);
@@ -1182,14 +1210,16 @@ const db = initializeFirestore(app, {
   }
 
   function showPremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('hide');
-    document.getElementById('premiumPopup').classList.add('show');
+    const popup = document.getElementById('premiumPopup');
+    popup.classList.remove('hide');
+    popup.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
 
   function hidePremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('show');
-    document.getElementById('premiumPopup').classList.add('hide');
+    const popup = document.getElementById('premiumPopup');
+    popup.classList.remove('show');
+    popup.classList.add('hide');
     document.body.style.overflow = '';
   }
 
@@ -1209,7 +1239,7 @@ const db = initializeFirestore(app, {
   });
 
   // ================================================================
-  // RENDU DE LA PAGE
+  // RENDU HERO
   // ================================================================
   function renderHero() {
     if (!subjectConfig) return;
@@ -1231,11 +1261,9 @@ const db = initializeFirestore(app, {
       subjectDescription.style.display = 'none';
     }
 
-    // Stats
     subjectStats.style.display = 'flex';
     statChapters.textContent = chapters.length;
 
-    // Calculer temps total estimé
     const totalMinutes = chapters.reduce((sum, ch) => sum + (ch.estimatedMinutes || 0), 0);
     if (totalMinutes > 0) {
       statHoursPill.style.display = 'inline-flex';
@@ -1244,7 +1272,6 @@ const db = initializeFirestore(app, {
       statHoursPill.style.display = 'none';
     }
 
-    // Nombre de gratuits
     const freeCount = chapters.filter(ch => ch.isFree).length;
     if (freeCount > 0) {
       statFreePill.style.display = 'inline-flex';
@@ -1254,6 +1281,9 @@ const db = initializeFirestore(app, {
     }
   }
 
+  // ================================================================
+  // RENDU PROGRESSION
+  // ================================================================
   function renderProgress() {
     const total = chapters.length;
     const read = getReadChaptersCount();
@@ -1265,6 +1295,9 @@ const db = initializeFirestore(app, {
     progressFill.style.width = percent + '%';
   }
 
+  // ================================================================
+  // RENDU CHAPITRES
+  // ================================================================
   function renderChapters() {
     chapterCount.textContent = `${chapters.length} chapitre${chapters.length > 1 ? 's' : ''}`;
 
@@ -1284,13 +1317,11 @@ const db = initializeFirestore(app, {
       const isLocked = !isPremium && !isFree;
       const status = getChapterStatus(index, chap);
 
-      // Classes CSS
       let cardClass = 'chapter-card';
       if (isLocked) cardClass += ' locked';
       if (status.status === 'in-progress') cardClass += ' in-progress';
       if (status.status === 'completed') cardClass += ' completed';
 
-      // Badges
       let badgesHtml = '';
       if (isFree) {
         badgesHtml += '<span class="badge free">🎁 Gratuit</span>';
@@ -1306,12 +1337,10 @@ const db = initializeFirestore(app, {
         badgesHtml += '<span class="badge completed">✅ Terminé</span>';
       }
 
-      // Description
       const descriptionHtml = chap.description
         ? `<div class="cc-description">${escapeHtml(chap.description)}</div>`
         : '';
 
-      // Méta (durée, difficulté)
       let metaHtml = '';
       if (chap.estimatedMinutes || chap.difficulty) {
         const items = [];
@@ -1338,7 +1367,6 @@ const db = initializeFirestore(app, {
         }
       }
 
-      // Barre de progression du chapitre (uniquement si en cours ou terminé)
       let progressHtml = '';
       if (status.status !== 'not-opened' && status.totalParts > 0) {
         const chapterPercent = Math.round((status.readCount / status.totalParts) * 100);
@@ -1355,7 +1383,6 @@ const db = initializeFirestore(app, {
         `;
       }
 
-      // Action au clic
       const onclick = isLocked ? 'showPremiumPopup()' : `navigateToChapter(${index})`;
 
       return `
@@ -1376,18 +1403,19 @@ const db = initializeFirestore(app, {
       `;
     }).join('');
 
-    // Mettre à jour le titre de la page
     renderProgress();
   }
 
   // ================================================================
-  // CHARGEMENT DEPUIS FIRESTORE (temps réel)
+  // CHARGEMENT DEPUIS FIRESTORE
   // ================================================================
   function loadSubjectFromFirestore() {
     // 1. Charger les infos de la matière
     const subjectRef = doc(db, 'subjects', subjectKey);
 
-    onSnapshot(subjectRef,
+    if (unsubscribeSubject) unsubscribeSubject();
+
+    unsubscribeSubject = onSnapshot(subjectRef,
       (subjectSnap) => {
         if (subjectSnap.exists()) {
           const data = subjectSnap.data();
@@ -1398,10 +1426,14 @@ const db = initializeFirestore(app, {
             color: data.color || (SUBJECTS_CONFIG[subjectKey]?.color || '#E0B84A')
           };
           renderHero();
+        } else {
+          // Fallback
+          if (!subjectConfig) loadFallbackSubjectConfig();
         }
       },
       (error) => {
         console.warn('Firestore subject error:', error);
+        if (!subjectConfig) loadFallbackSubjectConfig();
       }
     );
 
@@ -1416,7 +1448,6 @@ const db = initializeFirestore(app, {
     unsubscribeChapters = onSnapshot(chaptersQuery,
       (snap) => {
         if (snap.empty) {
-          // Firestore vide → fallback sur DEFAULT_CHAPTERS
           loadFallbackChapters();
           return;
         }
@@ -1440,10 +1471,24 @@ const db = initializeFirestore(app, {
       },
       (error) => {
         console.warn('Firestore chapters error:', error);
-        // En cas d'erreur → fallback
         loadFallbackChapters();
       }
     );
+  }
+
+  function loadFallbackSubjectConfig() {
+    const cfg = SUBJECTS_CONFIG[subjectKey];
+    if (cfg) {
+      subjectConfig = {
+        name: cfg.name,
+        description: cfg.description || '',
+        icon: cfg.icon,
+        color: cfg.color
+      };
+      renderHero();
+    } else {
+      window.location.replace('index.html');
+    }
   }
 
   function loadFallbackChapters() {
@@ -1458,29 +1503,14 @@ const db = initializeFirestore(app, {
       totalParts: 0
     }));
 
-    // Fallback subject config
-    if (!subjectConfig) {
-      const cfg = SUBJECTS_CONFIG[subjectKey];
-      if (cfg) {
-        subjectConfig = {
-          name: cfg.name,
-          description: cfg.description || '',
-          icon: cfg.icon,
-          color: cfg.color
-        };
-      } else {
-        window.location.replace('index.html');
-        return;
-      }
-    }
+    if (!subjectConfig) loadFallbackSubjectConfig();
 
-    renderHero();
     renderChapters();
     renderProgress();
   }
 
   // ================================================================
-  // CHARGEMENT UTILISATEUR (temps réel pour statut Premium)
+  // CHARGEMENT UTILISATEUR (temps réel)
   // ================================================================
   function loadUserData(user) {
     if (unsubscribeUser) {
@@ -1502,38 +1532,36 @@ const db = initializeFirestore(app, {
           }
 
           try {
-            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+              ...data,
+              _uid: user.uid,
+              _cachedAt: Date.now()
+            }));
           } catch (e) {}
         } else {
-          // ⚡ Pas de doc frais → utiliser le cache
-          try {
-            const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-            if (cached && Object.keys(cached).length > 0) {
-              const newPremium = isUserPremium(cached);
-              if (newPremium !== isPremium) {
-                isPremium = newPremium;
-                if (chapters.length > 0) renderChapters();
-              }
-            }
-          } catch (e) {}
-        }
-      },
-      (error) => {
-        // ⚡ En cas d'erreur (offline), utiliser le cache
-        try {
-          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-          if (cached && Object.keys(cached).length > 0) {
+          const cached = getCachedUserData(user.uid);
+          if (cached) {
             const newPremium = isUserPremium(cached);
             if (newPremium !== isPremium) {
               isPremium = newPremium;
               if (chapters.length > 0) renderChapters();
             }
           }
-        } catch (e) {}
+        }
+      },
+      (error) => {
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          const newPremium = isUserPremium(cached);
+          if (newPremium !== isPremium) {
+            isPremium = newPremium;
+            if (chapters.length > 0) renderChapters();
+          }
+        }
       }
     );
   }
-    
+
   // ================================================================
   // REFRESH
   // ================================================================
@@ -1553,47 +1581,105 @@ const db = initializeFirestore(app, {
   });
 
   // ================================================================
-  // AUTH
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
   let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-        if (unsubscribeChapters) unsubscribeChapters();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
-
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
-    // 1. Charger le statut Premium depuis le cache
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-      isPremium = isUserPremium(cached);
-    } catch (e) {
-      isPremium = false;
-    }
+      sessionStorage.setItem('redirectAfterLogin',
+        window.location.pathname + window.location.search);
+    } catch (e) {}
+    window.location.replace('login.html');
+  }
 
-    // 2. Charger les données Firestore (matière + chapitres)
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
+
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    // Cache-first : récupérer Premium immédiatement
+    const cached = getCachedUserData(user.uid);
+    isPremium = cached ? isUserPremium(cached) : false;
+
+    // Charger les données
     loadSubjectFromFirestore();
-
-    // 3. Écouter les changements Premium
     loadUserData(user);
   });
 
   // ================================================================
-  // RE-RENDER QUAND L'UTILISATEUR REVIENT SUR LA PAGE
+  // REFRESH AU RETOUR
   // ================================================================
   window.addEventListener('focus', () => {
     if (chapters.length > 0) {
@@ -1609,7 +1695,7 @@ const db = initializeFirestore(app, {
     }
   });
 
-  console.log('🚀 ARVEXA — Matière');
+  console.log('🚀 ARVEXA — Matière (avec session robuste)');
   </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -73,7 +73,7 @@
     @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
     /* ============================================================
-       HEADER (flèches supprimées)
+       HEADER
        ============================================================ */
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
@@ -557,7 +557,7 @@
   <div class="glow glow-1"></div>
   <div class="glow glow-2"></div>
 
-  <!-- ===== HEADER (flèches supprimées) ===== -->
+  <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="header-left">
       <a href="#" class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i></a>
@@ -665,8 +665,7 @@
 
   <script type="module">
   // ================================================================
-  // CHAPITRE — Version avec flèches supprimées
-  // Toutes les autres fonctionnalités restent intactes
+  // CHAPITRE — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -676,17 +675,17 @@
     setPersistence,
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
- import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  getDoc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import {
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    getDoc,
+    onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
-  // CONFIG
+  // CONFIG FIREBASE
   // ================================================================
   const firebaseConfig = {
     apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
@@ -697,19 +696,61 @@
     appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
- const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
 
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
+
+  // ================================================================
+  // SESSION / CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
+  const LAST_UID_KEY = 'arvexa_last_uid';
+  const READ_KEY = 'arvexa_read_parts';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
+  function getCachedUserData(uid) {
+    try {
+      const raw = localStorage.getItem(USER_DATA_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw);
+      if (cached._uid && cached._uid !== uid) {
+        localStorage.removeItem(USER_DATA_KEY);
+        return null;
+      }
+      return cached;
+    } catch (e) { return null; }
+  }
 
   // ================================================================
   // URL PARAMS
@@ -783,7 +824,7 @@ const db = initializeFirestore(app, {
   const cpFill = document.getElementById('cpFill');
 
   // ================================================================
-  // UTILITAIRE — CONVERSION TIMESTAMP FIRESTORE
+  // UTILITAIRE — TIMESTAMP
   // ================================================================
   function toDate(value) {
     if (!value) return null;
@@ -798,13 +839,10 @@ const db = initializeFirestore(app, {
   // ================================================================
   function isUserPremium(userData) {
     if (!userData) return false;
-
     const hasStatus = userData.premium === true ||
                       userData.isUnlocked === true ||
                       userData.hasDeposited === true;
-
     if (!hasStatus) return false;
-
     const endDate = toDate(userData.subscriptionEndDate);
     if (!endDate) return true;
     return endDate.getTime() > Date.now();
@@ -813,8 +851,6 @@ const db = initializeFirestore(app, {
   // ================================================================
   // GESTION DES PARTIES LUES
   // ================================================================
-  const READ_KEY = 'arvexa_read_parts';
-
   function getReadParts() {
     try {
       return JSON.parse(localStorage.getItem(READ_KEY) || '[]');
@@ -843,14 +879,16 @@ const db = initializeFirestore(app, {
   }
 
   function showPremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('hide');
-    document.getElementById('premiumPopup').classList.add('show');
+    const popup = document.getElementById('premiumPopup');
+    popup.classList.remove('hide');
+    popup.classList.add('show');
     document.body.style.overflow = 'hidden';
   }
 
   function hidePremiumPopup() {
-    document.getElementById('premiumPopup').classList.remove('show');
-    document.getElementById('premiumPopup').classList.add('hide');
+    const popup = document.getElementById('premiumPopup');
+    popup.classList.remove('show');
+    popup.classList.add('hide');
     document.body.style.overflow = '';
   }
 
@@ -910,7 +948,6 @@ const db = initializeFirestore(app, {
       chapters = DEFAULT_CHAPTERS[subjectKey] || [];
       renderPage();
     } else {
-      // Redirection silencieuse
       window.location.replace('index.html');
     }
   }
@@ -1099,29 +1136,15 @@ const db = initializeFirestore(app, {
           }
 
           try {
-            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+              ...data,
+              _uid: user.uid,
+              _cachedAt: Date.now()
+            }));
           } catch (e) {}
         } else {
-          // ⚡ Pas de doc frais → utiliser le cache
-          try {
-            const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-            if (cached && Object.keys(cached).length > 0) {
-              const newPremium = isUserPremium(cached);
-              if (newPremium !== isPremium) {
-                isPremium = newPremium;
-                if (subjectConfig && chapters.length) {
-                  renderPage();
-                }
-              }
-            }
-          } catch (e) {}
-        }
-      },
-      (error) => {
-        // ⚡ En cas d'erreur (offline), utiliser le cache
-        try {
-          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-          if (cached && Object.keys(cached).length > 0) {
+          const cached = getCachedUserData(user.uid);
+          if (cached) {
             const newPremium = isUserPremium(cached);
             if (newPremium !== isPremium) {
               isPremium = newPremium;
@@ -1130,52 +1153,125 @@ const db = initializeFirestore(app, {
               }
             }
           }
-        } catch (e) {
-          isPremium = false;
+        }
+      },
+      (error) => {
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          const newPremium = isUserPremium(cached);
+          if (newPremium !== isPremium) {
+            isPremium = newPremium;
+            if (subjectConfig && chapters.length) {
+              renderPage();
+            }
+          }
         }
       }
     );
   }
 
   // ================================================================
-  // AUTH
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
   let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
-
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
-    // 1. Charger premium depuis le cache IMMÉDIATEMENT
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-      isPremium = isUserPremium(cached);
-    } catch (e) {
-      isPremium = false;
-    }
+      sessionStorage.setItem('redirectAfterLogin',
+        window.location.pathname + window.location.search);
+    } catch (e) {}
+    window.location.replace('login.html');
+  }
 
-    // 2. Charger les données de la matière (instantané)
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
+
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    // Cache-first : Premium depuis le cache
+    const cached = getCachedUserData(user.uid);
+    isPremium = cached ? isUserPremium(cached) : false;
+
+    // Charger les données
     loadSubjectData();
     setupTabs();
 
-    // 3. Écouter les changements Firestore en temps réel
+    // Écouter Firestore en temps réel
     loadUserData(user);
   });
+
+  console.log('🚀 ARVEXA — Chapitre (avec session robuste)');
   </script>
 </body>
 </html>

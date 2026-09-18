@@ -40,6 +40,8 @@
       --radius: 16px;
       --sidebar-width: 240px;
       --header-height: 64px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -85,8 +87,10 @@
     .sidebar {
       position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
       background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-right: 1px solid rgba(184, 134, 11, 0.06);
-      padding: 24px 16px; display: flex; flex-direction: column; z-index: 100;
+      padding: calc(24px + var(--safe-top)) 16px calc(24px + var(--safe-bottom));
+      display: flex; flex-direction: column; z-index: 100;
       overflow-y: auto; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .sidebar.open { left: 0; }
@@ -99,7 +103,8 @@
     .sidebar .logo span {
       background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
       background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
-      -webkit-text-fill-color: transparent; font-style: italic; animation: shimmerText 4s linear infinite;
+      -webkit-text-fill-color: transparent; font-style: italic;
+      animation: shimmerText 4s linear infinite;
       margin-left: 4px;
     }
     @keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
@@ -125,18 +130,21 @@
 
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
-      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
+      justify-content: space-between; padding: calc(10px + var(--safe-top)) 16px 10px;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184, 134, 11, 0.06);
       gap: 12px; min-height: var(--header-height);
     }
-    .header .header-left { display: flex; align-items: center; gap: 12px; }
+    .header .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
     .header .menu-toggle {
       display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
       border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
       color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
+      flex-shrink: 0;
     }
     .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
-    .header .page-title { font-size: 15px; font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
+    .header .page-title { font-size: clamp(13px, 1.6vw, 15px); font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif; }
     .header .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
     .header .header-actions { display: flex; align-items: center; gap: 6px; }
     .header .header-actions button {
@@ -1184,6 +1192,7 @@
     }
 
     @media (max-width: 480px) {
+      .header { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 48px; }
       .header .page-title { font-size: 13px; }
       .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
       .price-display .amount { font-size: 28px; }
@@ -1205,17 +1214,16 @@
       .pending-info-card { padding: 14px 16px; }
       .pending-info-card .info-row { font-size: 12px; }
 
-.premium-crown-wrap { width: 90px; height: 90px; font-size: 40px; }
+      .premium-crown-wrap { width: 90px; height: 90px; font-size: 40px; }
 
-/* ⚡ FORCER 3 COLONNES MÊME SUR MOBILE */
-.premium-info-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.premium-info-card { padding: 10px 4px; }
-.premium-info-card .pic-icon { font-size: 16px; margin-bottom: 2px; }
-.premium-info-card .pic-value { font-size: 11px; line-height: 1.2; }
-.premium-info-card .pic-label { font-size: 8px; letter-spacing: 0.3px; }
+      .premium-info-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .premium-info-card { padding: 10px 4px; }
+      .premium-info-card .pic-icon { font-size: 16px; margin-bottom: 2px; }
+      .premium-info-card .pic-value { font-size: 11px; line-height: 1.2; }
+      .premium-info-card .pic-label { font-size: 8px; letter-spacing: 0.3px; }
 
-.premium-benefits { padding: 16px 18px; }
-.premium-benefits .pb-item { font-size: 13px; }
+      .premium-benefits { padding: 16px 18px; }
+      .premium-benefits .pb-item { font-size: 13px; }
 
       .payment-logo-btn { padding: 5px 8px; min-width: 70px; }
       .payment-logo-btn img { height: 26px; max-width: 75px; }
@@ -1232,16 +1240,14 @@
       .toggle-switch.active .thumb { left: 26px; }
       .payment-logo-btn img { height: 24px; max-width: 65px; }
       .qr-zone .qr-image-wrap img { width: 120px; height: 120px; }
+
+      .premium-info-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+      .premium-info-card { padding: 8px 3px; }
+      .premium-info-card .pic-icon { font-size: 14px; }
+      .premium-info-card .pic-value { font-size: 10px; }
+      .premium-info-card .pic-label { font-size: 7px; }
     }
 
-    @media (max-width: 360px) {
-  .premium-info-grid { grid-template-columns: repeat(3, 1fr); gap: 4px; }
-  .premium-info-card { padding: 8px 3px; }
-  .premium-info-card .pic-icon { font-size: 14px; }
-  .premium-info-card .pic-value { font-size: 10px; }
-  .premium-info-card .pic-label { font-size: 7px; }
-    }
-    
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
@@ -1590,13 +1596,13 @@
 
       <div class="payment-logos">
         <button type="button" class="payment-logo-btn" data-method="mynita">
-          <img src="mynita.png" alt="Mynita" loading="lazy">
+          <img src="mynita.png" alt="Mynita" loading="lazy" onerror="this.style.display='none';this.parentNode.innerHTML+='<span style=\'font-size:11px;color:#fff\'>Mynita</span>'">
         </button>
         <button type="button" class="payment-logo-btn" data-method="wave">
-          <img src="wave.png" alt="Wave" loading="lazy">
+          <img src="wave.png" alt="Wave" loading="lazy" onerror="this.style.display='none';this.parentNode.innerHTML+='<span style=\'font-size:11px;color:#fff\'>Wave</span>'">
         </button>
         <button type="button" class="payment-logo-btn" data-method="amanata">
-          <img src="amanata.png" alt="Amanata" loading="lazy">
+          <img src="amanata.png" alt="Amanata" loading="lazy" onerror="this.style.display='none';this.parentNode.innerHTML+='<span style=\'font-size:11px;color:#fff\'>Amanata</span>'">
         </button>
       </div>
 
@@ -1658,7 +1664,7 @@
 
 <script type="module">
 // ================================================================
-// ABONNEMENT — VERSION COMPLÈTE ET CORRIGÉE
+// ABONNEMENT — Version robuste anti-flash
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1694,7 +1700,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentSingleTabManager()
@@ -1742,6 +1747,58 @@ const PAYMENT_METHODS = {
     color: '#00A651'
   }
 };
+
+// ================================================================
+// SESSION / CACHE
+// ================================================================
+const SESSION_KEY = 'arvexa_session';
+const USER_DATA_KEY = 'arvexa_user_data';
+const LAST_UID_KEY = 'arvexa_last_uid';
+
+function saveSession(user) {
+  if (!user) return;
+  try {
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      lastActive: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    localStorage.setItem(LAST_UID_KEY, user.uid);
+  } catch (e) {}
+}
+
+function clearSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(LAST_UID_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch (e) {}
+}
+
+function getCachedUserData(uid) {
+  try {
+    const raw = localStorage.getItem(USER_DATA_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (cached._uid && cached._uid !== uid) {
+      localStorage.removeItem(USER_DATA_KEY);
+      return null;
+    }
+    return cached;
+  } catch (e) { return null; }
+}
+
+function saveUserDataToCache(data, uid) {
+  try {
+    localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+      ...data,
+      _uid: uid,
+      _cachedAt: Date.now()
+    }));
+  } catch (e) {}
+}
 
 // ================================================================
 // DOM
@@ -2081,7 +2138,7 @@ function renderQR(methodKey) {
     <div class="qr-zone">
       <div class="qr-label">📱 Scanne avec ${method.name}</div>
       <div class="qr-image-wrap">
-        <img src="${method.qr}" alt="QR code ${method.name}" loading="lazy">
+        <img src="${method.qr}" alt="QR code ${method.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div style=\'padding:20px;text-align:center;color:#333;font-size:12px;font-weight:600\'>QR ${method.name}<br>Indisponible</div>'">
       </div>
       <div class="qr-hint">
         Ou envoie le montant au<br>
@@ -2161,7 +2218,7 @@ async function applyPromoCode(code) {
 // ================================================================
 function openModal() {
   if (!currentUser) {
-    window.location.href = 'login.html';
+    window.location.replace('login.html');
     return;
   }
 
@@ -2171,7 +2228,6 @@ function openModal() {
     if (userData.phone && !whatsappInput.value) whatsappInput.value = userData.phone;
   }
 
-  // Réinitialiser la sélection
   selectedPaymentMethod = null;
   document.querySelectorAll('.payment-logo-btn').forEach(btn => btn.classList.remove('active'));
   qrZone.innerHTML = `
@@ -2360,14 +2416,12 @@ promoInput.addEventListener('input', () => {
   if (appliedPromo) resetPromo();
 });
 
-// Sélection mode de paiement
 document.querySelectorAll('.payment-logo-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     selectPaymentMethod(btn.dataset.method);
   });
 });
 
-// Inputs → mise à jour du bouton
 fullNameInput.addEventListener('input', updateConfirmButtonState);
 whatsappInput.addEventListener('input', updateConfirmButtonState);
 
@@ -2380,14 +2434,20 @@ modal.addEventListener('click', (e) => {
 
 confirmBtn.addEventListener('click', sendToWhatsApp);
 
-document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+// ================================================================
+// DÉCONNEXION
+// ================================================================
+async function performLogout() {
+  isRedirecting = true;
+  if (unsubscribeUser) unsubscribeUser();
+  clearSession();
+  try { await signOut(auth); } catch (e) {}
+  window.location.replace('login.html');
+}
+
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
   e.preventDefault();
-  try {
-    if (unsubscribeUser) unsubscribeUser();
-    currentUid = null;
-    await signOut(auth);
-    window.location.href = 'login.html';
-  } catch (error) {}
+  performLogout();
 });
 
 document.getElementById('menuToggle').addEventListener('click', () => {
@@ -2421,74 +2481,131 @@ function loadUserData(user) {
 
   unsubscribeUser = onSnapshot(userRef,
     (docSnap) => {
-      // ⚡ Vérifier le cache AVANT de rediriger
-      let cached = null;
-      try {
-        cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-        if (!cached || Object.keys(cached).length === 0) cached = null;
-      } catch (e) {}
-
       if (docSnap.exists()) {
         const data = docSnap.data();
-        try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-        } catch (e) {}
+        saveUserDataToCache(data, user.uid);
         routeToScreen(data);
-      } else if (cached) {
-        routeToScreen(cached);
-      } else if (!navigator.onLine) {
-        routeToScreen(null);
       } else {
-        window.location.href = 'register.html';
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          routeToScreen(cached);
+        } else {
+          showScreen('free');
+        }
       }
     },
     (error) => {
-      try {
-        const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-        if (Object.keys(cached).length > 0) {
-          routeToScreen(cached);
-        } else {
-          routeToScreen(null);
-        }
-      } catch (e) {
-        routeToScreen(null);
+      const cached = getCachedUserData(user.uid);
+      if (cached) {
+        routeToScreen(cached);
+      } else {
+        showScreen('free');
       }
     }
   );
 }
 
 // ================================================================
-// AUTH
+// AUTH ROBUSTE — Anti-flash
 // ================================================================
 let isRedirecting = false;
+let isAuthResolved = false;
+let graceTimer = null;
+let maxTimer = null;
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    if (currentUid !== null) {
-      currentUid = null;
-      if (unsubscribeUser) unsubscribeUser();
+function redirectToLogin() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+  try {
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+  } catch (e) {}
+  window.location.replace('login.html');
+}
+
+function initAuthGuard(onAuthenticated) {
+  auth.onAuthStateChanged((user) => {
+    if (isAuthResolved) {
+      if (user && user.uid !== currentUid) {
+        currentUid = user.uid;
+        currentUser = user;
+        saveSession(user);
+        onAuthenticated(user);
+      } else if (!user && currentUid) {
+        currentUid = null;
+        currentUser = null;
+        clearSession();
+        redirectToLogin();
+      }
+      return;
     }
-    if (!isRedirecting) {
-      isRedirecting = true;
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 300);
+
+    if (!user) {
+      if (graceTimer) clearTimeout(graceTimer);
+      graceTimer = setTimeout(() => {
+        if (isAuthResolved) return;
+        if (auth.currentUser) return;
+
+        const hasSession = localStorage.getItem(SESSION_KEY);
+        const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+        if ((hasSession || hasUserData) && !navigator.onLine) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        if (hasSession && hasUserData) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        redirectToLogin();
+      }, 600);
+      return;
     }
-    return;
+
+    if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+    if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+    isAuthResolved = true;
+    currentUid = user.uid;
+    currentUser = user;
+    saveSession(user);
+    onAuthenticated(user);
+  });
+
+  maxTimer = setTimeout(() => {
+    if (isAuthResolved) return;
+    if (auth.currentUser) {
+      isAuthResolved = true;
+      currentUid = auth.currentUser.uid;
+      currentUser = auth.currentUser;
+      saveSession(auth.currentUser);
+      onAuthenticated(auth.currentUser);
+    } else {
+      redirectToLogin();
+    }
+  }, 5000);
+}
+
+// ================================================================
+// LANCER LA PROTECTION
+// ================================================================
+initAuthGuard(async (user) => {
+  // Cache-first
+  const cached = getCachedUserData(user.uid);
+  if (cached) {
+    routeToScreen(cached);
+  } else {
+    showScreen('free');
   }
 
-  if (user.uid === currentUid) return;
-  currentUid = user.uid;
-  currentUser = user;
-
-  try {
-    const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-    if (Object.keys(cached).length > 0) {
-      routeToScreen(cached);
-    }
-  } catch (e) {}
-
+  // Firestore en arrière-plan
   loadUserData(user);
 });
 
@@ -2496,6 +2613,8 @@ onAuthStateChanged(auth, async (user) => {
 // INIT
 // ================================================================
 updateDisplay();
+
+console.log('🚀 ARVEXA — Abonnement (avec session robuste)');
 </script>
 </body>
 </html>

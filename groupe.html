@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <script src="register-sw.js" defer></script>
-  
+
   <style>
     :root {
       --accent: #B8860B;
@@ -215,7 +215,7 @@
     }
 
     /* ============================================================
-       MESSAGE WRAPPER — LOGIQUE FORUM
+       MESSAGE WRAPPER
        ============================================================ */
     .message-wrapper {
       display: flex;
@@ -1185,7 +1185,7 @@
 
 <script type="module">
 // ================================================================
-// GROUPE D'ÉCHANGE — v3 (réponse, suppression, recherche)
+// GROUPE D'ÉCHANGE — Version robuste anti-flash
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1193,7 +1193,8 @@ import {
   getAuth,
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 import {
   initializeFirestore,
@@ -1246,8 +1247,8 @@ const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 const MAX_IMAGE_WIDTH = 800;
 const IMAGE_QUALITY = 0.7;
 const MAX_BASE64_SIZE = 700 * 1024;
-const SWIPE_THRESHOLD = 60;      // px pour déclencher la vibration
-const SWIPE_TRIGGER = 80;        // px pour valider la réponse
+const SWIPE_THRESHOLD = 60;
+const SWIPE_TRIGGER = 80;
 
 const FORBIDDEN_WORDS = [
   'connard', 'connasse', 'salaud', 'salope', 'pute', 'putain',
@@ -1264,13 +1265,42 @@ const QUICK_EMOJIS = [
 ];
 
 // ================================================================
+// SESSION / CACHE
+// ================================================================
+const SESSION_KEY = 'arvexa_session';
+const USER_DATA_KEY = 'arvexa_user_data';
+const LAST_UID_KEY = 'arvexa_last_uid';
+
+function saveSession(user) {
+  if (!user) return;
+  try {
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      lastActive: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    localStorage.setItem(LAST_UID_KEY, user.uid);
+  } catch (e) {}
+}
+
+function clearSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(LAST_UID_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch (e) {}
+}
+
+// ================================================================
 // ÉTAT
 // ================================================================
 let currentUser = null;
 let currentUid = null;
 let currentUserData = null;
 let messages = [];
-let filteredMessages = [];         // Messages après recherche
+let filteredMessages = [];
 let isBanned = false;
 let unsubscribeMessages = null;
 let unsubscribeUser = null;
@@ -1280,7 +1310,7 @@ let pendingImageName = '';
 let confirmCallback = null;
 let longPressTimer = null;
 let longPressTriggered = false;
-let currentReply = null;            // { id, author, content, type }
+let currentReply = null;
 let isSearching = false;
 let searchQuery = '';
 
@@ -1290,6 +1320,12 @@ let swipeCurrentX = 0;
 let swipeActiveEl = null;
 let swipeActiveId = null;
 let swipeTriggered = false;
+
+// Auth state
+let isRedirecting = false;
+let isAuthResolved = false;
+let graceTimer = null;
+let maxTimer = null;
 
 // ================================================================
 // DOM
@@ -1500,10 +1536,8 @@ function renderMessages() {
     const isSelf = msg.userId === currentUid;
     const initial = (msg.userName || 'U').charAt(0).toUpperCase();
 
-    // Contenu de la bulle
     let bubbleContent = '';
 
-    // Réponse (citation)
     if (msg.replyTo) {
       const replyPreviewText = msg.replyTo.type === 'image'
         ? '📷 Photo'
@@ -1523,7 +1557,6 @@ function renderMessages() {
       bubbleContent += `<img src="${msg.imageBase64}" class="msg-image" alt="Image" data-img="${msg.id}">`;
     }
 
-    // Avatar + nom pour les messages reçus
     const senderBlock = !isSelf
       ? `<div class="message-sender">
            <div class="avatar-small" ${msg.userAvatar ? `style="background-image:url('${msg.userAvatar}');"` : ''}>
@@ -1551,10 +1584,8 @@ function renderMessages() {
 
   messagesContainer.innerHTML = html;
 
-  // Attacher événements
   attachMessageEvents();
 
-  // Auto-scroll (sauf si recherche)
   if (!isSearching) {
     const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 150;
     if (isAtBottom) {
@@ -1569,12 +1600,10 @@ function renderMessages() {
 // ÉVÉNEMENTS SUR LES MESSAGES (appui long, swipe, images)
 // ================================================================
 function attachMessageEvents() {
-  // Images (zoom)
   messagesContainer.querySelectorAll('.msg-image').forEach(img => {
     img.addEventListener('click', () => openImageModal(img.src));
   });
 
-  // Clic sur citation → scroll vers le message original
   messagesContainer.querySelectorAll('.reply-quote').forEach(quote => {
     quote.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1583,19 +1612,16 @@ function attachMessageEvents() {
     });
   });
 
-  // Swipe + appui long
   messagesContainer.querySelectorAll('.message-wrapper').forEach((msgEl) => {
     const msgId = msgEl.dataset.msgId;
     const messageData = messages.find(m => m.id === msgId);
     if (!messageData) return;
 
-    // === Clic droit (desktop) ===
     msgEl.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       openMessageMenu(messageData);
     });
 
-    // === Appui long (mobile) ===
     msgEl.addEventListener('touchstart', (e) => {
       longPressTriggered = false;
       longPressTimer = setTimeout(() => {
@@ -1604,7 +1630,6 @@ function attachMessageEvents() {
         openMessageMenu(messageData);
       }, 500);
 
-      // Init swipe
       swipeStartX = e.touches[0].clientX;
       swipeCurrentX = swipeStartX;
       swipeActiveEl = msgEl;
@@ -1617,17 +1642,14 @@ function attachMessageEvents() {
       swipeCurrentX = e.touches[0].clientX;
       const deltaX = swipeCurrentX - swipeStartX;
 
-      // On autorise le swipe dans les deux sens (mais surtout droite)
       if (Math.abs(deltaX) > 10) {
         clearTimeout(longPressTimer);
 
-        // Vibration au seuil
         if (Math.abs(deltaX) >= SWIPE_THRESHOLD && !swipeTriggered) {
           swipeTriggered = true;
           if (navigator.vibrate) navigator.vibrate(20);
         }
 
-        // Animation
         const limitedDelta = Math.max(-120, Math.min(120, deltaX));
         msgEl.style.transform = `translateX(${limitedDelta}px)`;
         msgEl.classList.add('swiping');
@@ -1647,7 +1669,6 @@ function attachMessageEvents() {
       const deltaX = swipeCurrentX - swipeStartX;
       const shouldReply = Math.abs(deltaX) >= SWIPE_TRIGGER;
 
-      // Reset visuel
       msgEl.style.transform = '';
       msgEl.classList.remove('swiping', 'swipe-ready');
       swipeActiveEl = null;
@@ -1850,7 +1871,6 @@ async function sendMessage() {
 
     await addDoc(collection(db, 'groups', GROUP_ID, 'messages'), messageData);
 
-    // Reset
     messageInput.value = '';
     messageInput.style.height = 'auto';
     const wrap = messageInput.closest('.message-input-wrap');
@@ -2089,7 +2109,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ================================================================
-// MESSAGE CONTEXT MENU — ENRICHI
+// MESSAGE CONTEXT MENU
 // ================================================================
 const msgMenuOverlay = document.getElementById('msgMenuOverlay');
 const msgMenuSheet = document.getElementById('msgMenuSheet');
@@ -2105,7 +2125,6 @@ function openMessageMenu(messageData) {
 
   let menuItems = '';
 
-  // Copier
   if (messageData.content) {
     menuItems += `
       <button class="msg-menu-item" data-action="copy">
@@ -2115,7 +2134,6 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  // Répondre
   menuItems += `
     <button class="msg-menu-item" data-action="reply">
       <i class="fas fa-reply"></i>
@@ -2123,7 +2141,6 @@ function openMessageMenu(messageData) {
     </button>
   `;
 
-  // Supprimer
   if (canDelete) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="delete">
@@ -2133,7 +2150,6 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  // Bannir (admin, pas sur ses propres messages)
   if (isAdmin && !isAdminMsg) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="ban">
@@ -2264,13 +2280,17 @@ function loadUserData(user) {
       if (docSnap.exists()) {
         currentUserData = docSnap.data();
         try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(currentUserData));
+          localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+            ...currentUserData,
+            _uid: user.uid,
+            _cachedAt: Date.now()
+          }));
         } catch (e) {}
       }
     },
     (error) => {
       try {
-        const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
+        const cached = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{}');
         if (cached && Object.keys(cached).length > 0) {
           currentUserData = cached;
         }
@@ -2314,32 +2334,105 @@ function updateOnlineCount() {
 }
 
 // ================================================================
-// AUTH
+// DÉCONNEXION
 // ================================================================
-let isRedirecting = false;
+async function performLogout() {
+  isRedirecting = true;
+  if (unsubscribeMessages) unsubscribeMessages();
+  if (unsubscribeUser) unsubscribeUser();
+  if (unsubscribeBanCheck) unsubscribeBanCheck();
+  clearSession();
+  try { await signOut(auth); } catch (e) {}
+  window.location.replace('login.html');
+}
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    if (currentUid !== null) {
-      currentUid = null;
-      if (unsubscribeMessages) unsubscribeMessages();
-      if (unsubscribeUser) unsubscribeUser();
-      if (unsubscribeBanCheck) unsubscribeBanCheck();
+// ================================================================
+// AUTH ROBUSTE — Anti-flash
+// ================================================================
+function redirectToLogin() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+  try {
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+  } catch (e) {}
+  window.location.replace('login.html');
+}
+
+function initAuthGuard(onAuthenticated) {
+  auth.onAuthStateChanged((user) => {
+    if (isAuthResolved) {
+      if (user && user.uid !== currentUid) {
+        currentUid = user.uid;
+        currentUser = user;
+        saveSession(user);
+        onAuthenticated(user);
+      } else if (!user && currentUid) {
+        currentUid = null;
+        currentUser = null;
+        clearSession();
+        redirectToLogin();
+      }
+      return;
     }
-    if (!isRedirecting) {
-      isRedirecting = true;
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-      setTimeout(() => {
-        window.location.href = 'login.html';
-      }, 300);
+
+    if (!user) {
+      if (graceTimer) clearTimeout(graceTimer);
+      graceTimer = setTimeout(() => {
+        if (isAuthResolved) return;
+        if (auth.currentUser) return;
+
+        const hasSession = localStorage.getItem(SESSION_KEY);
+        const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+        if ((hasSession || hasUserData) && !navigator.onLine) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        if (hasSession && hasUserData) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        redirectToLogin();
+      }, 600);
+      return;
     }
-    return;
-  }
 
-  if (user.uid === currentUid) return;
-  currentUid = user.uid;
-  currentUser = user;
+    if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+    if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
 
+    isAuthResolved = true;
+    currentUid = user.uid;
+    currentUser = user;
+    saveSession(user);
+    onAuthenticated(user);
+  });
+
+  maxTimer = setTimeout(() => {
+    if (isAuthResolved) return;
+    if (auth.currentUser) {
+      isAuthResolved = true;
+      currentUid = auth.currentUser.uid;
+      currentUser = auth.currentUser;
+      saveSession(auth.currentUser);
+      onAuthenticated(auth.currentUser);
+    } else {
+      redirectToLogin();
+    }
+  }, 5000);
+}
+
+// ================================================================
+// LANCER LA PROTECTION
+// ================================================================
+initAuthGuard(async (user) => {
   loadUserData(user);
   watchBanStatus(user.uid);
   loadMessages();
@@ -2352,6 +2445,8 @@ onAuthStateChanged(auth, async (user) => {
 buildEmojiPicker();
 updateSendButton();
 updateOnlineCount();
+
+console.log('🚀 ARVEXA — Groupe (avec session robuste)');
 </script>
 
 </body>

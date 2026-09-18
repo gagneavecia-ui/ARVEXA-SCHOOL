@@ -415,7 +415,7 @@
 
 <script type="module">
 // ================================================================
-// FORMULAIRES — Version complète avec toutes les formules
+// FORMULAIRES — Version robuste anti-flash
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -447,16 +447,44 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentSingleTabManager()
   })
 });
-  
+
 try {
   await setPersistence(auth, browserLocalPersistence);
 } catch (e) {}
+
+// ================================================================
+// SESSION / CACHE
+// ================================================================
+const SESSION_KEY = 'arvexa_session';
+const USER_DATA_KEY = 'arvexa_user_data';
+const LAST_UID_KEY = 'arvexa_last_uid';
+
+function saveSession(user) {
+  if (!user) return;
+  try {
+    const data = {
+      uid: user.uid,
+      email: user.email,
+      lastActive: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+    localStorage.setItem(LAST_UID_KEY, user.uid);
+  } catch (e) {}
+}
+
+function clearSession() {
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(USER_DATA_KEY);
+    localStorage.removeItem(LAST_UID_KEY);
+    sessionStorage.removeItem(SESSION_KEY);
+  } catch (e) {}
+}
 
 // ================================================================
 // DONNÉES
@@ -784,7 +812,7 @@ const FORMULAS = [
    exemple:'$A(1+2i)$, $B(4+6i) \\implies AB = 5$',
    erreurs:['Bien identifier le point d\'origine']},
 
-  // NOUVEAU : Similitudes planes directes
+  // Similitudes planes
   {id:'m36b',subj:'maths',theme:'Similitudes planes',name:'Écriture complexe d\'une similitude directe',
    formula:'z\' = a z + b',
    units:'$a \\in \\mathbb{C}^*$, $b \\in \\mathbb{C}$',note:'Toute similitude directe a une écriture complexe.',
@@ -825,7 +853,7 @@ const FORMULAS = [
    exemple:'$S_1 : z\' = 2z$, $S_2 : z\'\' = iz\' \\implies S_2 \\circ S_1 : z\'\' = 2iz$',
    erreurs:['Attention à l\'ordre de composition']},
 
-  // NOUVEAU : Produit vectoriel
+  // Produit vectoriel
   {id:'m36g',subj:'maths',theme:'Produit vectoriel',name:'Définition du produit vectoriel',
    formula:'\\vec{u} \\wedge \\vec{v} = \\begin{vmatrix} \\vec{i} & \\vec{j} & \\vec{k} \\\\ u_x & u_y & u_z \\\\ v_x & v_y & v_z \\end{vmatrix}',
    note:'Le résultat est un VECTEUR.',
@@ -850,7 +878,7 @@ const FORMULAS = [
    exemple:'$\\vec{u}(1,2,3)$ et $\\vec{v}(2,4,6)$ sont colinéaires',
    erreurs:['$\\vec{0}$ est le vecteur nul']},
 
-  // NOUVEAU : Dénombrement
+  // Dénombrement
   {id:'m36j',subj:'maths',theme:'Dénombrement',name:'Factorielle',
    formula:'n! = n \\times (n-1) \\times \\dots \\times 2 \\times 1',
    units:'0! = 1',note:'',
@@ -958,7 +986,7 @@ const FORMULAS = [
    exemple:'Droite passant par $A(1,2,3)$, direction $\\vec{u}(1,0,-1)$ : $x = 1+t$, $y = 2$, $z = 3-t$',
    erreurs:['Un vecteur directeur peut être multiplié']},
 
-  // NOUVEAU : Coniques
+  // Coniques
   {id:'m46b',subj:'maths',theme:'Coniques',name:'Ellipse',
    formula:'\\frac{x^2}{a^2} + \\frac{y^2}{b^2} = 1',
    units:'a = demi-grand axe, b = demi-petit axe',note:'',
@@ -984,7 +1012,7 @@ const FORMULAS = [
    erreurs:['Attention au signe $-$']},
 
   // ════════════════════════════════════════════════════════════
-  // PHYSIQUE — Mécanique
+  // PHYSIQUE
   // ════════════════════════════════════════════════════════════
   {id:'p1',subj:'physique',theme:'Mécanique',name:'Deuxième loi de Newton',
    formula:'\\sum \\vec{F} = m \\vec{a}',
@@ -1082,7 +1110,6 @@ const FORMULAS = [
    exemple:'Chute de 20 m : $v = 20$ m/s',
    erreurs:['Négliger les frottements est une approximation']},
 
-  // NOUVEAU : Mécanique complémentaire
   {id:'p11b',subj:'physique',theme:'Mécanique',name:'Vecteur vitesse',
    formula:'\\vec{v}(t) = \\frac{d\\overrightarrow{OM}}{dt}',
    units:'v en m/s',note:'',
@@ -1123,9 +1150,7 @@ const FORMULAS = [
    exemple:'Patin qui ramène les bras : $L$ constant',
    erreurs:['Le moment est calculé par rapport à un point fixe']},
 
-  // ════════════════════════════════════════════════════════════
-  // PHYSIQUE — Électricité
-  // ════════════════════════════════════════════════════════════
+  // Électricité
   {id:'p12',subj:'physique',theme:'Électricité',name:'Loi d\'Ohm',
    formula:'U = RI',
    units:'U en V, R en Ω, I en A',note:'',
@@ -1206,9 +1231,7 @@ const FORMULAS = [
    exemple:'À la résonance, $I_{\\max} = U/R$',
    erreurs:['La résonance dépend de $\\omega$']},
 
-  // ════════════════════════════════════════════════════════════
-  // PHYSIQUE — Ondes
-  // ════════════════════════════════════════════════════════════
+  // Ondes
   {id:'p22',subj:'physique',theme:'Ondes',name:'Vitesse de propagation',
    formula:'v = \\lambda f = \\frac{\\lambda}{T}',
    units:'v en m/s, λ en m, f en Hz',note:'',
@@ -1241,9 +1264,7 @@ const FORMULAS = [
    exemple:'$\\lambda = 500$ nm, $a = 0{,}1$ mm $\\implies \\theta = 5 \\times 10^{-3}$ rad',
    erreurs:['Valable pour $a \\gg \\lambda$']},
 
-  // ════════════════════════════════════════════════════════════
-  // PHYSIQUE — Optique
-  // ════════════════════════════════════════════════════════════
+  // Optique
   {id:'p26',subj:'physique',theme:'Optique',name:'Loi de Snell-Descartes',
    formula:'n_1 \\sin i_1 = n_2 \\sin i_2',
    units:'n = indice de réfraction',note:'',
@@ -1292,9 +1313,7 @@ const FORMULAS = [
    exemple:'$f = 5 \\times 10^{14}$ Hz dans le vide : $\\lambda = 600$ nm',
    erreurs:['Dans un milieu, $v = c/n$']},
 
-  // ════════════════════════════════════════════════════════════
-  // PHYSIQUE — Physique moderne
-  // ════════════════════════════════════════════════════════════
+  // Physique moderne
   {id:'p32',subj:'physique',theme:'Physique moderne',name:'Énergie d\'un photon',
    formula:'E = h\\nu = \\frac{hc}{\\lambda}',
    units:'h = 6,626 × 10⁻³⁴ J·s',note:'',
@@ -1336,7 +1355,7 @@ const FORMULAS = [
    erreurs:['λ est positif']},
 
   // ════════════════════════════════════════════════════════════
-  // CHIMIE — Cinétique
+  // CHIMIE
   // ════════════════════════════════════════════════════════════
   {id:'c1',subj:'chimie',theme:'Cinétique chimique',name:'Vitesse volumique de réaction',
    formula:'v = \\frac{1}{V} \\frac{dx}{dt}',
@@ -1370,9 +1389,6 @@ const FORMULAS = [
    exemple:'Cuisson des aliments (T°)',
    erreurs:['Un catalyseur ne modifie PAS l\'état final']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Équilibre
-  // ════════════════════════════════════════════════════════════
   {id:'c5',subj:'chimie',theme:'Équilibre chimique',name:'Constante d\'équilibre K',
    formula:'K = \\prod_i [X_i]^{\\nu_i}',
    note:'',
@@ -1397,9 +1413,6 @@ const FORMULAS = [
    exemple:'$x_f = 0{,}008$, $x_{\\max} = 0{,}01 \\implies \\tau = 0{,}8$',
    erreurs:['Ne pas confondre $x_f$ et $x_{\\max}$']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Acides et Bases
-  // ════════════════════════════════════════════════════════════
   {id:'c8',subj:'chimie',theme:'Acides et Bases',name:'pH d\'une solution',
    formula:'pH = -\\log[H_3O^+] \\\\ [H_3O^+] = 10^{-pH}',
    note:'',
@@ -1472,9 +1485,6 @@ const FORMULAS = [
    exemple:'Tampon acétique : pH ≈ pKa = 4,75',
    erreurs:['Le pouvoir tampon est maximal à pH = pKa']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Oxydoréduction
-  // ════════════════════════════════════════════════════════════
   {id:'c16',subj:'chimie',theme:'Oxydoréduction',name:'Équation de Nernst',
    formula:'E = E° + \\frac{0{,}059}{n} \\log\\frac{[ox]}{[red]}',
    units:'E en V, T = 25 °C',note:'',
@@ -1523,9 +1533,6 @@ const FORMULAS = [
    exemple:'$5 \\times n(\\text{MnO}_4^-) = 1 \\times n(\\text{Fe}^{2+})$',
    erreurs:['Bien équilibrer les électrons']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Radioactivité
-  // ════════════════════════════════════════════════════════════
   {id:'c20',subj:'chimie',theme:'Radioactivité',name:'Loi de décroissance radioactive',
    formula:'N(t) = N_0 e^{-\\lambda t}',
    units:'N en noyaux, λ en s⁻¹',note:'',
@@ -1558,9 +1565,6 @@ const FORMULAS = [
    exemple:'²³⁸U → ²³⁴Th + ⁴He',
    erreurs:['Conservation de $A$ et $Z$']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Solutions aqueuses
-  // ════════════════════════════════════════════════════════════
   {id:'c24',subj:'chimie',theme:'Solutions aqueuses',name:'Concentration molaire',
    formula:'C = \\frac{n}{V}',
    units:'C en mol/L, n en mol, V en L',note:'',
@@ -1609,9 +1613,6 @@ const FORMULAS = [
    exemple:'2 mol $\\implies V = 44{,}8$ L',
    erreurs:['22,4 L/mol à 0°C et 1 atm']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Piles
-  // ════════════════════════════════════════════════════════════
   {id:'c30',subj:'chimie',theme:'Piles électrochimiques',name:'Quantité d\'électricité',
    formula:'Q = n(e^-) \\times F',
    units:'Q en C, F = 96 485 C/mol',note:'',
@@ -1636,9 +1637,6 @@ const FORMULAS = [
    exemple:'$Q = 9650$ C, $U = 1{,}5$ V $\\implies E = 14\\,475$ J',
    erreurs:['U moyenne, pas nominale']},
 
-  // ════════════════════════════════════════════════════════════
-  // CHIMIE — Chimie organique
-  // ════════════════════════════════════════════════════════════
   {id:'c33',subj:'chimie',theme:'Chimie organique',name:'Alcool — Groupe fonctionnel',
    formula:'R-OH',
    note:'Groupe hydroxyle.',
@@ -2330,26 +2328,96 @@ searchInput.addEventListener('input', () => {
   }
 });
 
+// ================================================================
+// AUTH ROBUSTE — Anti-flash
+// ================================================================
 let isRedirecting = false;
+let isAuthResolved = false;
+let graceTimer = null;
+let maxTimer = null;
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    if (currentUid !== null) {
-      currentUid = null;
-      favorites = [];
-      saveFavoritesToLocal();
+function redirectToLogin() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+  try {
+    sessionStorage.setItem('redirectAfterLogin',
+      window.location.pathname + window.location.search);
+  } catch (e) {}
+  window.location.replace('login.html');
+}
+
+function initAuthGuard(onAuthenticated) {
+  auth.onAuthStateChanged((user) => {
+    if (isAuthResolved) {
+      if (user && user.uid !== currentUid) {
+        currentUid = user.uid;
+        saveSession(user);
+        onAuthenticated(user);
+      } else if (!user && currentUid) {
+        currentUid = null;
+        clearSession();
+        redirectToLogin();
+      }
+      return;
     }
-    if (!isRedirecting) {
-      isRedirecting = true;
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-      setTimeout(() => { window.location.href = 'login.html'; }, 300);
+
+    if (!user) {
+      if (graceTimer) clearTimeout(graceTimer);
+      graceTimer = setTimeout(() => {
+        if (isAuthResolved) return;
+        if (auth.currentUser) return;
+
+        const hasSession = localStorage.getItem(SESSION_KEY);
+        const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+        if ((hasSession || hasUserData) && !navigator.onLine) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        if (hasSession && hasUserData) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        redirectToLogin();
+      }, 600);
+      return;
     }
-    return;
-  }
 
-  if (user.uid === currentUid) return;
-  currentUid = user.uid;
+    if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+    if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
 
+    isAuthResolved = true;
+    currentUid = user.uid;
+    saveSession(user);
+    onAuthenticated(user);
+  });
+
+  maxTimer = setTimeout(() => {
+    if (isAuthResolved) return;
+    if (auth.currentUser) {
+      isAuthResolved = true;
+      currentUid = auth.currentUser.uid;
+      saveSession(auth.currentUser);
+      onAuthenticated(auth.currentUser);
+    } else {
+      redirectToLogin();
+    }
+  }, 5000);
+}
+
+// ================================================================
+// LANCER LA PROTECTION
+// ================================================================
+initAuthGuard(async (user) => {
+  // Cache-first : favoris depuis localStorage
   favorites = loadFavoritesFromLocal();
   updateFavCount();
   renderTabs();
@@ -2357,6 +2425,7 @@ onAuthStateChanged(auth, async (user) => {
 
   setTimeout(() => renderContent(), 200);
 
+  // Synchronisation Firestore en arrière-plan
   if (!isSyncing) {
     isSyncing = true;
     try {
@@ -2379,10 +2448,15 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// ================================================================
+// INIT
+// ================================================================
 renderTabs();
 renderFilters();
 renderSkeleton(4);
 updateFavCount();
+
+console.log('🚀 ARVEXA — Formulaires (avec session robuste)');
 </script>
 
 </body>

@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -940,8 +940,7 @@
 
   <script type="module">
   // ================================================================
-  // LOGIN — Version design amélioré
-  // Toutes les fonctionnalités conservées
+  // LOGIN — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -953,15 +952,15 @@
     signInWithEmailAndPassword,
     signOut
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
- import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import {
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG
@@ -975,16 +974,16 @@
     appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
-    
+  // ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
+
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
@@ -1010,7 +1009,9 @@ const db = initializeFirestore(app, {
   // SESSION CACHE
   // ================================================================
   const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
   const REMEMBER_KEY = 'arvexa_remember_email';
+  const LAST_UID_KEY = 'arvexa_last_uid';
 
   function saveSession(user) {
     if (!user) return;
@@ -1018,9 +1019,10 @@ const db = initializeFirestore(app, {
       const data = {
         uid: user.uid,
         email: user.email,
-        lastLogin: new Date().toISOString()
+        lastActive: Date.now()
       };
       localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
     } catch (e) {}
   }
@@ -1140,38 +1142,72 @@ const db = initializeFirestore(app, {
   }
 
   // ================================================================
-  // AUTH STATE — DÉJÀ CONNECTÉ → REDIRECTION
+  // AUTH STATE — REDIRECTION ROBUSTE
+  // ⚡ Version anti-flash avec attente intelligente
   // ================================================================
   let currentUid = null;
   let isRedirecting = false;
+  let isAuthResolved = false;
 
   onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        clearSession();
+    // ⚡ Première fois que le listener se déclenche
+    if (!isAuthResolved) {
+      isAuthResolved = true;
+
+      // Cas 1 : Pas d'utilisateur → on reste sur login
+      if (!user) {
+        // Nettoyer les résidus de session éventuels
+        try {
+          // Si on est vraiment déconnecté, nettoyer
+          if (!localStorage.getItem(SESSION_KEY)) {
+            clearSession();
+          }
+        } catch (e) {}
+        return;
       }
+
+      // Cas 2 : Utilisateur restauré → rediriger
+      redirectAfterLogin(user);
       return;
     }
 
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
-    if (!isRedirecting) {
-      isRedirecting = true;
-      saveSession(user);
-
-      const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
-      sessionStorage.removeItem('redirectAfterLogin');
-
-      setTimeout(() => {
-        window.location.href = redirectPath;
-      }, 300);
+    // ⚡ Changements ultérieurs
+    if (user && user.uid !== currentUid) {
+      // Nouvel utilisateur connecté (après signIn par exemple)
+      redirectAfterLogin(user);
+    } else if (!user && currentUid) {
+      // Déconnexion
+      currentUid = null;
+      clearSession();
     }
   });
 
   // ================================================================
-  // SOUMISSION
+  // REDIRECTION APRÈS LOGIN
+  // ================================================================
+  function redirectAfterLogin(user) {
+    if (isRedirecting) return;
+    isRedirecting = true;
+
+    currentUid = user.uid;
+
+    console.log('[Login] Utilisateur connecté :', user.email);
+
+    // ⚡ Sauvegarder la session AVANT la redirection
+    saveSession(user);
+
+    // ⚡ Récupérer la page de destination
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
+    sessionStorage.removeItem('redirectAfterLogin');
+
+    // ⚡ Redirection immédiate avec replace
+    setTimeout(() => {
+      window.location.replace(redirectPath);
+    }, 200);
+  }
+
+  // ================================================================
+  // SOUMISSION DU FORMULAIRE
   // ================================================================
   let isSubmitting = false;
 
@@ -1199,7 +1235,7 @@ const db = initializeFirestore(app, {
       if (!userDoc.exists()) {
         await signOut(auth);
         showToast('Profil introuvable. Redirection...', 'error');
-        setTimeout(() => window.location.href = 'register.html', 1500);
+        setTimeout(() => window.location.replace('register.html'), 1500);
         isSubmitting = false;
         loginBtn.disabled = false;
         loginBtn.classList.remove('loading');
@@ -1238,13 +1274,22 @@ const db = initializeFirestore(app, {
         await updateDoc(userRef, { lastLogin: serverTimestamp() });
       } catch (e) {}
 
+      // ⚡ Sauvegarder la session AVANT de rediriger
       saveSession(user);
+
       showToast('✅ Connexion réussie !', 'success');
 
+      // ⚡ isRedirecting sera géré par onAuthStateChanged
+      // mais on met un fallback au cas où
       const redirectPath = sessionStorage.getItem('redirectAfterLogin') || 'index.html';
       sessionStorage.removeItem('redirectAfterLogin');
 
-      setTimeout(() => window.location.href = redirectPath, 1000);
+      setTimeout(() => {
+        if (!isRedirecting) {
+          isRedirecting = true;
+          window.location.replace(redirectPath);
+        }
+      }, 800);
 
     } catch (error) {
       let message = 'Une erreur est survenue.';
@@ -1281,7 +1326,7 @@ const db = initializeFirestore(app, {
     }
   });
 
-  console.log('🚀 ARVEXA School — Login (design amélioré)');
+  console.log('🚀 ARVEXA School — Login (avec session robuste)');
   </script>
 
 </body>

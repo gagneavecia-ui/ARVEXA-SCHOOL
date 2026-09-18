@@ -11,6 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -545,9 +546,6 @@
     /* ============================================================
        RESPONSIVE
        ============================================================ */
-    /* Mobile first — déjà optimisé */
-
-    /* Tablettes et petits écrans */
     @media (max-width: 640px) {
       body { padding: 16px 12px 30px; }
       .register-form { padding: 20px 16px; }
@@ -559,7 +557,6 @@
       .btn-submit { padding: 12px; min-height: 48px; }
     }
 
-    /* Très petits écrans (≤ 360px) */
     @media (max-width: 360px) {
       body { padding: 12px 8px 24px; }
       .register-form { padding: 16px 12px; }
@@ -580,7 +577,6 @@
       .strength-label { font-size: 10px; min-width: 60px; }
     }
 
-    /* Grands écrans */
     @media (min-width: 768px) {
       .register-container { max-width: 520px; }
       .register-form { padding: 36px 32px; }
@@ -598,19 +594,16 @@
       .header { max-width: 600px; }
     }
 
-    /* Réduction des animations */
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
-    /* Accessibilité */
     a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 2px;
       border-radius: 6px;
     }
 
-    /* Scrollbar personnalisée */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
@@ -626,7 +619,7 @@
 
 <!-- ===== HEADER ===== -->
 <header class="header">
-  <a href="bienvenue.html" class="logo">ARVEX<span>A<span> School</span></a>
+  <a href="bienvenue.html" class="logo">ARVEX<span>A School</span></a>
   <div class="header-actions">
     <span>Déjà membre ?</span>
     <a href="login.html" class="btn-login-header"><i class="fas fa-sign-in-alt"></i> Connexion</a>
@@ -868,7 +861,7 @@ const validators = {
     };
   },
   establishment: (value) => ({
-    isValid: true, // Optionnel
+    isValid: true,
     message: ''
   }),
   password: (value) => ({
@@ -952,7 +945,6 @@ function validateField(fieldId) {
   const isTouched = formState.touched[fieldId];
   const hasError = !result.isValid && (value.length > 0 || isTouched);
   
-  // Mise à jour de l'interface
   if (wrap) {
     wrap.classList.toggle('error', hasError);
     wrap.classList.toggle('success', result.isValid && value.length > 0);
@@ -973,12 +965,10 @@ function validateField(fieldId) {
     }
   }
   
-  // Mise à jour de la force du mot de passe
   if (fieldId === 'password' && result.strength) {
     updatePasswordStrength(result.strength);
   }
   
-  // Stockage de l'erreur
   formState.errors[fieldId] = hasError ? result.message : '';
 }
 
@@ -989,7 +979,6 @@ function validateForm() {
     const validator = validators[field];
     if (!validator) return true;
     const result = validator(value, { password: formState.values.password });
-    // Pour l'établissement (optionnel), on considère toujours valide
     if (field === 'establishment') return true;
     return result.isValid && value.length > 0;
   });
@@ -1040,7 +1029,6 @@ function clearFormProgress() {
 // FIELD EVENTS
 // ================================================================
 document.querySelectorAll('.input-wrap input').forEach(input => {
-  // Sauvegarde de la valeur
   input.addEventListener('input', () => {
     formState.values[input.id] = input.value;
     validateField(input.id);
@@ -1048,7 +1036,6 @@ document.querySelectorAll('.input-wrap input').forEach(input => {
     saveFormProgress();
   });
   
-  // Marquer comme "touché" au blur
   input.addEventListener('blur', () => {
     formState.touched[input.id] = true;
     validateField(input.id);
@@ -1113,13 +1100,23 @@ form.addEventListener('submit', async (e) => {
       updatedAt: serverTimestamp()
     });
 
-    // Nettoyer la sauvegarde
+    // ⚡ SAUVEGARDER LA SESSION AVANT REDIRECTION
+    try {
+      localStorage.setItem('arvexa_session', JSON.stringify({
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      }));
+      localStorage.setItem('arvexa_last_uid', user.uid);
+    } catch (e) {}
+
+    // Nettoyer la sauvegarde de progression
     clearFormProgress();
 
     showToast('Compte créé avec succès !', 'success');
 
     setTimeout(() => {
-      window.location.href = 'onboarding.html';
+      window.location.replace('onboarding.html');
     }, 1200);
 
   } catch (error) {
@@ -1161,10 +1158,8 @@ form.addEventListener('submit', async (e) => {
 // ================================================================
 // INIT
 // ================================================================
-// Charger la progression sauvegardée
 loadFormProgress();
 
-// Valider tous les champs initialement
 ['firstName', 'lastName', 'email', 'establishment', 'password', 'confirmPassword'].forEach(field => {
   if (formState.values[field]) {
     validateField(field);
@@ -1173,7 +1168,7 @@ loadFormProgress();
 
 validateForm();
 
-console.log('🚀 ARVEXA School — Inscription (version refactorisée)');
+console.log('🚀 ARVEXA School — Inscription (avec session robuste)');
 </script>
 
 </body>

@@ -169,18 +169,9 @@
     }
     .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
     .header .header-actions button i { font-size: 13px; }
-    .header .header-actions button.primary {
-      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-      color: #0A0A0A;
-    }
-    .header .header-actions button.primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(184, 134, 11, 0.3);
-    }
     .header .header-actions button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-      transform: none;
     }
     .header .header-actions button .count {
       background: rgba(10, 10, 10, 0.3);
@@ -283,7 +274,6 @@
       background: linear-gradient(180deg, var(--accent-bright), var(--accent));
     }
 
-    /* Icône par type */
     .notif-icon {
       width: 42px;
       height: 42px;
@@ -301,7 +291,6 @@
     .notif-icon.danger { background: rgba(184, 92, 58, 0.12); color: var(--danger-light); }
     .notif-icon.announce { background: rgba(184, 134, 11, 0.12); color: var(--accent-bright); }
 
-    /* Point bleu "non lu" */
     .notif-icon.unread-dot::after {
       content: '';
       position: absolute;
@@ -320,7 +309,6 @@
       50% { transform: scale(1.2); opacity: 0.7; }
     }
 
-    /* Contenu */
     .notif-content {
       flex: 1;
       min-width: 0;
@@ -622,36 +610,48 @@
     /* ============================================================
        TOAST
        ============================================================ */
-    .toast {
+    .toast-container {
       position: fixed;
-      bottom: 30px;
+      top: calc(var(--safe-top) + 16px);
       left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      padding: 12px 20px;
-      border-radius: 12px;
-      background: var(--bg-card);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      color: var(--text-light);
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 3000;
-      opacity: 0;
-      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-      max-width: 90%;
-      text-align: center;
-      box-shadow: var(--shadow);
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: calc(100% - 32px);
+      max-width: 420px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 8px;
       pointer-events: none;
     }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast .toast-icon { font-size: 14px; }
-    .toast.success .toast-icon { color: var(--success-light); }
-    .toast.info .toast-icon { color: var(--accent-bright); }
-    .toast.error .toast-icon { color: var(--danger-light); }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: rgba(20, 22, 20, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      animation: toastIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: auto;
+    }
+    .toast.success { border-color: rgba(45, 125, 90, 0.4); }
+    .toast.error { border-color: rgba(231, 76, 60, 0.4); }
+    .toast.info { border-color: rgba(224, 184, 74, 0.4); }
+    .toast i { font-size: 15px; flex-shrink: 0; }
+    .toast.success i { color: var(--success-light); }
+    .toast.error i { color: var(--danger-light); }
+    .toast.info i { color: var(--accent-bright); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     /* ============================================================
        RESPONSIVE
@@ -801,11 +801,8 @@
     <div class="modal-sheet" id="notifModalContent"></div>
   </div>
 
-  <!-- ===== TOAST ===== -->
-  <div class="toast" id="toast">
-    <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
-    <span class="toast-message"></span>
-  </div>
+  <!-- ===== TOASTS ===== -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <!-- ============================================================ -->
   <!-- SCRIPTS                                                       -->
@@ -822,7 +819,7 @@
 
   <script type="module">
   // ================================================================
-  // NOTIFICATIONS — Version complète
+  // NOTIFICATIONS — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -863,7 +860,6 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
   const db = initializeFirestore(app, {
     localCache: persistentLocalCache({
       tabManager: persistentSingleTabManager()
@@ -873,6 +869,35 @@
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
+
+  // ================================================================
+  // SESSION / CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
+  const LAST_UID_KEY = 'arvexa_last_uid';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
 
   // ================================================================
   // DOM
@@ -887,9 +912,7 @@
   const modal = document.getElementById('notifModal');
   const modalContent = document.getElementById('notifModalContent');
 
-  const toast = document.getElementById('toast');
-  const toastMessage = document.querySelector('.toast-message');
-  const toastIcon = document.querySelector('.toast-icon i');
+  const toastContainer = document.getElementById('toastContainer');
 
   // ================================================================
   // ÉTAT
@@ -901,6 +924,9 @@
   let currentUid = null;
   let currentUser = null;
   let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
   // ================================================================
   // UTILITAIRE — TIMESTAMP
@@ -978,32 +1004,42 @@
   // ================================================================
   // TOAST
   // ================================================================
-  let toastTimer = null;
   function showToast(message, type = 'success') {
     const icons = {
-      success: 'fas fa-check-circle',
-      info: 'fas fa-info-circle',
-      error: 'fas fa-exclamation-circle'
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      info: 'fa-info-circle'
     };
-    toastMessage.textContent = message;
+    const colors = {
+      success: '#3AB67E',
+      error: '#f87171',
+      info: '#E0B84A'
+    };
+
+    const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toastIcon.className = icons[type] || icons.info;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+    toast.innerHTML = `
+      <i class="fas ${icons[type] || icons.info}" style="color:${colors[type] || colors.info}"></i>
+      <span>${message}</span>
+    `;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-10px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
   }
 
   // ================================================================
   // RENDU
   // ================================================================
   function renderNotifications() {
-    // Filtrer
     let list = allNotifications;
     if (currentFilter === 'unread') {
       list = list.filter(n => !n.read);
     }
 
-    // Compteurs
     const totalCount = allNotifications.length;
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
@@ -1011,13 +1047,10 @@
     countUnread.textContent = unreadCount;
     unreadCountHeader.textContent = unreadCount;
 
-    // Bouton "Tout lire" activé si au moins une non-lue
     markAllReadBtn.disabled = unreadCount === 0;
 
-    // Afficher les filtres si on a des notifications
     filtersEl.style.display = totalCount > 0 ? 'flex' : 'none';
 
-    // Liste vide
     if (list.length === 0) {
       if (totalCount === 0) {
         notifList.innerHTML = `
@@ -1039,7 +1072,6 @@
       return;
     }
 
-    // Rendu des cartes
     notifList.innerHTML = list.map((n, i) => {
       const typeConfig = getTypeConfig(n.type);
       const title = n.title || 'Notification';
@@ -1065,7 +1097,6 @@
       `;
     }).join('');
 
-    // Événements
     notifList.querySelectorAll('.notif-card').forEach(card => {
       card.addEventListener('click', () => {
         const id = card.dataset.id;
@@ -1126,7 +1157,6 @@
     document.getElementById('modalCloseBtn').addEventListener('click', closeNotifDetail);
     document.getElementById('closeModalBtn').addEventListener('click', closeNotifDetail);
 
-    // Swipe to close
     setupModalSwipe(modalContent);
   }
 
@@ -1257,7 +1287,6 @@
       },
       (error) => {
         console.warn('Erreur chargement notifications:', error);
-        // Fallback : afficher l'état vide
         allNotifications = [];
         renderNotifications();
       }
@@ -1280,7 +1309,11 @@
         if (docSnap.exists()) {
           const data = docSnap.data();
           try {
-            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+              ...data,
+              _uid: user.uid,
+              _cachedAt: Date.now()
+            }));
           } catch (e) {}
         }
       },
@@ -1291,36 +1324,22 @@
   }
 
   // ================================================================
-  // AUTH
+  // DÉCONNEXION
   // ================================================================
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeNotifications) unsubscribeNotifications();
-        if (unsubscribeUser) unsubscribeUser();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
+  async function performLogout() {
+    isRedirecting = true;
+    if (unsubscribeNotifications) unsubscribeNotifications();
+    if (unsubscribeUser) unsubscribeUser();
+    clearSession();
+    try { await signOut(auth); } catch (e) {}
+    window.location.replace('login.html');
+  }
 
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-    currentUser = user;
-
-    loadNotifications(user);
-    loadUserData(user);
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    performLogout();
   });
 
-  // ================================================================
-  // ÉVÉNEMENTS
-  // ================================================================
   document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -1331,17 +1350,98 @@
     document.getElementById('sidebarOverlay').classList.remove('active');
   });
 
-  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
+  // ================================================================
+  // AUTH ROBUSTE — Anti-flash
+  // ================================================================
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      if (unsubscribeNotifications) unsubscribeNotifications();
-      if (unsubscribeUser) unsubscribeUser();
-      currentUid = null;
-      await signOut(auth);
-      window.location.href = 'login.html';
-    } catch (error) {}
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+    } catch (e) {}
+    window.location.replace('login.html');
+  }
+
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          currentUser = user;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          currentUser = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
+
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      currentUser = user;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        currentUser = auth.currentUser;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    loadNotifications(user);
+    loadUserData(user);
   });
 
+  console.log('🚀 ARVEXA — Notifications (avec session robuste)');
   </script>
 </body>
 </html>

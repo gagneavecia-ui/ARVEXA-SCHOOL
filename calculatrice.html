@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -466,7 +466,7 @@
     }
 
     /* ============================================================
-       MODALES (avec swipe-to-close)
+       MODALES
        ============================================================ */
     .modal-overlay {
       position: fixed;
@@ -507,7 +507,6 @@
       transform: translateY(0);
     }
 
-    /* ---------- DRAG HANDLE (FONCTIONNEL) ---------- */
     .modal-sheet::before {
       content: '';
       position: absolute;
@@ -1676,7 +1675,7 @@
   }
 
   // ============================================================
-  // SWIPE TO CLOSE — LE TRAIT DEVIENT FONCTIONNEL
+  // SWIPE TO CLOSE
   // ============================================================
   function setupSwipeToClose() {
     document.querySelectorAll('.modal-sheet').forEach(sheet => {
@@ -1686,12 +1685,9 @@
       let startTime = 0;
 
       sheet.addEventListener('touchstart', (e) => {
-        // Zone de déclenchement : les 80 premiers px du sheet
         const rect = sheet.getBoundingClientRect();
         const touchY = e.touches[0].clientY;
-        const touchX = e.touches[0].clientX;
 
-        // Seulement si on touche le haut du sheet (drag handle zone)
         if (touchY - rect.top < 80) {
           startY = touchY;
           currentY = touchY;
@@ -1707,7 +1703,6 @@
         currentY = e.touches[0].clientY;
         const diff = currentY - startY;
 
-        // Ne tirer que vers le bas
         if (diff > 0) {
           sheet.style.transform = `translateY(${diff}px)`;
           e.preventDefault();
@@ -1724,11 +1719,7 @@
         const duration = Date.now() - startTime;
         const velocity = diff / duration;
 
-        // Fermer si :
-        // - Tirage > 100px
-        // - OU vitesse > 0.5 px/ms et tirage > 30px
         if (diff > 100 || (velocity > 0.5 && diff > 30)) {
-          // Animation de fermeture
           sheet.style.transition = 'transform 0.3s cubic-bezier(0.25,1,0.5,1)';
           sheet.style.transform = `translateY(100%)`;
 
@@ -1738,7 +1729,6 @@
             sheet.style.transition = '';
           }, 300);
         } else {
-          // Revenir en place
           sheet.style.transform = '';
         }
 
@@ -1746,7 +1736,6 @@
         currentY = 0;
       }, { passive: true });
 
-      // Annuler si l'utilisateur fait un geste vers le haut
       sheet.addEventListener('touchcancel', () => {
         if (!isDragging) return;
         isDragging = false;
@@ -2156,7 +2145,7 @@
   function init() {
     loadStorage();
     bindEvents();
-    setupSwipeToClose();  // ← NOUVEAU
+    setupSwipeToClose();
     updateDisplay();
     updateMemValue();
   }

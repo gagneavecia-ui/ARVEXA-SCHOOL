@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -711,8 +711,8 @@
   <!-- ===== HEADER ===== -->
   <header class="site-header">
     <a href="index.html" class="logo">
-  ARVEX<span class="gold">A School</span>
-</a>
+      ARVEX<span class="gold">A School</span>
+    </a>
     <div class="header-step">
       <i class="fas fa-flag-checkered"></i>
       <span>Étape finale</span>
@@ -835,8 +835,7 @@
 
   <script type="module">
   // ================================================================
-  // ONBOARDING — Version refondue
-  // Structure propre • Bug authChecked corrigé • UX améliorée
+  // ONBOARDING — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -846,15 +845,15 @@
     setPersistence,
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
- import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+  import {
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG FIREBASE
@@ -868,21 +867,19 @@
     appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
- const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
-    
+  // ⚡ FIRESTORE AVEC PERSISTANCE LOCALE
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
+
   try {
     await setPersistence(auth, browserLocalPersistence);
-  } catch (e) {
-    // Silencieux
-  }
+  } catch (e) {}
 
   // ================================================================
   // HELPERS
@@ -896,7 +893,7 @@ const db = initializeFirestore(app, {
     user: null,
     userData: null,
     isLoading: false,
-    currentUid: null,        // ← Pour tracker le changement d'utilisateur
+    currentUid: null,
     isSubmitting: false
   };
 
@@ -949,11 +946,6 @@ const db = initializeFirestore(app, {
     return [firstName, lastName].filter(Boolean).join(' ').trim() || 'Élève';
   }
 
-  function getCurrentYear() {
-    return new Date().getFullYear();
-  }
-
-  // Calcule l'année du BAC de manière cohérente avec index.html
   function getBacYear() {
     const now = new Date();
     const year = now.getFullYear();
@@ -965,6 +957,8 @@ const db = initializeFirestore(app, {
   // CACHE LOCAL
   // ================================================================
   const USER_DATA_KEY = 'arvexa_user_data';
+  const SESSION_KEY = 'arvexa_session';
+  const LAST_UID_KEY = 'arvexa_last_uid';
 
   function saveUserDataToCache(data, uid) {
     try {
@@ -991,6 +985,28 @@ const db = initializeFirestore(app, {
     }
   }
 
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
   // ================================================================
   // RENDU
   // ================================================================
@@ -1003,23 +1019,17 @@ const db = initializeFirestore(app, {
     const initials = getInitials(firstName, lastName);
     const email = data.email || '—';
 
-    // Avatar
     userAvatar.textContent = initials;
-
-    // Nom + Email
     userName.textContent = fullName;
     userEmail.textContent = email;
 
-    // Classe
     const classLabel = data.classId === 'terminale_d' || !data.classId
       ? 'Terminale D'
       : data.classId;
     userClass.textContent = classLabel;
 
-    // Objectif (BAC + année)
     userGoal.textContent = `BAC ${getBacYear()}`;
 
-    // Afficher le contenu
     skeletonLoading.style.display = 'none';
     dynamicContent.style.display = 'block';
   }
@@ -1030,45 +1040,41 @@ const db = initializeFirestore(app, {
   async function loadUserData(user) {
     if (!user) return;
 
-    // 1. Afficher le cache (instantané)
+    // 1. Cache (instantané)
     const cached = getCachedUserData(user.uid);
     if (cached) {
       state.userData = cached;
       renderUserData(cached);
     }
 
-    // 2. Charger depuis Firestore
+    // 2. Firestore
     try {
       const userDoc = await getDoc(doc(db, 'users', user.uid));
 
       if (!userDoc.exists()) {
         showToast('Profil introuvable. Redirection...', 'error');
         setTimeout(() => {
-          window.location.href = 'register.html';
+          window.location.replace('register.html');
         }, 1500);
         return;
       }
 
       const data = userDoc.data();
       state.userData = data;
-
-      // Mettre à jour le cache
       saveUserDataToCache(data, user.uid);
 
-      // Si déjà onboardé → redirection
+      // Déjà onboardé → redirection
       if (data.onboardingCompleted === true) {
-        window.location.href = 'index.html';
+        window.location.replace('index.html');
         return;
       }
 
-      // Rendu
       renderUserData(data);
 
     } catch (error) {
       console.error('Erreur Firestore:', error);
       showToast('Erreur de chargement. Vérifie ta connexion.', 'error', 6000);
 
-      // Fallback : afficher le cache si dispo
       if (cached) {
         renderUserData(cached);
       }
@@ -1083,7 +1089,7 @@ const db = initializeFirestore(app, {
     if (!state.user) {
       showToast('Session expirée. Reconnecte-toi.', 'error');
       setTimeout(() => {
-        window.location.href = 'login.html';
+        window.location.replace('login.html');
       }, 1500);
       return;
     }
@@ -1093,32 +1099,27 @@ const db = initializeFirestore(app, {
     startBtn.classList.add('loading');
 
     try {
-      // 1. Marquer l'onboarding comme terminé dans Firestore
       await updateDoc(doc(db, 'users', state.user.uid), {
         onboardingCompleted: true,
         onboardingCompletedAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
 
-      // 2. Mettre à jour le cache
       if (state.userData) {
         state.userData.onboardingCompleted = true;
         saveUserDataToCache(state.userData, state.user.uid);
       }
 
-      // 3. Toast de confirmation
       showToast('🎉 Bienvenue sur ARVEXA School !', 'success');
 
-      // 4. Redirection
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.replace('index.html');
       }, 900);
 
     } catch (error) {
       console.error('Erreur onboarding:', error);
       showToast('Impossible de valider. Réessaie.', 'error', 5000);
 
-      // Anti-spam : 2s
       setTimeout(() => {
         state.isSubmitting = false;
         startBtn.disabled = false;
@@ -1128,33 +1129,101 @@ const db = initializeFirestore(app, {
   }
 
   // ================================================================
-  // AUTH STATE — Version corrigée
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
-  // ⚠️ NE PAS utiliser de flag "authChecked" qui bloque les mises à jour
-  // On tracke juste l'UID courant pour éviter les doublons
+  let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
-  onAuthStateChanged(auth, async (user) => {
-    // Cas 1 : utilisateur déconnecté
-    if (!user) {
-      if (state.currentUid !== null) {
-        state.currentUid = null;
-        state.user = null;
-        state.userData = null;
-      }
-      // Redirection vers login
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
+    try {
       sessionStorage.setItem('redirectAfterLogin', 'onboarding.html');
-      window.location.href = 'login.html';
-      return;
-    }
+    } catch (e) {}
+    window.location.replace('login.html');
+  }
 
-    // Cas 2 : même utilisateur → ne rien refaire
-    if (user.uid === state.currentUid) return;
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        // Changements ultérieurs (rare sur cette page)
+        if (user && user.uid !== state.currentUid) {
+          state.currentUid = user.uid;
+          state.user = user;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && state.currentUid) {
+          state.currentUid = null;
+          state.user = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
 
-    // Cas 3 : nouvel utilisateur (ou changement de compte)
-    state.currentUid = user.uid;
-    state.user = user;
+      // Premier check : user null → attendre
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
 
-    // Charger les données
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      // Utilisateur restauré
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      state.currentUid = user.uid;
+      state.user = user;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    // Sécurité timeout max
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        state.currentUid = auth.currentUser.uid;
+        state.user = auth.currentUser;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
     await loadUserData(user);
   });
 
@@ -1163,11 +1232,7 @@ const db = initializeFirestore(app, {
   // ================================================================
   startBtn.addEventListener('click', handleStart);
 
-  // ================================================================
-  // INIT
-  // ================================================================
-  // Le rendu initial est géré par onAuthStateChanged
-  // Le skeleton s'affiche par défaut jusqu'à ce que les données arrivent
+  console.log('🚀 ARVEXA School — Onboarding (avec session robuste)');
   </script>
 </body>
 </html>

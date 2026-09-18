@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
   <meta name="description" content="ARVEXA School - Lecture">
   <link rel="manifest" href="manifest.json">
@@ -15,7 +15,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
   <script src="register-sw.js" defer></script>
-  
+
   <style>
     /* ============================================================
        ROOT — Tokens
@@ -51,6 +51,9 @@
       --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
       --font-serif: 'Playfair Display', Georgia, serif;
       --font-mono: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     html[data-theme="light"] {
@@ -115,7 +118,7 @@
     .header {
       position: sticky; top: 0; z-index: 50;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 8px 12px;
+      padding: calc(8px + var(--safe-top)) 12px 8px;
       background: rgba(10, 10, 10, 0.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
@@ -295,7 +298,7 @@
       font-size: 13px; color: var(--text-muted);
     }
 
-        /* ============================================================
+    /* ============================================================
        SABLIER ANIMÉ — Contenu en préparation
        ============================================================ */
     .hourglass-wrap {
@@ -308,7 +311,6 @@
       justify-content: center;
     }
 
-    /* Halo lumineux pulsant */
     .hourglass-wrap::before {
       content: '';
       position: absolute;
@@ -325,17 +327,10 @@
     }
 
     @keyframes hourglassHalo {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.6;
-      }
-      50% {
-        transform: scale(1.15);
-        opacity: 1;
-      }
+      0%, 100% { transform: scale(1); opacity: 0.6; }
+      50% { transform: scale(1.15); opacity: 1; }
     }
 
-    /* Sablier principal — rotation subtile */
     .hourglass-svg {
       width: 72px;
       height: 72px;
@@ -350,7 +345,6 @@
       50% { transform: rotate(3deg); }
     }
 
-    /* Structure du sablier */
     .hourglass-svg .frame {
       stroke: var(--accent-bright);
       stroke-width: 2;
@@ -365,7 +359,6 @@
       stroke-width: 1.5;
     }
 
-    /* Sable du haut (diminue) */
     .hourglass-svg .sand-top {
       fill: var(--accent-bright);
       animation: sandTopDrain 4s ease-in-out infinite;
@@ -373,39 +366,22 @@
     }
 
     @keyframes sandTopDrain {
-      0%, 10% {
-        transform: scaleY(1);
-        opacity: 1;
-      }
-      80%, 90% {
-        transform: scaleY(0.05);
-        opacity: 0.9;
-      }
-      100% {
-        transform: scaleY(1);
-        opacity: 1;
-      }
+      0%, 10% { transform: scaleY(1); opacity: 1; }
+      80%, 90% { transform: scaleY(0.05); opacity: 0.9; }
+      100% { transform: scaleY(1); opacity: 1; }
     }
 
-    /* Filet de sable qui coule au centre */
     .hourglass-svg .sand-stream {
       fill: var(--accent-bright);
       animation: sandStream 4s ease-in-out infinite;
     }
 
     @keyframes sandStream {
-      0%, 15% {
-        opacity: 0.9;
-      }
-      75%, 85% {
-        opacity: 0.9;
-      }
-      95%, 100% {
-        opacity: 0;
-      }
+      0%, 15% { opacity: 0.9; }
+      75%, 85% { opacity: 0.9; }
+      95%, 100% { opacity: 0; }
     }
 
-    /* Sable du bas (augmente) */
     .hourglass-svg .sand-bottom {
       fill: var(--accent-bright);
       animation: sandBottomFill 4s ease-in-out infinite;
@@ -413,21 +389,11 @@
     }
 
     @keyframes sandBottomFill {
-      0%, 10% {
-        transform: scaleY(0.1);
-        opacity: 0.8;
-      }
-      80%, 90% {
-        transform: scaleY(1);
-        opacity: 1;
-      }
-      100% {
-        transform: scaleY(0.1);
-        opacity: 0.8;
-      }
+      0%, 10% { transform: scaleY(0.1); opacity: 0.8; }
+      80%, 90% { transform: scaleY(1); opacity: 1; }
+      100% { transform: scaleY(0.1); opacity: 0.8; }
     }
 
-    /* Particules qui tombent */
     .hourglass-particle {
       position: absolute;
       width: 3px;
@@ -439,47 +405,18 @@
       pointer-events: none;
     }
 
-    .hourglass-particle:nth-child(1) {
-      left: 50%;
-      top: 35%;
-      animation: particleDrop 2.5s ease-in 0s infinite;
-    }
-    .hourglass-particle:nth-child(2) {
-      left: 48%;
-      top: 35%;
-      animation: particleDrop 2.5s ease-in 0.6s infinite;
-    }
-    .hourglass-particle:nth-child(3) {
-      left: 52%;
-      top: 35%;
-      animation: particleDrop 2.5s ease-in 1.2s infinite;
-    }
-    .hourglass-particle:nth-child(4) {
-      left: 50%;
-      top: 35%;
-      animation: particleDrop 2.5s ease-in 1.8s infinite;
-    }
+    .hourglass-particle:nth-child(1) { left: 50%; top: 35%; animation: particleDrop 2.5s ease-in 0s infinite; }
+    .hourglass-particle:nth-child(2) { left: 48%; top: 35%; animation: particleDrop 2.5s ease-in 0.6s infinite; }
+    .hourglass-particle:nth-child(3) { left: 52%; top: 35%; animation: particleDrop 2.5s ease-in 1.2s infinite; }
+    .hourglass-particle:nth-child(4) { left: 50%; top: 35%; animation: particleDrop 2.5s ease-in 1.8s infinite; }
 
     @keyframes particleDrop {
-      0% {
-        opacity: 0;
-        transform: translateY(0) scale(0.5);
-      }
-      10% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-      80% {
-        opacity: 1;
-        transform: translateY(28px) scale(1);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(35px) scale(0.4);
-      }
+      0% { opacity: 0; transform: translateY(0) scale(0.5); }
+      10% { opacity: 1; transform: translateY(0) scale(1); }
+      80% { opacity: 1; transform: translateY(28px) scale(1); }
+      100% { opacity: 0; transform: translateY(35px) scale(0.4); }
     }
 
-    /* Version claire : adapter les couleurs */
     html[data-theme="light"] .hourglass-wrap::before {
       background: radial-gradient(
         circle,
@@ -491,19 +428,6 @@
 
     html[data-theme="light"] .hourglass-svg {
       filter: drop-shadow(0 0 12px rgba(184, 134, 11, 0.5));
-    }
-
-    /* Responsive */
-    @media (max-width: 480px) {
-      .hourglass-wrap {
-        width: 84px;
-        height: 84px;
-        margin-bottom: 16px;
-      }
-      .hourglass-svg {
-        width: 60px;
-        height: 60px;
-      }
     }
 
     .content-unavailable {
@@ -712,11 +636,8 @@
     }
 
     /* ============================================================
-       ═══════════════════════════════════════════════════════════
        TYPOGRAPHIE GÉNÉRALE DU CONTENU
-       ═══════════════════════════════════════════════════════════
        ============================================================ */
-
     #contentBody h1,
     #contentBody h2,
     #contentBody h3,
@@ -961,17 +882,13 @@
     }
 
     /* ============================================================
-       ═══════════════════════════════════════════════════════════
-       COMPOSANTS DU CONTENU (ch0_cours_p1.html etc.)
-       ═══════════════════════════════════════════════════════════
+       COMPOSANTS DU CONTENU
        ============================================================ */
-
     .lecture-container {
       min-width: 0; max-width: 100%;
       display: flex; flex-direction: column; gap: 0;
     }
 
-    /* ---------- HERO ---------- */
     .lecture-hero {
       margin: 0 0 40px; padding: 0 0 26px;
       border-bottom: 1px solid var(--border-gold);
@@ -1027,7 +944,6 @@
       color: var(--accent); font-size: 11px;
     }
 
-    /* ---------- SOMMAIRE ---------- */
     .lecture-toc {
       margin: 0 0 48px; padding: 0; min-width: 0;
     }
@@ -1072,7 +988,6 @@
       flex-shrink: 0; min-width: 22px;
     }
 
-    /* ---------- SECTIONS ---------- */
     .lecture-section {
       margin: 0 0 64px;
       scroll-margin-top: 80px; min-width: 0;
@@ -1128,7 +1043,6 @@
       overflow-wrap: break-word;
     }
 
-    /* ---------- TEXTE ---------- */
     .lecture-text {
       font-size: 16px; line-height: 1.85;
       color: var(--text-body);
@@ -1138,7 +1052,6 @@
     }
     .lecture-text strong { color: var(--text-light); font-weight: 600; }
 
-    /* ---------- LISTES ---------- */
     .lecture-list {
       list-style: none; padding: 0; margin: 18px 0 22px;
     }
@@ -1177,7 +1090,6 @@
       flex: 1; min-width: 0;
     }
 
-    /* ---------- CALLOUTS ---------- */
     .lecture-callout {
       margin: 24px 0;
       padding: 4px 0 4px 20px;
@@ -1223,7 +1135,6 @@
     .lecture-callout-danger { border-left-color: var(--danger-light); }
     .lecture-callout-danger .lecture-callout-title { color: var(--danger-light); }
 
-    /* ---------- ASIDE ---------- */
     .lecture-aside {
       margin: 28px 0;
       padding: 4px 0 4px 20px;
@@ -1243,7 +1154,6 @@
       font-style: italic;
     }
 
-    /* ---------- FORMULES HERO ---------- */
     .lecture-formula-hero {
       margin: 36px 0; padding: 32px 20px;
       text-align: center; position: relative;
@@ -1304,7 +1214,6 @@
       font-style: italic;
     }
 
-    /* ---------- RÈGLE ---------- */
     .lecture-rule {
       margin: 30px 0; padding: 24px 20px;
       text-align: center;
@@ -1340,7 +1249,6 @@
       border-radius: 100px;
     }
 
-    /* ---------- EXEMPLES ---------- */
     .lecture-example {
       margin: 26px 0; padding: 0; min-width: 0;
     }
@@ -1368,7 +1276,6 @@
       border-bottom-color: rgba(74, 222, 128, 0.15);
     }
 
-    /* ---------- ÉTAPES ---------- */
     .lecture-steps { margin: 22px 0; }
     .lecture-step {
       display: flex; gap: 18px;
@@ -1402,7 +1309,6 @@
       overflow-wrap: break-word;
     }
 
-    /* ---------- CHAÎNE ---------- */
     .lecture-chain {
       display: flex; align-items: center;
       justify-content: center; flex-wrap: wrap;
@@ -1423,7 +1329,6 @@
       color: var(--text-muted); font-size: 11px;
     }
 
-    /* ---------- PUISSANCES ---------- */
     .lecture-powers-cycle {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1449,7 +1354,6 @@
       color: var(--text-light); line-height: 1;
     }
 
-    /* ---------- VOCABULAIRE ---------- */
     .lecture-vocab-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1482,7 +1386,6 @@
     .vocab-card-success .vocab-symbol { color: #4ade80; }
     .vocab-card-info .vocab-symbol { color: var(--blue); }
 
-    /* ---------- PLAN ---------- */
     .lecture-plane-visual {
       position: relative; height: 260px;
       margin: 28px 0;
@@ -1490,7 +1393,6 @@
       border-radius: 4px; overflow: hidden;
     }
 
-    /* ---------- RÉCAP ---------- */
     .lecture-recap {
       margin: 56px 0 24px;
       padding: 28px 0 0;
@@ -1530,7 +1432,6 @@
       font-weight: 700;
     }
 
-    /* ---------- FIN ---------- */
     .lecture-end {
       text-align: center;
       margin: 64px 0 20px;
@@ -1560,7 +1461,6 @@
       background: rgba(224, 184, 74, 0.4);
     }
 
-    /* ---------- QUIZ / EXERCICES ---------- */
     .lecture-quiz {
       display: flex; flex-direction: column;
       gap: 14px; margin: 20px 0;
@@ -1630,7 +1530,6 @@
       margin-bottom: 12px; font-size: 15px;
     }
 
-    /* ---------- DETAILS / SUMMARY ---------- */
     details {
       margin-top: 14px;
       border-top: 1px dashed var(--border-soft);
@@ -1668,7 +1567,6 @@
       outline-offset: 2px;
     }
 
-    /* ---------- FIGURES ---------- */
     .lecture-figure {
       margin: 32px auto; padding: 0;
       max-width: 480px; width: 100%;
@@ -1696,7 +1594,6 @@
       overflow-wrap: break-word;
     }
 
-    /* ---------- KATEX ---------- */
     .katex { font-size: 1.05em; color: var(--text-light); }
     .katex-display {
       margin: 22px 0; padding: 0 8px;
@@ -1723,7 +1620,6 @@
     .katex .frac-line { border-bottom-color: var(--text-light); }
     .katex .sqrt > .root { color: var(--accent-bright); }
 
-    /* ---------- ANTI-DÉBORDEMENT ---------- */
     #contentBody * {
       min-width: 0; max-width: 100%;
       box-sizing: border-box;
@@ -1905,7 +1801,7 @@
 
   <script type="module">
   // ================================================================
-  // LECTURE — Version finale
+  // LECTURE — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1916,16 +1812,16 @@
     browserLocalPersistence
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  onSnapshot,
-  getDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-    
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    onSnapshot,
+    getDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
     authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -1936,14 +1832,13 @@
   };
 
   const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -2024,6 +1919,50 @@ const db = initializeFirestore(app, {
   const ttsProgressFill = document.getElementById('ttsProgressFill');
 
   // ================================================================
+  // SESSION / CACHE
+  // ================================================================
+  const SESSION_KEY = 'arvexa_session';
+  const USER_DATA_KEY = 'arvexa_user_data';
+  const LAST_UID_KEY = 'arvexa_last_uid';
+  const READ_KEY = 'arvexa_read_parts';
+  const NOTES_KEY = 'arvexa_notes';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
+  function getCachedUserData(uid) {
+    try {
+      const raw = localStorage.getItem(USER_DATA_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw);
+      if (cached._uid && cached._uid !== uid) {
+        localStorage.removeItem(USER_DATA_KEY);
+        return null;
+      }
+      return cached;
+    } catch (e) { return null; }
+  }
+
+  // ================================================================
   // UTILITAIRE
   // ================================================================
   function toDate(value) {
@@ -2048,9 +1987,6 @@ const db = initializeFirestore(app, {
   // ================================================================
   // STORAGE
   // ================================================================
-  const READ_KEY = 'arvexa_read_parts';
-  const NOTES_KEY = 'arvexa_notes';
-
   function getReadParts() {
     try { return JSON.parse(localStorage.getItem(READ_KEY) || '[]'); }
     catch (e) { return []; }
@@ -2118,10 +2054,7 @@ const db = initializeFirestore(app, {
 
     let processed = html;
 
-    // ⚠️ Retirer les balises <style> si jamais le contenu en a
     processed = processed.replace(/<style[\s\S]*?<\/style>/gi, '');
-
-    // ⚠️ Retirer les balises <script> (sécurité)
     processed = processed.replace(/<script[\s\S]*?<\/script>/gi, '');
 
     return processed;
@@ -2164,104 +2097,93 @@ const db = initializeFirestore(app, {
   // ================================================================
   // CONTENU INDISPONIBLE
   // ================================================================
- function showContentUnavailable() {
-  // Numéro de la partie (index 0 → affichage 1)
-  const partNumber = currentIndex + 1;
+  function showContentUnavailable() {
+    const partNumber = currentIndex + 1;
 
-  // Configuration selon l'onglet
-  const tabConfig = {
-    cours: {
-      titleLabel: 'Partie',
-      tabName: 'Cours',
-      description: `La partie ${partNumber} du cours de ce chapitre sera bientôt disponible.`,
-      backLabel: 'Retour au cours',
-      backIcon: 'fa-arrow-left',
-      listLabel: 'Voir les autres parties',
-      listIcon: 'fa-book'
-    },
-    exercices: {
-      titleLabel: 'Exercice',
-      tabName: 'Exercices',
-      description: `L'exercice ${partNumber} de ce chapitre sera bientôt disponible.`,
-      backLabel: 'Retour aux exercices',
-      backIcon: 'fa-arrow-left',
-      listLabel: 'Voir les autres exercices',
-      listIcon: 'fa-pen-to-square'
-    },
-    corrections: {
-      titleLabel: 'Correction',
-      tabName: 'Corrections',
-      description: `La correction ${partNumber} de ce chapitre sera bientôt disponible.`,
-      backLabel: 'Retour aux corrections',
-      backIcon: 'fa-arrow-left',
-      listLabel: 'Voir les autres corrections',
-      listIcon: 'fa-check-double'
+    const tabConfig = {
+      cours: {
+        titleLabel: 'Partie',
+        tabName: 'Cours',
+        description: `La partie ${partNumber} du cours de ce chapitre sera bientôt disponible.`,
+        backLabel: 'Retour au cours',
+        backIcon: 'fa-arrow-left',
+        listLabel: 'Voir les autres parties',
+        listIcon: 'fa-book'
+      },
+      exercices: {
+        titleLabel: 'Exercice',
+        tabName: 'Exercices',
+        description: `L'exercice ${partNumber} de ce chapitre sera bientôt disponible.`,
+        backLabel: 'Retour aux exercices',
+        backIcon: 'fa-arrow-left',
+        listLabel: 'Voir les autres exercices',
+        listIcon: 'fa-pen-to-square'
+      },
+      corrections: {
+        titleLabel: 'Correction',
+        tabName: 'Corrections',
+        description: `La correction ${partNumber} de ce chapitre sera bientôt disponible.`,
+        backLabel: 'Retour aux corrections',
+        backIcon: 'fa-arrow-left',
+        listLabel: 'Voir les autres corrections',
+        listIcon: 'fa-check-double'
+      }
+    };
+
+    const cfg = tabConfig[tab] || tabConfig.cours;
+
+    let title;
+    if (tab === 'cours') {
+      title = `Partie ${partNumber} — Cours`;
+    } else if (tab === 'exercices') {
+      title = `Exercice ${partNumber}`;
+    } else if (tab === 'corrections') {
+      title = `Correction ${partNumber}`;
+    } else {
+      title = `Partie ${partNumber}`;
     }
-  };
 
-  const cfg = tabConfig[tab] || tabConfig.cours;
-
-  // Construire le titre
-  let title;
-  if (tab === 'cours') {
-    title = `Partie ${partNumber} — Cours`;
-  } else if (tab === 'exercices') {
-    title = `Exercice ${partNumber}`;
-  } else if (tab === 'corrections') {
-    title = `Correction ${partNumber}`;
-  } else {
-    title = `Partie ${partNumber}`;
-  }
-
-  // SVG Sablier animé
-  const hourglassSVG = `
-    <div class="hourglass-wrap">
-      <span class="hourglass-particle"></span>
-      <span class="hourglass-particle"></span>
-      <span class="hourglass-particle"></span>
-      <span class="hourglass-particle"></span>
-      <svg class="hourglass-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <!-- Contour supérieur -->
-        <path class="frame" d="M 20 15 L 80 15" />
-        <!-- Contour inférieur -->
-        <path class="frame" d="M 20 85 L 80 85" />
-        <!-- Verre du haut (triangle inversé) -->
-        <path class="glass" d="M 22 17 L 78 17 L 50 50 Z" />
-        <!-- Verre du bas (triangle) -->
-        <path class="glass" d="M 50 50 L 78 83 L 22 83 Z" />
-        <!-- Sable du haut -->
-        <path class="sand-top" d="M 26 20 L 74 20 L 50 47 Z" />
-        <!-- Filet de sable au centre -->
-        <rect class="sand-stream" x="48.5" y="47" width="3" height="8" />
-        <!-- Sable du bas -->
-        <path class="sand-bottom" d="M 50 53 L 74 80 L 26 80 Z" />
-      </svg>
-    </div>
-  `;
-
-  contentBody.innerHTML = `
-    <div class="content-unavailable">
-      ${hourglassSVG}
-      <h2>${title} en préparation</h2>
-      <p>${cfg.description}</p>
-      <div class="cu-actions">
-        <a href="chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}" class="cu-btn primary">
-          <i class="fas ${cfg.backIcon}"></i> ${cfg.backLabel}
-        </a>
-        <a href="matiere.html?subject=${subject}" class="cu-btn">
-          <i class="fas ${cfg.listIcon}"></i> ${cfg.listLabel}
-        </a>
+    const hourglassSVG = `
+      <div class="hourglass-wrap">
+        <span class="hourglass-particle"></span>
+        <span class="hourglass-particle"></span>
+        <span class="hourglass-particle"></span>
+        <span class="hourglass-particle"></span>
+        <svg class="hourglass-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path class="frame" d="M 20 15 L 80 15" />
+          <path class="frame" d="M 20 85 L 80 85" />
+          <path class="glass" d="M 22 17 L 78 17 L 50 50 Z" />
+          <path class="glass" d="M 50 50 L 78 83 L 22 83 Z" />
+          <path class="sand-top" d="M 26 20 L 74 20 L 50 47 Z" />
+          <rect class="sand-stream" x="48.5" y="47" width="3" height="8" />
+          <path class="sand-bottom" d="M 50 53 L 74 80 L 26 80 Z" />
+        </svg>
       </div>
-    </div>
-  `;
-  pageTitle.textContent = `${title} en préparation`;
-  document.title = `ARVEXA - ${title} en préparation`;
-  prevBtn.style.display = 'none';
-  nextBtn.style.display = 'none';
-  partCounter.style.display = 'none';
-  notesBtn.style.display = 'none';
-  if (ttsBtn) ttsBtn.style.display = 'none';
-}
+    `;
+
+    contentBody.innerHTML = `
+      <div class="content-unavailable">
+        ${hourglassSVG}
+        <h2>${title} en préparation</h2>
+        <p>${cfg.description}</p>
+        <div class="cu-actions">
+          <a href="chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}" class="cu-btn primary">
+            <i class="fas ${cfg.backIcon}"></i> ${cfg.backLabel}
+          </a>
+          <a href="matiere.html?subject=${subject}" class="cu-btn">
+            <i class="fas ${cfg.listIcon}"></i> ${cfg.listLabel}
+          </a>
+        </div>
+      </div>
+    `;
+    pageTitle.textContent = `${title} en préparation`;
+    document.title = `ARVEXA - ${title} en préparation`;
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    partCounter.style.display = 'none';
+    notesBtn.style.display = 'none';
+    if (ttsBtn) ttsBtn.style.display = 'none';
+  }
 
   // ================================================================
   // CHARGEMENT
@@ -2324,21 +2246,21 @@ const db = initializeFirestore(app, {
       </div>
     `;
 
-      fetch(filePath)
-    .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
-    .then(html => {
-      const cleaned = preprocessContent(html);
-      contentBody.innerHTML = cleaned;
-      markPartAsRead();
-      loadNotes();
-      renderKaTeX();
-      updateReadProgress();
-      resetStudyTimer();
-    })
-    .catch(() => {
-      showContentUnavailable();
-    });
-}   // ← ⚠️ CETTE ACCOLADE MANQUE
+    fetch(filePath)
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
+      .then(html => {
+        const cleaned = preprocessContent(html);
+        contentBody.innerHTML = cleaned;
+        markPartAsRead();
+        loadNotes();
+        renderKaTeX();
+        updateReadProgress();
+        resetStudyTimer();
+      })
+      .catch(() => {
+        showContentUnavailable();
+      });
+  }
 
   // ================================================================
   // PROGRESSION LECTURE
@@ -2356,24 +2278,24 @@ const db = initializeFirestore(app, {
   // NAVIGATION
   // ================================================================
   function goToPrev() {
-  if (currentIndex > 0) {
-    saveStudyTimeBeforeChange();
-    currentIndex--;
-    if (notesTextarea.value.trim()) saveNotes();
-    contentWrapper.scrollTop = 0;
-    renderPart();
+    if (currentIndex > 0) {
+      saveStudyTimeBeforeChange();
+      currentIndex--;
+      if (notesTextarea.value.trim()) saveNotes();
+      contentWrapper.scrollTop = 0;
+      renderPart();
+    }
   }
-}
 
-function goToNext() {
-  if (currentIndex < parts.length - 1) {
-    saveStudyTimeBeforeChange();
-    currentIndex++;
-    if (notesTextarea.value.trim()) saveNotes();
-    contentWrapper.scrollTop = 0;
-    renderPart();
+  function goToNext() {
+    if (currentIndex < parts.length - 1) {
+      saveStudyTimeBeforeChange();
+      currentIndex++;
+      if (notesTextarea.value.trim()) saveNotes();
+      contentWrapper.scrollTop = 0;
+      renderPart();
+    }
   }
-}
 
   // ================================================================
   // MODAL NOTES
@@ -2393,9 +2315,9 @@ function goToNext() {
   // ÉVÉNEMENTS
   // ================================================================
   backBtn.addEventListener('click', () => {
-  saveStudyTimeBeforeChange();
-  window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
-});
+    saveStudyTimeBeforeChange();
+    window.location.href = `chapitre.html?subject=${subject}&chapter=${chapter}&tab=${tab}`;
+  });
 
   prevBtn.addEventListener('click', goToPrev);
   nextBtn.addEventListener('click', goToNext);
@@ -2724,154 +2646,209 @@ function goToNext() {
   window.addEventListener('beforeunload', () => {
     try { if (tts.synth) tts.synth.cancel(); } catch (e) {}
   });
-  
+
   // ================================================================
-// SUIVI DU TEMPS D'ÉTUDE
-// ================================================================
-let studyStartTime = Date.now();
-let studyTimeActive = true;
+  // SUIVI DU TEMPS D'ÉTUDE
+  // ================================================================
+  let studyStartTime = Date.now();
+  let studyTimeActive = true;
 
-// Détecter quand l'élève quitte/revient sur l'onglet
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    pauseStudyTime();
-  } else {
-    resumeStudyTime();
-  }
-});
-
-function pauseStudyTime() {
-  if (!studyTimeActive) return;
-  const duration = Math.floor((Date.now() - studyStartTime) / 1000);
-  if (duration >= 5) {
-    saveStudyTime(duration);
-  }
-  studyTimeActive = false;
-}
-
-function resumeStudyTime() {
-  studyStartTime = Date.now();
-  studyTimeActive = true;
-}
-
-// Sauvegarder avant de quitter la page
-window.addEventListener('beforeunload', () => {
-  pauseStudyTime();
-});
-
-// Sauvegarder quand on change de partie
-function saveStudyTimeBeforeChange() {
-  const duration = Math.floor((Date.now() - studyStartTime) / 1000);
-  if (duration >= 5) {
-    saveStudyTime(duration);
-  }
-  studyStartTime = Date.now();
-}
-
-async function saveStudyTime(seconds) {
-  const user = auth.currentUser;
-  if (!user) return;
-  
-  try {
-    const userRef = doc(db, 'users', user.uid);
-    const snap = await getDoc(userRef);
-    if (snap.exists()) {
-      const current = snap.data().totalStudyTime || 0;
-      await updateDoc(userRef, {
-        totalStudyTime: current + seconds,
-        lastStudyUpdate: serverTimestamp()
-      });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pauseStudyTime();
+    } else {
+      resumeStudyTime();
     }
-  } catch (e) {
-    // Silencieux
+  });
+
+  function pauseStudyTime() {
+    if (!studyTimeActive) return;
+    const duration = Math.floor((Date.now() - studyStartTime) / 1000);
+    if (duration >= 5) {
+      saveStudyTime(duration);
+    }
+    studyTimeActive = false;
   }
-}
 
-// Réinitialiser le chrono quand une nouvelle partie est chargée
-function resetStudyTimer() {
-  studyStartTime = Date.now();
-  studyTimeActive = true;
-}
+  function resumeStudyTime() {
+    studyStartTime = Date.now();
+    studyTimeActive = true;
+  }
 
+  window.addEventListener('beforeunload', () => {
+    pauseStudyTime();
+  });
+
+  function saveStudyTimeBeforeChange() {
+    const duration = Math.floor((Date.now() - studyStartTime) / 1000);
+    if (duration >= 5) {
+      saveStudyTime(duration);
+    }
+    studyStartTime = Date.now();
+  }
+
+  async function saveStudyTime(seconds) {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const current = snap.data().totalStudyTime || 0;
+        await updateDoc(userRef, {
+          totalStudyTime: current + seconds,
+          lastStudyUpdate: serverTimestamp()
+        });
+      }
+    } catch (e) {
+      // Silencieux
+    }
+  }
+
+  function resetStudyTimer() {
+    studyStartTime = Date.now();
+    studyTimeActive = true;
+  }
 
   // ================================================================
-  // CHARGEMENT UTILISATEUR
+  // CHARGEMENT UTILISATEUR (temps réel)
   // ================================================================
   function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
-  }
-  const userRef = doc(db, 'users', user.uid);
-  unsubscribeUser = onSnapshot(userRef,
-    (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const newPremium = isUserPremium(data);
-        if (newPremium !== isPremium) isPremium = newPremium;
-        try {
-          localStorage.setItem('arvexa_user_data', JSON.stringify(data));
-        } catch (e) {}
-      } else {
-        // ⚡ Si le document n'existe pas frais, utiliser le cache
-        try {
-          const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-          if (cached && Object.keys(cached).length > 0) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
+    const userRef = doc(db, 'users', user.uid);
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const newPremium = isUserPremium(data);
+          if (newPremium !== isPremium) isPremium = newPremium;
+          try {
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({
+              ...data,
+              _uid: user.uid,
+              _cachedAt: Date.now()
+            }));
+          } catch (e) {}
+        } else {
+          const cached = getCachedUserData(user.uid);
+          if (cached) {
             const newPremium = isUserPremium(cached);
             if (newPremium !== isPremium) isPremium = newPremium;
           }
-        } catch (e) {}
-      }
-    },
-    (error) => {
-      // ⚡ En cas d'erreur (offline), utiliser le cache
-      try {
-        const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-        if (cached && Object.keys(cached).length > 0) {
+        }
+      },
+      (error) => {
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
           const newPremium = isUserPremium(cached);
           if (newPremium !== isPremium) isPremium = newPremium;
         }
-      } catch (e) {}
-    }
-  );
+      }
+    );
   }
 
   // ================================================================
-  // AUTH
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
   let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-        stopTTS();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
-
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      const cached = JSON.parse(localStorage.getItem('arvexa_user_data') || '{}');
-      isPremium = isUserPremium(cached);
-    } catch (e) {
-      isPremium = false;
-    }
+      sessionStorage.setItem('redirectAfterLogin',
+        window.location.pathname + window.location.search);
+    } catch (e) {}
+    window.location.replace('login.html');
+  }
+
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          clearSession();
+          stopTTS();
+          redirectToLogin();
+        }
+        return;
+      }
+
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    const cached = getCachedUserData(user.uid);
+    isPremium = cached ? isUserPremium(cached) : false;
 
     loadContent();
     loadUserData(user);
   });
-  
+
+  console.log('🚀 ARVEXA — Lecture (avec session robuste)');
   </script>
 </body>
 </html>

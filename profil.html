@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<script src="register-sw.js" defer></script>
+  <script src="register-sw.js" defer></script>
 
   <style>
     /* ============================================================
@@ -872,6 +872,49 @@
     }
 
     /* ============================================================
+       TOAST
+       ============================================================ */
+    .toast-container {
+      position: fixed;
+      top: calc(var(--safe-top) + 16px);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: calc(100% - 32px);
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: rgba(20, 22, 20, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      animation: toastIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: auto;
+    }
+    .toast.success { border-color: rgba(45, 125, 90, 0.4); }
+    .toast.error { border-color: rgba(231, 76, 60, 0.4); }
+    .toast i { font-size: 15px; flex-shrink: 0; }
+    .toast.success i { color: var(--success-light); }
+    .toast.error i { color: var(--danger-light); }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
        RESPONSIVE
        ============================================================ */
     @media (min-width: 768px) {
@@ -1164,6 +1207,9 @@
     </div>
   </div>
 
+  <!-- TOASTS -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <!-- ============================================================ -->
   <script type="importmap">
   {
@@ -1177,7 +1223,7 @@
 
   <script type="module">
   // ================================================================
-  // PROFIL — Version avec apparence améliorée
+  // PROFIL — Version robuste anti-flash
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1190,15 +1236,15 @@
     getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  onSnapshot,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-    
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    onSnapshot,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
   // ================================================================
   // CONFIG
   // ================================================================
@@ -1212,14 +1258,13 @@
   };
 
   const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -1231,12 +1276,27 @@ const db = initializeFirestore(app, {
   const SESSION_KEY = 'arvexa_session';
   const USER_DATA_KEY = 'arvexa_user_data';
   const READ_KEY = 'arvexa_read_parts';
+  const LAST_UID_KEY = 'arvexa_last_uid';
+
+  function saveSession(user) {
+    if (!user) return;
+    try {
+      const data = {
+        uid: user.uid,
+        email: user.email,
+        lastActive: Date.now()
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
+    } catch (e) {}
+  }
 
   function clearSession() {
     try {
       localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
     } catch (e) {}
   }
 
@@ -1283,6 +1343,7 @@ const db = initializeFirestore(app, {
   const statTime = document.getElementById('statTime');
   const statLevel = document.getElementById('statLevel');
   const badgesGrid = document.getElementById('badgesGrid');
+  const toastContainer = document.getElementById('toastContainer');
 
   // ================================================================
   // ÉTAT
@@ -1291,6 +1352,9 @@ const db = initializeFirestore(app, {
   let unsubscribeUser = null;
   let currentUid = null;
   let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
 
   // ================================================================
   // UTILITAIRE — TIMESTAMP
@@ -1308,13 +1372,10 @@ const db = initializeFirestore(app, {
   // ================================================================
   function isUserPremium(data) {
     if (!data) return false;
-
     const hasStatus = data.premium === true ||
                       data.isUnlocked === true ||
                       data.hasDeposited === true;
-
     if (!hasStatus) return false;
-
     const endDate = toDate(data.subscriptionEndDate);
     if (!endDate) return true;
     return endDate.getTime() > Date.now();
@@ -1560,41 +1621,37 @@ const db = initializeFirestore(app, {
   // CHARGEMENT UTILISATEUR
   // ================================================================
   function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
-  }
-
-  const userRef = doc(db, 'users', user.uid);
-
-  unsubscribeUser = onSnapshot(userRef,
-    (docSnap) => {
-      // ⚡ Vérifier le cache AVANT de rediriger
-      const cached = getCachedUserData(user.uid);
-
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        saveUserDataToCache(data, user.uid);
-        renderProfile(data);
-      } else if (cached) {
-        // ⚡ Pas de doc frais MAIS cache disponible → utiliser le cache
-        renderProfile(cached);
-      } else {
-        // ⚡ Vraiment introuvable ET pas de cache → rediriger
-        window.location.href = 'register.html';
-      }
-    },
-    (error) => {
-      // ⚡ En cas d'erreur (offline), utiliser le cache
-      const cached = getCachedUserData(user.uid);
-      if (cached) {
-        renderProfile(cached);
-      } else {
-        skeletonLoading.style.display = 'none';
-        dynamicContent.style.display = 'block';
-      }
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
     }
-  );
+
+    const userRef = doc(db, 'users', user.uid);
+
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        const cached = getCachedUserData(user.uid);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          saveUserDataToCache(data, user.uid);
+          renderProfile(data);
+        } else if (cached) {
+          renderProfile(cached);
+        } else {
+          window.location.replace('register.html');
+        }
+      },
+      (error) => {
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          renderProfile(cached);
+        } else {
+          skeletonLoading.style.display = 'none';
+          dynamicContent.style.display = 'block';
+        }
+      }
+    );
   }
 
   // ================================================================
@@ -1616,7 +1673,11 @@ const db = initializeFirestore(app, {
       try {
         const base64 = await compressImage(file, 300, 300, 0.6);
         const sizeInKB = Math.round(base64.length / 1024);
-        if (sizeInKB > 900) return;
+        if (sizeInKB > 900) {
+          showToast('Image trop lourde après compression', 'error');
+          avatarInput.value = '';
+          return;
+        }
 
         const user = auth.currentUser;
         if (!user) return;
@@ -1628,7 +1689,12 @@ const db = initializeFirestore(app, {
         const initials = getInitials(firstName, lastName);
         updateAvatarDisplay(base64, initials);
 
-      } catch (error) {}
+        showToast('Photo de profil mise à jour', 'success');
+
+      } catch (error) {
+        console.error('Erreur upload photo:', error);
+        showToast(error.message || 'Erreur lors de l\'upload', 'error');
+      }
 
       avatarInput.value = '';
     });
@@ -1691,6 +1757,36 @@ const db = initializeFirestore(app, {
   });
 
   // ================================================================
+  // TOAST
+  // ================================================================
+  function showToast(message, type = 'success') {
+    const icons = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      info: 'fa-info-circle'
+    };
+    const colors = {
+      success: '#3AB67E',
+      error: '#E74C3C',
+      info: '#E0B84A'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <i class="fas ${icons[type] || icons.info}" style="color:${colors[type] || colors.info}"></i>
+      <span>${message}</span>
+    `;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateY(-10px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // ================================================================
   // DÉCONNEXION
   // ================================================================
   function handleLogout() {
@@ -1703,51 +1799,112 @@ const db = initializeFirestore(app, {
       variant: 'danger',
       onConfirm: async () => {
         try {
+          isRedirecting = true;
           if (unsubscribeUser) unsubscribeUser();
           currentUid = null;
           clearSession();
-          await signOut(auth);
-          window.location.href = 'login.html';
+          try { await signOut(auth); } catch (e) {}
+          window.location.replace('login.html');
         } catch (error) {
-          window.location.href = 'login.html';
+          window.location.replace('login.html');
         }
       }
     });
   }
 
   // ================================================================
-  // AUTH
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-        clearSession();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
-
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      await getIdToken(user, true);
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
     } catch (e) {}
+    window.location.replace('login.html');
+  }
 
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
+
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    try { await getIdToken(user, true); } catch (e) {}
+
+    // Cache-first
     const cached = getCachedUserData(user.uid);
     if (cached) {
       userData = cached;
       renderProfile(cached);
     }
 
+    // Firestore en arrière-plan
     loadUserData(user);
   });
 
@@ -1776,6 +1933,8 @@ const db = initializeFirestore(app, {
   document.getElementById('notifBtn').addEventListener('click', () => {
     window.location.href = 'notifications.html';
   });
+
+  console.log('🚀 ARVEXA — Profil (avec session robuste)');
   </script>
 </body>
 </html>

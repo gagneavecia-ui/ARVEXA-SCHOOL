@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <script src="register-sw.js" defer></script>
   <script src="register-fcm-sw.js" defer></script>
+
   <style>
     /* ============================================================
        ROOT — Design system ARVEXA
@@ -38,6 +39,8 @@
       --radius: 16px;
       --sidebar-width: 240px;
       --header-height: 64px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -85,8 +88,10 @@
     .sidebar {
       position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
       background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-right: 1px solid rgba(184, 134, 11, 0.06);
-      padding: 24px 16px; display: flex; flex-direction: column; z-index: 100;
+      padding: calc(24px + var(--safe-top)) 16px calc(24px + var(--safe-bottom));
+      display: flex; flex-direction: column; z-index: 100;
       overflow-y: auto; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .sidebar.open { left: 0; }
@@ -101,6 +106,7 @@
       background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
       -webkit-text-fill-color: transparent; font-style: italic;
       animation: shimmerText 4s linear infinite;
+      margin-left: 4px;
     }
     @keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
     .sidebar .nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
@@ -113,6 +119,24 @@
     .sidebar .nav a:hover { color: var(--text-light); background: rgba(255,255,255,0.03); }
     .sidebar .nav a.active { color: var(--text-light); background: rgba(184, 134, 11, 0.08); border: 1px solid rgba(184, 134, 11, 0.08); }
     .sidebar .nav a.active i { color: var(--accent); }
+    .sidebar .nav a.avis-link {
+      color: var(--accent-bright);
+      background: rgba(184, 134, 11, 0.06);
+      border: 1px solid rgba(184, 134, 11, 0.12);
+      margin-top: 4px;
+    }
+    .sidebar .nav a.avis-link:hover {
+      background: rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright);
+    }
+    .sidebar .nav a.avis-link i {
+      color: var(--accent-bright);
+      animation: starPulse 2s ease-in-out infinite;
+    }
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
     .sidebar .nav-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
     .sidebar .nav-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
     .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
@@ -128,8 +152,10 @@
        ============================================================ */
     .header {
       position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-      justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
-      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
+      justify-content: space-between; padding: calc(10px + var(--safe-top)) 16px 10px;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184, 134, 11, 0.06);
       gap: 12px; min-height: var(--header-height);
     }
     .header .header-left { display: flex; align-items: center; gap: 12px; }
@@ -309,6 +335,72 @@
     .subject-chip .subject-name { font-size: clamp(13px, 1.3vw, 14px); font-weight: 600; }
     .subject-chip .subject-chapters { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
+/* ============================================================
+   SECTION AVIS — Carte + Bouton dédiés
+   ============================================================ */
+.avis-card {
+  background: linear-gradient(135deg, rgba(184, 134, 11, 0.1), rgba(26, 58, 42, 0.08)) !important;
+  border-color: rgba(184, 134, 11, 0.25) !important;
+}
+
+/* Bouton principal "Donner mon avis" */
+.avis-btn-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+  color: #0A0A0A;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 4px 16px rgba(184, 134, 11, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.avis-btn-inline::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: left 0.6s ease;
+}
+
+.avis-btn-inline:hover::before {
+  left: 100%;
+}
+
+.avis-btn-inline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(184, 134, 11, 0.4);
+}
+
+.avis-btn-inline:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.avis-btn-inline i {
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .avis-btn-inline {
+    width: 100%;
+    padding: 12px 18px;
+    font-size: 13px;
+  }
+}
+
     /* ============================================================
        TOOLS GRID
        ============================================================ */
@@ -448,39 +540,28 @@
     .footer-links a:hover { color: var(--text-light); }
     .footer-copy { font-size: 11px; color: var(--text-muted); opacity: 0.6; }
 
-        /* ============================================================
-       FCM BANNER — Notification push
+    /* ============================================================
+       FCM BANNER
        ============================================================ */
     .fcm-banner-content {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 18px;
-      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px; margin-bottom: 14px;
       background: linear-gradient(135deg, rgba(184, 134, 11, 0.08), rgba(26, 58, 42, 0.06));
       border: 1px solid rgba(184, 134, 11, 0.2);
       border-radius: var(--radius);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
       animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     }
     .fcm-banner-content::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
       height: 2px;
       background: linear-gradient(90deg, var(--accent), var(--accent-bright));
     }
     .fcm-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+      width: 44px; height: 44px; border-radius: 12px;
       background: rgba(184, 134, 11, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
       animation: fcmBell 2s ease-in-out infinite;
     }
     @keyframes fcmBell {
@@ -488,46 +569,19 @@
       92%, 96% { transform: rotate(-10deg); }
       94%, 98% { transform: rotate(10deg); }
     }
-    .fcm-text {
-      flex: 1;
-      min-width: 0;
-    }
-    .fcm-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-light);
-      margin-bottom: 2px;
-    }
-    .fcm-desc {
-      font-size: 12px;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-    .fcm-actions {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
+    .fcm-text { flex: 1; min-width: 0; }
+    .fcm-title { font-size: 14px; font-weight: 700; color: var(--text-light); margin-bottom: 2px; }
+    .fcm-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+    .fcm-actions { display: flex; gap: 6px; flex-shrink: 0; }
     .fcm-btn-later,
     .fcm-btn-activate {
-      padding: 8px 14px;
-      border-radius: 20px;
-      border: none;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: 'Inter', sans-serif;
+      padding: 8px 14px; border-radius: 20px; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: var(--transition); font-family: 'Inter', sans-serif;
       white-space: nowrap;
     }
-    .fcm-btn-later {
-      background: transparent;
-      color: var(--text-muted);
-    }
-    .fcm-btn-later:hover {
-      color: var(--text-light);
-      background: rgba(255, 255, 255, 0.04);
-    }
+    .fcm-btn-later { background: transparent; color: var(--text-muted); }
+    .fcm-btn-later:hover { color: var(--text-light); background: rgba(255, 255, 255, 0.04); }
     .fcm-btn-activate {
       background: linear-gradient(135deg, var(--accent-bright), var(--accent));
       color: #0A0A0A;
@@ -537,25 +591,283 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 16px rgba(184, 134, 11, 0.35);
     }
-    .fcm-btn-activate:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    .fcm-btn-activate:disabled { opacity: 0.5; cursor: not-allowed; }
 
     @media (max-width: 480px) {
-      .fcm-banner-content {
-        flex-wrap: wrap;
-        padding: 14px;
-        gap: 12px;
-      }
+      .fcm-banner-content { flex-wrap: wrap; padding: 14px; gap: 12px; }
       .fcm-text { flex: 1 1 100%; }
-      .fcm-actions {
-        width: 100%;
-        justify-content: flex-end;
-      }
+      .fcm-actions { width: 100%; justify-content: flex-end; }
       .fcm-btn-activate { flex: 1; }
     }
 
+    /* ============================================================
+       MODALE AVIS
+       ============================================================ */
+    .avis-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; visibility: hidden;
+      transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .avis-modal-overlay.show { opacity: 1; visibility: visible; }
+
+    .avis-modal {
+      background: linear-gradient(145deg, #141414 0%, #0A0A0A 100%);
+      border: 1px solid rgba(184, 134, 11, 0.2);
+      border-radius: 20px;
+      padding: 28px 24px 22px;
+      max-width: 440px; width: 100%;
+      max-height: 92vh; overflow-y: auto;
+      position: relative;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(184, 134, 11, 0.08);
+    }
+    .avis-modal-overlay.show .avis-modal { transform: scale(1) translateY(0); }
+    .avis-modal::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+      background-size: 200% 100%;
+      animation: borderShimmer 4s linear infinite;
+      border-radius: 20px 20px 0 0;
+    }
+    @keyframes borderShimmer {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 300% 0%; }
+    }
+
+    .avis-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; transition: var(--transition);
+      z-index: 2;
+    }
+    .avis-close:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-light);
+      transform: rotate(90deg);
+    }
+
+    .avis-header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-right: 30px;
+    }
+    .avis-icon-wrap {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 60px; height: 60px; border-radius: 18px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.15), rgba(184, 134, 11, 0.05));
+      border: 1px solid rgba(184, 134, 11, 0.2);
+      font-size: 28px;
+      margin-bottom: 12px;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-6px) rotate(2deg); }
+    }
+    .avis-title {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--text-light);
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .avis-title em { color: var(--accent-bright); font-style: italic; }
+    .avis-subtitle {
+      font-size: 13px; color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .avis-field { margin-bottom: 18px; }
+    .avis-label {
+      display: block;
+      font-size: 12px; font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .avis-label i { color: var(--accent-bright); margin-right: 6px; }
+
+    /* Étoiles */
+    .avis-stars {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      padding: 8px 0;
+    }
+    .avis-star {
+      font-size: 34px;
+      color: rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+      line-height: 1;
+    }
+    .avis-star:hover,
+    .avis-star.active {
+      color: var(--accent-bright);
+      transform: scale(1.15);
+      text-shadow: 0 0 16px rgba(224, 184, 74, 0.5);
+    }
+    .avis-star-hint {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      min-height: 18px;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .avis-star-hint.active { color: var(--accent-bright); font-weight: 600; }
+
+    /* Textarea */
+    .avis-textarea {
+      width: 100%;
+      min-height: 100px;
+      max-height: 200px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: var(--transition);
+    }
+    .avis-textarea:focus {
+      border-color: rgba(184, 134, 11, 0.3);
+      background: rgba(184, 134, 11, 0.02);
+    }
+    .avis-textarea::placeholder { color: var(--text-muted); }
+    .avis-char-count {
+      text-align: right;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .avis-char-count.warning { color: var(--accent-bright); }
+    .avis-char-count.danger { color: var(--danger); }
+
+    /* Catégories (chips) */
+    .avis-categories {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .avis-cat-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .avis-cat-chip:hover { color: var(--text-dim); border-color: rgba(255, 255, 255, 0.1); }
+    .avis-cat-chip.active {
+      background: rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright);
+      border-color: rgba(184, 134, 11, 0.25);
+    }
+
+    /* Actions */
+    .avis-actions {
+      display: flex; gap: 10px;
+      margin-top: 20px;
+    }
+    .avis-btn {
+      flex: 1;
+      padding: 13px 18px;
+      border-radius: 30px;
+      border: none;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px;
+    }
+    .avis-btn.cancel {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .avis-btn.cancel:hover {
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text-light);
+    }
+    .avis-btn.submit {
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A;
+      box-shadow: 0 4px 16px rgba(184, 134, 11, 0.25);
+    }
+    .avis-btn.submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(184, 134, 11, 0.4);
+    }
+    .avis-btn.submit:active { transform: scale(0.97); }
+    .avis-btn.submit:disabled {
+      opacity: 0.5; cursor: not-allowed; box-shadow: none;
+    }
+    .avis-btn .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(10, 10, 10, 0.2);
+      border-top-color: #0A0A0A;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .avis-btn.loading .spinner { display: block; }
+    .avis-btn.loading .btn-text,
+    .avis-btn.loading .btn-icon { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success state */
+    .avis-success {
+      text-align: center;
+      padding: 20px 0;
+      display: none;
+    }
+    .avis-success.show { display: block; }
+    .avis-success-icon {
+      font-size: 56px;
+      margin-bottom: 14px;
+      display: inline-block;
+      animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes successPop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .avis-success h3 {
+      font-size: 22px;
+      font-family: 'Playfair Display', Georgia, serif;
+      color: var(--accent-bright);
+      margin-bottom: 8px;
+    }
+    .avis-success p {
+      font-size: 14px; color: var(--text-dim);
+      line-height: 1.6; max-width: 320px; margin: 0 auto;
+    }
 
     /* ============================================================
        RESPONSIVE
@@ -595,6 +907,10 @@
       .header .header-actions button { width: 32px; height: 32px; font-size: 13px; }
       .next-card .title { font-size: 16px; }
       .next-card .message { font-size: 13px; }
+
+      .avis-modal { padding: 22px 18px 18px; }
+      .avis-star { font-size: 28px; }
+      .avis-title { font-size: 19px; }
     }
 
     @media (max-width: 480px) {
@@ -625,6 +941,14 @@
       .tip-card .tip-title { font-size: 13px; }
       .tip-card .tip-text { font-size: 12px; }
       .sub-card .sub-icon { width: 36px; height: 36px; font-size: 16px; }
+
+      .avis-modal { padding: 20px 16px 16px; max-width: 340px; }
+      .avis-icon-wrap { width: 52px; height: 52px; font-size: 24px; }
+      .avis-title { font-size: 17px; }
+      .avis-subtitle { font-size: 12px; }
+      .avis-star { font-size: 26px; }
+      .avis-actions { flex-direction: column-reverse; gap: 8px; }
+      .avis-btn { padding: 12px 16px; font-size: 13px; }
     }
 
     @media (max-width: 360px) {
@@ -639,13 +963,17 @@
       .countdown-title { font-size: 15px; }
       .countdown-icon { font-size: 18px; }
       .hero-card { padding: 12px; }
+
+      .avis-star { font-size: 24px; gap: 4px; }
+      .avis-title { font-size: 16px; }
+      .avis-cat-chip { font-size: 11px; padding: 5px 10px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
-    a:focus-visible, button:focus-visible {
+    a:focus-visible, button:focus-visible, textarea:focus-visible {
       outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
     }
     ::-webkit-scrollbar { width: 4px; }
@@ -673,6 +1001,10 @@
       <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
       <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
       <a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a>
+      <div class="nav-divider"></div>
+      <a href="#" class="avis-link" id="avisLinkSidebar">
+        <i class="fas fa-star"></i> Donner mon avis
+      </a>
       <div class="nav-divider"></div>
       <div class="nav-bottom">
         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
@@ -712,7 +1044,7 @@
     <!-- ===== CONTAINER ===== -->
     <div class="container" id="dashboardContent">
 
-      <!-- ===== CONTENU STATIQUE (affiché immédiatement) ===== -->
+      <!-- ===== CONTENU DYNAMIQUE ===== -->
       <div id="dynamicContent">
 
         <!-- ===== HERO ===== -->
@@ -759,7 +1091,7 @@
           </div>
         </div>
 
-        <!-- ===== MES MATIÈRES (STATIQUE EN DUR) ===== -->
+        <!-- ===== MES MATIÈRES ===== -->
         <div class="section-title"><h3>📐 Mes matières</h3></div>
         <div class="subjects-grid" id="subjectsGrid">
           <a href="matiere.html?subject=mathematiques" class="subject-chip">
@@ -792,7 +1124,7 @@
           </a>
         </div>
 
-        <!-- ===== OUTILS & RESSOURCES (STATIQUE EN DUR) ===== -->
+        <!-- ===== OUTILS & RESSOURCES ===== -->
         <div class="section-title"><h3>🛠️ Outils & Ressources</h3></div>
         <div class="tools-grid" id="toolsGrid">
           <a href="calculatrice.html" class="tool-card">
@@ -834,7 +1166,21 @@
           </div>
         </div>
 
-        <!-- ===== SECTION ABONNEMENT (cachée par défaut, affichée par JS) ===== -->
+       <!-- ===== SECTION AVIS ===== -->
+<div class="section-title"><h3>⭐ Ton avis compte</h3></div>
+<div class="next-card avis-card">
+  <div class="badge"><i class="fas fa-star"></i> Aide-nous à nous améliorer</div>
+  <div class="title">Partage ton expérience</div>
+  <div class="message">
+    Ton avis est <strong>précieux</strong> pour nous aider à améliorer ARVEXA School.
+    Ça ne prend que 30 secondes et ça nous aide énormément !
+  </div>
+  <button class="avis-btn-inline" id="avisBtnInline">
+    <i class="fas fa-star"></i> Donner mon avis
+  </button>
+</div>
+
+        <!-- ===== ABONNEMENT ===== -->
         <div class="subscription-reminder" id="subscriptionReminder" style="display:none;">
           <div class="sub-card" id="subCard">
             <div class="sub-icon"><i class="fas fa-crown"></i></div>
@@ -858,6 +1204,7 @@
           <a href="index.html">Accueil</a>
           <a href="profil.html">Profil</a>
           <a href="abonnement.html">Abonnement</a>
+          <a href="#" id="avisLinkFooter">Donner mon avis</a>
         </div>
         <div class="footer-copy">
           &copy; 2026 ARVEXA School — Tous droits réservés
@@ -865,6 +1212,87 @@
       </div>
     </footer>
 
+  </div>
+
+  <!-- ============================================================
+       MODALE AVIS
+       ============================================================ -->
+  <div class="avis-modal-overlay" id="avisModal">
+    <div class="avis-modal">
+      <button class="avis-close" id="avisClose" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Formulaire -->
+      <div id="avisForm">
+        <div class="avis-header">
+          <div class="avis-icon-wrap">⭐</div>
+          <h2 class="avis-title">Ton <em>avis</em> compte</h2>
+          <p class="avis-subtitle">Aide-nous à améliorer ARVEXA School</p>
+        </div>
+
+        <!-- Étoiles -->
+        <div class="avis-field">
+          <label class="avis-label"><i class="fas fa-star"></i> Note globale</label>
+          <div class="avis-stars" id="avisStars">
+            <span class="avis-star" data-value="1">★</span>
+            <span class="avis-star" data-value="2">★</span>
+            <span class="avis-star" data-value="3">★</span>
+            <span class="avis-star" data-value="4">★</span>
+            <span class="avis-star" data-value="5">★</span>
+          </div>
+          <div class="avis-star-hint" id="avisStarHint">Clique sur les étoiles</div>
+        </div>
+
+        <!-- Catégories -->
+        <div class="avis-field">
+          <label class="avis-label"><i class="fas fa-tags"></i> Catégorie</label>
+          <div class="avis-categories" id="avisCategories">
+            <button class="avis-cat-chip active" data-cat="general"><i class="fas fa-comment"></i> Général</button>
+            <button class="avis-cat-chip" data-cat="bug"><i class="fas fa-bug"></i> Bug</button>
+            <button class="avis-cat-chip" data-cat="suggestion"><i class="fas fa-lightbulb"></i> Suggestion</button>
+            <button class="avis-cat-chip" data-cat="contenu"><i class="fas fa-book"></i> Contenu</button>
+            <button class="avis-cat-chip" data-cat="autre"><i class="fas fa-ellipsis"></i> Autre</button>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <div class="avis-field">
+          <label class="avis-label"><i class="fas fa-pen"></i> Ton message</label>
+          <textarea
+            class="avis-textarea"
+            id="avisMessage"
+            placeholder="Dis-nous ce que tu penses d'ARVEXA School, ce qui te plaît, ce qu'on pourrait améliorer..."
+            maxlength="500"
+          ></textarea>
+          <div class="avis-char-count" id="avisCharCount">0 / 500</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="avis-actions">
+          <button class="avis-btn cancel" id="avisCancel">
+            <i class="fas fa-times"></i>
+            <span>Annuler</span>
+          </button>
+          <button class="avis-btn submit" id="avisSubmit" disabled>
+            <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+            <span class="btn-text">Envoyer mon avis</span>
+            <span class="spinner"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Succès -->
+      <div class="avis-success" id="avisSuccess">
+        <div class="avis-success-icon">🎉</div>
+        <h3>Merci beaucoup !</h3>
+        <p>Ton avis a bien été envoyé. Nous le lisons avec attention pour améliorer ARVEXA School.</p>
+        <button class="avis-btn submit" id="avisSuccessClose" style="margin-top:20px;width:100%">
+          <i class="fas fa-check"></i>
+          <span>Fermer</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ============================================================ -->
@@ -875,15 +1303,15 @@
     "imports": {
       "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
       "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
-      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js",
+      "firebase/messaging": "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js"
     }
   }
   </script>
 
   <script type="module">
   // ================================================================
-  // INDEX — VERSION CACHE-FIRST
-  // Contenu statique affiché immédiatement • Firestore en arrière-plan
+  // INDEX — Version robuste avec onglet Avis
   // ================================================================
 
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -896,25 +1324,26 @@
     getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
   import {
-  getMessaging,
-  getToken,
-  onMessage
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
-import {
-  initializeFirestore,
-  persistentLocalCache,
-  persistentSingleTabManager,
-  doc,
-  getDoc,
-  onSnapshot,
-  collection,
-  query,
-  where,
-  limit,
-  getDocs,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+    getMessaging,
+    getToken,
+    onMessage
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
+  import {
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    getDoc,
+    onSnapshot,
+    collection,
+    query,
+    where,
+    limit,
+    getDocs,
+    addDoc,
+    updateDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
   // CONFIG
@@ -928,24 +1357,23 @@ import {
     appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
- const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
-const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({
-    tabManager: persistentSingleTabManager()
-  })
-});
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
 
-    // ⚡ FIREBASE MESSAGING
-let messaging = null;
-try {
-  messaging = getMessaging(app);
-} catch (e) {
-  console.warn('FCM non supporté:', e);
-}
-    
+  // ⚡ FIREBASE MESSAGING
+  let messaging = null;
+  try {
+    messaging = getMessaging(app);
+  } catch (e) {
+    console.warn('FCM non supporté:', e);
+  }
+
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
@@ -956,6 +1384,7 @@ try {
   const SESSION_KEY = 'arvexa_session';
   const USER_DATA_KEY = 'arvexa_user_data';
   const READ_KEY = 'arvexa_read_parts';
+  const LAST_UID_KEY = 'arvexa_last_uid';
 
   function saveSession(user) {
     if (!user) return;
@@ -963,11 +1392,10 @@ try {
       const data = {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName,
-        emailVerified: user.emailVerified,
-        lastLogin: new Date().toISOString()
+        lastActive: Date.now()
       };
       localStorage.setItem(SESSION_KEY, JSON.stringify(data));
+      localStorage.setItem(LAST_UID_KEY, user.uid);
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(data));
     } catch (e) {}
   }
@@ -975,8 +1403,10 @@ try {
   function clearSession() {
     try {
       localStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(USER_DATA_KEY);
+      localStorage.removeItem(LAST_UID_KEY);
+      sessionStorage.removeItem(SESSION_KEY);
+      sessionStorage.removeItem('redirectAfterLogin');
     } catch (e) {}
   }
 
@@ -1005,7 +1435,7 @@ try {
   }
 
   // ================================================================
-  // UTILITAIRE — CONVERSION TIMESTAMP
+  // UTILITAIRE
   // ================================================================
   function toDate(value) {
     if (!value) return null;
@@ -1013,6 +1443,17 @@ try {
     if (value.seconds !== undefined) return new Date(value.seconds * 1000);
     const date = value instanceof Date ? value : new Date(value);
     return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function isUserPremium(userData) {
+    if (!userData) return false;
+    const hasStatus = userData.premium === true ||
+                      userData.isUnlocked === true ||
+                      userData.hasDeposited === true;
+    if (!hasStatus) return false;
+    const endDate = toDate(userData.subscriptionEndDate);
+    if (!endDate) return true;
+    return endDate.getTime() > Date.now();
   }
 
   // ================================================================
@@ -1042,247 +1483,10 @@ try {
     { key: 'svt', name: 'SVT', chapters: 4 }
   ];
 
-    // ================================================================
-// FCM — NOTIFICATIONS PUSH
-// ================================================================
-const VAPID_KEY = 'BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA';
-const FCM_DISMISSED_KEY = 'arvexa_fcm_dismissed';
-const FCM_DISMISSED_DURATION = 3 * 24 * 60 * 60 * 1000; // 3 jours
+  const VAPID_KEY = 'BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA';
+  const FCM_DISMISSED_KEY = 'arvexa_fcm_dismissed';
+  const FCM_DISMISSED_DURATION = 3 * 24 * 60 * 60 * 1000;
 
-let fcmToken = null;
-let fcmPermissionGranted = false;
-
-// Vérifier si le bandeau doit s'afficher
-function shouldShowFcmBanner() {
-  // Si Notification API non supportée
-  if (!('Notification' in window)) return false;
-  if (!messaging) return false;
-  if (!('serviceWorker' in navigator)) return false;
-
-  // Si déjà accordé
-  if (Notification.permission === 'granted') return false;
-
-  // Si refusé explicitement
-  if (Notification.permission === 'denied') return false;
-
-  // Si l'utilisateur a dismiss récemment
-  try {
-    const dismissed = localStorage.getItem(FCM_DISMISSED_KEY);
-    if (dismissed) {
-      const timestamp = parseInt(dismissed, 10);
-      if (Date.now() - timestamp < FCM_DISMISSED_DURATION) {
-        return false;
-      }
-    }
-  } catch (e) {}
-
-  return true;
-}
-
-// Afficher le bandeau FCM
-function showFcmBanner() {
-  if (!shouldShowFcmBanner()) return;
-
-  // Chercher le container
-  const container = document.getElementById('dynamicContent');
-  if (!container) return;
-
-  // Éviter les doublons
-  if (document.getElementById('fcmBanner')) return;
-
-  const banner = document.createElement('div');
-  banner.id = 'fcmBanner';
-  banner.innerHTML = `
-    <div class="fcm-banner-content">
-      <div class="fcm-icon">🔔</div>
-      <div class="fcm-text">
-        <div class="fcm-title">Active les notifications</div>
-        <div class="fcm-desc">Reçois une alerte quand un nouveau chapitre est disponible.</div>
-      </div>
-      <div class="fcm-actions">
-        <button class="fcm-btn-later" id="fcmLater">Plus tard</button>
-        <button class="fcm-btn-activate" id="fcmActivate">Activer</button>
-      </div>
-    </div>
-  `;
-
-  // Insérer en haut du contenu
-  container.insertBefore(banner, container.firstChild);
-
-  // Événements
-  document.getElementById('fcmLater').addEventListener('click', () => {
-    try {
-      localStorage.setItem(FCM_DISMISSED_KEY, String(Date.now()));
-    } catch (e) {}
-    banner.remove();
-  });
-
-  document.getElementById('fcmActivate').addEventListener('click', async () => {
-    const btn = document.getElementById('fcmActivate');
-    btn.disabled = true;
-    btn.textContent = 'Activation...';
-
-    const success = await requestFcmPermission();
-    if (success) {
-      banner.remove();
-      showToast('Notifications activées !', 'success');
-    } else {
-      btn.disabled = false;
-      btn.textContent = 'Activer';
-      showToast('Impossible d\'activer les notifications', 'error');
-    }
-  });
-}
-
-// Demander la permission et obtenir le token
-async function requestFcmPermission() {
-  try {
-    // 1. Vérifier le support navigateur
-    if (!('Notification' in window)) {
-      console.error('[FCM] Notification API non supportée');
-      showToast('Ton navigateur ne supporte pas les notifications', 'error');
-      return false;
-    }
-
-    if (!('serviceWorker' in navigator)) {
-      console.error('[FCM] Service Worker non supporté');
-      showToast('Ton navigateur ne supporte pas les notifications', 'error');
-      return false;
-    }
-
-    if (!messaging) {
-      console.error('[FCM] Messaging non initialisé');
-      showToast('Firebase Messaging non disponible', 'error');
-      return false;
-    }
-
-    // 2. Contexte sécurisé (HTTPS ou localhost)
-    if (!window.isSecureContext) {
-      console.error('[FCM] Contexte non sécurisé');
-      showToast('Les notifications nécessitent HTTPS', 'error');
-      return false;
-    }
-
-    // 3. Demander la permission
-    const permission = await Notification.requestPermission();
-    console.log('[FCM] Permission:', permission);
-
-    if (permission === 'denied') {
-      showToast('Notifications bloquées. Autorise-les dans les paramètres du navigateur.', 'error');
-      return false;
-    }
-
-    if (permission !== 'granted') {
-      showToast('Permission refusée', 'error');
-      return false;
-    }
-
-    fcmPermissionGranted = true;
-
-    // 4. Attendre que le SW FCM soit prêt
-    console.log('[FCM] Attente du Service Worker...');
-    const swRegistration = await navigator.serviceWorker.ready;
-    console.log('[FCM] SW prêt:', swRegistration.scope);
-
-    // 5. Obtenir le token
-    console.log('[FCM] Demande du token avec VAPID:', VAPID_KEY.substring(0, 20) + '...');
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: swRegistration
-    });
-
-    if (!token) {
-      console.error('[FCM] Token vide');
-      showToast('Impossible d\'obtenir le token', 'error');
-      return false;
-    }
-
-    fcmToken = token;
-    console.log('[FCM] ✅ Token obtenu:', token.substring(0, 30) + '...');
-
-    // 6. Sauvegarder dans Firestore
-    await saveFcmToken(token);
-    return true;
-
-  } catch (error) {
-    console.error('[FCM] Erreur détaillée:', error);
-
-    // Message d'erreur précis selon le code
-    let msg = 'Impossible d\'activer les notifications';
-    if (error.code === 'messaging/permission-blocked') {
-      msg = 'Notifications bloquées dans le navigateur';
-    } else if (error.code === 'messaging/token-subscribe-failed') {
-      msg = 'Erreur de souscription. Vérifie ta connexion.';
-    } else if (error.code === 'messaging/failed-service-worker-registration') {
-      msg = 'Service Worker non enregistré';
-    } else if (error.code === 'messaging/unsupported-browser') {
-      msg = 'Navigateur non supporté';
-    } else if (error.message) {
-      msg = error.message;
-    }
-
-    showToast(msg, 'error');
-    return false;
-  }
-}
-
-// Sauvegarder le token dans Firestore
-async function saveFcmToken(token) {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  try {
-    await updateDoc(doc(db, 'users', user.uid), {
-      fcmToken: token,
-      fcmTokenUpdatedAt: serverTimestamp()
-    });
-    console.log('[FCM] Token sauvegardé dans Firestore');
-  } catch (e) {
-    console.error('[FCM] Erreur sauvegarde token:', e);
-  }
-}
-
-// Écouter les messages en premier plan
-function setupFcmForeground() {
-  if (!messaging) return;
-
-  onMessage(messaging, (payload) => {
-    console.log('[FCM] Message en premier plan:', payload);
-
-    const title = payload.notification?.title || payload.data?.title || 'ARVEXA School';
-    const body = payload.notification?.body || payload.data?.body || '';
-
-    // Afficher un toast
-    showToast(`${title} — ${body}`, 'info');
-
-    // Optionnel : recharger les notifications
-    if (window.location.pathname.includes('notifications.html')) {
-      // La page rechargera automatiquement via onSnapshot
-    }
-  });
-}
-
-// Vérifier le token existant à la connexion
-async function checkExistingFcmToken(user) {
-  if (!messaging) return;
-
-  // Si la permission n'est pas accordée, on ne fait rien
-  if (Notification.permission !== 'granted') return;
-
-  try {
-    // Vérifier le token actuel
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-    if (token) {
-      fcmToken = token;
-      // Re-sauvegarder au cas où il aurait changé
-      await saveFcmToken(token);
-    }
-  } catch (e) {
-    console.warn('[FCM] Erreur vérification token:', e);
-  }
-}
-
-    
   const TIPS = [
     { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
     { title: '📚 Méthode Pomodoro', text: "25 minutes de travail, 5 minutes de pause. Répète 4 fois, puis fais une pause plus longue." },
@@ -1307,7 +1511,7 @@ async function checkExistingFcmToken(user) {
   ];
 
   // ================================================================
-  // COMPTE À REBOURS — JS PUR (0ms)
+  // COMPTE À REBOURS
   // ================================================================
   function getExamDate() {
     const now = new Date();
@@ -1377,13 +1581,12 @@ async function checkExistingFcmToken(user) {
     countdownStatus.className = 'countdown-status ' + msg.class;
   }
 
-  // Lancer immédiatement
   updateCountdown();
   const countdownInterval = setInterval(updateCountdown, 60000);
   window.addEventListener('beforeunload', () => clearInterval(countdownInterval));
 
   // ================================================================
-  // GREETING — JS PUR
+  // GREETING
   // ================================================================
   function getGreeting() {
     const hours = new Date().getHours();
@@ -1399,11 +1602,10 @@ async function checkExistingFcmToken(user) {
     greetingEmoji.textContent = emoji;
   }
 
-  // Appliquer le greeting immédiatement (avec valeur par défaut)
   updateGreeting('Élève');
 
   // ================================================================
-  // CONSEIL DU JOUR — JS PUR (0ms)
+  // CONSEIL DU JOUR
   // ================================================================
   function renderTip() {
     const now = new Date();
@@ -1417,7 +1619,7 @@ async function checkExistingFcmToken(user) {
   renderTip();
 
   // ================================================================
-  // COMPTEUR CHAPITRES — Lecture localStorage
+  // COMPTEUR CHAPITRES
   // ================================================================
   function updateSubjectsProgress() {
     let readParts = [];
@@ -1426,7 +1628,6 @@ async function checkExistingFcmToken(user) {
     } catch (e) { readParts = []; }
 
     SUBJECTS.forEach(subject => {
-      // Compter les CHAPITRES uniques (pas les parties)
       const chaptersSet = new Set();
       readParts.forEach(key => {
         const parts = key.split('_');
@@ -1436,7 +1637,6 @@ async function checkExistingFcmToken(user) {
       });
       const readCount = chaptersSet.size;
 
-      // Mettre à jour le DOM
       const el = document.querySelector(`[data-subject="${subject.key}"]`);
       if (el) {
         const displayCount = readCount > 0
@@ -1468,17 +1668,6 @@ async function checkExistingFcmToken(user) {
   // ================================================================
   // SUBSCRIPTION
   // ================================================================
-  function isUserPremium(userData) {
-    if (!userData) return false;
-    const hasStatus = userData.premium === true ||
-                      userData.isUnlocked === true ||
-                      userData.hasDeposited === true;
-    if (!hasStatus) return false;
-    const endDate = toDate(userData.subscriptionEndDate);
-    if (!endDate) return true;
-    return endDate.getTime() > Date.now();
-  }
-
   function updateSubscriptionDisplay(isPremium, userData) {
     const reminder = document.getElementById('subscriptionReminder');
     const subTitle = document.getElementById('subTitle');
@@ -1534,7 +1723,7 @@ async function checkExistingFcmToken(user) {
   }
 
   // ================================================================
-  // RENDU UTILISATEUR (depuis cache ou Firestore)
+  // RENDU UTILISATEUR
   // ================================================================
   function renderUserData(data) {
     if (!data) return;
@@ -1543,23 +1732,17 @@ async function checkExistingFcmToken(user) {
     updateSubscriptionDisplay(premium, data);
   }
 
-      // ================================================================
-  // SHOW DASHBOARD — Fonction de compatibilité
-  // ================================================================
   function showDashboard() {
-    // Masquer le skeleton si présent
     const skeleton = document.getElementById('skeletonLoading');
     const dynamic = document.getElementById('dynamicContent');
-    
     if (skeleton) skeleton.style.display = 'none';
     if (dynamic) dynamic.style.display = 'block';
   }
 
-      // ================================================================
-  // SHOW TOAST — Notification visuelle éphémère
+  // ================================================================
+  // TOAST
   // ================================================================
   function showToast(message, type = 'info') {
-    // Créer le container s'il n'existe pas
     let container = document.getElementById('toastContainer');
     if (!container) {
       container = document.createElement('div');
@@ -1581,14 +1764,12 @@ async function checkExistingFcmToken(user) {
     }
 
     const toast = document.createElement('div');
-    
     const icons = {
       success: 'fa-check-circle',
       error: 'fa-exclamation-circle',
       info: 'fa-info-circle',
       warning: 'fa-exclamation-triangle'
     };
-
     const colors = {
       success: '#3AB67E',
       error: '#E74C3C',
@@ -1620,7 +1801,6 @@ async function checkExistingFcmToken(user) {
       <span style="flex: 1; min-width: 0; line-height: 1.5;">${message}</span>
     `;
 
-    // Ajouter l'animation si pas déjà présente
     if (!document.getElementById('toastAnimationStyle')) {
       const style = document.createElement('style');
       style.id = 'toastAnimationStyle';
@@ -1639,61 +1819,364 @@ async function checkExistingFcmToken(user) {
 
     container.appendChild(toast);
 
-    // Auto-suppression après 3 secondes
     setTimeout(() => {
       toast.style.animation = 'toastSlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
 
-    
   // ================================================================
-  // LOAD USER DATA — Cache-first puis Firestore
+  // FCM
+  // ================================================================
+  let fcmToken = null;
+
+  function shouldShowFcmBanner() {
+    if (!('Notification' in window)) return false;
+    if (!messaging) return false;
+    if (!('serviceWorker' in navigator)) return false;
+    if (Notification.permission === 'granted') return false;
+    if (Notification.permission === 'denied') return false;
+    try {
+      const dismissed = localStorage.getItem(FCM_DISMISSED_KEY);
+      if (dismissed) {
+        const timestamp = parseInt(dismissed, 10);
+        if (Date.now() - timestamp < FCM_DISMISSED_DURATION) return false;
+      }
+    } catch (e) {}
+    return true;
+  }
+
+  function showFcmBanner() {
+    if (!shouldShowFcmBanner()) return;
+    const container = document.getElementById('dynamicContent');
+    if (!container) return;
+    if (document.getElementById('fcmBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'fcmBanner';
+    banner.innerHTML = `
+      <div class="fcm-banner-content">
+        <div class="fcm-icon">🔔</div>
+        <div class="fcm-text">
+          <div class="fcm-title">Active les notifications</div>
+          <div class="fcm-desc">Reçois une alerte quand un nouveau chapitre est disponible.</div>
+        </div>
+        <div class="fcm-actions">
+          <button class="fcm-btn-later" id="fcmLater">Plus tard</button>
+          <button class="fcm-btn-activate" id="fcmActivate">Activer</button>
+        </div>
+      </div>
+    `;
+
+    container.insertBefore(banner, container.firstChild);
+
+    document.getElementById('fcmLater').addEventListener('click', () => {
+      try { localStorage.setItem(FCM_DISMISSED_KEY, String(Date.now())); } catch (e) {}
+      banner.remove();
+    });
+
+    document.getElementById('fcmActivate').addEventListener('click', async () => {
+      const btn = document.getElementById('fcmActivate');
+      btn.disabled = true;
+      btn.textContent = 'Activation...';
+      const success = await requestFcmPermission();
+      if (success) {
+        banner.remove();
+        showToast('Notifications activées !', 'success');
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Activer';
+        showToast('Impossible d\'activer les notifications', 'error');
+      }
+    });
+  }
+
+  async function requestFcmPermission() {
+    try {
+      if (!('Notification' in window)) return false;
+      if (!('serviceWorker' in navigator)) return false;
+      if (!messaging) return false;
+      if (!window.isSecureContext) return false;
+
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') return false;
+
+      const swRegistration = await navigator.serviceWorker.ready;
+      const token = await getToken(messaging, {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: swRegistration
+      });
+
+      if (!token) return false;
+
+      fcmToken = token;
+      await saveFcmToken(token);
+      return true;
+    } catch (error) {
+      console.error('[FCM] Erreur:', error);
+      return false;
+    }
+  }
+
+  async function saveFcmToken(token) {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        fcmToken: token,
+        fcmTokenUpdatedAt: serverTimestamp()
+      });
+    } catch (e) {
+      console.error('[FCM] Erreur sauvegarde:', e);
+    }
+  }
+
+  function setupFcmForeground() {
+    if (!messaging) return;
+    onMessage(messaging, (payload) => {
+      const title = payload.notification?.title || payload.data?.title || 'ARVEXA School';
+      const body = payload.notification?.body || payload.data?.body || '';
+      showToast(`${title} — ${body}`, 'info');
+    });
+  }
+
+  async function checkExistingFcmToken(user) {
+    if (!messaging) return;
+    if (Notification.permission !== 'granted') return;
+    try {
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+      if (token) {
+        fcmToken = token;
+        await saveFcmToken(token);
+      }
+    } catch (e) {}
+  }
+
+  // ================================================================
+  // MODALE AVIS
+  // ================================================================
+  const avisModal = document.getElementById('avisModal');
+  const avisForm = document.getElementById('avisForm');
+  const avisSuccess = document.getElementById('avisSuccess');
+  const avisStars = document.querySelectorAll('.avis-star');
+  const avisStarHint = document.getElementById('avisStarHint');
+  const avisMessage = document.getElementById('avisMessage');
+  const avisCharCount = document.getElementById('avisCharCount');
+  const avisSubmit = document.getElementById('avisSubmit');
+  const avisCancel = document.getElementById('avisCancel');
+  const avisClose = document.getElementById('avisClose');
+  const avisSuccessClose = document.getElementById('avisSuccessClose');
+  const avisCategories = document.getElementById('avisCategories');
+
+  let currentRating = 0;
+  let currentCategory = 'general';
+  let isSubmittingAvis = false;
+
+  const RATING_LABELS = {
+    0: 'Clique sur les étoiles',
+    1: '😞 Très déçu',
+    2: '😕 Pas terrible',
+    3: '😐 Moyen',
+    4: '😊 Bien',
+    5: '🤩 Excellent !'
+  };
+
+  function updateStarHint() {
+    if (currentRating === 0) {
+      avisStarHint.textContent = RATING_LABELS[0];
+      avisStarHint.classList.remove('active');
+    } else {
+      avisStarHint.textContent = RATING_LABELS[currentRating];
+      avisStarHint.classList.add('active');
+    }
+  }
+
+  function updateSubmitState() {
+    const hasRating = currentRating >= 1;
+    const hasMessage = avisMessage.value.trim().length >= 10;
+    avisSubmit.disabled = !hasRating || !hasMessage || isSubmittingAvis;
+  }
+
+  // Étoiles
+  avisStars.forEach(star => {
+    star.addEventListener('click', () => {
+      currentRating = parseInt(star.dataset.value);
+      avisStars.forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating);
+      });
+      updateStarHint();
+      updateSubmitState();
+    });
+
+    star.addEventListener('mouseenter', () => {
+      const hoverValue = parseInt(star.dataset.value);
+      avisStars.forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.value) <= hoverValue);
+      });
+    });
+  });
+
+  document.getElementById('avisStars').addEventListener('mouseleave', () => {
+    avisStars.forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating);
+    });
+  });
+
+  // Catégories
+  avisCategories.querySelectorAll('.avis-cat-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentCategory = chip.dataset.cat;
+    });
+  });
+
+  // Message
+  avisMessage.addEventListener('input', () => {
+    const len = avisMessage.value.length;
+    avisCharCount.textContent = `${len} / 500`;
+    avisCharCount.classList.remove('warning', 'danger');
+    if (len > 450) avisCharCount.classList.add('danger');
+    else if (len > 400) avisCharCount.classList.add('warning');
+    updateSubmitState();
+  });
+
+  // Ouvrir la modale
+  function openAvisModal() {
+    avisModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    // Réinitialiser
+    currentRating = 0;
+    currentCategory = 'general';
+    avisStars.forEach(s => s.classList.remove('active'));
+    avisMessage.value = '';
+    avisCharCount.textContent = '0 / 500';
+    avisCharCount.classList.remove('warning', 'danger');
+    avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
+    avisCategories.querySelector('.avis-cat-chip[data-cat="general"]').classList.add('active');
+    avisForm.style.display = 'block';
+    avisSuccess.classList.remove('show');
+    updateStarHint();
+    updateSubmitState();
+  }
+
+  // Fermer
+  function closeAvisModal() {
+    avisModal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Soumettre
+  async function submitAvis() {
+    if (isSubmittingAvis) return;
+    if (currentRating < 1 || avisMessage.value.trim().length < 10) return;
+    if (!auth.currentUser) {
+      showToast('Session expirée. Reconnecte-toi.', 'error');
+      return;
+    }
+
+    isSubmittingAvis = true;
+    avisSubmit.disabled = true;
+    avisSubmit.classList.add('loading');
+
+    try {
+      await addDoc(collection(db, 'avis'), {
+        userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email || '',
+        rating: currentRating,
+        category: currentCategory,
+        message: avisMessage.value.trim(),
+        createdAt: serverTimestamp(),
+        appVersion: '1.0.0',
+        platform: navigator.userAgent
+      });
+
+      // Afficher succès
+      avisForm.style.display = 'none';
+      avisSuccess.classList.add('show');
+
+    } catch (error) {
+      console.error('Erreur envoi avis:', error);
+      showToast('Impossible d\'envoyer ton avis. Réessaie.', 'error');
+    } finally {
+      isSubmittingAvis = false;
+      avisSubmit.classList.remove('loading');
+      updateSubmitState();
+    }
+  }
+
+  // Événements modale
+  document.getElementById('avisLinkSidebar').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    openAvisModal();
+  });
+
+  document.getElementById('avisLinkFooter').addEventListener('click', (e) => {
+    e.preventDefault();
+    openAvisModal();
+  });
+
+  document.getElementById('avisBtnInline').addEventListener('click', openAvisModal);
+
+  avisClose.addEventListener('click', closeAvisModal);
+  avisCancel.addEventListener('click', closeAvisModal);
+  avisSuccessClose.addEventListener('click', closeAvisModal);
+  avisSubmit.addEventListener('click', submitAvis);
+
+  avisModal.addEventListener('click', (e) => {
+    if (e.target === avisModal) closeAvisModal();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && avisModal.classList.contains('show')) {
+      closeAvisModal();
+    }
+  });
+
+  // ================================================================
+  // LOAD USER DATA (temps réel)
   // ================================================================
   let userData = null;
   let unsubscribeUser = null;
-  let currentUid = null;
 
- function loadUserData(user) {
-  if (unsubscribeUser) {
-    unsubscribeUser();
-    unsubscribeUser = null;
-  }
-  const userRef = doc(db, 'users', user.uid);
-  unsubscribeUser = onSnapshot(userRef,
-    (docSnap) => {
-      // ⚡ Vérifier le cache AVANT de rediriger
-      const cached = getCachedUserData(user.uid);
-      
-      if (docSnap.exists()) {
-        userData = docSnap.data();
-        saveUserDataToCache(userData, user.uid);
-        renderUserData(userData);
-        showDashboard();
-        checkUnreadNotifications(user.uid);
-      } else if (cached) {
-        // ⚡ Pas de doc frais MAIS cache disponible → utiliser le cache
-        userData = cached;
-        renderUserData(cached);
-        showDashboard();
-      } else {
-        // ⚡ Vraiment introuvable ET pas de cache → rediriger
-        window.location.href = 'register.html';
-      }
-    },
-    (error) => {
-      // ⚡ En cas d'erreur (offline), utiliser le cache
-      const cached = getCachedUserData(user.uid);
-      if (cached) {
-        userData = cached;
-        renderUserData(cached);
-        showDashboard();
-      } else {
-        showDashboard();
-      }
+  function loadUserData(user) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
     }
-  );
-}
+    const userRef = doc(db, 'users', user.uid);
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        const cached = getCachedUserData(user.uid);
+
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+          saveUserDataToCache(userData, user.uid);
+          renderUserData(userData);
+          showDashboard();
+          checkUnreadNotifications(user.uid);
+        } else if (cached) {
+          userData = cached;
+          renderUserData(cached);
+          showDashboard();
+        } else {
+          window.location.replace('register.html');
+        }
+      },
+      (error) => {
+        const cached = getCachedUserData(user.uid);
+        if (cached) {
+          userData = cached;
+          renderUserData(cached);
+          showDashboard();
+        } else {
+          showDashboard();
+        }
+      }
+    );
+  }
 
   // ================================================================
   // REFRESH
@@ -1717,72 +2200,133 @@ async function checkExistingFcmToken(user) {
       updateCountdown();
       renderTip();
       updateSubjectsProgress();
+      showToast('Données actualisées', 'success');
     } catch (e) {}
   }
 
   // ================================================================
-  // AUTH
+  // AUTH ROBUSTE — Anti-flash
   // ================================================================
-   let isRedirecting = false;
+  let isRedirecting = false;
+  let isAuthResolved = false;
+  let graceTimer = null;
+  let maxTimer = null;
+  let currentUid = null;
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      if (currentUid !== null) {
-        currentUid = null;
-        if (unsubscribeUser) unsubscribeUser();
-        clearSession();
-      }
-      if (!isRedirecting) {
-        isRedirecting = true;
-        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 300);
-      }
-      return;
-    }
-
-    if (user.uid === currentUid) return;
-    currentUid = user.uid;
-
+  function redirectToLogin() {
+    if (isRedirecting) return;
+    isRedirecting = true;
     try {
-      await getIdToken(user, true);
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
     } catch (e) {}
+    window.location.replace('login.html');
+  }
 
-    saveSession(user);
+  function initAuthGuard(onAuthenticated) {
+    auth.onAuthStateChanged((user) => {
+      if (isAuthResolved) {
+        if (user && user.uid !== currentUid) {
+          currentUid = user.uid;
+          saveSession(user);
+          onAuthenticated(user);
+        } else if (!user && currentUid) {
+          currentUid = null;
+          clearSession();
+          redirectToLogin();
+        }
+        return;
+      }
 
-    // ✅ CACHE-FIRST : Afficher immédiatement les données en cache
+      if (!user) {
+        if (graceTimer) clearTimeout(graceTimer);
+        graceTimer = setTimeout(() => {
+          if (isAuthResolved) return;
+          if (auth.currentUser) return;
+
+          const hasSession = localStorage.getItem(SESSION_KEY);
+          const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+          if ((hasSession || hasUserData) && !navigator.onLine) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          if (hasSession && hasUserData) {
+            setTimeout(() => {
+              if (auth.currentUser) return;
+              if (!isAuthResolved) redirectToLogin();
+            }, 1500);
+            return;
+          }
+
+          redirectToLogin();
+        }, 600);
+        return;
+      }
+
+      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+      isAuthResolved = true;
+      currentUid = user.uid;
+      saveSession(user);
+      onAuthenticated(user);
+    });
+
+    maxTimer = setTimeout(() => {
+      if (isAuthResolved) return;
+      if (auth.currentUser) {
+        isAuthResolved = true;
+        currentUid = auth.currentUser.uid;
+        saveSession(auth.currentUser);
+        onAuthenticated(auth.currentUser);
+      } else {
+        redirectToLogin();
+      }
+    }, 5000);
+  }
+
+  // ================================================================
+  // LANCER LA PROTECTION
+  // ================================================================
+  initAuthGuard(async (user) => {
+    // Cache-first : afficher immédiatement
     const cached = getCachedUserData(user.uid);
     if (cached) {
       userData = cached;
       renderUserData(cached);
+      showDashboard();
     }
 
-    // Firestore en arrière-plan (met à jour silencieusement)
+    // Charger Firestore en arrière-plan
     loadUserData(user);
 
-    // ⚡ FCM : écouter les messages en premier plan
+    // FCM
     setupFcmForeground();
-
-    // ⚡ FCM : vérifier le token existant
     await checkExistingFcmToken(user);
-
-    // ⚡ FCM : afficher le bandeau si nécessaire (après 1s)
     setTimeout(() => showFcmBanner(), 1000);
   });
-    
+
+  // ================================================================
+  // DÉCONNEXION
+  // ================================================================
+  async function performLogout() {
+    isRedirecting = true;
+    if (unsubscribeUser) unsubscribeUser();
+    clearSession();
+    try { await signOut(auth); } catch (e) {}
+    window.location.replace('login.html');
+  }
+
   // ================================================================
   // ÉVÉNEMENTS
   // ================================================================
-  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+  document.getElementById('logoutBtn').addEventListener('click', (e) => {
     e.preventDefault();
-    try {
-      if (unsubscribeUser) unsubscribeUser();
-      currentUid = null;
-      await signOut(auth);
-      clearSession();
-      window.location.href = 'login.html';
-    } catch (error) {}
+    performLogout();
   });
 
   document.getElementById('menuToggle').addEventListener('click', () => {
@@ -1804,6 +2348,8 @@ async function checkExistingFcmToken(user) {
   });
 
   document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+
+  console.log('🚀 ARVEXA School — Index (avec onglet Avis)');
   </script>
 </body>
 </html>
