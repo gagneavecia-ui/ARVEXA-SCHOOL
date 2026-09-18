@@ -2067,73 +2067,121 @@
   }
 
   // Soumettre
-  async function submitAvis() {
-    if (isSubmittingAvis) return;
-    if (currentRating < 1 || avisMessage.value.trim().length < 10) return;
-    if (!auth.currentUser) {
-      showToast('Session expirée. Reconnecte-toi.', 'error');
-      return;
-    }
-
-    isSubmittingAvis = true;
-    avisSubmit.disabled = true;
-    avisSubmit.classList.add('loading');
-
-    try {
-      await addDoc(collection(db, 'avis'), {
-        userId: auth.currentUser.uid,
-        userEmail: auth.currentUser.email || '',
-        rating: currentRating,
-        category: currentCategory,
-        message: avisMessage.value.trim(),
-        createdAt: serverTimestamp(),
-        appVersion: '1.0.0',
-        platform: navigator.userAgent
-      });
-
-      // Afficher succès
-      avisForm.style.display = 'none';
-      avisSuccess.classList.add('show');
-
-    } catch (error) {
-      console.error('Erreur envoi avis:', error);
-      showToast('Impossible d\'envoyer ton avis. Réessaie.', 'error');
-    } finally {
-      isSubmittingAvis = false;
-      avisSubmit.classList.remove('loading');
-      updateSubmitState();
-    }
+ async function submitAvis() {
+  if (isSubmittingAvis) return;
+  if (currentRating < 1 || avisMessage.value.trim().length < 10) return;
+  if (!auth.currentUser) {
+    showToast('Session expirée. Reconnecte-toi.', 'error');
+    return;
   }
 
-  // Événements modale
-  document.getElementById('avisLinkSidebar').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('active');
-    openAvisModal();
+  isSubmittingAvis = true;
+  avisSubmit.disabled = true;
+  avisSubmit.classList.add('loading');
+
+  try {
+    const message = avisMessage.value.trim();
+    const userEmail = auth.currentUser.email || 'Anonyme';
+    const userName = userData?.firstName 
+      ? `${userData.firstName} ${userData.lastName || ''}`.trim() 
+      : 'Utilisateur';
+
+    // 1. Sauvegarder dans Firestore
+    await addDoc(collection(db, 'avis'), {
+      userId: auth.currentUser.uid,
+      userEmail: userEmail,
+      userName: userName,
+      rating: currentRating,
+      category: currentCategory,
+      message: message,
+      createdAt: serverTimestamp(),
+      appVersion: '1.0.0',
+      platform: navigator.userAgent
+    });
+
+    // 2. Envoyer à Telegram
+    await sendToTelegram({
+      userName,
+      userEmail,
+      rating: currentRating,
+      category: currentCategory,
+      message
+    });
+
+    // 3. Afficher succès
+    avisForm.style.display = 'none';
+    avisSuccess.classList.add('show');
+
+  } catch (error) {
+    console.error('Erreur envoi avis:', error);
+    showToast('Impossible d\'envoyer ton avis. Réessaie.', 'error');
+  } finally {
+    isSubmittingAvis = false;
+    avisSubmit.classList.remove('loading');
+    updateSubmitState();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ENVOI À TELEGRAM
+// ═══════════════════════════════════════════════════════════════
+async function sendToTelegram({ userName, userEmail, rating, category, message }) {
+  // ⚠️ REMPLACE CES VALEURS PAR LES TIENNES
+  const TELEGRAM_BOT_TOKEN = '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'; // ← Ton token
+  const TELEGRAM_CHAT_ID = '-1001234567890'; // ← Ton chat ID (négatif)
+
+  // Emojis pour les étoiles
+  const starsEmoji = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+
+  // Catégories avec emojis
+  const categoryLabels = {
+    general: '💬 Général',
+    bug: '🐛 Bug',
+    suggestion: '💡 Suggestion',
+    contenu: '📚 Contenu',
+    autre: '❓ Autre'
+  };
+
+  // Construction du message Telegram (format Markdown)
+  const text = `
+🎯 *NOUVEL AVIS ARVEXA*
+
+👤 *Utilisateur :* ${escapeMarkdown(userName)}
+📧 *Email :* ${escapeMarkdown(userEmail)}
+${starsEmoji} *Note :* ${rating}/5
+🏷️ *Catégorie :* ${categoryLabels[category] || category}
+
+📝 *Message :*
+${escapeMarkdown(message)}
+
+🕐 *Date :* ${new Date().toLocaleString('fr-FR')}
+  `.trim();
+
+  const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: TELEGRAM_CHAT_ID,
+      text: text,
+      parse_mode: 'Markdown',
+      disable_web_page_preview: true
+    })
   });
 
-  document.getElementById('avisLinkFooter').addEventListener('click', (e) => {
-    e.preventDefault();
-    openAvisModal();
-  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error('Telegram error: ' + (error.description || 'Unknown'));
+  }
 
-  document.getElementById('avisBtnInline').addEventListener('click', openAvisModal);
+  return response.json();
+}
 
-  avisClose.addEventListener('click', closeAvisModal);
-  avisCancel.addEventListener('click', closeAvisModal);
-  avisSuccessClose.addEventListener('click', closeAvisModal);
-  avisSubmit.addEventListener('click', submitAvis);
-
-  avisModal.addEventListener('click', (e) => {
-    if (e.target === avisModal) closeAvisModal();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && avisModal.classList.contains('show')) {
-      closeAvisModal();
-    }
-  });
+// Échapper les caractères spéciaux Markdown
+function escapeMarkdown(text) {
+  return String(text || '').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+}
 
   // ================================================================
   // LOAD USER DATA (temps réel)
