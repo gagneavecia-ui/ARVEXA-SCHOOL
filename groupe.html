@@ -331,16 +331,22 @@
       border-color: rgba(184,134,11,.2);
     }
 
-    .message-input-wrap {
+      .message-input-wrap {
       flex: 1;
       position: relative;
       display: flex;
       align-items: center;
       background: rgba(255,255,255,.04);
       border: 1px solid rgba(255,255,255,.06);
-      border-radius: 22px;
+      border-radius: 20px;
       padding: 0 14px;
-      min-height: 40px;
+      min-height: 38px;
+      max-height: 38px;
+      transition: max-height 0.2s ease;
+    }
+    .message-input-wrap.multiline {
+      max-height: 100px;
+      align-items: flex-end;
     }
     .message-input {
       flex: 1;
@@ -350,10 +356,17 @@
       color: var(--text-light);
       font-size: 14px;
       font-family: inherit;
-      padding: 10px 0;
+      padding: 9px 0;
       resize: none;
-      max-height: 100px;
+      max-height: 80px;
       line-height: 1.4;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    .message-input::-webkit-scrollbar { width: 3px; }
+    .message-input::-webkit-scrollbar-thumb {
+      background: rgba(184,134,11,.3);
+      border-radius: 3px;
     }
     .message-input::placeholder {
       color: var(--text-muted);
@@ -583,6 +596,111 @@
       border: 1px solid rgba(255,255,255,.08);
     }
 
+        /* ============================================================
+       MESSAGE CONTEXT MENU (appui long)
+       ============================================================ */
+    .msg-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 1500;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    .msg-menu-overlay.show { display: flex; }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .msg-menu-sheet {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-surface);
+      border-radius: 20px 20px 0 0;
+      border-top: 1px solid rgba(184,134,11,.15);
+      padding: 12px 0;
+      padding-bottom: calc(12px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      position: relative;
+    }
+    .msg-menu-overlay.show .msg-menu-sheet {
+      transform: translateY(0);
+    }
+    .msg-menu-sheet::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255,255,255,.15);
+    }
+
+    .msg-menu-title {
+      padding: 16px 20px 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .msg-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      color: var(--text-light);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+    .msg-menu-item:hover { background: rgba(255,255,255,.04); }
+    .msg-menu-item:active { background: rgba(255,255,255,.08); }
+    .msg-menu-item i {
+      width: 22px;
+      text-align: center;
+      font-size: 16px;
+      color: var(--text-dim);
+    }
+    .msg-menu-item.danger { color: var(--danger-light); }
+    .msg-menu-item.danger i { color: var(--danger-light); }
+
+    .msg-menu-cancel {
+      margin: 8px 12px 0;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.05);
+      color: var(--text-light);
+      font-weight: 600;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      width: calc(100% - 24px);
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+    .msg-menu-cancel:hover { background: rgba(255,255,255,.08); }
+    
     /* ============================================================
        TOAST
        ============================================================ */
@@ -792,6 +910,11 @@
   </div>
 </div>
 
+  <!-- MESSAGE CONTEXT MENU -->
+<div class="msg-menu-overlay" id="msgMenuOverlay">
+  <div class="msg-menu-sheet" id="msgMenuSheet"></div>
+</div>
+  
 <!-- TOAST -->
 <div class="toast" id="toast">
   <i class="toast-icon fas fa-check-circle"></i>
@@ -905,7 +1028,9 @@ let unsubscribeBanCheck = null;
 let pendingImageBase64 = null;
 let pendingImageName = '';
 let confirmCallback = null;
-
+let longPressTimer = null;
+let longPressTriggered = false;
+  
 // ================================================================
 // DOM
 // ================================================================
@@ -1103,15 +1228,8 @@ function renderMessages() {
       }
     }
 
+       // Les actions admin sont maintenant accessibles via appui long
     let adminActions = '';
-    if (currentUserData?.email === ADMIN_EMAIL && !isDeleted) {
-      adminActions = `
-        <div class="msg-admin-actions">
-          <button class="msg-admin-btn" data-action="delete" data-id="${msg.id}">🗑️ Supprimer</button>
-          ${!isAdminMsg ? `<button class="msg-admin-btn" data-action="ban" data-id="${msg.userId}" data-name="${escapeHtml(msg.userName || '')}">🚫 Bannir</button>` : ''}
-        </div>
-      `;
-    }
 
     html += `
       <div class="message ${isSelf ? 'self' : ''}">
@@ -1125,7 +1243,6 @@ function renderMessages() {
           </div>
           <div class="msg-bubble">
             ${bubbleContent}
-            ${adminActions}
           </div>
         </div>
       </div>
@@ -1134,20 +1251,49 @@ function renderMessages() {
 
   messagesContainer.innerHTML = html;
 
+    // ⚡ Appui long sur les messages
+  messagesContainer.querySelectorAll('.message').forEach(msgEl => {
+    const msgId = msgEl.querySelector('.msg-admin-btn')?.dataset?.id || null;
+    
+    // Trouver l'ID du message depuis le conteneur
+    const index = Array.from(messagesContainer.querySelectorAll('.message')).indexOf(msgEl);
+    const messageData = messages[index];
+    
+    if (!messageData) return;
+    
+    // Desktop : clic droit
+    msgEl.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      openMessageMenu(messageData);
+    });
+    
+    // Mobile : appui long
+    msgEl.addEventListener('touchstart', (e) => {
+      longPressTriggered = false;
+      longPressTimer = setTimeout(() => {
+        longPressTriggered = true;
+        if (navigator.vibrate) navigator.vibrate(30);
+        openMessageMenu(messageData);
+      }, 500); // 500ms d'appui
+    }, { passive: true });
+    
+    msgEl.addEventListener('touchend', () => {
+      clearTimeout(longPressTimer);
+    }, { passive: true });
+    
+    msgEl.addEventListener('touchmove', () => {
+      clearTimeout(longPressTimer);
+    }, { passive: true });
+    
+    msgEl.addEventListener('touchcancel', () => {
+      clearTimeout(longPressTimer);
+    }, { passive: true });
+  });
+
   // Événements images (zoom)
   messagesContainer.querySelectorAll('.msg-image').forEach(img => {
     img.addEventListener('click', () => {
       openImageModal(img.src);
-    });
-  });
-
-  // Événements admin
-  messagesContainer.querySelectorAll('.msg-admin-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const action = btn.dataset.action;
-      if (action === 'delete') deleteMessage(btn.dataset.id);
-      if (action === 'ban') banUser(btn.dataset.id, btn.dataset.name);
     });
   });
 
@@ -1261,8 +1407,20 @@ function updateSendButton() {
 }
 
 messageInput.addEventListener('input', () => {
+  const wrap = messageInput.closest('.message-input-wrap');
+  
+  // Auto-resize
   messageInput.style.height = 'auto';
-  messageInput.style.height = Math.min(messageInput.scrollHeight, 100) + 'px';
+  const newHeight = Math.min(messageInput.scrollHeight, 80);
+  messageInput.style.height = newHeight + 'px';
+  
+  // Toggle multiline si besoin
+  if (newHeight > 30) {
+    wrap.classList.add('multiline');
+  } else {
+    wrap.classList.remove('multiline');
+  }
+  
   updateSendButton();
 });
 
@@ -1419,6 +1577,121 @@ document.addEventListener('keydown', (e) => {
     if (confirmModal.classList.contains('show')) closeConfirm();
   }
 });
+
+  // ================================================================
+// MESSAGE CONTEXT MENU (appui long)
+// ================================================================
+const msgMenuOverlay = document.getElementById('msgMenuOverlay');
+const msgMenuSheet = document.getElementById('msgMenuSheet');
+
+function openMessageMenu(messageData) {
+  if (!messageData) return;
+  
+  const isAdmin = currentUserData?.email === ADMIN_EMAIL;
+  const isSelf = messageData.userId === currentUid;
+  const isDeleted = messageData.deleted === true;
+  const isAdminMsg = messageData.userEmail === ADMIN_EMAIL;
+  const authorName = messageData.userName || 'Anonyme';
+  
+  let menuItems = '';
+  
+  // Option 1 : Copier le texte (tout le monde)
+  if (messageData.content && !isDeleted) {
+    menuItems += `
+      <button class="msg-menu-item" data-action="copy">
+        <i class="fas fa-copy"></i>
+        <span>Copier le texte</span>
+      </button>
+    `;
+  }
+  
+  // Option 2 : Supprimer (admin uniquement)
+  if (isAdmin && !isDeleted) {
+    menuItems += `
+      <button class="msg-menu-item danger" data-action="delete">
+        <i class="fas fa-trash"></i>
+        <span>Supprimer le message</span>
+      </button>
+    `;
+  }
+  
+  // Option 3 : Bannir (admin, pas sur ses propres messages)
+  if (isAdmin && !isAdminMsg && !isDeleted) {
+    menuItems += `
+      <button class="msg-menu-item danger" data-action="ban">
+        <i class="fas fa-ban"></i>
+        <span>Bannir ${escapeHtml(authorName)}</span>
+      </button>
+    `;
+  }
+  
+  // Si aucun item dispo
+  if (!menuItems) {
+    menuItems = `
+      <button class="msg-menu-item" disabled style="opacity: .5; cursor: not-allowed;">
+        <i class="fas fa-info-circle"></i>
+        <span>Aucune action disponible</span>
+      </button>
+    `;
+  }
+  
+  msgMenuSheet.innerHTML = `
+    <div class="msg-menu-title">Message de ${escapeHtml(authorName)}</div>
+    ${menuItems}
+    <button class="msg-menu-cancel" id="msgMenuCancel">Annuler</button>
+  `;
+  
+  msgMenuOverlay.classList.add('show');
+  
+  // Événements
+  msgMenuSheet.querySelectorAll('.msg-menu-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      closeMessageMenu();
+      
+      if (action === 'copy') {
+        copyMessageText(messageData.content);
+      } else if (action === 'delete') {
+        deleteMessage(messageData.id);
+      } else if (action === 'ban') {
+        banUser(messageData.userId, messageData.userName);
+      }
+    });
+  });
+  
+  document.getElementById('msgMenuCancel').addEventListener('click', closeMessageMenu);
+}
+
+function closeMessageMenu() {
+  msgMenuOverlay.classList.remove('show');
+}
+
+// Fermer au clic sur l'overlay
+msgMenuOverlay.addEventListener('click', (e) => {
+  if (e.target === msgMenuOverlay) closeMessageMenu();
+});
+
+// Fonction copier
+async function copyMessageText(text) {
+  if (!text) return;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    showToast('Texte copié', 'success');
+  } catch (e) {
+    showToast('Impossible de copier', 'error');
+  }
+}
 
 // ================================================================
 // ACTIONS ADMIN
