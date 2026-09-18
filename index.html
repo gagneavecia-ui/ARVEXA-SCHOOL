@@ -1952,122 +1952,138 @@
     } catch (e) {}
   }
 
-  // ================================================================
-  // MODALE AVIS
-  // ================================================================
-  const avisModal = document.getElementById('avisModal');
-  const avisForm = document.getElementById('avisForm');
-  const avisSuccess = document.getElementById('avisSuccess');
-  const avisStars = document.querySelectorAll('.avis-star');
-  const avisStarHint = document.getElementById('avisStarHint');
-  const avisMessage = document.getElementById('avisMessage');
-  const avisCharCount = document.getElementById('avisCharCount');
-  const avisSubmit = document.getElementById('avisSubmit');
-  const avisCancel = document.getElementById('avisCancel');
-  const avisClose = document.getElementById('avisClose');
-  const avisSuccessClose = document.getElementById('avisSuccessClose');
-  const avisCategories = document.getElementById('avisCategories');
+ 
+    // ================================================================
+// INDEX — Script principal corrigé
+// ================================================================
 
-  let currentRating = 0;
-  let currentCategory = 'general';
-  let isSubmittingAvis = false;
+// ================================================================
+// VARIABLES GLOBALES (DÉCLARÉES UNE SEULE FOIS)
+// ================================================================
+let userData = null;
+let unsubscribeUser = null;
+let currentUid = null;
+let isRedirecting = false;
+let isAuthResolved = false;
+let graceTimer = null;
+let maxTimer = null;
 
-  const RATING_LABELS = {
-    0: 'Clique sur les étoiles',
-    1: '😞 Très déçu',
-    2: '😕 Pas terrible',
-    3: '😐 Moyen',
-    4: '😊 Bien',
-    5: '🤩 Excellent !'
-  };
+// ================================================================
+// MODALE AVIS
+// ================================================================
+const avisModal = document.getElementById('avisModal');
+const avisForm = document.getElementById('avisForm');
+const avisSuccess = document.getElementById('avisSuccess');
+const avisStars = document.querySelectorAll('.avis-star');
+const avisStarHint = document.getElementById('avisStarHint');
+const avisMessage = document.getElementById('avisMessage');
+const avisCharCount = document.getElementById('avisCharCount');
+const avisSubmit = document.getElementById('avisSubmit');
+const avisCancel = document.getElementById('avisCancel');
+const avisClose = document.getElementById('avisClose');
+const avisSuccessClose = document.getElementById('avisSuccessClose');
+const avisCategories = document.getElementById('avisCategories');
 
-  function updateStarHint() {
-    if (currentRating === 0) {
-      avisStarHint.textContent = RATING_LABELS[0];
-      avisStarHint.classList.remove('active');
-    } else {
-      avisStarHint.textContent = RATING_LABELS[currentRating];
-      avisStarHint.classList.add('active');
-    }
+let currentRating = 0;
+let currentCategory = 'general';
+let isSubmittingAvis = false;
+
+const RATING_LABELS = {
+  0: 'Clique sur les étoiles',
+  1: '😞 Très déçu',
+  2: '😕 Pas terrible',
+  3: '😐 Moyen',
+  4: '😊 Bien',
+  5: '🤩 Excellent !'
+};
+
+function updateStarHint() {
+  if (currentRating === 0) {
+    avisStarHint.textContent = RATING_LABELS[0];
+    avisStarHint.classList.remove('active');
+  } else {
+    avisStarHint.textContent = RATING_LABELS[currentRating];
+    avisStarHint.classList.add('active');
   }
+}
 
-  function updateSubmitState() {
-    const hasRating = currentRating >= 1;
-    const hasMessage = avisMessage.value.trim().length >= 10;
-    avisSubmit.disabled = !hasRating || !hasMessage || isSubmittingAvis;
-  }
+function updateSubmitState() {
+  const hasRating = currentRating >= 1;
+  const hasMessage = avisMessage.value.trim().length >= 10;
+  avisSubmit.disabled = !hasRating || !hasMessage || isSubmittingAvis;
+}
 
-  // Étoiles
-  avisStars.forEach(star => {
-    star.addEventListener('click', () => {
-      currentRating = parseInt(star.dataset.value);
-      avisStars.forEach(s => {
-        s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating);
-      });
-      updateStarHint();
-      updateSubmitState();
-    });
-
-    star.addEventListener('mouseenter', () => {
-      const hoverValue = parseInt(star.dataset.value);
-      avisStars.forEach(s => {
-        s.classList.toggle('active', parseInt(s.dataset.value) <= hoverValue);
-      });
-    });
-  });
-
-  document.getElementById('avisStars').addEventListener('mouseleave', () => {
+// Étoiles
+avisStars.forEach(star => {
+  star.addEventListener('click', () => {
+    currentRating = parseInt(star.dataset.value);
     avisStars.forEach(s => {
       s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating);
     });
-  });
-
-  // Catégories
-  avisCategories.querySelectorAll('.avis-cat-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      currentCategory = chip.dataset.cat;
-    });
-  });
-
-  // Message
-  avisMessage.addEventListener('input', () => {
-    const len = avisMessage.value.length;
-    avisCharCount.textContent = `${len} / 500`;
-    avisCharCount.classList.remove('warning', 'danger');
-    if (len > 450) avisCharCount.classList.add('danger');
-    else if (len > 400) avisCharCount.classList.add('warning');
-    updateSubmitState();
-  });
-
-  // Ouvrir la modale
-  function openAvisModal() {
-    avisModal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    // Réinitialiser
-    currentRating = 0;
-    currentCategory = 'general';
-    avisStars.forEach(s => s.classList.remove('active'));
-    avisMessage.value = '';
-    avisCharCount.textContent = '0 / 500';
-    avisCharCount.classList.remove('warning', 'danger');
-    avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
-    avisCategories.querySelector('.avis-cat-chip[data-cat="general"]').classList.add('active');
-    avisForm.style.display = 'block';
-    avisSuccess.classList.remove('show');
     updateStarHint();
     updateSubmitState();
-  }
+  });
 
-  // Fermer
-  function closeAvisModal() {
-    avisModal.classList.remove('show');
-    document.body.style.overflow = '';
-  }
+  star.addEventListener('mouseenter', () => {
+    const hoverValue = parseInt(star.dataset.value);
+    avisStars.forEach(s => {
+      s.classList.toggle('active', parseInt(s.dataset.value) <= hoverValue);
+    });
+  });
+});
 
-  // Soumettre
- async function submitAvis() {
+document.getElementById('avisStars').addEventListener('mouseleave', () => {
+  avisStars.forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.value) <= currentRating);
+  });
+});
+
+// Catégories
+avisCategories.querySelectorAll('.avis-cat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCategory = chip.dataset.cat;
+  });
+});
+
+// Message
+avisMessage.addEventListener('input', () => {
+  const len = avisMessage.value.length;
+  avisCharCount.textContent = `${len} / 500`;
+  avisCharCount.classList.remove('warning', 'danger');
+  if (len > 450) avisCharCount.classList.add('danger');
+  else if (len > 400) avisCharCount.classList.add('warning');
+  updateSubmitState();
+});
+
+// Ouvrir la modale
+function openAvisModal() {
+  avisModal.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  // Réinitialiser
+  currentRating = 0;
+  currentCategory = 'general';
+  avisStars.forEach(s => s.classList.remove('active'));
+  avisMessage.value = '';
+  avisCharCount.textContent = '0 / 500';
+  avisCharCount.classList.remove('warning', 'danger');
+  avisCategories.querySelectorAll('.avis-cat-chip').forEach(c => c.classList.remove('active'));
+  avisCategories.querySelector('.avis-cat-chip[data-cat="general"]').classList.add('active');
+  avisForm.style.display = 'block';
+  avisSuccess.classList.remove('show');
+  updateStarHint();
+  updateSubmitState();
+}
+
+// Fermer
+function closeAvisModal() {
+  avisModal.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// Soumettre
+async function submitAvis() {
   if (isSubmittingAvis) return;
   if (currentRating < 1 || avisMessage.value.trim().length < 10) return;
   if (!auth.currentUser) {
@@ -2082,8 +2098,8 @@
   try {
     const message = avisMessage.value.trim();
     const userEmail = auth.currentUser.email || 'Anonyme';
-    const userName = userData?.firstName 
-      ? `${userData.firstName} ${userData.lastName || ''}`.trim() 
+    const userName = userData?.firstName
+      ? `${userData.firstName} ${userData.lastName || ''}`.trim()
       : 'Utilisateur';
 
     // 1. Sauvegarder dans Firestore
@@ -2126,14 +2142,11 @@
 // ENVOI À TELEGRAM
 // ═══════════════════════════════════════════════════════════════
 async function sendToTelegram({ userName, userEmail, rating, category, message }) {
-  // ⚠️ REMPLACE CES VALEURS PAR LES TIENNES
   const TELEGRAM_BOT_TOKEN = '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'; // ← Ton token
-  const TELEGRAM_CHAT_ID = '-1001234567890'; // ← Ton chat ID (négatif)
+  const TELEGRAM_CHAT_ID = '-1001234567890'; // ← Ton chat ID
 
-  // Emojis pour les étoiles
   const starsEmoji = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
 
-  // Catégories avec emojis
   const categoryLabels = {
     general: '💬 Général',
     bug: '🐛 Bug',
@@ -2142,7 +2155,6 @@ async function sendToTelegram({ userName, userEmail, rating, category, message }
     autre: '❓ Autre'
   };
 
-  // Construction du message Telegram (format Markdown)
   const text = `
 🎯 *NOUVEL AVIS ARVEXA*
 
@@ -2178,226 +2190,244 @@ ${escapeMarkdown(message)}
   return response.json();
 }
 
-// Échapper les caractères spéciaux Markdown
 function escapeMarkdown(text) {
   return String(text || '').replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
 }
 
-  // ================================================================
-  // LOAD USER DATA (temps réel)
-  // ================================================================
-  let userData = null;
-  let unsubscribeUser = null;
-
-  function loadUserData(user) {
-    if (unsubscribeUser) {
-      unsubscribeUser();
-      unsubscribeUser = null;
-    }
-    const userRef = doc(db, 'users', user.uid);
-    unsubscribeUser = onSnapshot(userRef,
-      (docSnap) => {
-        const cached = getCachedUserData(user.uid);
-
-        if (docSnap.exists()) {
-          userData = docSnap.data();
-          saveUserDataToCache(userData, user.uid);
-          renderUserData(userData);
-          showDashboard();
-          checkUnreadNotifications(user.uid);
-        } else if (cached) {
-          userData = cached;
-          renderUserData(cached);
-          showDashboard();
-        } else {
-          window.location.replace('register.html');
-        }
-      },
-      (error) => {
-        const cached = getCachedUserData(user.uid);
-        if (cached) {
-          userData = cached;
-          renderUserData(cached);
-          showDashboard();
-        } else {
-          showDashboard();
-        }
-      }
-    );
+// ================================================================
+// LOAD USER DATA (temps réel)
+// ================================================================
+function loadUserData(user) {
+  if (unsubscribeUser) {
+    unsubscribeUser();
+    unsubscribeUser = null;
   }
+  const userRef = doc(db, 'users', user.uid);
+  unsubscribeUser = onSnapshot(userRef,
+    (docSnap) => {
+      const cached = getCachedUserData(user.uid);
 
-  // ================================================================
-  // REFRESH
-  // ================================================================
-  async function refreshDashboard() {
-    const user = auth.currentUser;
-    if (!user) return;
-    const btn = document.getElementById('refreshBtn');
-    const icon = btn?.querySelector('i');
-    if (icon) {
-      icon.style.transition = 'transform 0.6s ease';
-      icon.style.transform = 'rotate(360deg)';
-      setTimeout(() => {
-        icon.style.transition = 'none';
-        icon.style.transform = 'rotate(0deg)';
-      }, 600);
-    }
-    try {
-      await getIdToken(user, true);
-      loadUserData(user);
-      updateCountdown();
-      renderTip();
-      updateSubjectsProgress();
-      showToast('Données actualisées', 'success');
-    } catch (e) {}
-  }
-
-  // ================================================================
-  // AUTH ROBUSTE — Anti-flash
-  // ================================================================
-  let isRedirecting = false;
-  let isAuthResolved = false;
-  let graceTimer = null;
-  let maxTimer = null;
-  let currentUid = null;
-
-  function redirectToLogin() {
-    if (isRedirecting) return;
-    isRedirecting = true;
-    try {
-      sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
-    } catch (e) {}
-    window.location.replace('login.html');
-  }
-
-  function initAuthGuard(onAuthenticated) {
-    auth.onAuthStateChanged((user) => {
-      if (isAuthResolved) {
-        if (user && user.uid !== currentUid) {
-          currentUid = user.uid;
-          saveSession(user);
-          onAuthenticated(user);
-        } else if (!user && currentUid) {
-          currentUid = null;
-          clearSession();
-          redirectToLogin();
-        }
-        return;
-      }
-
-      if (!user) {
-        if (graceTimer) clearTimeout(graceTimer);
-        graceTimer = setTimeout(() => {
-          if (isAuthResolved) return;
-          if (auth.currentUser) return;
-
-          const hasSession = localStorage.getItem(SESSION_KEY);
-          const hasUserData = localStorage.getItem(USER_DATA_KEY);
-
-          if ((hasSession || hasUserData) && !navigator.onLine) {
-            setTimeout(() => {
-              if (auth.currentUser) return;
-              if (!isAuthResolved) redirectToLogin();
-            }, 1500);
-            return;
-          }
-
-          if (hasSession && hasUserData) {
-            setTimeout(() => {
-              if (auth.currentUser) return;
-              if (!isAuthResolved) redirectToLogin();
-            }, 1500);
-            return;
-          }
-
-          redirectToLogin();
-        }, 600);
-        return;
-      }
-
-      if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
-      if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
-
-      isAuthResolved = true;
-      currentUid = user.uid;
-      saveSession(user);
-      onAuthenticated(user);
-    });
-
-    maxTimer = setTimeout(() => {
-      if (isAuthResolved) return;
-      if (auth.currentUser) {
-        isAuthResolved = true;
-        currentUid = auth.currentUser.uid;
-        saveSession(auth.currentUser);
-        onAuthenticated(auth.currentUser);
+      if (docSnap.exists()) {
+        userData = docSnap.data();
+        saveUserDataToCache(userData, user.uid);
+        renderUserData(userData);
+        showDashboard();
+        checkUnreadNotifications(user.uid);
+      } else if (cached) {
+        userData = cached;
+        renderUserData(cached);
+        showDashboard();
       } else {
+        window.location.replace('register.html');
+      }
+    },
+    (error) => {
+      const cached = getCachedUserData(user.uid);
+      if (cached) {
+        userData = cached;
+        renderUserData(cached);
+        showDashboard();
+      } else {
+        showDashboard();
+      }
+    }
+  );
+}
+
+// ================================================================
+// REFRESH
+// ================================================================
+async function refreshDashboard() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const btn = document.getElementById('refreshBtn');
+  const icon = btn?.querySelector('i');
+  if (icon) {
+    icon.style.transition = 'transform 0.6s ease';
+    icon.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+      icon.style.transition = 'none';
+      icon.style.transform = 'rotate(0deg)';
+    }, 600);
+  }
+  try {
+    await getIdToken(user, true);
+    loadUserData(user);
+    updateCountdown();
+    renderTip();
+    updateSubjectsProgress();
+    showToast('Données actualisées', 'success');
+  } catch (e) {}
+}
+
+// ================================================================
+// AUTH ROBUSTE — Anti-flash
+// ================================================================
+function redirectToLogin() {
+  if (isRedirecting) return;
+  isRedirecting = true;
+  try {
+    sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+  } catch (e) {}
+  window.location.replace('login.html');
+}
+
+function initAuthGuard(onAuthenticated) {
+  auth.onAuthStateChanged((user) => {
+    if (isAuthResolved) {
+      if (user && user.uid !== currentUid) {
+        currentUid = user.uid;
+        saveSession(user);
+        onAuthenticated(user);
+      } else if (!user && currentUid) {
+        currentUid = null;
+        clearSession();
         redirectToLogin();
       }
-    }, 5000);
-  }
-
-  // ================================================================
-  // LANCER LA PROTECTION
-  // ================================================================
-  initAuthGuard(async (user) => {
-    // Cache-first : afficher immédiatement
-    const cached = getCachedUserData(user.uid);
-    if (cached) {
-      userData = cached;
-      renderUserData(cached);
-      showDashboard();
+      return;
     }
 
-    // Charger Firestore en arrière-plan
-    loadUserData(user);
+    if (!user) {
+      if (graceTimer) clearTimeout(graceTimer);
+      graceTimer = setTimeout(() => {
+        if (isAuthResolved) return;
+        if (auth.currentUser) return;
 
-    // FCM
-    setupFcmForeground();
-    await checkExistingFcmToken(user);
-    setTimeout(() => showFcmBanner(), 1000);
+        const hasSession = localStorage.getItem(SESSION_KEY);
+        const hasUserData = localStorage.getItem(USER_DATA_KEY);
+
+        if ((hasSession || hasUserData) && !navigator.onLine) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        if (hasSession && hasUserData) {
+          setTimeout(() => {
+            if (auth.currentUser) return;
+            if (!isAuthResolved) redirectToLogin();
+          }, 1500);
+          return;
+        }
+
+        redirectToLogin();
+      }, 600);
+      return;
+    }
+
+    if (graceTimer) { clearTimeout(graceTimer); graceTimer = null; }
+    if (maxTimer) { clearTimeout(maxTimer); maxTimer = null; }
+
+    isAuthResolved = true;
+    currentUid = user.uid;
+    saveSession(user);
+    onAuthenticated(user);
   });
 
-  // ================================================================
-  // DÉCONNEXION
-  // ================================================================
-  async function performLogout() {
-    isRedirecting = true;
-    if (unsubscribeUser) unsubscribeUser();
-    clearSession();
-    try { await signOut(auth); } catch (e) {}
-    window.location.replace('login.html');
+  maxTimer = setTimeout(() => {
+    if (isAuthResolved) return;
+    if (auth.currentUser) {
+      isAuthResolved = true;
+      currentUid = auth.currentUser.uid;
+      saveSession(auth.currentUser);
+      onAuthenticated(auth.currentUser);
+    } else {
+      redirectToLogin();
+    }
+  }, 5000);
+}
+
+// ================================================================
+// LANCER LA PROTECTION
+// ================================================================
+initAuthGuard(async (user) => {
+  const cached = getCachedUserData(user.uid);
+  if (cached) {
+    userData = cached;
+    renderUserData(cached);
+    showDashboard();
   }
 
-  // ================================================================
-  // ÉVÉNEMENTS
-  // ================================================================
-  document.getElementById('logoutBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    performLogout();
-  });
+  loadUserData(user);
 
-  document.getElementById('menuToggle').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.toggle('open');
-    document.getElementById('sidebarOverlay').classList.toggle('active');
-  });
+  setupFcmForeground();
+  await checkExistingFcmToken(user);
+  setTimeout(() => showFcmBanner(), 1000);
+});
 
-  document.getElementById('sidebarOverlay').addEventListener('click', () => {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('active');
-  });
+// ================================================================
+// DÉCONNEXION
+// ================================================================
+async function performLogout() {
+  isRedirecting = true;
+  if (unsubscribeUser) unsubscribeUser();
+  clearSession();
+  try { await signOut(auth); } catch (e) {}
+  window.location.replace('login.html');
+}
 
-  document.getElementById('notifBtn').addEventListener('click', () => {
-    window.location.href = 'notifications.html';
-  });
+// ================================================================
+// ÉVÉNEMENTS
+// ================================================================
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  performLogout();
+});
 
-  document.getElementById('profileBtn').addEventListener('click', () => {
-    window.location.href = 'profil.html';
-  });
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
+});
 
-  document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+});
 
-  console.log('🚀 ARVEXA School — Index (avec onglet Avis)');
-  </script>
+document.getElementById('notifBtn').addEventListener('click', () => {
+  window.location.href = 'notifications.html';
+});
+
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'profil.html';
+});
+
+document.getElementById('refreshBtn').addEventListener('click', refreshDashboard);
+
+// Événements de la modale avis
+document.getElementById('avisLinkSidebar').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
+  openAvisModal();
+});
+
+document.getElementById('avisLinkFooter').addEventListener('click', (e) => {
+  e.preventDefault();
+  openAvisModal();
+});
+
+document.getElementById('avisBtnInline').addEventListener('click', openAvisModal);
+
+avisClose.addEventListener('click', closeAvisModal);
+avisCancel.addEventListener('click', closeAvisModal);
+avisSuccessClose.addEventListener('click', closeAvisModal);
+avisSubmit.addEventListener('click', submitAvis);
+
+avisModal.addEventListener('click', (e) => {
+  if (e.target === avisModal) closeAvisModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && avisModal.classList.contains('show')) {
+    closeAvisModal();
+  }
+});
+
+console.log('🚀 ARVEXA School — Index (avec onglet Avis)');
+ </script>
 </body>
 </html>
+    
