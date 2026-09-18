@@ -1137,34 +1137,91 @@ function showFcmBanner() {
 // Demander la permission et obtenir le token
 async function requestFcmPermission() {
   try {
-    if (!messaging) return false;
+    // 1. Vérifier le support navigateur
+    if (!('Notification' in window)) {
+      console.error('[FCM] Notification API non supportée');
+      showToast('Ton navigateur ne supporte pas les notifications', 'error');
+      return false;
+    }
 
-    // 1. Demander la permission
+    if (!('serviceWorker' in navigator)) {
+      console.error('[FCM] Service Worker non supporté');
+      showToast('Ton navigateur ne supporte pas les notifications', 'error');
+      return false;
+    }
+
+    if (!messaging) {
+      console.error('[FCM] Messaging non initialisé');
+      showToast('Firebase Messaging non disponible', 'error');
+      return false;
+    }
+
+    // 2. Contexte sécurisé (HTTPS ou localhost)
+    if (!window.isSecureContext) {
+      console.error('[FCM] Contexte non sécurisé');
+      showToast('Les notifications nécessitent HTTPS', 'error');
+      return false;
+    }
+
+    // 3. Demander la permission
     const permission = await Notification.requestPermission();
+    console.log('[FCM] Permission:', permission);
+
+    if (permission === 'denied') {
+      showToast('Notifications bloquées. Autorise-les dans les paramètres du navigateur.', 'error');
+      return false;
+    }
+
     if (permission !== 'granted') {
-      console.log('[FCM] Permission refusée');
+      showToast('Permission refusée', 'error');
       return false;
     }
 
     fcmPermissionGranted = true;
 
-    // 2. Obtenir le token
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    // 4. Attendre que le SW FCM soit prêt
+    console.log('[FCM] Attente du Service Worker...');
+    const swRegistration = await navigator.serviceWorker.ready;
+    console.log('[FCM] SW prêt:', swRegistration.scope);
+
+    // 5. Obtenir le token
+    console.log('[FCM] Demande du token avec VAPID:', VAPID_KEY.substring(0, 20) + '...');
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: swRegistration
+    });
+
     if (!token) {
-      console.warn('[FCM] Pas de token');
+      console.error('[FCM] Token vide');
+      showToast('Impossible d\'obtenir le token', 'error');
       return false;
     }
 
     fcmToken = token;
-    console.log('[FCM] Token obtenu:', token.substring(0, 20) + '...');
+    console.log('[FCM] ✅ Token obtenu:', token.substring(0, 30) + '...');
 
-    // 3. Sauvegarder le token dans Firestore
+    // 6. Sauvegarder dans Firestore
     await saveFcmToken(token);
-
     return true;
 
   } catch (error) {
-    console.error('[FCM] Erreur:', error);
+    console.error('[FCM] Erreur détaillée:', error);
+
+    // Message d'erreur précis selon le code
+    let msg = 'Impossible d\'activer les notifications';
+    if (error.code === 'messaging/permission-blocked') {
+      msg = 'Notifications bloquées dans le navigateur';
+    } else if (error.code === 'messaging/token-subscribe-failed') {
+      msg = 'Erreur de souscription. Vérifie ta connexion.';
+    } else if (error.code === 'messaging/failed-service-worker-registration') {
+      msg = 'Service Worker non enregistré';
+    } else if (error.code === 'messaging/unsupported-browser') {
+      msg = 'Navigateur non supporté';
+    } else if (error.message) {
+      msg = error.message;
+    }
+
+    showToast(msg, 'error');
     return false;
   }
 }
