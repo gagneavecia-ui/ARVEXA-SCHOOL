@@ -1485,6 +1485,18 @@ async function checkExistingFcmToken(user) {
     updateSubscriptionDisplay(premium, data);
   }
 
+      // ================================================================
+  // SHOW DASHBOARD — Fonction de compatibilité
+  // ================================================================
+  function showDashboard() {
+    // Masquer le skeleton si présent
+    const skeleton = document.getElementById('skeletonLoading');
+    const dynamic = document.getElementById('dynamicContent');
+    
+    if (skeleton) skeleton.style.display = 'none';
+    if (dynamic) dynamic.style.display = 'block';
+  }
+    
   // ================================================================
   // LOAD USER DATA — Cache-first puis Firestore
   // ================================================================
