@@ -1409,8 +1409,12 @@
   // ================================================================
   // CHARGEMENT DEPUIS FIRESTORE
   // ================================================================
-  function loadSubjectFromFirestore() {
-    // 1. Charger les infos de la matière
+function loadSubjectFromFirestore() {
+    // ⚡ 1. CHARGER LES DONNÉES DE FALLBACK IMMÉDIATEMENT (pour ne jamais avoir 0)
+    if (!subjectConfig) loadFallbackSubjectConfig();
+    if (chapters.length === 0) loadFallbackChapters();
+
+    // 2. Charger les infos de la matière depuis Firestore
     const subjectRef = doc(db, 'subjects', subjectKey);
 
     if (unsubscribeSubject) unsubscribeSubject();
@@ -1426,18 +1430,14 @@
             color: data.color || (SUBJECTS_CONFIG[subjectKey]?.color || '#E0B84A')
           };
           renderHero();
-        } else {
-          // Fallback
-          if (!subjectConfig) loadFallbackSubjectConfig();
         }
       },
       (error) => {
         console.warn('Firestore subject error:', error);
-        if (!subjectConfig) loadFallbackSubjectConfig();
       }
     );
 
-    // 2. Charger les chapitres
+    // 3. Charger les chapitres depuis Firestore
     if (unsubscribeChapters) unsubscribeChapters();
 
     const chaptersQuery = query(
@@ -1447,35 +1447,34 @@
 
     unsubscribeChapters = onSnapshot(chaptersQuery,
       (snap) => {
-        if (snap.empty) {
-          loadFallbackChapters();
-          return;
+        // ⚡ Si Firestore a des données, on les utilise
+        if (!snap.empty) {
+          chapters = snap.docs.map(d => {
+            const data = d.data();
+            return {
+              id: d.id,
+              title: data.title || '',
+              description: data.description || '',
+              isFree: data.isFree === true,
+              order: data.order || 0,
+              difficulty: data.difficulty || null,
+              estimatedMinutes: data.estimatedMinutes || 0,
+              totalParts: data.totalParts || 0
+            };
+          });
+          renderChapters();
+          renderProgress();
+          renderHero(); // ⚡ Rafraîchir le hero aussi
         }
-
-        chapters = snap.docs.map(d => {
-          const data = d.data();
-          return {
-            id: d.id,
-            title: data.title || '',
-            description: data.description || '',
-            isFree: data.isFree === true,
-            order: data.order || 0,
-            difficulty: data.difficulty || null,
-            estimatedMinutes: data.estimatedMinutes || 0,
-            totalParts: data.totalParts || 0
-          };
-        });
-
-        renderChapters();
-        renderProgress();
+        // Sinon, on garde le fallback déjà chargé
       },
       (error) => {
         console.warn('Firestore chapters error:', error);
-        loadFallbackChapters();
+        // En cas d'erreur, le fallback est déjà chargé
       }
     );
   }
-
+    
   function loadFallbackSubjectConfig() {
     const cfg = SUBJECTS_CONFIG[subjectKey];
     if (cfg) {
@@ -1491,7 +1490,7 @@
     }
   }
 
-  function loadFallbackChapters() {
+ function loadFallbackChapters() {
     const fallback = DEFAULT_CHAPTERS[subjectKey] || [];
     chapters = fallback.map((ch, i) => ({
       title: typeof ch === 'string' ? ch : ch.title,
@@ -1505,10 +1504,11 @@
 
     if (!subjectConfig) loadFallbackSubjectConfig();
 
+    renderHero();      // ⚡ IMPORTANT : mettre à jour le hero en premier
     renderChapters();
     renderProgress();
   }
-
+    
   // ================================================================
   // CHARGEMENT UTILISATEUR (temps réel)
   // ================================================================
