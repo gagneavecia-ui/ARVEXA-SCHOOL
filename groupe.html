@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <script src="register-sw.js" defer></script>
-
   <style>
     :root {
       --accent: #B8860B;
@@ -23,16 +22,15 @@
       --danger-light: #f87171;
       --bg-dark: #0A0A0A;
       --bg-surface: #141414;
-      --bg-card: rgba(20, 20, 20, 0.7);
       --text-light: #F5F0E8;
       --text-dim: #8A8A7A;
       --text-muted: #5A5A4A;
       --border-soft: rgba(255, 255, 255, 0.05);
-      --card-border: rgba(184, 134, 11, 0.08);
       --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      --radius: 14px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --whatsapp-bubble-other: rgba(255, 255, 255, 0.05);
+      --whatsapp-bubble-me: rgba(184, 134, 11, 0.15);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -122,151 +120,124 @@
       50% { opacity: 0.5; }
     }
 
-       /* ============================================================
-       MESSAGE — Structure
+    /* ============================================================
+       MESSAGES CONTAINER
        ============================================================ */
-    .message {
-      display: flex;
-      gap: 6px;
-      align-items: flex-end;
-      max-width: 75%;
-      width: fit-content;
-      min-width: 0;
-      margin-bottom: 2px;
-      animation: msgFadeIn 0.3s ease;
-    }
-    @keyframes msgFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .message.self {
-      align-self: flex-end;
-      flex-direction: row-reverse;
-    }
-
-    .msg-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-bright));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      color: #0A0A0A;
-      flex-shrink: 0;
-      overflow: hidden;
-      align-self: flex-end;
-      margin-bottom: 2px;
-    }
-    .msg-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .msg-content-wrap {
+    .messages-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 16px 8px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-      max-width: 100%;
-      width: fit-content;
+      gap: 4px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
-
-    .msg-header {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      font-size: 11px;
-      padding: 0 6px;
-    }
-    .message.self .msg-header {
-      flex-direction: row-reverse;
-    }
-    .msg-author {
-      font-weight: 600;
-      color: var(--accent-bright);
-    }
-    .msg-time {
-      display: none;
+    .messages-container::-webkit-scrollbar { width: 4px; }
+    .messages-container::-webkit-scrollbar-thumb {
+      background: rgba(184,134,11,.2);
+      border-radius: 10px;
     }
 
     /* ============================================================
-       BULLE — Style WhatsApp avec queue
+       MESSAGE WRAPPER — LOGIQUE FORUM
        ============================================================ */
-    .msg-bubble {
-      padding: 6px 10px 6px 10px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      font-size: 13.5px;
-      line-height: 1.4;
-      color: var(--text-light);
+    .message-wrapper {
+      display: flex;
+      flex-direction: column;
+      max-width: 82%;
+      animation: messageSlideIn 0.25s ease-out;
+    }
+    .message-wrapper.other { align-self: flex-start; }
+    .message-wrapper.me { align-self: flex-end; }
+
+    @keyframes messageSlideIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .message-wrapper .message-sender {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin: 0 4px 2px 4px;
+    }
+    .message-wrapper .message-sender .avatar-small {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 600;
+      color: var(--bg-dark);
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+    .message-wrapper .message-sender .sender-name { font-weight: 500; }
+    .message-wrapper.me .message-sender { display: none; }
+
+    /* ============================================================
+       BULLE — LOGIQUE FORUM
+       ============================================================ */
+    .message-bubble {
+      padding: 8px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
       word-wrap: break-word;
       overflow-wrap: break-word;
-      word-break: break-word;
-      max-width: 100%;
-      width: fit-content;
-      white-space: pre-wrap;
       position: relative;
+      border: 1px solid transparent;
     }
 
-    /* Queue de la bulle REÇUE (coin bas-gauche) */
-    .message:not(.self) .msg-bubble {
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px;
-      border-bottom-left-radius: 0;
-    }
-    .message:not(.self) .msg-bubble::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: -8px;
-      width: 8px;
-      height: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    /* Bulle reçue — queue en bas-gauche */
+    .message-wrapper.other .message-bubble {
+      background: var(--whatsapp-bubble-other);
+      border-color: rgba(255, 255, 255, 0.04);
+      border-bottom-left-radius: 4px;
     }
 
-    /* Queue de la bulle ENVOYÉE (coin bas-droit) */
-    .message.self .msg-bubble {
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.28), rgba(184, 134, 11, 0.15));
-      border-color: rgba(184, 134, 11, 0.25);
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 0;
-    }
-    .message.self .msg-bubble::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      right: -8px;
-      width: 8px;
-      height: 12px;
-      background: linear-gradient(135deg, rgba(184, 134, 11, 0.28), rgba(184, 134, 11, 0.15));
-      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    /* Bulle envoyée — queue en bas-droite */
+    .message-wrapper.me .message-bubble {
+      background: var(--whatsapp-bubble-me);
+      border-color: rgba(184, 134, 11, 0.10);
+      border-bottom-right-radius: 4px;
     }
 
-    /* Heure DANS la bulle */
-    .msg-meta {
-      display: inline-block;
-      float: right;
-      font-size: 10px;
+    .message-bubble .msg-time {
+      font-size: 9px;
       color: var(--text-muted);
-      margin: 4px -2px -2px 8px;
-      line-height: 1;
-      position: relative;
-      top: 3px;
+      margin-top: 4px;
+      display: block;
+      text-align: right;
+      opacity: 0.6;
     }
-    .message.self .msg-meta {
-      color: rgba(245, 240, 232, 0.55);
+    .message-wrapper.me .message-bubble .msg-time {
+      color: var(--accent);
     }
 
-    /* Message supprimé — discret */
+    /* Image dans message */
+    .message-bubble .msg-image {
+      max-width: 220px;
+      max-height: 300px;
+      border-radius: 12px;
+      display: block;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .message-bubble .msg-image:active {
+      transform: scale(0.97);
+    }
+
+    /* Message supprimé */
     .msg-deleted {
       font-style: italic;
       color: var(--text-muted);
@@ -274,45 +245,7 @@
       opacity: 0.6;
     }
 
-    /* Image dans message */
-    .msg-image {
-      max-width: 100%;
-      max-height: 300px;
-      border-radius: 8px;
-      display: block;
-      cursor: zoom-in;
-      margin-top: 4px;
-      transition: transform 0.2s ease;
-    }
-    .msg-image:hover {
-      transform: scale(1.01);
-    }
-
-    .msg-deleted {
-  font-style: italic;
-  color: var(--text-muted);
-  font-size: 12px;
-  opacity: 0.6;
-   }
-
-    .msg-admin-actions {
-      display: flex; gap: 4px;
-      margin-top: 4px;
-    }
-    .msg-admin-btn {
-      padding: 3px 8px;
-      border-radius: 8px;
-      background: rgba(184,92,58,.12);
-      border: 1px solid rgba(184,92,58,.2);
-      color: var(--danger-light);
-      font-size: 10px;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    .msg-admin-btn:hover {
-      background: rgba(184,92,58,.2);
-    }
-
+    /* Séparateur de jour */
     .day-separator {
       text-align: center;
       font-size: 11px;
@@ -663,7 +596,7 @@
     }
 
     /* ============================================================
-       MESSAGE CONTEXT MENU (appui long)
+       MESSAGE CONTEXT MENU
        ============================================================ */
     .msg-menu-overlay {
       position: fixed;
@@ -872,8 +805,10 @@
     @media (max-width: 480px) {
       .header { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 52px; }
       .header-title { font-size: 14px; }
-      .msg-bubble { font-size: 13.5px; padding: 8px 12px; }
-      .message { max-width: 90%; }
+      .message-bubble { font-size: 13px; padding: 6px 12px; }
+      .message-wrapper { max-width: 88%; }
+      .message-bubble .msg-image { max-width: 180px; max-height: 240px; }
+      .messages-container { padding: 8px 10px 4px; }
     }
   </style>
 </head>
@@ -891,7 +826,7 @@
       <div class="header-title">ARVEXA Général</div>
       <div class="header-sub">
         <span class="online-dot"></span>
-        <span id="onlineCount">Chargement...</span>
+        <span id="onlineCount">Communauté ARVEXA</span>
       </div>
     </div>
   </div>
@@ -1002,7 +937,7 @@
 
 <script type="module">
 // ================================================================
-// GROUPE D'ÉCHANGE — Version Firestore uniquement
+// GROUPE D'ÉCHANGE — Logique forum + design groupe
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -1051,9 +986,8 @@ const db = initializeFirestore(app, {
   })
 });
 
-try {
-  await setPersistence(auth, browserLocalPersistence);
-} catch (e) {}
+// ⚠️ setPersistence avec catch
+setPersistence(auth, browserLocalPersistence).catch(e => console.warn('setPersistence:', e));
 
 // ================================================================
 // CONSTANTES
@@ -1061,10 +995,10 @@ try {
 const GROUP_ID = 'general';
 const ADMIN_EMAIL = 'gagneavecia@gmail.com';
 const MAX_MESSAGES = 100;
-const MAX_IMAGE_SIZE = 10 * 1024 * 1024;  // 10 Mo avant compression
-const MAX_IMAGE_WIDTH = 800;              // Largeur max après compression
-const IMAGE_QUALITY = 0.7;                // Qualité JPEG
-const MAX_BASE64_SIZE = 700 * 1024;       // ~700 Ko après compression
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+const MAX_IMAGE_WIDTH = 800;
+const IMAGE_QUALITY = 0.7;
+const MAX_BASE64_SIZE = 700 * 1024;
 
 const FORBIDDEN_WORDS = [
   'connard', 'connasse', 'salaud', 'salope', 'pute', 'putain',
@@ -1129,14 +1063,17 @@ const confirmClose = document.getElementById('confirmClose');
 // ================================================================
 let toastTimer = null;
 function showToast(message, type = 'info') {
+  if (!toast) return;
   const icons = {
     success: 'fas fa-check-circle',
     error: 'fas fa-exclamation-circle',
     info: 'fas fa-info-circle'
   };
   toast.className = `toast ${type}`;
-  toast.querySelector('.toast-icon').className = `toast-icon ${icons[type]}`;
-  toast.querySelector('.toast-msg').textContent = message;
+  const iconEl = toast.querySelector('.toast-icon');
+  const msgEl = toast.querySelector('.toast-msg');
+  if (iconEl) iconEl.className = `toast-icon ${icons[type]}`;
+  if (msgEl) msgEl.textContent = message;
   toast.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
@@ -1210,7 +1147,6 @@ function compressImage(file) {
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
-        // Redimensionner
         let width = img.width;
         let height = img.height;
 
@@ -1220,19 +1156,15 @@ function compressImage(file) {
           height = Math.round(height * ratio);
         }
 
-        // Créer canvas
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Convertir en base64
         const base64 = canvas.toDataURL('image/jpeg', IMAGE_QUALITY);
 
-        // Vérifier la taille
         if (base64.length > MAX_BASE64_SIZE) {
-          // Recompresser avec qualité réduite
           const base64Lower = canvas.toDataURL('image/jpeg', 0.5);
           if (base64Lower.length > MAX_BASE64_SIZE) {
             reject(new Error('Image trop lourde après compression'));
@@ -1252,9 +1184,11 @@ function compressImage(file) {
 }
 
 // ================================================================
-// RENDU DES MESSAGES
+// RENDU DES MESSAGES — LOGIQUE FORUM
 // ================================================================
 function renderMessages() {
+  if (!messagesContainer) return;
+
   if (messages.length === 0) {
     messagesContainer.innerHTML = `
       <div class="empty-chat">
@@ -1295,28 +1229,25 @@ function renderMessages() {
       }
     }
 
-    // ✅ Avatar seulement pour les messages reçus
-    const avatarBlock = !isSelf
-      ? `<div class="msg-avatar">${msg.userAvatar ? `<img src="${msg.userAvatar}" alt="">` : initial}</div>`
+    // ✅ Avatar + nom seulement pour les messages reçus (logique forum)
+    const senderBlock = !isSelf
+      ? `<div class="message-sender">
+           <div class="avatar-small" ${msg.userAvatar ? `style="background-image:url('${msg.userAvatar}');"` : ''}>
+             ${msg.userAvatar ? '' : initial}
+           </div>
+           <span class="sender-name">${escapeHtml(msg.userName || 'Anonyme')}</span>
+         </div>`
       : '';
 
-    // ✅ Nom seulement pour les messages reçus
-    const headerBlock = !isSelf
-      ? `<div class="msg-header"><span class="msg-author">${escapeHtml(msg.userName || 'Anonyme')}</span></div>`
-      : '';
-
-    // ✅ Heure DANS la bulle
-    const metaHtml = `<span class="msg-meta">${formatTime(msg.createdAt)}</span>`;
+    // ✅ Heure DANS la bulle (logique forum)
+    const timeHtml = `<span class="msg-time">${formatTime(msg.createdAt)}</span>`;
 
     html += `
-      <div class="message ${isSelf ? 'self' : ''}">
-        ${avatarBlock}
-        <div class="msg-content-wrap">
-          ${headerBlock}
-          <div class="msg-bubble">
-            ${bubbleContent}
-            ${metaHtml}
-          </div>
+      <div class="message-wrapper ${isSelf ? 'me' : 'other'}" data-msg-id="${msg.id}">
+        ${senderBlock}
+        <div class="message-bubble">
+          ${bubbleContent}
+          ${timeHtml}
         </div>
       </div>
     `;
@@ -1324,18 +1255,16 @@ function renderMessages() {
 
   messagesContainer.innerHTML = html;
 
-  // ✅ Correction #1 : Optimisé O(n) au lieu de O(n²)
-  messagesContainer.querySelectorAll('.message').forEach((msgEl, index) => {
+  // Événements appui long
+  messagesContainer.querySelectorAll('.message-wrapper').forEach((msgEl, index) => {
     const messageData = messages[index];
     if (!messageData) return;
 
-    // Desktop : clic droit
     msgEl.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       openMessageMenu(messageData);
     });
 
-    // Mobile : appui long
     msgEl.addEventListener('touchstart', () => {
       longPressTriggered = false;
       longPressTimer = setTimeout(() => {
@@ -1350,14 +1279,14 @@ function renderMessages() {
     msgEl.addEventListener('touchcancel', () => clearTimeout(longPressTimer), { passive: true });
   });
 
-  // Événements images (zoom)
+  // Zoom images
   messagesContainer.querySelectorAll('.msg-image').forEach(img => {
     img.addEventListener('click', () => {
       openImageModal(img.src);
     });
   });
 
-  // ✅ Correction #2 : Auto-scroll uniquement si l'utilisateur est déjà en bas
+  // Auto-scroll intelligent
   const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 150;
   if (isAtBottom) {
     setTimeout(() => {
@@ -1391,12 +1320,14 @@ function loadMessages() {
     },
     (error) => {
       console.warn('Erreur messages:', error);
-      messagesContainer.innerHTML = `
-        <div class="empty-chat">
-          <i class="fas fa-exclamation-triangle"></i>
-          <p>Impossible de charger les messages</p>
-        </div>
-      `;
+      if (messagesContainer) {
+        messagesContainer.innerHTML = `
+          <div class="empty-chat">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Impossible de charger les messages</p>
+          </div>
+        `;
+      }
     }
   );
 }
@@ -1405,6 +1336,8 @@ function loadMessages() {
 // ENVOYER UN MESSAGE
 // ================================================================
 async function sendMessage() {
+  if (!messageInput || !sendBtn) return;
+
   if (isBanned) {
     showToast('Tu es banni du groupe', 'error');
     return;
@@ -1441,16 +1374,15 @@ async function sendMessage() {
 
     await addDoc(collection(db, 'groups', GROUP_ID, 'messages'), messageData);
 
-    // Reset
     messageInput.value = '';
     messageInput.style.height = 'auto';
-    // ✅ Correction #3 : Retirer multiline après envoi
-    messageInput.closest('.message-input-wrap').classList.remove('multiline');
+    const wrap = messageInput.closest('.message-input-wrap');
+    if (wrap) wrap.classList.remove('multiline');
     pendingImageBase64 = null;
     pendingImageName = '';
-    imagePreview.classList.remove('show');
-    imagePreviewImg.src = '';
-    imageInput.value = '';
+    if (imagePreview) imagePreview.classList.remove('show');
+    if (imagePreviewImg) imagePreviewImg.src = '';
+    if (imageInput) imageInput.value = '';
     updateSendButton();
 
   } catch (error) {
@@ -1466,21 +1398,24 @@ async function sendMessage() {
 // BOUTON ENVOYER
 // ================================================================
 function updateSendButton() {
+  if (!messageInput || !sendBtn) return;
   const hasContent = messageInput.value.trim().length > 0;
   const hasImage = !!pendingImageBase64;
   sendBtn.disabled = (!hasContent && !hasImage) || isBanned;
 }
 
+// ================================================================
+// ÉVÉNEMENTS INPUT
+// ================================================================
 if (messageInput) {
   messageInput.addEventListener('input', () => {
     const wrap = messageInput.closest('.message-input-wrap');
+    if (!wrap) return;
 
-    // Auto-resize
     messageInput.style.height = 'auto';
     const newHeight = Math.min(messageInput.scrollHeight, 80);
     messageInput.style.height = newHeight + 'px';
 
-    // Toggle multiline si besoin
     if (newHeight > 30) {
       wrap.classList.add('multiline');
     } else {
@@ -1501,17 +1436,19 @@ if (messageInput) {
 if (sendBtn) {
   sendBtn.addEventListener('click', sendMessage);
 }
-  
+
 // ================================================================
 // EMOJI PICKER
 // ================================================================
 function buildEmojiPicker() {
+  if (!emojiPicker) return;
   emojiPicker.innerHTML = QUICK_EMOJIS.map(e =>
     `<div class="emoji-item" data-emoji="${e}">${e}</div>`
   ).join('');
 
   emojiPicker.querySelectorAll('.emoji-item').forEach(item => {
     item.addEventListener('click', () => {
+      if (!messageInput) return;
       messageInput.value += item.dataset.emoji;
       messageInput.focus();
       updateSendButton();
@@ -1519,12 +1456,15 @@ function buildEmojiPicker() {
   });
 }
 
-emojiBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  emojiPicker.classList.toggle('show');
-});
+if (emojiBtn) {
+  emojiBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (emojiPicker) emojiPicker.classList.toggle('show');
+  });
+}
 
 document.addEventListener('click', (e) => {
+  if (!emojiPicker || !emojiBtn) return;
   if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
     emojiPicker.classList.remove('show');
   }
@@ -1533,82 +1473,94 @@ document.addEventListener('click', (e) => {
 // ================================================================
 // IMAGE UPLOAD
 // ================================================================
-imageBtn.addEventListener('click', () => imageInput.click());
+if (imageBtn && imageInput) {
+  imageBtn.addEventListener('click', () => imageInput.click());
+}
 
-imageInput.addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+if (imageInput) {
+  imageInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  if (!file.type.startsWith('image/')) {
-    showToast('Le fichier doit être une image', 'error');
-    imageInput.value = '';
-    return;
-  }
+    if (!file.type.startsWith('image/')) {
+      showToast('Le fichier doit être une image', 'error');
+      imageInput.value = '';
+      return;
+    }
 
-  if (file.size > MAX_IMAGE_SIZE) {
-    showToast('Image trop lourde (max 10 Mo)', 'error');
-    imageInput.value = '';
-    return;
-  }
+    if (file.size > MAX_IMAGE_SIZE) {
+      showToast('Image trop lourde (max 10 Mo)', 'error');
+      imageInput.value = '';
+      return;
+    }
 
-  // Preview + compression
-  imagePreviewInfo.textContent = 'Compression en cours...';
-  imagePreview.classList.add('show');
-  imagePreviewImg.src = URL.createObjectURL(file);
+    if (imagePreviewInfo) imagePreviewInfo.textContent = 'Compression en cours...';
+    if (imagePreview) imagePreview.classList.add('show');
+    if (imagePreviewImg) imagePreviewImg.src = URL.createObjectURL(file);
 
-  try {
-    const base64 = await compressImage(file);
-    pendingImageBase64 = base64;
-    pendingImageName = file.name;
+    try {
+      const base64 = await compressImage(file);
+      pendingImageBase64 = base64;
+      pendingImageName = file.name;
 
-    const sizeKB = Math.round(base64.length / 1024);
-    imagePreviewInfo.textContent = `${file.name} (${sizeKB} Ko)`;
-    imagePreviewImg.src = base64;
-    updateSendButton();
-  } catch (error) {
-    showToast(error.message, 'error');
-    imagePreview.classList.remove('show');
-    imagePreviewImg.src = '';
+      const sizeKB = Math.round(base64.length / 1024);
+      if (imagePreviewInfo) imagePreviewInfo.textContent = `${file.name} (${sizeKB} Ko)`;
+      if (imagePreviewImg) imagePreviewImg.src = base64;
+      updateSendButton();
+    } catch (error) {
+      showToast(error.message, 'error');
+      if (imagePreview) imagePreview.classList.remove('show');
+      if (imagePreviewImg) imagePreviewImg.src = '';
+      pendingImageBase64 = null;
+      pendingImageName = '';
+      imageInput.value = '';
+    }
+  });
+}
+
+if (imagePreviewRemove) {
+  imagePreviewRemove.addEventListener('click', () => {
     pendingImageBase64 = null;
     pendingImageName = '';
-    imageInput.value = '';
-  }
-});
-
-imagePreviewRemove.addEventListener('click', () => {
-  pendingImageBase64 = null;
-  pendingImageName = '';
-  imagePreview.classList.remove('show');
-  imagePreviewImg.src = '';
-  imageInput.value = '';
-  updateSendButton();
-});
+    if (imagePreview) imagePreview.classList.remove('show');
+    if (imagePreviewImg) imagePreviewImg.src = '';
+    if (imageInput) imageInput.value = '';
+    updateSendButton();
+  });
+}
 
 // ================================================================
-// IMAGE MODAL (ZOOM)
+// IMAGE MODAL
 // ================================================================
 function openImageModal(src) {
+  if (!imageModal || !imageModalImg) return;
   imageModalImg.src = src;
   imageModal.classList.add('show');
 }
 
 function closeImageModal() {
+  if (!imageModal || !imageModalImg) return;
   imageModal.classList.remove('show');
   setTimeout(() => {
     imageModalImg.src = '';
   }, 300);
 }
 
-imageModal.addEventListener('click', closeImageModal);
-imageModalClose.addEventListener('click', (e) => {
-  e.stopPropagation();
-  closeImageModal();
-});
+if (imageModal) {
+  imageModal.addEventListener('click', closeImageModal);
+}
+if (imageModalClose) {
+  imageModalClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeImageModal();
+  });
+}
 
 // ================================================================
 // MODAL CONFIRMATION
 // ================================================================
 function openConfirm(title, message, onConfirm) {
+  if (!confirmModal || !confirmTitle || !confirmMessage) return;
   confirmTitle.textContent = title;
   confirmMessage.textContent = message;
   confirmCallback = onConfirm;
@@ -1616,55 +1568,58 @@ function openConfirm(title, message, onConfirm) {
 }
 
 function closeConfirm() {
+  if (!confirmModal) return;
   confirmModal.classList.remove('show');
   confirmCallback = null;
 }
 
-confirmOk.addEventListener('click', async () => {
-  if (confirmCallback) {
-    confirmOk.disabled = true;
-    try {
-      await confirmCallback();
-    } catch (e) {
-      showToast('Erreur: ' + e.message, 'error');
+if (confirmOk) {
+  confirmOk.addEventListener('click', async () => {
+    if (confirmCallback) {
+      confirmOk.disabled = true;
+      try {
+        await confirmCallback();
+      } catch (e) {
+        showToast('Erreur: ' + e.message, 'error');
+      }
+      confirmOk.disabled = false;
     }
-    confirmOk.disabled = false;
-  }
-  closeConfirm();
-});
+    closeConfirm();
+  });
+}
 
-confirmCancel.addEventListener('click', closeConfirm);
-confirmClose.addEventListener('click', closeConfirm);
+if (confirmCancel) confirmCancel.addEventListener('click', closeConfirm);
+if (confirmClose) confirmClose.addEventListener('click', closeConfirm);
 
-confirmModal.addEventListener('click', (e) => {
-  if (e.target === confirmModal) closeConfirm();
-});
+if (confirmModal) {
+  confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) closeConfirm();
+  });
+}
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (imageModal.classList.contains('show')) closeImageModal();
-    if (confirmModal.classList.contains('show')) closeConfirm();
+    if (imageModal && imageModal.classList.contains('show')) closeImageModal();
+    if (confirmModal && confirmModal.classList.contains('show')) closeConfirm();
   }
 });
 
 // ================================================================
-// MESSAGE CONTEXT MENU (appui long)
+// MESSAGE CONTEXT MENU
 // ================================================================
 const msgMenuOverlay = document.getElementById('msgMenuOverlay');
 const msgMenuSheet = document.getElementById('msgMenuSheet');
 
 function openMessageMenu(messageData) {
-  if (!messageData) return;
+  if (!messageData || !msgMenuOverlay || !msgMenuSheet) return;
 
   const isAdmin = currentUserData?.email === ADMIN_EMAIL;
-  const isSelf = messageData.userId === currentUid;
   const isDeleted = messageData.deleted === true;
   const isAdminMsg = messageData.userEmail === ADMIN_EMAIL;
   const authorName = messageData.userName || 'Anonyme';
 
   let menuItems = '';
 
-  // Option 1 : Copier le texte (tout le monde)
   if (messageData.content && !isDeleted) {
     menuItems += `
       <button class="msg-menu-item" data-action="copy">
@@ -1674,7 +1629,6 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  // Option 2 : Supprimer (admin uniquement)
   if (isAdmin && !isDeleted) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="delete">
@@ -1684,7 +1638,6 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  // Option 3 : Bannir (admin, pas sur ses propres messages)
   if (isAdmin && !isAdminMsg && !isDeleted) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="ban">
@@ -1694,7 +1647,6 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  // Si aucun item dispo
   if (!menuItems) {
     menuItems = `
       <button class="msg-menu-item" disabled style="opacity: .5; cursor: not-allowed;">
@@ -1712,7 +1664,6 @@ function openMessageMenu(messageData) {
 
   msgMenuOverlay.classList.add('show');
 
-  // Événements
   msgMenuSheet.querySelectorAll('.msg-menu-item').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
@@ -1728,19 +1679,20 @@ function openMessageMenu(messageData) {
     });
   });
 
-  document.getElementById('msgMenuCancel').addEventListener('click', closeMessageMenu);
+  const cancelBtn = document.getElementById('msgMenuCancel');
+  if (cancelBtn) cancelBtn.addEventListener('click', closeMessageMenu);
 }
 
 function closeMessageMenu() {
-  msgMenuOverlay.classList.remove('show');
+  if (msgMenuOverlay) msgMenuOverlay.classList.remove('show');
 }
 
-// Fermer au clic sur l'overlay
-msgMenuOverlay.addEventListener('click', (e) => {
-  if (e.target === msgMenuOverlay) closeMessageMenu();
-});
+if (msgMenuOverlay) {
+  msgMenuOverlay.addEventListener('click', (e) => {
+    if (e.target === msgMenuOverlay) closeMessageMenu();
+  });
+}
 
-// Fonction copier
 async function copyMessageText(text) {
   if (!text) return;
   try {
@@ -1846,10 +1798,12 @@ function watchBanStatus(uid) {
   unsubscribeBanCheck = onSnapshot(banRef,
     (docSnap) => {
       isBanned = docSnap.exists();
-      if (isBanned) {
-        bannedOverlay.classList.add('show');
-      } else {
-        bannedOverlay.classList.remove('show');
+      if (bannedOverlay) {
+        if (isBanned) {
+          bannedOverlay.classList.add('show');
+        } else {
+          bannedOverlay.classList.remove('show');
+        }
       }
       updateSendButton();
     },
@@ -1858,7 +1812,7 @@ function watchBanStatus(uid) {
 }
 
 // ================================================================
-// COMPTEUR MEMBRES (approximatif)
+// COMPTEUR MEMBRES
 // ================================================================
 function updateOnlineCount() {
   if (!onlineCount) return;
