@@ -122,31 +122,17 @@
       50% { opacity: 0.5; }
     }
 
-    /* ============================================================
-       MESSAGES
+       /* ============================================================
+       MESSAGE — Structure
        ============================================================ */
-    .messages-container {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 10px 8px 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-    }
-    .messages-container::-webkit-scrollbar { width: 4px; }
-    .messages-container::-webkit-scrollbar-thumb {
-      background: rgba(184,134,11,.2);
-      border-radius: 10px;
-    }
-
     .message {
       display: flex;
       gap: 6px;
       align-items: flex-end;
-      max-width: 78%;
+      max-width: 75%;
+      width: fit-content;
+      min-width: 0;
+      margin-bottom: 2px;
       animation: msgFadeIn 0.3s ease;
     }
     @keyframes msgFadeIn {
@@ -155,30 +141,46 @@
     }
     .message.self {
       align-self: flex-end;
+      flex-direction: row-reverse;
     }
 
     .msg-avatar {
-      width: 26px; height: 26px; border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent-bright));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700;
-      color: #0A0A0A; flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0A0A0A;
+      flex-shrink: 0;
       overflow: hidden;
-      align-self: flex-end;      /* ✅ AJOUTER */
-      margin-bottom: 2px;         /* ✅ AJOUTER */
+      align-self: flex-end;
+      margin-bottom: 2px;
     }
     .msg-avatar img {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .msg-content-wrap {
-      display: flex; flex-direction: column; gap: 2px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
       min-width: 0;
+      max-width: 100%;
+      width: fit-content;
     }
 
     .msg-header {
-      display: flex; align-items: baseline; gap: 8px;
-      font-size: 11px; padding: 0 6px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 11px;
+      padding: 0 6px;
     }
     .message.self .msg-header {
       flex-direction: row-reverse;
@@ -188,33 +190,95 @@
       color: var(--accent-bright);
     }
     .msg-time {
-      color: var(--text-muted);
+      display: none;
     }
 
+    /* ============================================================
+       BULLE — Style WhatsApp avec queue
+       ============================================================ */
     .msg-bubble {
-      padding: 6px 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.04);
-      font-size: 13px;
-      line-height: 1.35;
+      padding: 6px 10px 6px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 13.5px;
+      line-height: 1.4;
       color: var(--text-light);
       word-wrap: break-word;
       overflow-wrap: break-word;
+      word-break: break-word;
       max-width: 100%;
+      width: fit-content;
       white-space: pre-wrap;
       position: relative;
     }
-    .message.self .msg-bubble {
-      background: linear-gradient(135deg, rgba(184,134,11,.18), rgba(184,134,11,.08));
-      border-color: rgba(184,134,11,.2);
+
+    /* Queue de la bulle REÇUE (coin bas-gauche) */
+    .message:not(.self) .msg-bubble {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      border-bottom-left-radius: 0;
+    }
+    .message:not(.self) .msg-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -8px;
+      width: 8px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
     }
 
-    /* Image dans message (base64) */
+    /* Queue de la bulle ENVOYÉE (coin bas-droit) */
+    .message.self .msg-bubble {
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.28), rgba(184, 134, 11, 0.15));
+      border-color: rgba(184, 134, 11, 0.25);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 0;
+    }
+    .message.self .msg-bubble::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: -8px;
+      width: 8px;
+      height: 12px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.28), rgba(184, 134, 11, 0.15));
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+
+    /* Heure DANS la bulle */
+    .msg-meta {
+      display: inline-block;
+      float: right;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin: 4px -2px -2px 8px;
+      line-height: 1;
+      position: relative;
+      top: 3px;
+    }
+    .message.self .msg-meta {
+      color: rgba(245, 240, 232, 0.55);
+    }
+
+    /* Message supprimé — discret */
+    .msg-deleted {
+      font-style: italic;
+      color: var(--text-muted);
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    /* Image dans message */
     .msg-image {
       max-width: 100%;
       max-height: 300px;
-      border-radius: 12px;
+      border-radius: 8px;
       display: block;
       cursor: zoom-in;
       margin-top: 4px;
@@ -1205,7 +1269,6 @@ function renderMessages() {
   let html = '';
 
   messages.forEach(msg => {
-    // ✅ Correction #4 : Skip les messages sans date
     if (!msg.createdAt) return;
 
     const date = msg.createdAt?.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt);
@@ -1219,11 +1282,10 @@ function renderMessages() {
     const isSelf = msg.userId === currentUid;
     const isDeleted = msg.deleted === true;
     const initial = (msg.userName || 'U').charAt(0).toUpperCase();
-    const isAdminMsg = msg.userEmail === ADMIN_EMAIL;
 
     let bubbleContent = '';
-   if (isDeleted) {
-  bubbleContent = `<span class="msg-deleted">Message supprimé</span>`;
+    if (isDeleted) {
+      bubbleContent = `<span class="msg-deleted">Message supprimé</span>`;
     } else {
       if (msg.content) {
         bubbleContent += `<div>${escapeHtml(msg.content)}</div>`;
@@ -1233,16 +1295,29 @@ function renderMessages() {
       }
     }
 
+    // ✅ Avatar seulement pour les messages reçus
+    const avatarBlock = !isSelf
+      ? `<div class="msg-avatar">${msg.userAvatar ? `<img src="${msg.userAvatar}" alt="">` : initial}</div>`
+      : '';
+
+    // ✅ Nom seulement pour les messages reçus
+    const headerBlock = !isSelf
+      ? `<div class="msg-header"><span class="msg-author">${escapeHtml(msg.userName || 'Anonyme')}</span></div>`
+      : '';
+
+    // ✅ Heure DANS la bulle
+    const metaHtml = `<span class="msg-meta">${formatTime(msg.createdAt)}</span>`;
+
     html += `
-     <div class="message ${isSelf ? 'self' : ''}">
-  ${!isSelf ? `<div class="msg-avatar">${msg.userAvatar ? `<img src="${msg.userAvatar}" alt="">` : initial}</div>` : ''}
-<div class="msg-content-wrap">
-  ${!isSelf ? `<div class="msg-header"><span class="msg-author">${escapeHtml(msg.userName || 'Anonyme')}</span></div>` : ''}
-  <div class="msg-bubble">
-    ${bubbleContent}
-    <span class="msg-meta">${formatTime(msg.createdAt)}</span>
-  </div>
-</div>
+      <div class="message ${isSelf ? 'self' : ''}">
+        ${avatarBlock}
+        <div class="msg-content-wrap">
+          ${headerBlock}
+          <div class="msg-bubble">
+            ${bubbleContent}
+            ${metaHtml}
+          </div>
+        </div>
       </div>
     `;
   });
