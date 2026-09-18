@@ -447,6 +447,115 @@
     .footer-links a:hover { color: var(--text-light); }
     .footer-copy { font-size: 11px; color: var(--text-muted); opacity: 0.6; }
 
+        /* ============================================================
+       FCM BANNER — Notification push
+       ============================================================ */
+    .fcm-banner-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, 0.08), rgba(26, 58, 42, 0.06));
+      border: 1px solid rgba(184, 134, 11, 0.2);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .fcm-banner-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+    }
+    .fcm-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(184, 134, 11, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      animation: fcmBell 2s ease-in-out infinite;
+    }
+    @keyframes fcmBell {
+      0%, 90%, 100% { transform: rotate(0); }
+      92%, 96% { transform: rotate(-10deg); }
+      94%, 98% { transform: rotate(10deg); }
+    }
+    .fcm-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .fcm-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-bottom: 2px;
+    }
+    .fcm-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .fcm-actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .fcm-btn-later,
+    .fcm-btn-activate {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+    .fcm-btn-later {
+      background: transparent;
+      color: var(--text-muted);
+    }
+    .fcm-btn-later:hover {
+      color: var(--text-light);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .fcm-btn-activate {
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A;
+      box-shadow: 0 2px 10px rgba(184, 134, 11, 0.2);
+    }
+    .fcm-btn-activate:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(184, 134, 11, 0.35);
+    }
+    .fcm-btn-activate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+      .fcm-banner-content {
+        flex-wrap: wrap;
+        padding: 14px;
+        gap: 12px;
+      }
+      .fcm-text { flex: 1 1 100%; }
+      .fcm-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .fcm-btn-activate { flex: 1; }
+    }
+
+
     /* ============================================================
        RESPONSIVE
        ============================================================ */
@@ -785,6 +894,11 @@
     signOut,
     getIdToken
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+  getMessaging,
+  getToken,
+  onMessage
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
 import {
   initializeFirestore,
   persistentLocalCache,
@@ -796,7 +910,9 @@ import {
   query,
   where,
   limit,
-  getDocs
+  getDocs,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
   // ================================================================
@@ -821,6 +937,14 @@ const db = initializeFirestore(app, {
   })
 });
 
+    // ⚡ FIREBASE MESSAGING
+let messaging = null;
+try {
+  messaging = getMessaging(app);
+} catch (e) {
+  console.warn('FCM non supporté:', e);
+}
+    
   try {
     await setPersistence(auth, browserLocalPersistence);
   } catch (e) {}
@@ -917,6 +1041,190 @@ const db = initializeFirestore(app, {
     { key: 'svt', name: 'SVT', chapters: 4 }
   ];
 
+    // ================================================================
+// FCM — NOTIFICATIONS PUSH
+// ================================================================
+const VAPID_KEY = 'BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA';
+const FCM_DISMISSED_KEY = 'arvexa_fcm_dismissed';
+const FCM_DISMISSED_DURATION = 3 * 24 * 60 * 60 * 1000; // 3 jours
+
+let fcmToken = null;
+let fcmPermissionGranted = false;
+
+// Vérifier si le bandeau doit s'afficher
+function shouldShowFcmBanner() {
+  // Si Notification API non supportée
+  if (!('Notification' in window)) return false;
+  if (!messaging) return false;
+  if (!('serviceWorker' in navigator)) return false;
+
+  // Si déjà accordé
+  if (Notification.permission === 'granted') return false;
+
+  // Si refusé explicitement
+  if (Notification.permission === 'denied') return false;
+
+  // Si l'utilisateur a dismiss récemment
+  try {
+    const dismissed = localStorage.getItem(FCM_DISMISSED_KEY);
+    if (dismissed) {
+      const timestamp = parseInt(dismissed, 10);
+      if (Date.now() - timestamp < FCM_DISMISSED_DURATION) {
+        return false;
+      }
+    }
+  } catch (e) {}
+
+  return true;
+}
+
+// Afficher le bandeau FCM
+function showFcmBanner() {
+  if (!shouldShowFcmBanner()) return;
+
+  // Chercher le container
+  const container = document.getElementById('dynamicContent');
+  if (!container) return;
+
+  // Éviter les doublons
+  if (document.getElementById('fcmBanner')) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'fcmBanner';
+  banner.innerHTML = `
+    <div class="fcm-banner-content">
+      <div class="fcm-icon">🔔</div>
+      <div class="fcm-text">
+        <div class="fcm-title">Active les notifications</div>
+        <div class="fcm-desc">Reçois une alerte quand un nouveau chapitre est disponible.</div>
+      </div>
+      <div class="fcm-actions">
+        <button class="fcm-btn-later" id="fcmLater">Plus tard</button>
+        <button class="fcm-btn-activate" id="fcmActivate">Activer</button>
+      </div>
+    </div>
+  `;
+
+  // Insérer en haut du contenu
+  container.insertBefore(banner, container.firstChild);
+
+  // Événements
+  document.getElementById('fcmLater').addEventListener('click', () => {
+    try {
+      localStorage.setItem(FCM_DISMISSED_KEY, String(Date.now()));
+    } catch (e) {}
+    banner.remove();
+  });
+
+  document.getElementById('fcmActivate').addEventListener('click', async () => {
+    const btn = document.getElementById('fcmActivate');
+    btn.disabled = true;
+    btn.textContent = 'Activation...';
+
+    const success = await requestFcmPermission();
+    if (success) {
+      banner.remove();
+      showToast('Notifications activées !', 'success');
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Activer';
+      showToast('Impossible d\'activer les notifications', 'error');
+    }
+  });
+}
+
+// Demander la permission et obtenir le token
+async function requestFcmPermission() {
+  try {
+    if (!messaging) return false;
+
+    // 1. Demander la permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.log('[FCM] Permission refusée');
+      return false;
+    }
+
+    fcmPermissionGranted = true;
+
+    // 2. Obtenir le token
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    if (!token) {
+      console.warn('[FCM] Pas de token');
+      return false;
+    }
+
+    fcmToken = token;
+    console.log('[FCM] Token obtenu:', token.substring(0, 20) + '...');
+
+    // 3. Sauvegarder le token dans Firestore
+    await saveFcmToken(token);
+
+    return true;
+
+  } catch (error) {
+    console.error('[FCM] Erreur:', error);
+    return false;
+  }
+}
+
+// Sauvegarder le token dans Firestore
+async function saveFcmToken(token) {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await updateDoc(doc(db, 'users', user.uid), {
+      fcmToken: token,
+      fcmTokenUpdatedAt: serverTimestamp()
+    });
+    console.log('[FCM] Token sauvegardé dans Firestore');
+  } catch (e) {
+    console.error('[FCM] Erreur sauvegarde token:', e);
+  }
+}
+
+// Écouter les messages en premier plan
+function setupFcmForeground() {
+  if (!messaging) return;
+
+  onMessage(messaging, (payload) => {
+    console.log('[FCM] Message en premier plan:', payload);
+
+    const title = payload.notification?.title || payload.data?.title || 'ARVEXA School';
+    const body = payload.notification?.body || payload.data?.body || '';
+
+    // Afficher un toast
+    showToast(`${title} — ${body}`, 'info');
+
+    // Optionnel : recharger les notifications
+    if (window.location.pathname.includes('notifications.html')) {
+      // La page rechargera automatiquement via onSnapshot
+    }
+  });
+}
+
+// Vérifier le token existant à la connexion
+async function checkExistingFcmToken(user) {
+  if (!messaging) return;
+
+  // Si la permission n'est pas accordée, on ne fait rien
+  if (Notification.permission !== 'granted') return;
+
+  try {
+    // Vérifier le token actuel
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    if (token) {
+      fcmToken = token;
+      // Re-sauvegarder au cas où il aurait changé
+      await saveFcmToken(token);
+    }
+  } catch (e) {
+    console.warn('[FCM] Erreur vérification token:', e);
+  }
+}
+
+    
   const TIPS = [
     { title: '🌅 Bonjour !', text: "Nouvelle journée, nouvelle opportunité ! Fixe-toi 1 objectif clair pour aujourd'hui." },
     { title: '📚 Méthode Pomodoro', text: "25 minutes de travail, 5 minutes de pause. Répète 4 fois, puis fais une pause plus longue." },
@@ -1253,7 +1561,7 @@ const db = initializeFirestore(app, {
   // ================================================================
   // AUTH
   // ================================================================
-  let isRedirecting = false;
+   let isRedirecting = false;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -1290,8 +1598,17 @@ const db = initializeFirestore(app, {
 
     // Firestore en arrière-plan (met à jour silencieusement)
     loadUserData(user);
-  });
 
+    // ⚡ FCM : écouter les messages en premier plan
+    setupFcmForeground();
+
+    // ⚡ FCM : vérifier le token existant
+    await checkExistingFcmToken(user);
+
+    // ⚡ FCM : afficher le bandeau si nécessaire (après 1s)
+    setTimeout(() => showFcmBanner(), 1000);
+  });
+    
   // ================================================================
   // ÉVÉNEMENTS
   // ================================================================
