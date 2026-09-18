@@ -1224,7 +1224,6 @@ function renderMessages() {
     let bubbleContent = '';
    if (isDeleted) {
   bubbleContent = `<span class="msg-deleted">Message supprimé</span>`;
-}
     } else {
       if (msg.content) {
         bubbleContent += `<div>${escapeHtml(msg.content)}</div>`;
