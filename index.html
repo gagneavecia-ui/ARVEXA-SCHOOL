@@ -1496,6 +1496,98 @@ async function checkExistingFcmToken(user) {
     if (skeleton) skeleton.style.display = 'none';
     if (dynamic) dynamic.style.display = 'block';
   }
+
+      // ================================================================
+  // SHOW TOAST — Notification visuelle éphémère
+  // ================================================================
+  function showToast(message, type = 'info') {
+    // Créer le container s'il n'existe pas
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      container.style.cssText = `
+        position: fixed;
+        top: calc(env(safe-area-inset-top, 0px) + 16px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        width: calc(100% - 32px);
+        max-width: 420px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        pointer-events: none;
+      `;
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    
+    const icons = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      info: 'fa-info-circle',
+      warning: 'fa-exclamation-triangle'
+    };
+
+    const colors = {
+      success: '#3AB67E',
+      error: '#E74C3C',
+      info: '#E0B84A',
+      warning: '#D4A017'
+    };
+
+    toast.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: rgba(20, 22, 20, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid ${colors[type] || colors.info}44;
+      color: #F5F0E8;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      pointer-events: auto;
+      animation: toastSlideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    `;
+
+    toast.innerHTML = `
+      <i class="fas ${icons[type] || icons.info}" style="color: ${colors[type] || colors.info}; font-size: 15px; flex-shrink: 0;"></i>
+      <span style="flex: 1; min-width: 0; line-height: 1.5;">${message}</span>
+    `;
+
+    // Ajouter l'animation si pas déjà présente
+    if (!document.getElementById('toastAnimationStyle')) {
+      const style = document.createElement('style');
+      style.id = 'toastAnimationStyle';
+      style.textContent = `
+        @keyframes toastSlideIn {
+          from { opacity: 0; transform: translateY(-20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes toastSlideOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(-20px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    container.appendChild(toast);
+
+    // Auto-suppression après 3 secondes
+    setTimeout(() => {
+      toast.style.animation = 'toastSlideOut 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
     
   // ================================================================
   // LOAD USER DATA — Cache-first puis Firestore
