@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   <script src="register-sw.js" defer></script>
+  
   <style>
     :root {
       --accent: #B8860B;
@@ -119,6 +120,79 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.5; }
     }
+    .header-right {
+      display: flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    .header-icon-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    .header-icon-btn:hover {
+      color: var(--accent-bright);
+      background: rgba(184,134,11,.08);
+    }
+
+    /* ============================================================
+       SEARCH BAR
+       ============================================================ */
+    .search-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: calc(10px + var(--safe-top)) 16px 10px;
+      background: rgba(10,10,10,.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,134,11,.08);
+      min-height: 60px;
+      z-index: 10;
+    }
+    .search-bar.show { display: flex; }
+    .search-bar input {
+      flex: 1;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 20px;
+      padding: 9px 14px;
+      color: var(--text-light);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: var(--transition);
+    }
+    .search-bar input:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,.06);
+    }
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
+    .search-bar .search-close {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    .search-bar .search-close:hover {
+      color: var(--text-light);
+      background: rgba(255,255,255,.05);
+    }
 
     /* ============================================================
        MESSAGES CONTAINER
@@ -148,6 +222,9 @@
       flex-direction: column;
       max-width: 82%;
       animation: messageSlideIn 0.25s ease-out;
+      position: relative;
+      transition: transform 0.2s ease;
+      will-change: transform;
     }
     .message-wrapper.other { align-self: flex-start; }
     .message-wrapper.me { align-self: flex-end; }
@@ -184,7 +261,7 @@
     .message-wrapper.me .message-sender { display: none; }
 
     /* ============================================================
-       BULLE — LOGIQUE FORUM
+       BULLE
        ============================================================ */
     .message-bubble {
       padding: 8px 14px;
@@ -197,14 +274,12 @@
       border: 1px solid transparent;
     }
 
-    /* Bulle reçue — queue en bas-gauche */
     .message-wrapper.other .message-bubble {
       background: var(--whatsapp-bubble-other);
       border-color: rgba(255, 255, 255, 0.04);
       border-bottom-left-radius: 4px;
     }
 
-    /* Bulle envoyée — queue en bas-droite */
     .message-wrapper.me .message-bubble {
       background: var(--whatsapp-bubble-me);
       border-color: rgba(184, 134, 11, 0.10);
@@ -223,6 +298,80 @@
       color: var(--accent);
     }
 
+    /* ============================================================
+       RÉPONSE — Bandeau de citation dans la bulle
+       ============================================================ */
+    .message-bubble .reply-quote {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 4px 8px;
+      margin: -2px -8px 6px -8px;
+      border-left: 3px solid var(--accent);
+      background: rgba(184, 134, 11, 0.08);
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .message-bubble .reply-quote:hover {
+      background: rgba(184, 134, 11, 0.15);
+    }
+    .message-bubble .reply-quote .reply-author {
+      font-weight: 600;
+      color: var(--accent-bright);
+      font-size: 10px;
+    }
+    .message-bubble .reply-quote .reply-content {
+      color: var(--text-dim);
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+    .message-wrapper.me .message-bubble .reply-quote {
+      border-left-color: var(--accent-bright);
+      background: rgba(184, 134, 11, 0.12);
+    }
+
+    /* ============================================================
+       SWIPE INDICATOR
+       ============================================================ */
+    .swipe-indicator {
+      position: absolute;
+      left: -40px;
+      top: 50%;
+      transform: translateY(-50%) scale(0);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--bg-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .message-wrapper.other .swipe-indicator {
+      left: -40px;
+    }
+    .message-wrapper.me .swipe-indicator {
+      right: -40px;
+      left: auto;
+    }
+    .message-wrapper.swiping .swipe-indicator {
+      transform: translateY(-50%) scale(1);
+      opacity: 1;
+    }
+    .message-wrapper.swipe-ready .swipe-indicator {
+      background: var(--success-light);
+      transform: translateY(-50%) scale(1.15);
+    }
+
     /* Image dans message */
     .message-bubble .msg-image {
       max-width: 220px;
@@ -237,12 +386,20 @@
       transform: scale(0.97);
     }
 
-    /* Message supprimé */
+    /* Message supprimé — ne devrait plus apparaître */
     .msg-deleted {
       font-style: italic;
       color: var(--text-muted);
       font-size: 12px;
       opacity: 0.6;
+    }
+
+    /* Surbrillance recherche */
+    mark {
+      background: rgba(224, 184, 74, 0.4);
+      color: var(--text-light);
+      border-radius: 2px;
+      padding: 0 2px;
     }
 
     /* Séparateur de jour */
@@ -294,6 +451,56 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ============================================================
+       REPLY PREVIEW (au-dessus de l'input)
+       ============================================================ */
+    .reply-preview {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      margin: 0 0 6px 0;
+      background: rgba(184, 134, 11, 0.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      position: relative;
+    }
+    .reply-preview.show { display: flex; }
+    .reply-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .reply-preview-author {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-bright);
+      margin-bottom: 2px;
+    }
+    .reply-preview-content {
+      font-size: 12px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .reply-preview-close {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .reply-preview-close:hover {
+      background: rgba(255,255,255,.05);
+      color: var(--text-light);
+    }
+
+    /* ============================================================
        INPUT ZONE
        ============================================================ */
     .input-zone {
@@ -308,6 +515,13 @@
       gap: 8px;
       align-items: flex-end;
       position: relative;
+      flex-direction: column;
+    }
+    .input-zone > .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      width: 100%;
     }
 
     .input-icon-btn {
@@ -803,7 +1017,7 @@
 
     /* Responsive */
     @media (max-width: 480px) {
-      .header { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 52px; }
+      .header, .search-bar { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 52px; }
       .header-title { font-size: 14px; }
       .message-bubble { font-size: 13px; padding: 6px 12px; }
       .message-wrapper { max-width: 88%; }
@@ -816,8 +1030,10 @@
 
 <div class="gradient-bg"></div>
 
-<!-- HEADER -->
-<header class="header">
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header" id="mainHeader">
   <div class="header-left">
     <a href="index.html" class="back-btn" aria-label="Retour">
       <i class="fas fa-arrow-left"></i>
@@ -830,9 +1046,26 @@
       </div>
     </div>
   </div>
+  <div class="header-right">
+    <button class="header-icon-btn" id="searchBtn" aria-label="Rechercher">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
 </header>
 
-<!-- MESSAGES -->
+<!-- ============================================================
+     SEARCH BAR
+     ============================================================ -->
+<div class="search-bar" id="searchBar">
+  <input type="text" id="searchInput" placeholder="Rechercher un message...">
+  <button class="search-close" id="searchClose" aria-label="Fermer">
+    <i class="fas fa-times"></i>
+  </button>
+</div>
+
+<!-- ============================================================
+     MESSAGES
+     ============================================================ -->
 <div class="messages-container" id="messagesContainer">
   <div class="loading-messages">
     <div class="loading-spinner"></div>
@@ -840,8 +1073,10 @@
   </div>
 </div>
 
-<!-- INPUT ZONE -->
-<div class="input-zone">
+<!-- ============================================================
+     INPUT ZONE
+     ============================================================ -->
+<div class="input-zone" id="inputZone">
   <div class="image-preview" id="imagePreview">
     <img class="image-preview-img" id="imagePreviewImg" alt="">
     <div class="image-preview-info" id="imagePreviewInfo">Image prête à envoyer</div>
@@ -850,27 +1085,40 @@
     </button>
   </div>
 
-  <button class="input-icon-btn" id="emojiBtn" aria-label="Émojis">
-    <i class="fas fa-face-smile"></i>
-  </button>
-
-  <button class="input-icon-btn" id="imageBtn" aria-label="Image">
-    <i class="fas fa-image"></i>
-  </button>
-  <input type="file" id="imageInput" accept="image/*" style="display: none;">
-
-  <div class="message-input-wrap">
-    <textarea
-      class="message-input"
-      id="messageInput"
-      placeholder="Écris un message..."
-      rows="1"
-      maxlength="2000"></textarea>
+  <!-- Reply Preview -->
+  <div class="reply-preview" id="replyPreview">
+    <div class="reply-preview-info">
+      <div class="reply-preview-author" id="replyPreviewAuthor">Auteur</div>
+      <div class="reply-preview-content" id="replyPreviewContent">Message...</div>
+    </div>
+    <button class="reply-preview-close" id="replyPreviewClose" aria-label="Annuler la réponse">
+      <i class="fas fa-times"></i>
+    </button>
   </div>
 
-  <button class="send-btn" id="sendBtn" disabled aria-label="Envoyer">
-    <i class="fas fa-paper-plane"></i>
-  </button>
+  <div class="input-row">
+    <button class="input-icon-btn" id="emojiBtn" aria-label="Émojis">
+      <i class="fas fa-face-smile"></i>
+    </button>
+
+    <button class="input-icon-btn" id="imageBtn" aria-label="Image">
+      <i class="fas fa-image"></i>
+    </button>
+    <input type="file" id="imageInput" accept="image/*" style="display: none;">
+
+    <div class="message-input-wrap">
+      <textarea
+        class="message-input"
+        id="messageInput"
+        placeholder="Écris un message..."
+        rows="1"
+        maxlength="2000"></textarea>
+    </div>
+
+    <button class="send-btn" id="sendBtn" disabled aria-label="Envoyer">
+      <i class="fas fa-paper-plane"></i>
+    </button>
+  </div>
 </div>
 
 <!-- EMOJI PICKER -->
@@ -937,7 +1185,7 @@
 
 <script type="module">
 // ================================================================
-// GROUPE D'ÉCHANGE — Logique forum + design groupe
+// GROUPE D'ÉCHANGE — v3 (réponse, suppression, recherche)
 // ================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -956,6 +1204,7 @@ import {
   setDoc,
   addDoc,
   updateDoc,
+  deleteDoc,
   collection,
   query,
   orderBy,
@@ -979,14 +1228,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// ⚡ FIRESTORE AVEC PERSISTANCE LOCALE
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({
     tabManager: persistentSingleTabManager()
   })
 });
 
-// ⚠️ setPersistence avec catch
 setPersistence(auth, browserLocalPersistence).catch(e => console.warn('setPersistence:', e));
 
 // ================================================================
@@ -999,6 +1246,8 @@ const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 const MAX_IMAGE_WIDTH = 800;
 const IMAGE_QUALITY = 0.7;
 const MAX_BASE64_SIZE = 700 * 1024;
+const SWIPE_THRESHOLD = 60;      // px pour déclencher la vibration
+const SWIPE_TRIGGER = 80;        // px pour valider la réponse
 
 const FORBIDDEN_WORDS = [
   'connard', 'connasse', 'salaud', 'salope', 'pute', 'putain',
@@ -1021,6 +1270,7 @@ let currentUser = null;
 let currentUid = null;
 let currentUserData = null;
 let messages = [];
+let filteredMessages = [];         // Messages après recherche
 let isBanned = false;
 let unsubscribeMessages = null;
 let unsubscribeUser = null;
@@ -1030,10 +1280,25 @@ let pendingImageName = '';
 let confirmCallback = null;
 let longPressTimer = null;
 let longPressTriggered = false;
+let currentReply = null;            // { id, author, content, type }
+let isSearching = false;
+let searchQuery = '';
+
+// Swipe state
+let swipeStartX = 0;
+let swipeCurrentX = 0;
+let swipeActiveEl = null;
+let swipeActiveId = null;
+let swipeTriggered = false;
 
 // ================================================================
 // DOM
 // ================================================================
+const mainHeader = document.getElementById('mainHeader');
+const searchBar = document.getElementById('searchBar');
+const searchBtn = document.getElementById('searchBtn');
+const searchClose = document.getElementById('searchClose');
+const searchInput = document.getElementById('searchInput');
 const messagesContainer = document.getElementById('messagesContainer');
 const messageInput = document.getElementById('messageInput');
 const sendBtn = document.getElementById('sendBtn');
@@ -1045,6 +1310,10 @@ const imagePreview = document.getElementById('imagePreview');
 const imagePreviewImg = document.getElementById('imagePreviewImg');
 const imagePreviewInfo = document.getElementById('imagePreviewInfo');
 const imagePreviewRemove = document.getElementById('imagePreviewRemove');
+const replyPreview = document.getElementById('replyPreview');
+const replyPreviewAuthor = document.getElementById('replyPreviewAuthor');
+const replyPreviewContent = document.getElementById('replyPreviewContent');
+const replyPreviewClose = document.getElementById('replyPreviewClose');
 const onlineCount = document.getElementById('onlineCount');
 const bannedOverlay = document.getElementById('bannedOverlay');
 const toast = document.getElementById('toast');
@@ -1086,6 +1355,17 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = String(text || '');
   return div.innerHTML;
+}
+
+// ================================================================
+// SURBRILLANCE RECHERCHE
+// ================================================================
+function highlightText(text, query) {
+  const safeText = escapeHtml(text || '');
+  if (!query) return safeText;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escaped})`, 'gi');
+  return safeText.replace(regex, '<mark>$1</mark>');
 }
 
 // ================================================================
@@ -1184,16 +1464,20 @@ function compressImage(file) {
 }
 
 // ================================================================
-// RENDU DES MESSAGES — LOGIQUE FORUM
+// RENDU DES MESSAGES
 // ================================================================
 function renderMessages() {
   if (!messagesContainer) return;
 
-  if (messages.length === 0) {
+  const dataToRender = isSearching && searchQuery
+    ? filteredMessages
+    : messages;
+
+  if (dataToRender.length === 0) {
     messagesContainer.innerHTML = `
       <div class="empty-chat">
-        <i class="fas fa-comments"></i>
-        <p>Aucun message pour le moment.<br>Sois le premier à écrire !</p>
+        <i class="fas fa-${isSearching ? 'search' : 'comments'}"></i>
+        <p>${isSearching ? 'Aucun résultat' : 'Aucun message pour le moment.<br>Sois le premier à écrire !'}</p>
       </div>
     `;
     return;
@@ -1202,7 +1486,7 @@ function renderMessages() {
   let lastDay = '';
   let html = '';
 
-  messages.forEach(msg => {
+  dataToRender.forEach(msg => {
     if (!msg.createdAt) return;
 
     const date = msg.createdAt?.toDate ? msg.createdAt.toDate() : new Date(msg.createdAt);
@@ -1214,22 +1498,32 @@ function renderMessages() {
     }
 
     const isSelf = msg.userId === currentUid;
-    const isDeleted = msg.deleted === true;
     const initial = (msg.userName || 'U').charAt(0).toUpperCase();
 
+    // Contenu de la bulle
     let bubbleContent = '';
-    if (isDeleted) {
-      bubbleContent = `<span class="msg-deleted">Message supprimé</span>`;
-    } else {
-      if (msg.content) {
-        bubbleContent += `<div>${escapeHtml(msg.content)}</div>`;
-      }
-      if (msg.imageBase64) {
-        bubbleContent += `<img src="${msg.imageBase64}" class="msg-image" alt="Image" data-img="${msg.id}">`;
-      }
+
+    // Réponse (citation)
+    if (msg.replyTo) {
+      const replyPreviewText = msg.replyTo.type === 'image'
+        ? '📷 Photo'
+        : (msg.replyTo.content || '').substring(0, 80);
+      bubbleContent += `
+        <div class="reply-quote" data-reply-id="${msg.replyTo.id}">
+          <span class="reply-author">${escapeHtml(msg.replyTo.author || 'Inconnu')}</span>
+          <span class="reply-content">${highlightText(replyPreviewText, searchQuery)}</span>
+        </div>
+      `;
     }
 
-    // ✅ Avatar + nom seulement pour les messages reçus (logique forum)
+    if (msg.content) {
+      bubbleContent += `<div>${highlightText(msg.content, searchQuery)}</div>`;
+    }
+    if (msg.imageBase64) {
+      bubbleContent += `<img src="${msg.imageBase64}" class="msg-image" alt="Image" data-img="${msg.id}">`;
+    }
+
+    // Avatar + nom pour les messages reçus
     const senderBlock = !isSelf
       ? `<div class="message-sender">
            <div class="avatar-small" ${msg.userAvatar ? `style="background-image:url('${msg.userAvatar}');"` : ''}>
@@ -1239,11 +1533,13 @@ function renderMessages() {
          </div>`
       : '';
 
-    // ✅ Heure DANS la bulle (logique forum)
     const timeHtml = `<span class="msg-time">${formatTime(msg.createdAt)}</span>`;
 
     html += `
       <div class="message-wrapper ${isSelf ? 'me' : 'other'}" data-msg-id="${msg.id}">
+        <div class="swipe-indicator">
+          <i class="fas fa-reply"></i>
+        </div>
         ${senderBlock}
         <div class="message-bubble">
           ${bubbleContent}
@@ -1255,44 +1551,145 @@ function renderMessages() {
 
   messagesContainer.innerHTML = html;
 
-  // Événements appui long
-  messagesContainer.querySelectorAll('.message-wrapper').forEach((msgEl, index) => {
-    const messageData = messages[index];
+  // Attacher événements
+  attachMessageEvents();
+
+  // Auto-scroll (sauf si recherche)
+  if (!isSearching) {
+    const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 150;
+    if (isAtBottom) {
+      setTimeout(() => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 50);
+    }
+  }
+}
+
+// ================================================================
+// ÉVÉNEMENTS SUR LES MESSAGES (appui long, swipe, images)
+// ================================================================
+function attachMessageEvents() {
+  // Images (zoom)
+  messagesContainer.querySelectorAll('.msg-image').forEach(img => {
+    img.addEventListener('click', () => openImageModal(img.src));
+  });
+
+  // Clic sur citation → scroll vers le message original
+  messagesContainer.querySelectorAll('.reply-quote').forEach(quote => {
+    quote.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const replyId = quote.dataset.replyId;
+      scrollToMessage(replyId);
+    });
+  });
+
+  // Swipe + appui long
+  messagesContainer.querySelectorAll('.message-wrapper').forEach((msgEl) => {
+    const msgId = msgEl.dataset.msgId;
+    const messageData = messages.find(m => m.id === msgId);
     if (!messageData) return;
 
+    // === Clic droit (desktop) ===
     msgEl.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       openMessageMenu(messageData);
     });
 
-    msgEl.addEventListener('touchstart', () => {
+    // === Appui long (mobile) ===
+    msgEl.addEventListener('touchstart', (e) => {
       longPressTriggered = false;
       longPressTimer = setTimeout(() => {
         longPressTriggered = true;
         if (navigator.vibrate) navigator.vibrate(30);
         openMessageMenu(messageData);
       }, 500);
+
+      // Init swipe
+      swipeStartX = e.touches[0].clientX;
+      swipeCurrentX = swipeStartX;
+      swipeActiveEl = msgEl;
+      swipeActiveId = msgId;
+      swipeTriggered = false;
     }, { passive: true });
 
-    msgEl.addEventListener('touchend', () => clearTimeout(longPressTimer), { passive: true });
-    msgEl.addEventListener('touchmove', () => clearTimeout(longPressTimer), { passive: true });
-    msgEl.addEventListener('touchcancel', () => clearTimeout(longPressTimer), { passive: true });
-  });
+    msgEl.addEventListener('touchmove', (e) => {
+      if (!swipeActiveEl || swipeActiveEl !== msgEl) return;
+      swipeCurrentX = e.touches[0].clientX;
+      const deltaX = swipeCurrentX - swipeStartX;
 
-  // Zoom images
-  messagesContainer.querySelectorAll('.msg-image').forEach(img => {
-    img.addEventListener('click', () => {
-      openImageModal(img.src);
-    });
-  });
+      // On autorise le swipe dans les deux sens (mais surtout droite)
+      if (Math.abs(deltaX) > 10) {
+        clearTimeout(longPressTimer);
 
-  // Auto-scroll intelligent
-  const isAtBottom = messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 150;
-  if (isAtBottom) {
-    setTimeout(() => {
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 50);
+        // Vibration au seuil
+        if (Math.abs(deltaX) >= SWIPE_THRESHOLD && !swipeTriggered) {
+          swipeTriggered = true;
+          if (navigator.vibrate) navigator.vibrate(20);
+        }
+
+        // Animation
+        const limitedDelta = Math.max(-120, Math.min(120, deltaX));
+        msgEl.style.transform = `translateX(${limitedDelta}px)`;
+        msgEl.classList.add('swiping');
+
+        if (Math.abs(deltaX) >= SWIPE_TRIGGER) {
+          msgEl.classList.add('swipe-ready');
+        } else {
+          msgEl.classList.remove('swipe-ready');
+        }
+      }
+    }, { passive: true });
+
+    msgEl.addEventListener('touchend', () => {
+      clearTimeout(longPressTimer);
+      if (!swipeActiveEl || swipeActiveEl !== msgEl) return;
+
+      const deltaX = swipeCurrentX - swipeStartX;
+      const shouldReply = Math.abs(deltaX) >= SWIPE_TRIGGER;
+
+      // Reset visuel
+      msgEl.style.transform = '';
+      msgEl.classList.remove('swiping', 'swipe-ready');
+      swipeActiveEl = null;
+      swipeActiveId = null;
+
+      if (shouldReply && !longPressTriggered) {
+        startReply(messageData);
+      }
+
+      swipeStartX = 0;
+      swipeCurrentX = 0;
+      swipeTriggered = false;
+    }, { passive: true });
+
+    msgEl.addEventListener('touchcancel', () => {
+      clearTimeout(longPressTimer);
+      if (swipeActiveEl) {
+        swipeActiveEl.style.transform = '';
+        swipeActiveEl.classList.remove('swiping', 'swipe-ready');
+      }
+      swipeActiveEl = null;
+      swipeActiveId = null;
+      swipeStartX = 0;
+      swipeCurrentX = 0;
+      swipeTriggered = false;
+    }, { passive: true });
+  });
+}
+
+// ================================================================
+// SCROLL VERS UN MESSAGE
+// ================================================================
+function scrollToMessage(msgId) {
+  const el = messagesContainer.querySelector(`[data-msg-id="${msgId}"]`);
+  if (!el) {
+    showToast('Message original introuvable', 'info');
+    return;
   }
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.style.transition = 'background 0.3s ease';
+  el.style.background = 'rgba(184,134,11,0.2)';
+  setTimeout(() => { el.style.background = ''; }, 1200);
 }
 
 // ================================================================
@@ -1316,7 +1713,7 @@ function loadMessages() {
         id: d.id,
         ...d.data()
       }));
-      renderMessages();
+      applySearch();
     },
     (error) => {
       console.warn('Erreur messages:', error);
@@ -1330,6 +1727,82 @@ function loadMessages() {
       }
     }
   );
+}
+
+// ================================================================
+// RECHERCHE
+// ================================================================
+function applySearch() {
+  if (!searchQuery || !searchQuery.trim()) {
+    filteredMessages = messages;
+    isSearching = false;
+  } else {
+    const q = searchQuery.toLowerCase();
+    filteredMessages = messages.filter(m => {
+      if (m.content && m.content.toLowerCase().includes(q)) return true;
+      if (m.replyTo?.content && m.replyTo.content.toLowerCase().includes(q)) return true;
+      if (m.userName && m.userName.toLowerCase().includes(q)) return true;
+      return false;
+    });
+    isSearching = true;
+  }
+  renderMessages();
+}
+
+if (searchBtn) {
+  searchBtn.addEventListener('click', () => {
+    mainHeader.style.display = 'none';
+    searchBar.classList.add('show');
+    searchInput.focus();
+  });
+}
+
+if (searchClose) {
+  searchClose.addEventListener('click', () => {
+    searchBar.classList.remove('show');
+    mainHeader.style.display = 'flex';
+    searchInput.value = '';
+    searchQuery = '';
+    applySearch();
+  });
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim();
+    applySearch();
+  });
+}
+
+// ================================================================
+// RÉPONSE (reply)
+// ================================================================
+function startReply(messageData) {
+  if (!messageData) return;
+
+  const isImage = !!messageData.imageBase64;
+  const content = isImage ? '📷 Photo' : (messageData.content || '');
+
+  currentReply = {
+    id: messageData.id,
+    author: messageData.userName || 'Anonyme',
+    content: content.substring(0, 100),
+    type: isImage ? 'image' : 'text'
+  };
+
+  if (replyPreviewAuthor) replyPreviewAuthor.textContent = currentReply.author;
+  if (replyPreviewContent) replyPreviewContent.textContent = currentReply.content;
+  if (replyPreview) replyPreview.classList.add('show');
+  if (messageInput) messageInput.focus();
+}
+
+function cancelReply() {
+  currentReply = null;
+  if (replyPreview) replyPreview.classList.remove('show');
+}
+
+if (replyPreviewClose) {
+  replyPreviewClose.addEventListener('click', cancelReply);
 }
 
 // ================================================================
@@ -1363,9 +1836,12 @@ async function sendMessage() {
       userEmail: currentUserData?.email || '',
       userAvatar: currentUserData?.profilePicture || null,
       content: content || '',
-      createdAt: serverTimestamp(),
-      deleted: false
+      createdAt: serverTimestamp()
     };
+
+    if (currentReply) {
+      messageData.replyTo = { ...currentReply };
+    }
 
     if (hasImage) {
       messageData.imageBase64 = pendingImageBase64;
@@ -1374,6 +1850,7 @@ async function sendMessage() {
 
     await addDoc(collection(db, 'groups', GROUP_ID, 'messages'), messageData);
 
+    // Reset
     messageInput.value = '';
     messageInput.style.height = 'auto';
     const wrap = messageInput.closest('.message-input-wrap');
@@ -1383,6 +1860,7 @@ async function sendMessage() {
     if (imagePreview) imagePreview.classList.remove('show');
     if (imagePreviewImg) imagePreviewImg.src = '';
     if (imageInput) imageInput.value = '';
+    cancelReply();
     updateSendButton();
 
   } catch (error) {
@@ -1405,7 +1883,7 @@ function updateSendButton() {
 }
 
 // ================================================================
-// ÉVÉNEMENTS INPUT
+// INPUT EVENTS
 // ================================================================
 if (messageInput) {
   messageInput.addEventListener('input', () => {
@@ -1429,6 +1907,9 @@ if (messageInput) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (!sendBtn.disabled) sendMessage();
+    }
+    if (e.key === 'Escape' && currentReply) {
+      cancelReply();
     }
   });
 }
@@ -1601,11 +2082,14 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (imageModal && imageModal.classList.contains('show')) closeImageModal();
     if (confirmModal && confirmModal.classList.contains('show')) closeConfirm();
+    if (searchBar && searchBar.classList.contains('show')) {
+      searchClose.click();
+    }
   }
 });
 
 // ================================================================
-// MESSAGE CONTEXT MENU
+// MESSAGE CONTEXT MENU — ENRICHI
 // ================================================================
 const msgMenuOverlay = document.getElementById('msgMenuOverlay');
 const msgMenuSheet = document.getElementById('msgMenuSheet');
@@ -1614,13 +2098,15 @@ function openMessageMenu(messageData) {
   if (!messageData || !msgMenuOverlay || !msgMenuSheet) return;
 
   const isAdmin = currentUserData?.email === ADMIN_EMAIL;
-  const isDeleted = messageData.deleted === true;
+  const isSelf = messageData.userId === currentUid;
+  const canDelete = isSelf || isAdmin;
   const isAdminMsg = messageData.userEmail === ADMIN_EMAIL;
   const authorName = messageData.userName || 'Anonyme';
 
   let menuItems = '';
 
-  if (messageData.content && !isDeleted) {
+  // Copier
+  if (messageData.content) {
     menuItems += `
       <button class="msg-menu-item" data-action="copy">
         <i class="fas fa-copy"></i>
@@ -1629,16 +2115,26 @@ function openMessageMenu(messageData) {
     `;
   }
 
-  if (isAdmin && !isDeleted) {
+  // Répondre
+  menuItems += `
+    <button class="msg-menu-item" data-action="reply">
+      <i class="fas fa-reply"></i>
+      <span>Répondre</span>
+    </button>
+  `;
+
+  // Supprimer
+  if (canDelete) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="delete">
         <i class="fas fa-trash"></i>
-        <span>Supprimer le message</span>
+        <span>Supprimer${isAdmin && !isSelf ? ' (admin)' : ''}</span>
       </button>
     `;
   }
 
-  if (isAdmin && !isAdminMsg && !isDeleted) {
+  // Bannir (admin, pas sur ses propres messages)
+  if (isAdmin && !isAdminMsg) {
     menuItems += `
       <button class="msg-menu-item danger" data-action="ban">
         <i class="fas fa-ban"></i>
@@ -1671,6 +2167,8 @@ function openMessageMenu(messageData) {
 
       if (action === 'copy') {
         copyMessageText(messageData.content);
+      } else if (action === 'reply') {
+        startReply(messageData);
       } else if (action === 'delete') {
         deleteMessage(messageData.id);
       } else if (action === 'ban') {
@@ -1715,19 +2213,15 @@ async function copyMessageText(text) {
 }
 
 // ================================================================
-// ACTIONS ADMIN
+// SUPPRESSION DÉFINITIVE
 // ================================================================
 function deleteMessage(messageId) {
   openConfirm(
     'Supprimer ce message ?',
-    'Le message sera marqué comme supprimé pour tout le monde.',
+    'Le message sera définitivement supprimé pour tout le monde.',
     async () => {
       try {
-        await updateDoc(doc(db, 'groups', GROUP_ID, 'messages', messageId), {
-          deleted: true,
-          deletedAt: serverTimestamp(),
-          deletedBy: currentUid
-        });
+        await deleteDoc(doc(db, 'groups', GROUP_ID, 'messages', messageId));
         showToast('Message supprimé', 'success');
       } catch (e) {
         showToast('Erreur: ' + e.message, 'error');
