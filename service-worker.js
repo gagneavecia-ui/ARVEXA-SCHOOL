@@ -4,7 +4,7 @@
 // Ne touche PAS aux CDN externes (Firebase, Google Fonts, FontAwesome)
 // ================================================================
 
-const CACHE_VERSION = 'arvexa-v1.0.8';
+const CACHE_VERSION = 'arvexa-v1.0.9';
 const CACHE_STATIC = `${CACHE_VERSION}-static`;
 const CACHE_DYNAMIC = `${CACHE_VERSION}-dynamic`;
 
@@ -27,6 +27,7 @@ const ESSENTIAL_FILES = [
   './groupe.html',
   './manifest.json',
   './icon.png',
+  './tableau-periodique.html',
   './register-sw.js',
   './register-fcm-sw.js',
   './firebase-messaging-sw.js'
