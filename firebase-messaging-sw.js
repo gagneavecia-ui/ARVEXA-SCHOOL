@@ -1,20 +1,15 @@
-/* =========================================================
-   firebase-messaging-sw.js
-   ARVEXA School — Firebase Cloud Messaging
-   ========================================================= */
+// ================================================================
+// FIREBASE MESSAGING SERVICE WORKER — ARVEXA School
+// Version : 1.0.0
+// ================================================================
 
-importScripts(
-  "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js"
-);
+// ⚡ Imports FCM (version compat, obligatoire pour Service Worker)
+importScripts('https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging-compat.js');
 
-importScripts(
-  "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging-compat.js"
-);
-
-// =========================================================
-// FIREBASE CONFIG
-// =========================================================
-
+// ================================================================
+// INITIALISATION FIREBASE
+// ================================================================
 firebase.initializeApp({
   apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
   authDomain: "arvexa-fbf10.firebaseapp.com",
@@ -26,126 +21,72 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// =========================================================
-// NOTIFICATIONS EN ARRIÈRE-PLAN
-// =========================================================
-
+// ================================================================
+// MESSAGES EN ARRIÈRE-PLAN
+// ================================================================
 messaging.onBackgroundMessage((payload) => {
+  console.log('[FCM-SW] Message reçu en arrière-plan:', payload);
 
-  console.log(
-    "[ARVEXA FCM] Notification reçue :",
-    payload
-  );
+  const notificationTitle = payload.notification?.title || payload.data?.title || 'ARVEXA School';
+  const notificationBody = payload.notification?.body || payload.data?.body || '';
+  const notificationIcon = payload.notification?.icon || 'icon.png';
+  const clickAction = payload.data?.click_action || payload.fcmOptions?.link || 'notifications.html';
 
-  const notification = payload.notification || {};
-  const data = payload.data || {};
-
-  const title =
-    notification.title ||
-    data.title ||
-    "ARVEXA School";
-
-  const body =
-    notification.body ||
-    data.body ||
-    "Nouvelle notification";
-
-  const icon =
-    notification.icon ||
-    data.icon ||
-    "/icon.png";
-
-  const clickAction =
-    data.clickAction ||
-    "/notifications.html";
-
-  const type = data.type || "info";
-
-  const options = {
-    body: body,
-
-    icon: icon,
-
-    badge: "/icon.png",
-
-    tag: `arvexa-${type}-${Date.now()}`,
-
+  const notificationOptions = {
+    body: notificationBody,
+    icon: notificationIcon,
+    badge: 'icon.png',
+    vibrate: [200, 100, 200],
+    tag: 'arvexa-notification-' + Date.now(),
+    renotify: true,
+    requireInteraction: false,
     data: {
-      ...data,
-      clickAction: clickAction
+      url: clickAction,
+      timestamp: Date.now()
     }
   };
 
-  self.registration.showNotification(
-    title,
-    options
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// ================================================================
+// CLIC SUR LA NOTIFICATION
+// ================================================================
+self.addEventListener('notificationclick', (event) => {
+  console.log('[FCM-SW] Notification cliquée:', event.notification.data);
+  event.notification.close();
+
+  const url = event.notification.data?.url || 'notifications.html';
+
+  event.waitUntil(
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then((clientList) => {
+      // Si un onglet ARVEXA est déjà ouvert → focus
+      for (const client of clientList) {
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
+          // Naviguer vers la page de destination
+          if (client.url.includes('notifications.html') === false && url.includes('notifications.html')) {
+            client.navigate(url);
+          }
+          return client.focus();
+        }
+      }
+
+      // Sinon → ouvrir un nouvel onglet
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+    })
   );
 });
 
-// =========================================================
-// CLIC SUR UNE NOTIFICATION
-// =========================================================
+// ================================================================
+// GESTION DES FERMETURES
+// ================================================================
+self.addEventListener('notificationclose', (event) => {
+  console.log('[FCM-SW] Notification fermée:', event.notification.tag);
+});
 
-self.addEventListener(
-  "notificationclick",
-  (event) => {
-
-    event.notification.close();
-
-    if (event.action === "dismiss") {
-      return;
-    }
-
-    const data =
-      event.notification.data || {};
-
-    const clickAction =
-      data.clickAction ||
-      "/notifications.html";
-
-    const url =
-      new URL(
-        clickAction,
-        self.location.origin
-      ).href;
-
-    event.waitUntil(
-
-      self.clients
-        .matchAll({
-          type: "window",
-          includeUncontrolled: true
-        })
-        .then((clients) => {
-
-          for (const client of clients) {
-
-            if (
-              client.url.startsWith(
-                self.location.origin
-              )
-            ) {
-
-              if ("navigate" in client) {
-                client.navigate(url);
-              }
-
-              if ("focus" in client) {
-                return client.focus();
-              }
-            }
-          }
-
-          if (self.clients.openWindow) {
-            return self.clients.openWindow(url);
-          }
-
-        })
-
-    );
-  }
-);
-
-console.log(
-  "[ARVEXA FCM] Service Worker chargé."
-);
+console.log('[FCM-SW] Firebase Messaging Service Worker chargé.');
