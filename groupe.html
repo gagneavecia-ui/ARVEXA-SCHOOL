@@ -1471,33 +1471,37 @@ function updateSendButton() {
   sendBtn.disabled = (!hasContent && !hasImage) || isBanned;
 }
 
-messageInput.addEventListener('input', () => {
-  const wrap = messageInput.closest('.message-input-wrap');
+if (messageInput) {
+  messageInput.addEventListener('input', () => {
+    const wrap = messageInput.closest('.message-input-wrap');
 
-  // Auto-resize
-  messageInput.style.height = 'auto';
-  const newHeight = Math.min(messageInput.scrollHeight, 80);
-  messageInput.style.height = newHeight + 'px';
+    // Auto-resize
+    messageInput.style.height = 'auto';
+    const newHeight = Math.min(messageInput.scrollHeight, 80);
+    messageInput.style.height = newHeight + 'px';
 
-  // Toggle multiline si besoin
-  if (newHeight > 30) {
-    wrap.classList.add('multiline');
-  } else {
-    wrap.classList.remove('multiline');
-  }
+    // Toggle multiline si besoin
+    if (newHeight > 30) {
+      wrap.classList.add('multiline');
+    } else {
+      wrap.classList.remove('multiline');
+    }
 
-  updateSendButton();
-});
+    updateSendButton();
+  });
 
-messageInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    if (!sendBtn.disabled) sendMessage();
-  }
-});
+  messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!sendBtn.disabled) sendMessage();
+    }
+  });
+}
 
-sendBtn.addEventListener('click', sendMessage);
-
+if (sendBtn) {
+  sendBtn.addEventListener('click', sendMessage);
+}
+  
 // ================================================================
 // EMOJI PICKER
 // ================================================================
