@@ -4,2579 +4,1344 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <meta name="theme-color" content="#0A0A0A">
-  <meta name="description" content="ARVEXa School - Notifications">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="ARVEXA School - Notifications">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" href="icon.png" type="image/png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="register-sw.js" defer></script>
 
-<style>
-/* ============================================================
-   ROOT — Design system ARVEXa
-   ============================================================ */
-:root {
-  --primary: #1A3A2A;
-  --primary-dark: #0A1A12;
-  --primary-light: #2A5A3A;
-  --accent: #B8860B;
-  --accent-bright: #E0B84A;
-  --accent-dim: rgba(184, 134, 11, 0.08);
-  --success: #2D7D5A;
-  --danger: #B85C3A;
-  --warning: #D4A017;
-  --info: #3498DB;
-  --bg-dark: #0A0A0A;
-  --bg-surface: #141414;
-  --bg-card: rgba(20, 20, 20, 0.7);
-  --text-light: #F5F0E8;
-  --text-dim: #8A8A7A;
-  --text-muted: #5A5A4A;
-  --card-border: rgba(184, 134, 11, 0.08);
-  --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --radius: 16px;
-  --sidebar-width: 280px;
-  --header-height: 64px;
-}
+  <style>
+    /* ============================================================
+       ROOT — Design system ARVEXA
+       ============================================================ */
+    :root {
+      --primary: #1A3A2A;
+      --accent: #B8860B;
+      --accent-bright: #E0B84A;
+      --accent-dim: rgba(184, 134, 11, 0.08);
+      --success: #2D7D5A;
+      --success-light: #3AB67E;
+      --danger: #B85C3A;
+      --danger-light: #f87171;
+      --warning: #D4A017;
+      --info: #4AAFE0;
+      --blue: #60a5fa;
+      --bg-dark: #0A0A0A;
+      --bg-surface: #141414;
+      --bg-card: rgba(20, 20, 20, 0.7);
+      --text-light: #F5F0E8;
+      --text-dim: #8A8A7A;
+      --text-muted: #5A5A4A;
+      --text-body: #cfd0cc;
+      --card-border: rgba(184, 134, 11, 0.08);
+      --border-soft: rgba(255, 255, 255, 0.05);
+      --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      --transition-fast: all 0.15s ease;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      --sidebar-width: 240px;
+      --header-height: 64px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; width: 100%; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
 
-body {
-  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-}
+    body {
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
 
-/* ===== BACKGROUND ===== */
-.gradient-bg {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
-  background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
-              radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
-              linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
-}
-.glow {
-  position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
-  opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
-}
-.glow-1 { width: 350px; height: 350px; background: rgba(26,58,42,0.18); top: -80px; right: -80px; }
-.glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.05); bottom: 0; left: 0; animation-delay: -4s; }
-.glow-3 { width: 250px; height: 250px; background: rgba(26,58,42,0.1); top: 30%; left: 60%; transform: translate(-50%,-50%); animation-delay: -8s; }
-@keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
+    /* ============================================================
+       BACKGROUND
+       ============================================================ */
+    .gradient-bg {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
+      background: radial-gradient(ellipse 40% 30% at 30% 15%, rgba(26, 58, 42, 0.16) 0%, transparent 70%),
+                  radial-gradient(ellipse 35% 25% at 75% 85%, rgba(184, 134, 11, 0.05) 0%, transparent 60%),
+                  linear-gradient(180deg, #0A0A0A 0%, #060606 100%);
+    }
+    .glow {
+      position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: -1;
+      opacity: 0.15; animation: glowMove 10s ease-in-out infinite alternate;
+    }
+    .glow-1 { width: 350px; height: 350px; background: rgba(26,58,42,0.18); top: -80px; right: -80px; }
+    .glow-2 { width: 200px; height: 200px; background: rgba(184,134,11,0.05); bottom: 0; left: 0; animation-delay: -4s; }
+    @keyframes glowMove { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-20px) scale(1.1); } }
 
-.sidebar-overlay {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-  background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; transition: opacity 0.3s ease;
-}
-.sidebar-overlay.active { display: block; opacity: 1; }
+    .sidebar-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+      background: rgba(0,0,0,0.6); z-index: 99; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active { display: block; opacity: 1; }
 
-/* ============================================================
-   SIDEBAR
-   ============================================================ */
-.sidebar {
-  position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
-  background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
-  border-right: 1px solid rgba(184, 134, 11, 0.06);
-  padding: 24px 16px; display: flex; flex-direction: column; z-index: 100;
-  overflow-y: auto; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-.sidebar.open { left: 0; }
-.sidebar .logo {
-  display: flex; align-items: center; text-decoration: none; color: var(--text-light);
-  font-size: 20px; font-weight: 700; font-family: 'Playfair Display', 'Georgia', serif;
-  letter-spacing: 2px; padding-bottom: 20px; margin-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.sidebar .logo span {
-  background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
-  background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; font-style: italic; animation: shimmerText 4s linear infinite;
-}
-@keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
-.sidebar .nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.sidebar .nav a {
-  display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
-  color: var(--text-dim); text-decoration: none; transition: var(--transition);
-  font-size: 13px; font-weight: 500;
-}
-.sidebar .nav a i { width: 20px; text-align: center; font-size: 15px; }
-.sidebar .nav a:hover { color: var(--text-light); background: rgba(255,255,255,0.03); }
-.sidebar .nav a.active { color: var(--text-light); background: rgba(184, 134, 11, 0.08); border: 1px solid rgba(184, 134, 11, 0.08); }
-.sidebar .nav a.active i { color: var(--accent); }
-.sidebar .nav-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
-.sidebar .nav-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
-.sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
-.sidebar .nav-bottom a:hover { color: var(--text-dim); }
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .sidebar {
+      position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
+      background: rgba(10, 10, 10, 0.97); backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid rgba(184, 134, 11, 0.06);
+      padding: calc(24px + var(--safe-top)) 16px calc(24px + var(--safe-bottom));
+      display: flex; flex-direction: column; z-index: 100;
+      overflow-y: auto; transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .sidebar.open { left: 0; }
+    .sidebar .logo {
+      display: flex; align-items: center; text-decoration: none; color: var(--text-light);
+      font-size: 20px; font-weight: 700; font-family: 'Playfair Display', Georgia, serif;
+      letter-spacing: 2px; padding-bottom: 20px; margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .sidebar .logo span {
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; font-style: italic; animation: shimmerText 4s linear infinite;
+      margin-left: 4px;
+    }
+    @keyframes shimmerText { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
+    .sidebar .nav { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .sidebar .nav a {
+      display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px;
+      color: var(--text-dim); text-decoration: none; transition: var(--transition);
+      font-size: 13px; font-weight: 500;
+    }
+    .sidebar .nav a i { width: 20px; text-align: center; font-size: 15px; }
+    .sidebar .nav a:hover { color: var(--text-light); background: rgba(255,255,255,0.03); }
+    .sidebar .nav a.active { color: var(--text-light); background: rgba(184, 134, 11, 0.08); border: 1px solid rgba(184, 134, 11, 0.08); }
+    .sidebar .nav a.active i { color: var(--accent); }
+    .sidebar .nav-divider { height: 1px; background: rgba(255,255,255,0.04); margin: 6px 0; }
+    .sidebar .nav-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.04); }
+    .sidebar .nav-bottom a { color: var(--text-muted); font-size: 12px; }
+    .sidebar .nav-bottom a:hover { color: var(--text-dim); }
 
-/* ============================================================
-   MAIN / HEADER
-   ============================================================ */
-.main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
+    /* ============================================================
+       MAIN / HEADER
+       ============================================================ */
+    .main-content { flex: 1; width: 100%; min-height: 100vh; padding-bottom: 32px; }
 
-.header {
-  position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
-  justify-content: space-between; padding: 10px 16px; background: rgba(10, 10, 10, 0.92);
-  backdrop-filter: blur(12px); border-bottom: 1px solid rgba(184, 134, 11, 0.06);
-  gap: 12px; min-height: var(--header-height);
-}
-.header .header-left { display: flex; align-items: center; gap: 12px; }
-.header .menu-toggle {
-  display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
-  border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
-  color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
-}
-.header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
-.header .page-title { font-size: 16px; font-weight: 700; color: var(--text-light); font-family: 'Playfair Display', serif; }
-.header .page-title span { color: var(--accent-bright); }
-.header .header-actions { display: flex; align-items: center; gap: 6px; }
-.header .header-actions button {
-  width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.04);
-  color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 15px;
-  display: flex; align-items: center; justify-content: center; position: relative;
-}
-.header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
-.header .header-badge {
-  position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px;
-  border-radius: 10px; background: var(--danger); color: #fff; font-size: 9px;
-  font-weight: 700; display: flex; align-items: center; justify-content: center;
-  padding: 0 4px; border: 2px solid var(--bg-dark);
-}
+    .header {
+      position: sticky; top: 0; z-index: 50; display: flex; align-items: center;
+      justify-content: space-between; padding: calc(10px + var(--safe-top)) 16px 10px;
+      background: rgba(10, 10, 10, 0.92);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184, 134, 11, 0.06);
+      gap: 12px; min-height: var(--header-height);
+    }
+    .header .header-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+    .header .menu-toggle {
+      display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); background: transparent;
+      color: var(--text-dim); cursor: pointer; transition: var(--transition); font-size: 16px;
+      flex-shrink: 0;
+    }
+    .header .menu-toggle:hover { border-color: rgba(184, 134, 11, 0.14); color: var(--text-light); }
+    .header .page-title {
+      font-size: clamp(13px, 1.6vw, 15px);
+      font-weight: 600; color: var(--text-light); font-family: 'Playfair Display', serif;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .header .page-title i { color: var(--accent-bright); margin-right: 6px; font-size: 14px; }
+    .header .header-actions { display: flex; align-items: center; gap: 6px; }
+    .header .header-actions button {
+      display: flex; align-items: center; justify-content: center;
+      height: 36px; border-radius: 10px; border: none;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-dim); cursor: pointer; transition: var(--transition);
+      font-size: 12px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      padding: 0 12px;
+      gap: 6px;
+    }
+    .header .header-actions button:hover { background: rgba(255,255,255,0.07); color: var(--text-light); }
+    .header .header-actions button i { font-size: 13px; }
+    .header .header-actions button.primary {
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A;
+    }
+    .header .header-actions button.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(184, 134, 11, 0.3);
+    }
+    .header .header-actions button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .header .header-actions button .count {
+      background: rgba(10, 10, 10, 0.3);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-size: 10px;
+    }
 
-.container { max-width: 900px; margin: 0 auto; padding: 16px 16px 20px; }
+    /* ============================================================
+       CONTAINER
+       ============================================================ */
+    .container { max-width: 720px; margin: 0 auto; padding: 12px 16px 20px; width: 100%; }
 
-/* ===== CARTES ===== */
-.card {
-  background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid var(--card-border);
-  border-radius: var(--radius); padding: 18px; transition: var(--transition);
-}
-.card:hover { border-color: rgba(184, 134, 11, 0.14); }
+    /* ============================================================
+       FILTRES
+       ============================================================ */
+    .filters {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover:not(.active) {
+      color: var(--text-dim);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .filter-btn.active {
+      background: rgba(184, 134, 11, 0.12);
+      color: var(--accent-bright);
+      border-color: rgba(184, 134, 11, 0.25);
+    }
+    .filter-btn .count {
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .filter-btn.active .count {
+      background: rgba(184, 134, 11, 0.2);
+    }
 
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 8px; padding: 11px 26px; border-radius: 30px;
-  border: none; background: linear-gradient(135deg, var(--accent-bright), var(--accent));
-  color: #0A0A0A; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition);
-  font-family: 'Inter', sans-serif; text-decoration: none;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(184,134,11,0.25); }
-.btn-primary:active { transform: scale(0.97); }
+    /* ============================================================
+       LISTE NOTIFICATIONS
+       ============================================================ */
+    .notif-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-.btn-secondary {
-  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 30px;
-  border: 1px solid rgba(255,255,255,0.08); background: transparent; color: var(--text-dim);
-  font-size: 12px; font-weight: 500; cursor: pointer; transition: var(--transition);
-  font-family: 'Inter', sans-serif; text-decoration: none;
-}
-.btn-secondary:hover { border-color: rgba(184,134,11,0.16); color: var(--text-light); background: rgba(255,255,255,0.03); }
+    .notif-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .notif-card:hover {
+      border-color: rgba(184, 134, 11, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    .notif-card.unread {
+      border-color: rgba(184, 134, 11, 0.15);
+      background: rgba(184, 134, 11, 0.03);
+    }
+    .notif-card.unread::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent-bright), var(--accent));
+    }
 
-.btn-danger {
-  display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 30px;
-  border: none; background: var(--danger); color: var(--text-light);
-  font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition);
-  font-family: 'Inter', sans-serif;
-}
-.btn-danger:hover { box-shadow: 0 4px 16px rgba(184,92,58,0.3); }
+    /* Icône par type */
+    .notif-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .notif-icon.info { background: rgba(74, 175, 224, 0.12); color: var(--info); }
+    .notif-icon.success { background: rgba(45, 125, 90, 0.12); color: var(--success-light); }
+    .notif-icon.warning { background: rgba(212, 160, 23, 0.12); color: var(--warning); }
+    .notif-icon.danger { background: rgba(184, 92, 58, 0.12); color: var(--danger-light); }
+    .notif-icon.announce { background: rgba(184, 134, 11, 0.12); color: var(--accent-bright); }
 
-/* ============================================================
-   PERMISSION BANNER
-   ============================================================ */
-.perm-banner {
-  display: none; padding: 16px 20px; border-radius: var(--radius); margin-bottom: 16px;
-  background: linear-gradient(135deg, rgba(184,134,11,0.08), rgba(26,58,42,0.08));
-  border: 1px solid rgba(184,134,11,0.15); align-items: center; gap: 14px;
-}
-.perm-banner.show { display: flex; }
-.perm-banner .perm-icon {
-  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
-  background: rgba(184,134,11,0.1); display: flex; align-items: center; justify-content: center;
-  font-size: 20px; color: var(--accent-bright);
-}
-.perm-banner .perm-text { flex: 1; }
-.perm-banner .perm-text h4 { font-size: 14px; font-weight: 600; color: var(--text-light); margin-bottom: 2px; }
-.perm-banner .perm-text p { font-size: 12px; color: var(--text-dim); }
+    /* Point bleu "non lu" */
+    .notif-icon.unread-dot::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--info);
+      border: 2px solid var(--bg-dark);
+      box-shadow: 0 0 8px var(--info);
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+    }
 
-/* ============================================================
-   NOTIFICATION STATS
-   ============================================================ */
-.stats-row {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;
-}
-.stat-mini {
-  text-align: center; padding: 14px 10px; border-radius: 14px; position: relative; overflow: hidden;
-  background: var(--bg-card); border: 1px solid var(--card-border);
-}
-.stat-mini::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-}
-.stat-mini.s1::before { background: var(--accent); }
-.stat-mini.s2::before { background: var(--danger); }
-.stat-mini.s3::before { background: var(--success); }
-.stat-mini .stat-icon { font-size: 18px; margin-bottom: 4px; }
-.stat-mini.s1 .stat-icon { color: var(--accent-bright); }
-.stat-mini.s2 .stat-icon { color: var(--danger); }
-.stat-mini.s3 .stat-icon { color: var(--success); }
-.stat-mini .stat-val { font-size: 22px; font-weight: 800; font-family: 'Playfair Display', serif; line-height: 1; }
-.stat-mini .stat-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+    /* Contenu */
+    .notif-content {
+      flex: 1;
+      min-width: 0;
+    }
 
-/* ============================================================
-   TOOLBAR
-   ============================================================ */
-.toolbar {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  margin-bottom: 14px; flex-wrap: wrap;
-}
-.filter-tabs { display: flex; gap: 4px; }
-.filter-tabs button {
-  padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 600;
-  border: 1px solid rgba(255,255,255,0.06); background: transparent;
-  color: var(--text-muted); cursor: pointer; transition: var(--transition);
-  font-family: 'Inter', sans-serif; white-space: nowrap;
-}
-.filter-tabs button:hover { border-color: rgba(184,134,11,0.14); color: var(--text-dim); }
-.filter-tabs button.active {
-  background: rgba(184,134,11,0.1); border-color: rgba(184,134,11,0.2); color: var(--accent-bright);
-}
-.toolbar-right { display: flex; gap: 6px; }
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
 
-/* ============================================================
-   NOTIFICATION CARDS
-   ============================================================ */
-.notif-list { display: flex; flex-direction: column; gap: 8px; }
+    .notif-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-light);
+      line-height: 1.3;
+      flex: 1;
+      min-width: 0;
+    }
+    .notif-card.unread .notif-title {
+      color: var(--accent-bright);
+    }
 
-.notif-card {
-  padding: 16px 18px; position: relative; cursor: pointer;
-}
-.notif-card::before {
-  content: ''; position: absolute; left: 0; top: 0; width: 3px; height: 100%;
-  border-radius: 3px 0 0 3px; transition: var(--transition);
-}
-.notif-card.unread::before { background: var(--accent-bright); }
-.notif-card.read::before { background: transparent; }
-.notif-card:hover { border-color: rgba(184,134,11,0.14); }
+    .notif-time {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
 
-.notif-top { display: flex; align-items: flex-start; gap: 12px; }
+    .notif-body {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
 
-.notif-icon-wrap {
-  width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 17px;
-}
-.notif-icon-wrap.info { background: rgba(52,152,219,0.12); color: var(--info); }
-.notif-icon-wrap.warning { background: rgba(212,160,23,0.12); color: var(--warning); }
-.notif-icon-wrap.success { background: rgba(45,125,90,0.12); color: var(--success); }
-.notif-icon-wrap.danger { background: rgba(184,92,58,0.12); color: var(--danger); }
-.notif-icon-wrap.announce { background: rgba(184,134,11,0.12); color: var(--accent-bright); }
-.notif-icon-wrap.system { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+    .notif-card.unread .notif-body {
+      color: var(--text-body);
+    }
 
-.notif-body { flex: 1; min-width: 0; }
-.notif-title {
-  font-size: 13px; font-weight: 600; color: var(--text-light); margin-bottom: 2px;
-  display: flex; align-items: center; gap: 6px;
-}
-.notif-title .unread-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--accent-bright);
-  flex-shrink: 0; animation: pulseDot 2s ease-in-out infinite;
-}
-@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-.notif-text { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 6px; word-wrap: break-word; }
-.notif-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
-.notif-meta .notif-type {
-  padding: 1px 7px; border-radius: 8px; font-size: 9px; font-weight: 600;
-  background: rgba(255,255,255,0.04); color: var(--text-muted);
-}
+    /* ============================================================
+       ÉTAT VIDE
+       ============================================================ */
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      min-height: 320px;
+      justify-content: center;
+    }
+    .empty-state .es-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(184, 134, 11, 0.06);
+      border: 1px solid rgba(184, 134, 11, 0.12);
+      font-size: 32px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .empty-state h4 {
+      font-size: 17px;
+      color: var(--text-light);
+      font-weight: 600;
+      font-family: 'Playfair Display', serif;
+    }
+    .empty-state p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      max-width: 320px;
+      line-height: 1.6;
+    }
 
-.notif-actions {
-  display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; margin-left: 4px;
-}
-.notif-act-btn {
-  width: 28px; height: 28px; border-radius: 8px; border: none;
-  background: transparent; color: var(--text-muted); cursor: pointer;
-  transition: var(--transition); font-size: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-.notif-act-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-light); }
-.notif-act-btn.del:hover { color: var(--danger); }
+    /* ============================================================
+       SKELETON
+       ============================================================ */
+    .skeleton-card {
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .skeleton-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,.03) 0%,
+        rgba(255,255,255,.08) 50%,
+        rgba(255,255,255,.03) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    .skeleton-content { flex: 1; }
+    .skeleton-line {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,.03) 0%,
+        rgba(255,255,255,.08) 50%,
+        rgba(255,255,255,.03) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      margin-bottom: 8px;
+    }
+    .skeleton-line.title { width: 60%; height: 14px; }
+    .skeleton-line.body { width: 90%; }
+    .skeleton-line.body2 { width: 70%; margin-bottom: 0; }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
-/* ============================================================
-   EMPTY / SKELETON
-   ============================================================ */
-.empty-state {
-  text-align: center; padding: 48px 20px;
-}
-.empty-state i { font-size: 48px; color: rgba(255,255,255,0.06); margin-bottom: 16px; }
-.empty-state h4 { font-size: 16px; color: var(--text-dim); margin-bottom: 6px; }
-.empty-state p { font-size: 13px; color: var(--text-muted); }
+    /* ============================================================
+       MODALE
+       ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .modal-overlay.show { opacity: 1; visibility: visible; }
 
-.skeleton { background: rgba(255,255,255,0.04); border-radius: 8px; animation: skeletonPulse 1.5s ease-in-out infinite; }
-@keyframes skeletonPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.85; } }
-.skeleton-card { height: 100px; border-radius: var(--radius); }
+    .modal-sheet {
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      background: var(--bg-surface);
+      border-radius: 24px 24px 0 0;
+      border-top: 1px solid rgba(184, 134, 11, 0.15);
+      padding: 24px 20px;
+      padding-bottom: calc(24px + var(--safe-bottom));
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow-y: auto;
+      position: relative;
+    }
+    .modal-overlay.show .modal-sheet { transform: translateY(0); }
 
-/* ============================================================
-   TOAST
-   ============================================================ */
-.toast {
-  position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%);
-  padding: 12px 24px; border-radius: 14px; background: var(--bg-surface);
-  border: 1px solid rgba(184,134,11,0.12); backdrop-filter: blur(12px);
-  display: flex; align-items: center; gap: 10px; z-index: 200;
-  transition: bottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-}
-.toast.show { bottom: 24px; }
-.toast-icon { font-size: 18px; }
-.toast-icon.success { color: var(--success); }
-.toast-icon.error { color: var(--danger); }
-.toast-icon.info { color: var(--accent-bright); }
-.toast-message { font-size: 13px; font-weight: 500; color: var(--text-light); }
+    .modal-sheet::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.15);
+      cursor: grab;
+      transition: background 0.2s ease;
+    }
+    .modal-sheet::before:hover { background: rgba(224, 184, 74, 0.4); }
 
-/* ============================================================
-   PUSH STATUS INDICATOR
-   ============================================================ */
-.push-status {
-  display: flex; align-items: center; gap: 8px; padding: 10px 14px;
-  border-radius: 12px; font-size: 12px; margin-bottom: 16px;
-  border: 1px solid rgba(255,255,255,0.04);
-}
-.push-status .push-dot {
-  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-}
-.push-status.active .push-dot { background: var(--success); box-shadow: 0 0 8px rgba(45,125,90,0.5); }
-.push-status.inactive .push-dot { background: var(--danger); }
-.push-status.pending .push-dot { background: var(--warning); animation: pulseDot 1.5s ease-in-out infinite; }
-.push-status.active { color: var(--success); background: rgba(45,125,90,0.05); }
-.push-status.inactive { color: var(--danger); background: rgba(184,92,58,0.05); }
-.push-status.pending { color: var(--warning); background: rgba(212,160,23,0.05); }
+    .modal-sheet::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 24px 24px 0 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-bright), var(--accent));
+    }
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
-@media (min-width: 1024px) {
-  .sidebar { left: 0 !important; }
-  .sidebar-overlay { display: none !important; }
-  .main-content { margin-left: var(--sidebar-width); }
-  .header .menu-toggle { display: none; }
-  .container { padding: 20px 32px 28px; }
-}
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 12px 0 16px;
+    }
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .modal-icon.info { background: rgba(74, 175, 224, 0.15); color: var(--info); }
+    .modal-icon.success { background: rgba(45, 125, 90, 0.15); color: var(--success-light); }
+    .modal-icon.warning { background: rgba(212, 160, 23, 0.15); color: var(--warning); }
+    .modal-icon.danger { background: rgba(184, 92, 58, 0.15); color: var(--danger-light); }
+    .modal-icon.announce { background: rgba(184, 134, 11, 0.15); color: var(--accent-bright); }
 
-@media (max-width: 480px) {
-  .stats-row { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .stat-mini .stat-val { font-size: 18px; }
-  .toolbar { flex-direction: column; align-items: stretch; }
-  .filter-tabs { overflow-x: auto; width: 100%; padding-bottom: 4px; }
-  .notif-top { gap: 8px; }
-}
-</style>
+    .modal-titles { flex: 1; min-width: 0; }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-light);
+      font-family: 'Playfair Display', serif;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .modal-date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: var(--transition);
+      z-index: 5;
+    }
+    .modal-close:hover {
+      border-color: rgba(184, 134, 11, 0.25);
+      color: var(--text-light);
+      background: rgba(184, 134, 11, 0.1);
+    }
+
+    .modal-body {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-body);
+      padding: 4px 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .modal-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 13px 18px;
+      border-radius: 30px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .modal-btn.primary {
+      background: linear-gradient(135deg, var(--accent-bright), var(--accent));
+      color: #0A0A0A;
+    }
+    .modal-btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(184, 134, 11, 0.3);
+    }
+    .modal-btn.secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-dim);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .modal-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-light);
+    }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      max-width: 90%;
+      text-align: center;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast .toast-icon { font-size: 14px; }
+    .toast.success .toast-icon { color: var(--success-light); }
+    .toast.info .toast-icon { color: var(--accent-bright); }
+    .toast.error .toast-icon { color: var(--danger-light); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (min-width: 768px) {
+      .sidebar { left: 0; display: flex; }
+      .sidebar-overlay { display: none !important; }
+      .main-content { margin-left: var(--sidebar-width); }
+      .header .menu-toggle { display: none; }
+    }
+
+    @media (max-width: 767px) {
+      .sidebar { left: -280px; }
+      .sidebar.open { left: 0; }
+      .container { padding: 10px 12px 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .header { padding: 8px 12px; padding-top: calc(8px + var(--safe-top)); min-height: 48px; }
+      .header .menu-toggle { width: 32px; height: 32px; font-size: 14px; }
+      .header .page-title { font-size: 13px; }
+      .header .header-actions button { height: 32px; padding: 0 10px; font-size: 11px; }
+
+      .container { padding: 10px 10px 16px; }
+      .notif-card { padding: 12px 14px; gap: 12px; }
+      .notif-icon { width: 38px; height: 38px; font-size: 16px; }
+      .notif-title { font-size: 13px; }
+      .notif-body { font-size: 12.5px; }
+      .notif-time { font-size: 10.5px; }
+
+      .modal-sheet { padding: 20px 16px; padding-bottom: calc(20px + var(--safe-bottom)); }
+      .modal-icon { width: 42px; height: 42px; font-size: 18px; }
+      .modal-title { font-size: 17px; }
+      .modal-body { font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(184, 134, 11, 0.25); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(184, 134, 11, 0.4); }
+  </style>
 </head>
 <body>
 
-<div class="gradient-bg"></div>
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
-<div class="glow glow-3"></div>
+  <div class="gradient-bg"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
 
-<!-- ===== OVERLAY ===== -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-<!-- ===== SIDEBAR ===== -->
-<aside class="sidebar" id="sidebar">
-  <a href="index.html" class="logo">ARVEX<span>a</span></a>
-  <nav class="nav">
-    <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
-    <a href="cours.html"><i class="fas fa-book-open"></i> Mes cours</a>
-    <a href="exercices.html"><i class="fas fa-pencil-alt"></i> Exercices</a>
-    <a href="corrections.html"><i class="fas fa-check-double"></i> Corrections</a>
-    <a href="fiches.html"><i class="fas fa-file-alt"></i> Fiches</a>
-    <a href="ai.html"><i class="fas fa-robot"></i> ARV-ASSISTANT</a>
-    <div class="nav-divider"></div>
-    <a href="progression.html"><i class="fas fa-chart-line"></i> Ma progression</a>
-    <a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a>
-    <a href="avis.html"><i class="fas fa-star"></i> Avis</a>
-    <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
-    <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
-    <div class="nav-divider"></div>
-    <div class="nav-bottom">
-      <a href="parametres.html"><i class="fas fa-cog"></i> Paramètres</a>
-      <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
-    </div>
-  </nav>
-</aside>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="logo">ARVEX<span>A School</span></a>
+    <nav class="nav">
+      <a href="index.html"><i class="fas fa-home"></i> Accueil</a>
+      <a href="profil.html"><i class="fas fa-user"></i> Mon profil</a>
+      <a href="abonnement.html"><i class="fas fa-crown"></i> Mon abonnement</a>
+      <a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a>
+      <div class="nav-divider"></div>
+      <div class="nav-bottom">
+        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+      </div>
+    </nav>
+  </aside>
 
-<!-- ===== MAIN ===== -->
-<div class="main-content">
+  <!-- ===== MAIN ===== -->
+  <div class="main-content">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header-left">
-      <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="page-title">Notifications <span>&</span> Alertes</div>
-    </div>
-    <div class="header-actions">
-      <button id="markAllReadBtn" aria-label="Tout marquer lu" title="Tout marquer comme lu">
-        <i class="fas fa-check-double"></i>
-      </button>
-      <button id="clearAllBtn" aria-label="Tout supprimer" title="Supprimer tout">
-        <i class="fas fa-trash-alt"></i>
-      </button>
-    </div>
-  </header>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="page-title">
+          <i class="fas fa-bell"></i> Notifications
+        </h1>
+      </div>
+      <div class="header-actions">
+        <button id="markAllReadBtn" disabled>
+          <i class="fas fa-check-double"></i>
+          <span>Tout lire</span>
+          <span class="count" id="unreadCountHeader">0</span>
+        </button>
+      </div>
+    </header>
 
-  <!-- CONTAINER -->
-  <div class="container">
+    <!-- ===== CONTAINER ===== -->
+    <div class="container">
 
-    <!-- SKELETON -->
-    <div id="skeletonLoading">
-      <div class="skeleton skeleton-card" style="height:80px;"></div>
-      <div class="skeleton skeleton-card" style="height:80px; margin-top:8px;"></div>
-      <div class="skeleton skeleton-card" style="height:80px; margin-top:8px;"></div>
-      <div class="skeleton skeleton-card" style="height:80px; margin-top:8px;"></div>
-    </div>
-
-    <!-- DYNAMIC -->
-    <div id="dynamicContent" style="display:none;">
-
-      <!-- PERMISSION BANNER -->
-      <div class="perm-banner" id="permBanner">
-        <div class="perm-icon"><i class="fas fa-bell"></i></div>
-        <div class="perm-text">
-          <h4>Activer les notifications push</h4>
-          <p>Recevez les alertes même quand l'app est fermée</p>
-        </div>
-        <button class="btn-primary" id="enablePushBtn" style="flex-shrink:0;">
-          <i class="fas fa-bell"></i> Activer
+      <!-- Filtres -->
+      <div class="filters" id="filters" style="display:none;">
+        <button class="filter-btn active" data-filter="all">
+          <i class="fas fa-inbox"></i>
+          <span>Toutes</span>
+          <span class="count" id="countAll">0</span>
+        </button>
+        <button class="filter-btn" data-filter="unread">
+          <i class="fas fa-circle-dot"></i>
+          <span>Non lues</span>
+          <span class="count" id="countUnread">0</span>
         </button>
       </div>
 
-      <!-- PUSH STATUS -->
-      <div class="push-status pending" id="pushStatus">
-        <span class="push-dot"></span>
-        <span id="pushStatusText">Vérification des notifications...</span>
-      </div>
-
-      <!-- STATS -->
-      <div class="stats-row">
-        <div class="stat-mini s1">
-          <div class="stat-icon"><i class="fas fa-bell"></i></div>
-          <div class="stat-val" id="statTotal">0</div>
-          <div class="stat-lbl">Total</div>
+      <!-- Liste -->
+      <div class="notif-list" id="notifList">
+        <!-- Skeleton -->
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-line title"></div>
+            <div class="skeleton-line body"></div>
+            <div class="skeleton-line body2"></div>
+          </div>
         </div>
-        <div class="stat-mini s2">
-          <div class="stat-icon"><i class="fas fa-circle"></i></div>
-          <div class="stat-val" id="statUnread">0</div>
-          <div class="stat-lbl">Non lues</div>
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-line title"></div>
+            <div class="skeleton-line body"></div>
+            <div class="skeleton-line body2"></div>
+          </div>
         </div>
-        <div class="stat-mini s3">
-          <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-          <div class="stat-val" id="statRead">0</div>
-          <div class="stat-lbl">Lues</div>
-        </div>
-      </div>
-
-      <!-- TOOLBAR -->
-      <div class="toolbar">
-        <div class="filter-tabs" id="filterTabs">
-          <button class="active" data-filter="all">Toutes</button>
-          <button data-filter="unread"><i class="fas fa-circle" style="font-size:7px; color:var(--accent-bright); margin-right:3px;"></i>Non lues</button>
-          <button data-filter="announce"><i class="fas fa-bullhorn" style="font-size:9px; margin-right:3px;"></i>Annonces</button>
-          <button data-filter="system"><i class="fas fa-cog" style="font-size:9px; margin-right:3px;"></i>Système</button>
-          <button data-filter="info"><i class="fas fa-info-circle" style="font-size:9px; margin-right:3px;"></i>Info</button>
-          <button data-filter="warning"><i class="fas fa-exclamation-triangle" style="font-size:9px; margin-right:3px;"></i>Alertes</button>
-        </div>
-        <div class="toolbar-right">
-          <button class="btn-secondary" id="refreshBtn"><i class="fas fa-sync-alt"></i> Rafraîchir</button>
+        <div class="skeleton-card">
+          <div class="skeleton-icon"></div>
+          <div class="skeleton-content">
+            <div class="skeleton-line title"></div>
+            <div class="skeleton-line body"></div>
+            <div class="skeleton-line body2"></div>
+          </div>
         </div>
       </div>
 
-      <!-- NOTIFICATION LIST -->
-      <div class="notif-list" id="notifList"></div>
-
-      <!-- EMPTY -->
-      <div class="empty-state" id="emptyState" style="display:none;">
-        <i class="far fa-bell-slash"></i>
-        <h4>Aucune notification</h4>
-        <p>Vous êtes à jour ! Les nouvelles alertes apparaîtront ici.</p>
-      </div>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <span class="toast-icon info"><i class="fas fa-info-circle"></i></span>
-  <span class="toast-message">Message</span>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  query,
-  orderBy,
-  serverTimestamp,
-  onSnapshot,
-  writeBatch
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
-import {
-  getMessaging,
-  getToken,
-  onMessage,
-  isSupported
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-messaging.js";
-
-
-// ================================================================
-// FIREBASE CONFIG
-// ================================================================
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
-  authDomain: "arvexa-fbf10.firebaseapp.com",
-  projectId: "arvexa-fbf10",
-  storageBucket: "arvexa-fbf10.firebasestorage.app",
-  messagingSenderId: "920108330053",
-  appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
-};
-
-const VAPID_KEY =
-  "BKx2iXs_mlCDdDjh_JxsjOQiOlW1-95pJi8myJCr503pB8TkFjJ8bZfpZ7Fv9pYyV_O9_Ca_fbwkO5eGPrnWaHA";
-
-
-// ================================================================
-// FIREBASE INITIALISATION
-// ================================================================
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let messaging = null;
-
-try {
-  const supported = await isSupported();
-
-  if (supported) {
-    messaging = getMessaging(app);
-    console.log("✅ Firebase Messaging disponible");
-  } else {
-    console.warn("⚠️ Firebase Messaging non supporté");
-  }
-
-} catch (error) {
-  console.error("❌ Impossible d'initialiser FCM :", error);
-}
-
-
-// ================================================================
-// CONSTANTES
-// ================================================================
-
-const NOTIF_ICONS = {
-
-  info: {
-    icon: "fa-info-circle",
-    class: "info"
-  },
-
-  warning: {
-    icon: "fa-exclamation-triangle",
-    class: "warning"
-  },
-
-  success: {
-    icon: "fa-check-circle",
-    class: "success"
-  },
-
-  danger: {
-    icon: "fa-times-circle",
-    class: "danger"
-  },
-
-  announce: {
-    icon: "fa-bullhorn",
-    class: "announce"
-  },
-
-  system: {
-    icon: "fa-cog",
-    class: "system"
-  }
-
-};
-
-const TYPE_LABELS = {
-
-  info: "Information",
-  warning: "Alerte",
-  success: "Succès",
-  danger: "Urgent",
-  announce: "Annonce",
-  system: "Système"
-
-};
-
-
-// ================================================================
-// STATE
-// ================================================================
-
-let currentUser = null;
-let allNotifs = [];
-let filteredNotifs = [];
-let currentFilter = "all";
-
-let fcmToken = null;
-let pushEnabled = false;
-
-
-// ================================================================
-// DOM
-// ================================================================
-
-const sidebar =
-  document.getElementById("sidebar");
-
-const sidebarOverlay =
-  document.getElementById("sidebarOverlay");
-
-const menuToggle =
-  document.getElementById("menuToggle");
-
-const skeletonLoading =
-  document.getElementById("skeletonLoading");
-
-const dynamicContent =
-  document.getElementById("dynamicContent");
-
-const notifList =
-  document.getElementById("notifList");
-
-const emptyState =
-  document.getElementById("emptyState");
-
-const filterTabs =
-  document.getElementById("filterTabs");
-
-const permBanner =
-  document.getElementById("permBanner");
-
-const enablePushBtn =
-  document.getElementById("enablePushBtn");
-
-const pushStatus =
-  document.getElementById("pushStatus");
-
-const pushStatusText =
-  document.getElementById("pushStatusText");
-
-const toast =
-  document.getElementById("toast");
-
-const logoutBtn =
-  document.getElementById("logoutBtn");
-
-
-// ================================================================
-// SIDEBAR
-// ================================================================
-
-if (menuToggle) {
-
-  menuToggle.addEventListener("click", () => {
-
-    sidebar?.classList.toggle("open");
-    sidebarOverlay?.classList.toggle("active");
-
-  });
-
-}
-
-if (sidebarOverlay) {
-
-  sidebarOverlay.addEventListener("click", () => {
-
-    sidebar?.classList.remove("open");
-    sidebarOverlay.classList.remove("active");
-
-  });
-
-}
-
-
-// ================================================================
-// LOGOUT
-// ================================================================
-
-if (logoutBtn) {
-
-  logoutBtn.addEventListener("click", async (e) => {
-
-    e.preventDefault();
-
-    try {
-
-      await signOut(auth);
-
-    } catch (error) {
-
-      console.error("Erreur déconnexion :", error);
-
+  <!-- ===== MODALE DÉTAIL ===== -->
+  <div class="modal-overlay" id="notifModal">
+    <div class="modal-sheet" id="notifModalContent"></div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast">
+    <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+    <span class="toast-message"></span>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCRIPTS                                                       -->
+  <!-- ============================================================ -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
     }
+  }
+  </script>
 
-    window.location.href = "login.html";
+  <script type="module">
+  // ================================================================
+  // NOTIFICATIONS — Version complète
+  // ================================================================
 
-  });
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import {
+    initializeFirestore,
+    persistentLocalCache,
+    persistentSingleTabManager,
+    doc,
+    collection,
+    query,
+    orderBy,
+    limit,
+    onSnapshot,
+    updateDoc,
+    writeBatch,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-}
-
-
-// ================================================================
-// TOAST
-// ================================================================
-
-let toastTimeout = null;
-
-function showToast(message, type = "info") {
-
-  if (!toast) return;
-
-  const icon =
-    toast.querySelector(".toast-icon i");
-
-  const iconWrap =
-    toast.querySelector(".toast-icon");
-
-  const msg =
-    toast.querySelector(".toast-message");
-
-  const icons = {
-
-    success: "fa-check-circle",
-    error: "fa-exclamation-circle",
-    info: "fa-info-circle"
-
+  // ================================================================
+  // CONFIG FIREBASE
+  // ================================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDHscOXw3rLuhV6z1Cny-bdYCumqpnG7QE",
+    authDomain: "arvexa-fbf10.firebaseapp.com",
+    projectId: "arvexa-fbf10",
+    storageBucket: "arvexa-fbf10.firebasestorage.app",
+    messagingSenderId: "920108330053",
+    appId: "1:920108330053:web:f532d71cbc2c824bc7472c"
   };
 
-  if (iconWrap) {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    iconWrap.className =
-      "toast-icon " + type;
-
-  }
-
-  if (icon) {
-
-    icon.className =
-      "fas " + (icons[type] || icons.info);
-
-  }
-
-  if (msg) {
-
-    msg.textContent = message;
-
-  }
-
-  toast.classList.add("show");
-
-  clearTimeout(toastTimeout);
-
-  toastTimeout = setTimeout(() => {
-
-    toast.classList.remove("show");
-
-  }, 3500);
-
-}
-
-
-// ================================================================
-// PUSH STATUS
-// ================================================================
-
-function setPushStatus(status, text) {
-
-  if (!pushStatus || !pushStatusText) {
-
-    console.warn(
-      "⚠️ Élément de statut FCM introuvable"
-    );
-
-    return;
-
-  }
-
-  pushStatus.classList.remove(
-    "active",
-    "inactive",
-    "pending"
-  );
-
-  pushStatus.classList.add(status);
-
-  pushStatusText.textContent = text;
-
-}
-
-// ================================================================
-// FCM — GESTION PROPRE DES NOTIFICATIONS PUSH
-// ================================================================
-
-let fcmInitialized = false;
-let fcmInitializing = false;
-
-
-// ================================================================
-// ENREGISTRER / ACTUALISER LE TOKEN FCM
-// ================================================================
-
-async function registerToken() {
-
-  if (!currentUser) {
-    console.warn("⚠️ Aucun utilisateur connecté.");
-    return false;
-  }
-
-  if (!messaging) {
-    setPushStatus(
-      "inactive",
-      "Notifications push non supportées"
-    );
-    return false;
-  }
-
-  if (!("serviceWorker" in navigator)) {
-    setPushStatus(
-      "inactive",
-      "Service Worker non supporté"
-    );
-    return false;
-  }
+  // ⚡ FIRESTORE AVEC PERSISTANCE LOCALE (mode hors-ligne)
+  const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentSingleTabManager()
+    })
+  });
 
   try {
-
-    setPushStatus(
-      "pending",
-      "Activation des notifications..."
-    );
-
-    console.log("======================================");
-    console.log("🔔 INITIALISATION FCM");
-    console.log("👤 UID :", currentUser.uid);
-
-
-    // ============================================================
-    // 1. SERVICE WORKER
-    // ============================================================
-
-    console.log("🔄 Enregistrement du Service Worker...");
-
-    const registration =
-      await navigator.serviceWorker.register(
-        "./firebase-messaging-sw.js",
-        {
-          updateViaCache: "none"
-        }
-      );
-
-    console.log(
-      "✅ Service Worker enregistré :",
-      registration.scope
-    );
-
-
-    // Vérifier qu'il est prêt
-
-    await navigator.serviceWorker.ready;
-
-    console.log("✅ Service Worker prêt");
-
-
-    // Demander au navigateur de vérifier une nouvelle version
-
-    try {
-      await registration.update();
-    } catch (updateError) {
-      console.warn(
-        "⚠️ Mise à jour SW non effectuée :",
-        updateError
-      );
-    }
-
-
-    // ============================================================
-    // 2. VÉRIFICATION PERMISSION
-    // ============================================================
-
-    if (Notification.permission !== "granted") {
-
-      console.warn(
-        "⚠️ Permission notification non accordée :",
-        Notification.permission
-      );
-
-      setPushStatus(
-        "inactive",
-        "Permission de notification non accordée"
-      );
-
-      return false;
-    }
-
-
-    // ============================================================
-    // 3. RÉCUPÉRATION DU TOKEN ACTUEL
-    // ============================================================
-
-    console.log("🔄 Récupération du token FCM...");
-
-    const newToken =
-      await getToken(
-        messaging,
-        {
-          vapidKey: VAPID_KEY,
-          serviceWorkerRegistration: registration
-        }
-      );
-
-
-    if (!newToken) {
-
-      throw new Error(
-        "Firebase n'a retourné aucun token FCM."
-      );
-    }
-
-
-    console.log(
-      "✅ Token FCM obtenu :",
-      newToken.substring(0, 30) + "..."
-    );
-
-
-    // ============================================================
-    // 4. REMPLACEMENT DU TOKEN LOCAL
-    // ============================================================
-
-    const tokenChanged =
-      fcmToken !== newToken;
-
-    fcmToken =
-      newToken;
-
-    pushEnabled =
-      true;
-
-
-    if (tokenChanged) {
-
-      console.log(
-        "🔄 Nouveau token FCM détecté."
-      );
-
-    } else {
-
-      console.log(
-        "ℹ️ Token FCM déjà à jour."
-      );
-
-    }
-
-
-    // ============================================================
-    // 5. ENREGISTREMENT FIRESTORE
-    // ============================================================
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      );
-
-
-    await setDoc(
-      userRef,
-      {
-        fcmToken: newToken,
-
-        fcmTokenUpdatedAt:
-          serverTimestamp(),
-
-        fcmPlatform:
-          "web",
-
-        fcmBrowser:
-          navigator.userAgent.substring(0, 200)
-
-      },
-      {
-        merge: true
-      }
-    );
-
-
-    console.log(
-      "✅ Token FCM enregistré dans Firestore."
-    );
-
-
-    // ============================================================
-    // 6. ÉTAT FINAL
-    // ============================================================
-
-    setPushStatus(
-      "active",
-      "Notifications push activées"
-    );
-
-    if (permBanner) {
-      permBanner.classList.remove("show");
-    }
-
-
-    console.log("======================================");
-
-    return true;
-
-
-  } catch (error) {
-
-    console.error(
-      "❌ ERREUR FCM :",
-      error
-    );
-
-    console.error(
-      "Code :",
-      error?.code
-    );
-
-    console.error(
-      "Message :",
-      error?.message
-    );
-
-
-    fcmToken =
-      null;
-
-    pushEnabled =
-      false;
-
-
-    let message =
-      "Impossible d'activer les notifications";
-
-
-    if (
-      error?.code ===
-      "messaging/permission-blocked"
-    ) {
-
-      message =
-        "Notifications bloquées par le navigateur";
-
-    }
-
-    else if (
-      error?.code ===
-      "messaging/unsupported-browser"
-    ) {
-
-      message =
-        "Navigateur incompatible avec les notifications";
-
-    }
-
-    else if (
-      error?.message
-    ) {
-
-      message =
-        "Erreur FCM : " +
-        error.message;
-    }
-
-
-    setPushStatus(
-      "inactive",
-      message
-    );
-
-
-    return false;
-  }
-}
-
-
-// ================================================================
-// INITIALISATION FCM
-// ================================================================
-
-async function initFCM() {
-
-  // Éviter deux initialisations simultanées
-
-  if (fcmInitialized) {
-    console.log("ℹ️ FCM déjà initialisé.");
-    return;
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (e) {}
+
+  // ================================================================
+  // DOM
+  // ================================================================
+  const notifList = document.getElementById('notifList');
+  const filtersEl = document.getElementById('filters');
+  const countAll = document.getElementById('countAll');
+  const countUnread = document.getElementById('countUnread');
+  const unreadCountHeader = document.getElementById('unreadCountHeader');
+  const markAllReadBtn = document.getElementById('markAllReadBtn');
+
+  const modal = document.getElementById('notifModal');
+  const modalContent = document.getElementById('notifModalContent');
+
+  const toast = document.getElementById('toast');
+  const toastMessage = document.querySelector('.toast-message');
+  const toastIcon = document.querySelector('.toast-icon i');
+
+  // ================================================================
+  // ÉTAT
+  // ================================================================
+  let allNotifications = [];
+  let currentFilter = 'all';
+  let unsubscribeNotifications = null;
+  let unsubscribeUser = null;
+  let currentUid = null;
+  let currentUser = null;
+  let isRedirecting = false;
+
+  // ================================================================
+  // UTILITAIRE — TIMESTAMP
+  // ================================================================
+  function toDate(value) {
+    if (!value) return null;
+    if (typeof value.toDate === 'function') return value.toDate();
+    if (value.seconds !== undefined) return new Date(value.seconds * 1000);
+    const date = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  if (fcmInitializing) {
-    console.log("⏳ Initialisation FCM déjà en cours.");
-    return;
+  // ================================================================
+  // FORMAT TEMPS RELATIF
+  // ================================================================
+  function formatRelativeTime(timestamp) {
+    const date = toDate(timestamp);
+    if (!date) return '';
+
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    if (diffSec < 60) return 'À l\'instant';
+    if (diffMin < 60) return `Il y a ${diffMin} min`;
+    if (diffHour < 24) return `Il y a ${diffHour}h`;
+    if (diffDay === 1) return 'Hier';
+    if (diffDay < 7) return `Il y a ${diffDay} jours`;
+    if (diffDay < 30) return `Il y a ${Math.floor(diffDay / 7)} sem.`;
+    if (diffDay < 365) return `Il y a ${Math.floor(diffDay / 30)} mois`;
+    return `Il y a ${Math.floor(diffDay / 365)} an${diffDay >= 730 ? 's' : ''}`;
   }
 
-
-  fcmInitializing =
-    true;
-
-
-  try {
-
-    // ============================================================
-    // VÉRIFICATIONS
-    // ============================================================
-
-    if (!currentUser) {
-
-      console.warn(
-        "⚠️ FCM : utilisateur non connecté."
-      );
-
-      return;
-    }
-
-
-    if (!messaging) {
-
-      setPushStatus(
-        "inactive",
-        "Notifications push non supportées sur ce navigateur"
-      );
-
-      return;
-    }
-
-
-    if (!("Notification" in window)) {
-
-      setPushStatus(
-        "inactive",
-        "Notifications non supportées"
-      );
-
-      return;
-    }
-
-
-    console.log(
-      "🔔 Permission actuelle :",
-      Notification.permission
-    );
-
-
-    // ============================================================
-    // PERMISSION ACCORDÉE
-    // ============================================================
-
-    if (
-      Notification.permission ===
-      "granted"
-    ) {
-
-      await registerToken();
-
-      return;
-    }
-
-
-    // ============================================================
-    // PERMISSION REFUSÉE
-    // ============================================================
-
-    if (
-      Notification.permission ===
-      "denied"
-    ) {
-
-      setPushStatus(
-        "inactive",
-        "Notifications bloquées par le navigateur"
-      );
-
-      if (permBanner) {
-        permBanner.classList.remove("show");
-      }
-
-      return;
-    }
-
-
-    // ============================================================
-    // PERMISSION NON ENCORE DEMANDÉE
-    // ============================================================
-
-    setPushStatus(
-      "pending",
-      "Notifications non encore activées"
-    );
-
-    if (permBanner) {
-      permBanner.classList.add("show");
-    }
-
-
-  } finally {
-
-    fcmInitializing =
-      false;
-
-    fcmInitialized =
-      true;
-
+  // ================================================================
+  // FORMAT DATE COMPLÈTE
+  // ================================================================
+  function formatFullDate(timestamp) {
+    const date = toDate(timestamp);
+    if (!date) return '';
+    return date.toLocaleDateString('fr-FR', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
-
-  // ==============================================================
-  // MESSAGE FCM AU PREMIER PLAN
-  // ==============================================================
-
-  if (messaging) {
-
-    onMessage(
-      messaging,
-      (payload) => {
-
-        console.log(
-          "📬 Message FCM reçu :",
-          payload
-        );
-
-
-        const notification =
-          payload.notification || {};
-
-        const data =
-          payload.data || {};
-
-
-        const title =
-          notification.title ||
-          data.title ||
-          "ARVEXA School";
-
-
-        const body =
-          notification.body ||
-          data.body ||
-          "Nouvelle notification";
-
-
-        const type =
-          data.type ||
-          "info";
-
-
-        // ========================================================
-        // TOAST
-        // ========================================================
-
-        showToast(
-          body || title,
-          type === "danger"
-            ? "error"
-            : "info"
-        );
-
-
-        // ========================================================
-        // AJOUT LOCAL
-        // ========================================================
-
-        const notifData = {
-
-          id:
-            "fcm_" +
-            Date.now(),
-
-          title,
-
-          body,
-
-          type,
-
-          createdAt:
-            new Date(),
-
-          _read:
-            false,
-
-          _source:
-            "fcm"
-
-        };
-
-
-        allNotifs.unshift(
-          notifData
-        );
-
-
-        applyFilterAndRender();
-
-      }
-    );
-
+  // ================================================================
+  // TYPE → ICÔNE + COULEUR
+  // ================================================================
+  function getTypeConfig(type) {
+    const configs = {
+      info: { icon: 'fa-circle-info', emoji: 'ℹ️', label: 'Info' },
+      success: { icon: 'fa-circle-check', emoji: '✅', label: 'Succès' },
+      warning: { icon: 'fa-triangle-exclamation', emoji: '⚠️', label: 'Attention' },
+      danger: { icon: 'fa-circle-exclamation', emoji: '🚨', label: 'Important' },
+      announce: { icon: 'fa-bullhorn', emoji: '📢', label: 'Annonce' }
+    };
+    return configs[type] || configs.info;
   }
 
-}
-
-
-// ================================================================
-// ACTIVER LES NOTIFICATIONS
-// ================================================================
-
-if (enablePushBtn) {
-
-  enablePushBtn.addEventListener(
-    "click",
-    async () => {
-
-      if (!messaging) {
-
-        showToast(
-          "Les notifications ne sont pas supportées.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      if (!("Notification" in window)) {
-
-        showToast(
-          "Les notifications ne sont pas supportées.",
-          "error"
-        );
-
-        return;
-      }
-
-
-      try {
-
-        enablePushBtn.disabled =
-          true;
-
-
-        enablePushBtn.innerHTML =
-          '<i class="fas fa-spinner fa-spin"></i> Activation...';
-
-
-        console.log(
-          "🔔 Demande de permission..."
-        );
-
-
-        const permission =
-          await Notification.requestPermission();
-
-
-        console.log(
-          "🔔 Permission :",
-          permission
-        );
-
-
-        if (
-          permission !==
-          "granted"
-        ) {
-
-          setPushStatus(
-            "inactive",
-            permission === "denied"
-              ? "Notifications bloquées par le navigateur"
-              : "Permission non accordée"
-          );
-
-
-          showToast(
-            permission === "denied"
-              ? "Notifications bloquées par le navigateur."
-              : "Permission non accordée.",
-            "error"
-          );
-
-
-          return;
-        }
-
-
-        // Permettre une nouvelle initialisation
-
-        fcmInitialized =
-          false;
-
-
-        const success =
-          await registerToken();
-
-
-        if (success) {
-
-          fcmInitialized =
-            true;
-
-
-          showToast(
-            "🔔 Notifications push activées !",
-            "success"
-          );
-
-        }
-
-
-      } catch (error) {
-
-        console.error(
-          "❌ Erreur activation FCM :",
-          error
-        );
-
-
-        showToast(
-          "Impossible d'activer les notifications.",
-          "error"
-        );
-
-
-      } finally {
-
-        enablePushBtn.disabled =
-          false;
-
-
-        enablePushBtn.innerHTML =
-          '<i class="fas fa-bell"></i> Activer';
-
-      }
-
-    }
-  );
-
-}
-  
-// ================================================================
-// LOAD NOTIFICATIONS
-// ================================================================
-
-function initNotificationsListener() {
-
-  const notifQuery =
-    query(
-      collection(db, "notifications"),
-      orderBy("createdAt", "desc")
-    );
-
-
-  onSnapshot(
-
-    notifQuery,
-
-    async (snapshot) => {
-
-      const globalNotifs = [];
-
-
-      snapshot.forEach((d) => {
-
-        globalNotifs.push({
-
-          id: d.id,
-          ...d.data(),
-          _source: "global"
-
-        });
-
-      });
-
-
-      // ==========================================================
-      // ANNOUNCEMENTS
-      // ==========================================================
-
-      let announcements = [];
-
-
-      try {
-
-        const annSnap =
-          await getDocs(
-
-            query(
-              collection(
-                db,
-                "announcements"
-              ),
-              orderBy(
-                "createdAt",
-                "desc"
-              )
-            )
-
-          );
-
-
-        annSnap.forEach((d) => {
-
-          announcements.push({
-
-            id: d.id,
-            ...d.data(),
-            _source: "announcement"
-
-          });
-
-        });
-
-      } catch (error) {
-
-        console.warn(
-          "Erreur chargement annonces :",
-          error
-        );
-
-      }
-
-
-      // ==========================================================
-      // USER NOTIFICATIONS
-      // ==========================================================
-
-      let userNotifs = [];
-
-
-      if (currentUser) {
-
-        try {
-
-          const uq =
-            query(
-
-              collection(
-                db,
-                "users",
-                currentUser.uid,
-                "notifications"
-              ),
-
-              orderBy(
-                "createdAt",
-                "desc"
-              )
-
-            );
-
-
-          const uSnap =
-            await getDocs(uq);
-
-
-          uSnap.forEach((d) => {
-
-            userNotifs.push({
-
-              id: d.id,
-              ...d.data(),
-              _source: "user"
-
-            });
-
-          });
-
-        } catch (error) {
-
-          console.warn(
-            "Erreur chargement notifications utilisateur :",
-            error
-          );
-
-        }
-
-      }
-
-
-      // ==========================================================
-      // MERGE
-      // ==========================================================
-
-      const merged = [
-
-        ...globalNotifs,
-        ...announcements,
-        ...userNotifs
-
-      ];
-
-
-      const seen = new Set();
-
-
-      allNotifs =
-        merged.filter((notification) => {
-
-          if (
-            seen.has(notification.id)
-          ) {
-
-            return false;
-
-          }
-
-          seen.add(
-            notification.id
-          );
-
-          return true;
-
-        });
-
-
-      // ==========================================================
-      // READ STATUS
-      // ==========================================================
-
-      if (currentUser) {
-
-        try {
-
-          const readDoc =
-            await getDoc(
-
-              doc(
-                db,
-                "users",
-                currentUser.uid,
-                "notif_meta",
-                "read_status"
-              )
-
-            );
-
-
-          if (readDoc.exists()) {
-
-            const readIds =
-              readDoc.data().readIds || [];
-
-
-            allNotifs.forEach(
-              (notification) => {
-
-                notification._read =
-                  readIds.includes(
-                    notification.id
-                  );
-
-              }
-            );
-
-          }
-
-        } catch (error) {
-
-          console.warn(
-            "Erreur statut lecture :",
-            error
-          );
-
-        }
-
-      }
-
-
-      applyFilterAndRender();
-
-
-      if (skeletonLoading) {
-
-        skeletonLoading.style.display =
-          "none";
-
-      }
-
-
-      if (dynamicContent) {
-
-        dynamicContent.style.display =
-          "block";
-
-      }
-
-    },
-
-    (error) => {
-
-      console.error(
-        "Erreur écoute notifications :",
-        error
-      );
-
-
-      if (skeletonLoading) {
-
-        skeletonLoading.style.display =
-          "none";
-
-      }
-
-
-      if (dynamicContent) {
-
-        dynamicContent.style.display =
-          "block";
-
-      }
-
-
-      showToast(
-        "Erreur de chargement des notifications",
-        "error"
-      );
-
+  // ================================================================
+  // ESCAPE HTML
+  // ================================================================
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = String(text || '');
+    return div.innerHTML;
+  }
+
+  // ================================================================
+  // TOAST
+  // ================================================================
+  let toastTimer = null;
+  function showToast(message, type = 'success') {
+    const icons = {
+      success: 'fas fa-check-circle',
+      info: 'fas fa-info-circle',
+      error: 'fas fa-exclamation-circle'
+    };
+    toastMessage.textContent = message;
+    toast.className = `toast ${type}`;
+    toastIcon.className = icons[type] || icons.info;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // ================================================================
+  // RENDU
+  // ================================================================
+  function renderNotifications() {
+    // Filtrer
+    let list = allNotifications;
+    if (currentFilter === 'unread') {
+      list = list.filter(n => !n.read);
     }
 
-  );
-
-}
-
-
-// ================================================================
-// FILTER + RENDER
-// ================================================================
-
-function applyFilterAndRender() {
-
-  let notifs =
-    [...allNotifs];
-
-
-  if (
-    currentFilter === "unread"
-  ) {
-
-    notifs =
-      notifs.filter(
-        n => !n._read
-      );
-
-  }
-
-
-  else if (
-    currentFilter === "announce"
-  ) {
-
-    notifs =
-      notifs.filter(
-        n =>
-          n._source === "announcement" ||
-          n.type === "announce"
-      );
-
-  }
-
-
-  else if (
-    currentFilter !== "all"
-  ) {
-
-    notifs =
-      notifs.filter(
-        n =>
-          n.type === currentFilter
-      );
-
-  }
-
-
-  // ============================================================
-  // SORT
-  // ============================================================
-
-  notifs.sort(
-    (a, b) => {
-
-      const aRead =
-        a._read ? 1 : 0;
-
-      const bRead =
-        b._read ? 1 : 0;
-
-
-      if (
-        aRead !== bRead
-      ) {
-
-        return aRead - bRead;
-
-      }
-
-
-      const aTime =
-        a.createdAt?.toDate?.()?.getTime() ||
-        new Date(
-          a.createdAt || 0
-        ).getTime() ||
-        0;
-
-
-      const bTime =
-        b.createdAt?.toDate?.()?.getTime() ||
-        new Date(
-          b.createdAt || 0
-        ).getTime() ||
-        0;
-
-
-      return bTime - aTime;
-
-    }
-  );
-
-
-  filteredNotifs =
-    notifs;
-
-
-  renderStats();
-
-  renderNotifs(
-    notifs
-  );
-
-}
-
-
-// ================================================================
-// STATS
-// ================================================================
-
-function renderStats() {
-
-  const total =
-    allNotifs.length;
-
-  const unread =
-    allNotifs.filter(
-      n => !n._read
-    ).length;
-
-  const read =
-    total - unread;
-
-
-  const statTotal =
-    document.getElementById(
-      "statTotal"
-    );
-
-  const statUnread =
-    document.getElementById(
-      "statUnread"
-    );
-
-  const statRead =
-    document.getElementById(
-      "statRead"
-    );
-
-
-  if (statTotal)
-    statTotal.textContent =
-      total;
-
-
-  if (statUnread)
-    statUnread.textContent =
-      unread;
-
-
-  if (statRead)
-    statRead.textContent =
-      read;
-
-}
-
-
-// ================================================================
-// RENDER NOTIFICATIONS
-// ================================================================
-
-function renderNotifs(notifs) {
-
-  if (!notifList)
-    return;
-
-
-  if (
-    notifs.length === 0
-  ) {
-
-    notifList.innerHTML =
-      "";
-
-    if (emptyState) {
-
-      emptyState.style.display =
-        "block";
-
-    }
-
-    return;
-
-  }
-
-
-  if (emptyState) {
-
-    emptyState.style.display =
-      "none";
-
-  }
-
-
-  notifList.innerHTML =
-    notifs.map(
-      (n) => {
-
-        const isRead =
-          !!n._read;
-
-        const type =
-          n.type || "info";
-
-        const iconInfo =
-          NOTIF_ICONS[type] ||
-          NOTIF_ICONS.info;
-
-        const typeLabel =
-          TYPE_LABELS[type] ||
-          "Info";
-
-        const title =
-          n.title ||
-          "Notification";
-
-        const body =
-          n.body ||
-          n.text ||
-          "";
-
-        const dateStr =
-          formatTimeAgo(
-            n.createdAt
-          );
-
-
-        return `
-
-          <div
-            class="card notif-card ${
-              isRead
-                ? "read"
-                : "unread"
-            }"
-            data-id="${escapeHtml(
-              String(n.id)
-            )}"
-          >
-
-            <div class="notif-top">
-
-              <div
-                class="notif-icon-wrap ${
-                  iconInfo.class
-                }"
-              >
-
-                <i
-                  class="fas ${
-                    iconInfo.icon
-                  }"
-                ></i>
-
-              </div>
-
-
-              <div class="notif-body">
-
-                <div class="notif-title">
-
-                  ${
-                    !isRead
-                      ? '<span class="unread-dot"></span>'
-                      : ""
-                  }
-
-                  ${escapeHtml(title)}
-
-                </div>
-
-
-                ${
-                  body
-                    ? `
-                      <div class="notif-text">
-                        ${escapeHtml(body)}
-                      </div>
-                    `
-                    : ""
-                }
-
-
-                <div class="notif-meta">
-
-                  <span class="notif-type">
-                    ${escapeHtml(typeLabel)}
-                  </span>
-
-                  <span>
-                    ${dateStr}
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <div class="notif-actions">
-
-                ${
-                  !isRead
-                    ? `
-                      <button
-                        class="notif-act-btn"
-                        data-action="read"
-                        data-id="${escapeHtml(
-                          String(n.id)
-                        )}"
-                        title="Marquer lu"
-                      >
-                        <i class="fas fa-check"></i>
-                      </button>
-                    `
-                    : ""
-                }
-
-
-                <button
-                  class="notif-act-btn del"
-                  data-action="delete"
-                  data-id="${escapeHtml(
-                    String(n.id)
-                  )}"
-                  title="Supprimer"
-                >
-                  <i class="fas fa-times"></i>
-                </button>
-
-              </div>
-
-            </div>
-
+    // Compteurs
+    const totalCount = allNotifications.length;
+    const unreadCount = allNotifications.filter(n => !n.read).length;
+
+    countAll.textContent = totalCount;
+    countUnread.textContent = unreadCount;
+    unreadCountHeader.textContent = unreadCount;
+
+    // Bouton "Tout lire" activé si au moins une non-lue
+    markAllReadBtn.disabled = unreadCount === 0;
+
+    // Afficher les filtres si on a des notifications
+    filtersEl.style.display = totalCount > 0 ? 'flex' : 'none';
+
+    // Liste vide
+    if (list.length === 0) {
+      if (totalCount === 0) {
+        notifList.innerHTML = `
+          <div class="empty-state">
+            <div class="es-icon"><i class="fas fa-bell-slash"></i></div>
+            <h4>Aucune notification</h4>
+            <p>Tu recevras ici les annonces, les mises à jour et les informations importantes.</p>
           </div>
-
         `;
-
+      } else {
+        notifList.innerHTML = `
+          <div class="empty-state">
+            <div class="es-icon"><i class="fas fa-check-circle"></i></div>
+            <h4>Tout est lu !</h4>
+            <p>Tu n'as aucune notification non lue.</p>
+          </div>
+        `;
       }
-    ).join("");
-
-
-  // ============================================================
-  // BUTTON ACTIONS
-  // ============================================================
-
-  notifList
-    .querySelectorAll(
-      ".notif-act-btn"
-    )
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          handleNotifAction
-        );
-
-      }
-    );
-
-
-  // ============================================================
-  // CARD CLICK
-  // ============================================================
-
-  notifList
-    .querySelectorAll(
-      ".notif-card"
-    )
-    .forEach(
-      card => {
-
-        card.addEventListener(
-          "click",
-          (event) => {
-
-            if (
-              event.target.closest(
-                ".notif-act-btn"
-              )
-            ) {
-
-              return;
-
-            }
-
-
-            markAsRead(
-              card.dataset.id
-            );
-
-          }
-        );
-
-      }
-    );
-
-}
-
-
-// ================================================================
-// ESCAPE HTML
-// ================================================================
-
-function escapeHtml(text) {
-
-  const div =
-    document.createElement("div");
-
-  div.textContent =
-    String(text ?? "");
-
-  return div.innerHTML;
-
-}
-
-
-// ================================================================
-// TIME AGO
-// ================================================================
-
-function formatTimeAgo(ts) {
-
-  if (!ts)
-    return "";
-
-
-  const date =
-    ts.toDate
-      ? ts.toDate()
-      : new Date(ts);
-
-
-  if (
-    isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return "";
-
-  }
-
-
-  const now =
-    new Date();
-
-  const diff =
-    now - date;
-
-
-  const mins =
-    Math.floor(
-      diff / 60000
-    );
-
-  const hours =
-    Math.floor(
-      diff / 3600000
-    );
-
-  const days =
-    Math.floor(
-      diff / 86400000
-    );
-
-
-  if (mins < 1)
-    return "À l'instant";
-
-  if (mins < 60)
-    return `Il y a ${mins} min`;
-
-  if (hours < 24)
-    return `Il y a ${hours}h`;
-
-  if (days < 7)
-    return `Il y a ${days}j`;
-
-
-  return date.toLocaleDateString(
-    "fr-FR",
-    {
-      day: "numeric",
-      month: "short"
+      return;
     }
-  );
 
-}
+    // Rendu des cartes
+    notifList.innerHTML = list.map((n, i) => {
+      const typeConfig = getTypeConfig(n.type);
+      const title = n.title || 'Notification';
+      const body = n.body || '';
+      const time = formatRelativeTime(n.createdAt);
+      const isUnread = !n.read;
 
+      return `
+        <div class="notif-card ${isUnread ? 'unread' : ''}"
+             data-id="${n.id}"
+             style="animation-delay: ${Math.min(i * 0.03, 0.3)}s">
+          <div class="notif-icon ${n.type || 'info'} ${isUnread ? 'unread-dot' : ''}">
+            <i class="fas ${typeConfig.icon}"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-header">
+              <div class="notif-title">${escapeHtml(title)}</div>
+              <div class="notif-time">${escapeHtml(time)}</div>
+            </div>
+            <div class="notif-body">${escapeHtml(body)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
 
-// ================================================================
-// NOTIFICATION ACTIONS
-// ================================================================
-
-async function handleNotifAction(event) {
-
-  event.stopPropagation();
-
-
-  const button =
-    event.currentTarget;
-
-  const action =
-    button.dataset.action;
-
-  const id =
-    button.dataset.id;
-
-
-  if (
-    action === "read"
-  ) {
-
-    await markAsRead(id);
-
+    // Événements
+    notifList.querySelectorAll('.notif-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        openNotifDetail(id);
+      });
+    });
   }
 
+  // ================================================================
+  // OUVRIR DÉTAIL
+  // ================================================================
+  async function openNotifDetail(id) {
+    const notif = allNotifications.find(n => n.id === id);
+    if (!notif) return;
 
-  if (
-    action === "delete"
-  ) {
+    const typeConfig = getTypeConfig(notif.type);
+    const title = notif.title || 'Notification';
+    const body = notif.body || 'Aucun contenu.';
+    const fullDate = formatFullDate(notif.createdAt);
 
-    await deleteNotif(id);
+    // Marquer comme lu si pas encore lu
+    if (!notif.read && currentUid) {
+      try {
+        await updateDoc(
+          doc(db, 'users', currentUid, 'notifications', id),
+          { read: true }
+        );
+      } catch (e) {}
+    }
 
+    modalContent.innerHTML = `
+      <button class="modal-close" id="modalCloseBtn" aria-label="Fermer">
+        <i class="fas fa-xmark"></i>
+      </button>
+
+      <div class="modal-head">
+        <div class="modal-icon ${notif.type || 'info'}">
+          <i class="fas ${typeConfig.icon}"></i>
+        </div>
+        <div class="modal-titles">
+          <div class="modal-title">${escapeHtml(title)}</div>
+          <div class="modal-date">${escapeHtml(fullDate)}</div>
+        </div>
+      </div>
+
+      <div class="modal-body">${escapeHtml(body)}</div>
+
+      <div class="modal-actions">
+        <button class="modal-btn secondary" id="closeModalBtn">
+          <i class="fas fa-check"></i> Fermer
+        </button>
+      </div>
+    `;
+
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('modalCloseBtn').addEventListener('click', closeNotifDetail);
+    document.getElementById('closeModalBtn').addEventListener('click', closeNotifDetail);
+
+    // Swipe to close
+    setupModalSwipe(modalContent);
   }
 
-}
+  function closeNotifDetail() {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
 
+  // ================================================================
+  // SWIPE TO CLOSE
+  // ================================================================
+  function setupModalSwipe(sheet) {
+    let startY = 0, currentY = 0, isDragging = false;
 
-// ================================================================
-// MARK AS READ
-// ================================================================
+    sheet.addEventListener('touchstart', (e) => {
+      const rect = sheet.getBoundingClientRect();
+      const touchY = e.touches[0].clientY;
+      if (touchY - rect.top < 80) {
+        startY = touchY;
+        currentY = touchY;
+        isDragging = true;
+        sheet.style.transition = 'none';
+      }
+    }, { passive: true });
 
-async function markAsRead(notifId) {
+    sheet.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const diff = currentY - startY;
+      if (diff > 0) {
+        sheet.style.transform = `translateY(${diff}px)`;
+        e.preventDefault();
+      }
+    }, { passive: false });
 
-  const notification =
-    allNotifs.find(
-      n => n.id === notifId
-    );
+    sheet.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      sheet.style.transition = '';
+      const diff = currentY - startY;
+      if (diff > 100) {
+        sheet.style.transform = `translateY(100%)`;
+        setTimeout(() => {
+          modal.classList.remove('show');
+          sheet.style.transform = '';
+        }, 300);
+      } else {
+        sheet.style.transform = '';
+      }
+      startY = 0;
+      currentY = 0;
+    }, { passive: true });
+  }
 
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeNotifDetail();
+  });
 
-  if (!notification)
-    return;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) {
+      closeNotifDetail();
+    }
+  });
 
+  // ================================================================
+  // MARQUER TOUT COMME LU
+  // ================================================================
+  async function markAllAsRead() {
+    if (!currentUid) return;
 
-  if (notification._read)
-    return;
+    const unread = allNotifications.filter(n => !n.read);
+    if (unread.length === 0) return;
 
-
-  notification._read =
-    true;
-
-
-  // ============================================================
-  // SAUVEGARDE FIRESTORE
-  // ============================================================
-
-  if (currentUser) {
+    markAllReadBtn.disabled = true;
 
     try {
+      const batch = writeBatch(db);
+      unread.forEach(n => {
+        const ref = doc(db, 'users', currentUid, 'notifications', n.id);
+        batch.update(ref, { read: true });
+      });
+      await batch.commit();
 
-      const readRef =
-        doc(
-          db,
-          "users",
-          currentUser.uid,
-          "notif_meta",
-          "read_status"
-        );
+      showToast(`${unread.length} notification${unread.length > 1 ? 's' : ''} marquée${unread.length > 1 ? 's' : ''} comme lue${unread.length > 1 ? 's' : ''}`, 'success');
+    } catch (e) {
+      console.error(e);
+      showToast('Impossible de marquer comme lu', 'error');
+      markAllReadBtn.disabled = false;
+    }
+  }
 
+  markAllReadBtn.addEventListener('click', markAllAsRead);
 
-      const readDoc =
-        await getDoc(
-          readRef
-        );
+  // ================================================================
+  // FILTRES
+  // ================================================================
+  filtersEl.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      filtersEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderNotifications();
+    });
+  });
 
+  // ================================================================
+  // CHARGEMENT DES NOTIFICATIONS (temps réel)
+  // ================================================================
+  function loadNotifications(user) {
+    if (unsubscribeNotifications) {
+      unsubscribeNotifications();
+      unsubscribeNotifications = null;
+    }
 
-      let readIds =
-        readDoc.exists()
-          ? (
-              readDoc.data()
-                .readIds || []
-            )
-          : [];
+    const notifsQuery = query(
+      collection(db, 'users', user.uid, 'notifications'),
+      orderBy('createdAt', 'desc'),
+      limit(50)
+    );
 
-
-      if (
-        !readIds.includes(
-          notifId
-        )
-      ) {
-
-        readIds.push(
-          notifId
-        );
-
+    unsubscribeNotifications = onSnapshot(notifsQuery,
+      (snapshot) => {
+        allNotifications = snapshot.docs.map(d => ({
+          id: d.id,
+          ...d.data()
+        }));
+        renderNotifications();
+      },
+      (error) => {
+        console.warn('Erreur chargement notifications:', error);
+        // Fallback : afficher l'état vide
+        allNotifications = [];
+        renderNotifications();
       }
+    );
+  }
 
+  // ================================================================
+  // CHARGEMENT UTILISATEUR (temps réel)
+  // ================================================================
+  function loadUserData(user) {
+    if (unsubscribeUser) {
+      unsubscribeUser();
+      unsubscribeUser = null;
+    }
 
-      await setDoc(
-        readRef,
-        {
-          readIds
-        },
-        {
-          merge: true
+    const userRef = doc(db, 'users', user.uid);
+
+    unsubscribeUser = onSnapshot(userRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          try {
+            localStorage.setItem('arvexa_user_data', JSON.stringify(data));
+          } catch (e) {}
         }
-      );
-
-
-    } catch (error) {
-
-      console.warn(
-        "Erreur sauvegarde lecture :",
-        error
-      );
-
-    }
-
-  }
-
-
-  applyFilterAndRender();
-
-}
-
-
-// ================================================================
-// DELETE NOTIFICATION
-// ================================================================
-
-async function deleteNotif(
-  notifId
-) {
-
-  allNotifs =
-    allNotifs.filter(
-      n => n.id !== notifId
-    );
-
-
-  if (currentUser) {
-
-    try {
-
-      await deleteDoc(
-
-        doc(
-          db,
-          "users",
-          currentUser.uid,
-          "notifications",
-          notifId
-        )
-
-      );
-
-    } catch (error) {
-
-      // La notification peut être globale
-      console.warn(
-        "Notification non supprimée de Firestore :",
-        error
-      );
-
-    }
-
-  }
-
-
-  applyFilterAndRender();
-
-
-  showToast(
-    "Notification supprimée",
-    "info"
-  );
-
-}
-
-
-// ================================================================
-// FILTER TABS
-// ================================================================
-
-if (filterTabs) {
-
-  filterTabs
-    .querySelectorAll("button")
-    .forEach(
-      button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            filterTabs
-              .querySelectorAll(
-                "button"
-              )
-              .forEach(
-                b =>
-                  b.classList.remove(
-                    "active"
-                  )
-              );
-
-
-            button.classList.add(
-              "active"
-            );
-
-
-            currentFilter =
-              button.dataset.filter;
-
-
-            applyFilterAndRender();
-
-          }
-        );
-
+      },
+      (error) => {
+        // Silencieux
       }
     );
-
-}
-
-
-// ================================================================
-// REFRESH
-// ================================================================
-
-const refreshBtn =
-  document.getElementById(
-    "refreshBtn"
-  );
-
-
-if (refreshBtn) {
-
-  refreshBtn.addEventListener(
-    "click",
-    () => {
-
-      showToast(
-        "Actualisation...",
-        "info"
-      );
-
-      applyFilterAndRender();
-
-    }
-  );
-
-}
-
-
-// ================================================================
-// AUTH
-// ================================================================
-
-onAuthStateChanged(
-  auth,
-  async (user) => {
-
-    if (user) {
-
-      console.log(
-        "👤 Utilisateur connecté :",
-        user.uid
-      );
-
-      currentUser =
-        user;
-
-
-      // FCM
-      await initFCM();
-
-
-      // Notifications Firestore
-      initNotificationsListener();
-
-    }
-
-    else {
-
-      window.location.href =
-        "login.html";
-
-    }
-
   }
-);
 
-</script>
+  // ================================================================
+  // AUTH
+  // ================================================================
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      if (currentUid !== null) {
+        currentUid = null;
+        if (unsubscribeNotifications) unsubscribeNotifications();
+        if (unsubscribeUser) unsubscribeUser();
+      }
+      if (!isRedirecting) {
+        isRedirecting = true;
+        sessionStorage.setItem('redirectAfterLogin', window.location.pathname);
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 300);
+      }
+      return;
+    }
+
+    if (user.uid === currentUid) return;
+    currentUid = user.uid;
+    currentUser = user;
+
+    loadNotifications(user);
+    loadUserData(user);
+  });
+
+  // ================================================================
+  // ÉVÉNEMENTS
+  // ================================================================
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+  });
+
+  document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      if (unsubscribeNotifications) unsubscribeNotifications();
+      if (unsubscribeUser) unsubscribeUser();
+      currentUid = null;
+      await signOut(auth);
+      window.location.href = 'login.html';
+    } catch (error) {}
+  });
+
+  </script>
 </body>
 </html>
