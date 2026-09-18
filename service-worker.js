@@ -22,10 +22,12 @@ const ESSENTIAL_FILES = [
   './profil.html',
   './formulaires.html',
   './calculatrice.html',
+  './notifications.html',
   './offline.html',
   './manifest.json',
   './icon.png',
-  './register-sw.js'
+  './register-sw.js',
+  './firebase-messaging-sw.js'
 ];
 
 // ================================================================
@@ -233,5 +235,12 @@ self.addEventListener('message', (event) => {
     });
   }
 });
+
+// ================================================================
+// ENREGISTREMENT DU SERVICE WORKER FCM
+// ================================================================
+// Le Service Worker FCM est enregistré depuis les pages HTML,
+// mais on peut aussi le pré-enregistrer ici.
+// (L'enregistrement réel se fait dans le code HTML)
 
 console.log('[SW] Service Worker chargé. Version:', CACHE_VERSION);
